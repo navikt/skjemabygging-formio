@@ -15,4 +15,29 @@ const getDraftFailureMetadata = (operation: DraftOperation, error: unknown) => {
   return { operation, errorCode: 'UNCLASSIFIED_ERROR', status: 'UNKNOWN' };
 };
 
-export { getDraftFailureMetadata };
+const shouldLogDraftFailure = (error: unknown): boolean =>
+  !(
+    error instanceof ResponseError &&
+    error.correlationId &&
+    (error.errorCode === 'ERROR' || error.errorCode === 'INTERNAL_SERVER_ERROR')
+  );
+
+const getSubmissionFailureLog = (submitError: unknown, fallback?: { error: unknown }) => {
+  if (!fallback) {
+    return shouldLogDraftFailure(submitError)
+      ? { message: 'Draft submission failed', metadata: getDraftFailureMetadata('submit', submitError) }
+      : undefined;
+  }
+
+  return shouldLogDraftFailure(submitError) || shouldLogDraftFailure(fallback.error)
+    ? {
+        message: 'Draft persistence failed',
+        metadata: {
+          ...getDraftFailureMetadata('fallback_update', fallback.error),
+          submissionFailure: getDraftFailureMetadata('submit', submitError),
+        },
+      }
+    : undefined;
+};
+
+export { getDraftFailureMetadata, getSubmissionFailureLog, shouldLogDraftFailure };

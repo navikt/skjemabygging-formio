@@ -139,7 +139,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
  */
 const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) => {
   const { baseUrl, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
-  logger.info(`Submitting utfylt soknad ${innsendingsId}`);
+  logger.info('Submitting completed draft');
 
   let response;
   try {
@@ -147,10 +147,11 @@ const submitCompletedApplication = async (props: SubmitCompletedApplicationProps
       accessToken,
       redirect: 'manual',
       responseType: 'metadata',
+      logDetails: false,
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
     });
   } catch (error) {
-    throw normalizeApplicationError(error);
+    throw sanitizeDraftError(error);
   }
 
   return {

@@ -77,11 +77,7 @@ describe('sendInnContext', () => {
 
   describe('When mellomlagring is enabled', () => {
     beforeEach(async () => {
-      mockHttp.post.mockReturnValue({
-        innsendingsId,
-        hoveddokumentVariant: { document: null },
-      });
-      mockHttp.put.mockReturnValue({ innsendingsId });
+      mockHttp.post.mockReturnValue({ innsendingsId });
       await act(async () => {
         render(
           <AppConfigProvider

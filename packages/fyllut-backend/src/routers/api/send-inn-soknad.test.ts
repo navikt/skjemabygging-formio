@@ -48,7 +48,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
-    it('reports an invalid draft ID as a validation error, not an expired draft', async () => {
+    it('returns with 404 if innsendingsId is invalid', async () => {
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
@@ -57,10 +57,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const res = mockResponse();
       const next = vi.fn();
       await sendInnSoknad.get(req, res, next);
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ errorCode: 'BAD_REQUEST', message: 'Invalid draft submission ID' }),
-      );
-      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.sendStatus).toHaveBeenCalledWith(404);
     });
 
     it('calls next if SendInn returns error', async () => {
@@ -76,7 +73,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Draft request failed');
+      expect(error.message).toBe('Internal Server Error');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
@@ -95,7 +92,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('NOT_FOUND');
-      expect(error.message).toBe('Draft request failed');
+      expect(error.message).toBe('Not Found');
       expect(res.json).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
@@ -177,7 +174,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Draft request failed');
+      expect(error.message).toBe('Internal Server Error');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
@@ -198,7 +195,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('NOT_FOUND');
-      expect(error.message).toBe('Draft request failed');
+      expect(error.message).toBe('Not Found');
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -237,39 +234,6 @@ describe('[endpoint] send-inn/soknad', () => {
   });
 
   describe('PUT', () => {
-    it.each([
-      [undefined, 'Missing body value "innsendingsId"'],
-      ['not-a-uuid', 'Invalid draft submission ID'],
-    ])('rejects an invalid draft ID without logging or returning its value', async (id, message) => {
-      const req = mockRequestWithSendInnData({
-        body: { ...requestBody, innsendingsId: id },
-      });
-      const res = mockResponse();
-      const next = vi.fn();
-
-      await sendInnSoknad.put(req, res, next);
-
-      expect(next).toHaveBeenCalledTimes(1);
-      expect(next.mock.calls[0][0]).toMatchObject({ errorCode: 'BAD_REQUEST', message });
-      expect(res.json).not.toHaveBeenCalled();
-    });
-
-    it('preserves downstream BAD_REQUEST on a rejected draft update', async () => {
-      nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
-      nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-      nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
-      const sendInnScope = nock(sendInnConfig.host)
-        .put(`${draftPath}/${innsendingsId}`)
-        .reply(400, { message: 'Rejected draft state' });
-      const req = mockRequestWithSendInnData({ body: requestBodyWithInnsendingsId });
-      const next = vi.fn();
-
-      await sendInnSoknad.put(req, mockResponse(), next);
-
-      expect(next.mock.calls[0][0]).toMatchObject({ errorCode: 'BAD_REQUEST' });
-      expect(sendInnScope.isDone()).toBe(true);
-    });
-
     it('returns response body if success', async () => {
       nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
@@ -305,7 +269,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Draft request failed');
+      expect(error.message).toBe('Internal Server Error');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);

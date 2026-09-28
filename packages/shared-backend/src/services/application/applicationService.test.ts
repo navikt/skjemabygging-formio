@@ -175,6 +175,28 @@ describe('createApplicationService', () => {
     );
   });
 
+  it('sanitizes completed draft submission failures without transport logs', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    const infoSpy = vi.spyOn(logger, 'info');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'Private answer in downstream response' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.submitCompletedApplication({ accessToken, innsendingsId, body: { data: true } }),
+    ).rejects.toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Draft request failed',
+      correlationId,
+    });
+    expect(infoSpy).toHaveBeenCalledWith('Submitting completed draft');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
   it('handles attachment operations and records upload metrics through the real service and client path', async () => {
     const startTimer = vi.fn().mockReturnValue(vi.fn());
     const observe = vi.fn();
