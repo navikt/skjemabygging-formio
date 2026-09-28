@@ -9,11 +9,11 @@ import { logger } from '../../../logger';
 import legacyErrorToResponseError from '../../../middleware/legacyErrorToResponseError';
 import { removeUploadedTempFile, uploadSingleFile } from './upload';
 
-const createUploadApp = (maxFileSizeBytes?: number, onRequest?: (req: Request) => void) => {
+const createUploadApp = (maxFileSizeBytes?: number, onRequest?: (req: Request) => void, path = '/upload') => {
   const app = express();
   app.use(correlator());
   app.post(
-    '/upload',
+    path,
     (req, _res, next) => {
       onRequest?.(req);
       next();
@@ -44,13 +44,40 @@ const createUploadApp = (maxFileSizeBytes?: number, onRequest?: (req: Request) =
 describe('uploadSingleFile', () => {
   it('allows files under configured size limit', async () => {
     const app = createUploadApp(10);
+    const uploadInfo = vi.spyOn(logger, 'info');
 
     const response = await request(app)
-      .post('/upload')
+      .post('/upload?source=test')
       .attach('filinnhold', Buffer.from('12345'), 'small.txt')
       .expect(201);
 
     expect(response.body).toEqual({ fileName: 'small.txt', size: 5 });
+    expect(uploadInfo).toHaveBeenCalledWith(
+      'Upload stored in temporary file',
+      expect.objectContaining({ route: '/upload', fieldName: 'filinnhold', fileSize: 5, fileType: 'text/plain' }),
+    );
+    uploadInfo.mockRestore();
+  });
+
+  it('logs submission and attachment IDs for a successful digital upload without query parameters', async () => {
+    const app = createUploadApp(undefined, undefined, '/digital/:innsendingsId/attachments/:attachmentId');
+    const uploadInfo = vi.spyOn(logger, 'info');
+
+    await request(app)
+      .post('/digital/submission-1/attachments/attachment-1?access=hidden')
+      .attach('filinnhold', Buffer.from('hello'), 'small.txt')
+      .expect(201);
+
+    expect(uploadInfo).toHaveBeenCalledWith(
+      'Upload stored in temporary file',
+      expect.objectContaining({
+        route: '/digital/submission-1/attachments/attachment-1',
+        fieldName: 'filinnhold',
+        innsendingsId: 'submission-1',
+        attachmentId: 'attachment-1',
+      }),
+    );
+    uploadInfo.mockRestore();
   });
 
   it('returns bad request when file exceeds configured size limit', async () => {
@@ -82,6 +109,9 @@ describe('uploadSingleFile', () => {
     const req = new Readable({ read() {} }) as Readable & Request;
     req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
     req.aborted = true;
+    req.originalUrl = '/fyllut/api/send-inn/nologin-application/attachments/attachment-1?access=hidden';
+    req.params = { attachmentId: 'attachment-1' };
+    req.getNologinContext = vi.fn().mockReturnValue({ innsendingsId: 'submission-1' });
     const next = vi.fn();
 
     uploadSingleFile('filinnhold')(req, {} as Response, next);
@@ -89,7 +119,12 @@ describe('uploadSingleFile', () => {
     req.destroy();
     await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
 
-    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', {
+      route: '/fyllut/api/send-inn/nologin-application/attachments/attachment-1',
+      fieldName: 'filinnhold',
+      innsendingsId: 'submission-1',
+      attachmentId: 'attachment-1',
+    });
     expect(next).not.toHaveBeenCalled();
     expect(uploadWarning).not.toHaveBeenCalled();
     expect(handlerError).not.toHaveBeenCalled();
@@ -105,13 +140,20 @@ describe('uploadSingleFile', () => {
     const uploadInfo = vi.spyOn(logger, 'info');
     const req = new Readable({ read() {} }) as Readable & Request;
     req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
+    req.originalUrl = '/fyllut/api/send-inn/digital-application/submission-2/attachments/attachment-2?access=hidden';
+    req.params = { innsendingsId: 'submission-2', attachmentId: 'attachment-2' };
     const next = vi.fn();
 
     uploadSingleFile('filinnhold')(req, {} as Response, next);
     req.destroy();
     await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
 
-    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', {
+      route: '/fyllut/api/send-inn/digital-application/submission-2/attachments/attachment-2',
+      fieldName: 'filinnhold',
+      innsendingsId: 'submission-2',
+      attachmentId: 'attachment-2',
+    });
     expect(next).not.toHaveBeenCalled();
     uploadInfo.mockRestore();
   });
@@ -121,10 +163,8 @@ describe('uploadSingleFile', () => {
     const handlerError = vi.spyOn(errorLogger, 'error');
     const uploadWarning = vi.spyOn(logger, 'warn');
     let loggedCorrelationId: string | undefined;
-    const uploadInfo = vi.spyOn(logger, 'info').mockImplementation((message) => {
-      if (message === 'Upload request aborted') {
-        loggedCorrelationId = correlator.getId();
-      }
+    const uploadInfo = vi.spyOn(logger, 'info').mockImplementation(() => {
+      loggedCorrelationId = correlator.getId();
       return logger;
     });
     let socket: Socket | undefined;
@@ -152,7 +192,10 @@ describe('uploadSingleFile', () => {
 
       expect(initialCorrelationId).toEqual(expect.any(String));
       expect(loggedCorrelationId).toBe(initialCorrelationId);
-      expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+      expect(uploadInfo).toHaveBeenCalledWith(
+        'Upload request aborted',
+        expect.objectContaining({ route: '/upload', fieldName: 'filinnhold' }),
+      );
       expect(handlerWarning).not.toHaveBeenCalled();
       expect(handlerError).not.toHaveBeenCalled();
       expect(uploadWarning).not.toHaveBeenCalled();

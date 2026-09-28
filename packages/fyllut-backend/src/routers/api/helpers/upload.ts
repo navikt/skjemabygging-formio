@@ -21,6 +21,12 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
   }).single(fieldName);
 
   return (req: Request, res: Response, next: NextFunction) => {
+    const logMeta = {
+      route: req.originalUrl?.split('?')[0],
+      fieldName,
+      innsendingsId: req.params?.innsendingsId ?? req.getNologinContext?.()?.innsendingsId,
+      attachmentId: req.params?.attachmentId,
+    };
     const handleUpload: NextFunction = (error) => {
       if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
         return next(
@@ -38,7 +44,7 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
           (req.aborted && error.message === 'Request aborted') ||
           (req.destroyed && !req.complete && error.message === 'Request closed')
         ) {
-          logger.info('Upload request aborted', { fieldName });
+          logger.info('Upload request aborted', logMeta);
           return;
         }
         return next(error);
@@ -46,7 +52,7 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
 
       if (req.file) {
         logger.info('Upload stored in temporary file', {
-          fieldName,
+          ...logMeta,
           fileSize: req.file.size,
           fileType: req.file.mimetype,
         });
