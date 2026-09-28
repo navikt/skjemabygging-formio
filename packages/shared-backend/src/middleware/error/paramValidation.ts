@@ -1,10 +1,10 @@
-import { INVALID_FORM_PATH_MESSAGE, ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { urlUtil } from '../../util';
 
 const formPath = (_req: Request, _res: Response, next: NextFunction, value: string) => {
   if (value && !urlUtil.isValidPath(value)) {
-    return next(new ResponseError('BAD_REQUEST', INVALID_FORM_PATH_MESSAGE));
+    return next(new ResponseError('BAD_REQUEST', 'Form path contains invalid characters.'));
   }
 
   next();

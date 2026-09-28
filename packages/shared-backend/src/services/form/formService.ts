@@ -1,9 +1,4 @@
-import {
-  FORM_NOT_PUBLISHED_MESSAGE,
-  Form,
-  formioFormsApiUtils,
-  ResponseError,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
 import formClient from './formClient';
 
@@ -64,7 +59,7 @@ const createFormService = ({
 
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
     if (!form) {
-      throw new ResponseError('NOT_FOUND', FORM_NOT_PUBLISHED_MESSAGE);
+      throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
     }
 
     const mappedForm = formioFormsApiUtils.mapNavFormToForm(form);

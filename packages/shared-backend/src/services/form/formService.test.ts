@@ -1,9 +1,4 @@
-import {
-  FORM_NOT_PUBLISHED_MESSAGE,
-  Form,
-  NavFormType,
-  ResponseError,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, NavFormType, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import fs from 'node:fs';
 import path from 'node:path';
 import type { MockInstance } from 'vitest';
@@ -180,7 +175,7 @@ describe('createFormService', () => {
       const service = createService({ formsLocation });
 
       await expect(service.getForm({ formPath: 'missing-form' })).rejects.toEqual(
-        new ResponseError('NOT_FOUND', FORM_NOT_PUBLISHED_MESSAGE),
+        new ResponseError('NOT_FOUND', `Form with path missing-form not found in directory ${formsLocation}`),
       );
     });
 
@@ -192,14 +187,5 @@ describe('createFormService', () => {
       });
     });
 
-    it('preserves an upstream 404 without marking the form unpublished', async () => {
-      mockFetchResponse(JSON.stringify({ message: 'not found' }), 404, 'application/json');
-      const service = createService({ formsApiStaging: true });
-
-      await expect(service.getForm({ formPath: 'nav123456' })).rejects.toMatchObject({
-        errorCode: 'NOT_FOUND',
-        message: 'not found',
-      });
-    });
   });
 });

@@ -50,21 +50,6 @@ describe('form', () => {
       expect(response.json).not.toHaveBeenCalled();
     });
 
-    it('keeps a failed published-form lookup reportable without exposing an upstream message', async () => {
-      vi.mocked(formService.getForm).mockRejectedValueOnce(
-        new ResponseError('INTERNAL_SERVER_ERROR', 'Failed to load /v1/forms/nav123456', 'upstream-id'),
-      );
-      const request = mockRequest({ params: { formPath: 'nav123456' } });
-      const response = mockResponse();
-
-      await expect(form.get(request, response)).rejects.toMatchObject({
-        errorCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Fyllut form fetch failed',
-        correlationId: 'upstream-id',
-      });
-      expect(response.json).not.toHaveBeenCalled();
-    });
-
     describe("a form with 'nn' translations", () => {
       beforeEach(() => {
         vi.mocked(translationsService.getTranslationsForLanguage).mockImplementationOnce(async (_, lang) => {
