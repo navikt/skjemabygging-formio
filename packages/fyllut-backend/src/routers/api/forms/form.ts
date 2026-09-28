@@ -5,6 +5,7 @@ import {
   Form,
   I18nTranslationReplacements,
   LimitedFormAttachment,
+  ResponseError,
   TEXTS,
   navFormUtils,
   translationUtils,
@@ -20,9 +21,20 @@ const form = {
     const type = requestUtil.getStringQuery(req, 'type', true);
     const lang = requestUtil.getStringQuery(req, 'lang', true);
     const select = requestUtil.getStringQuery(req, 'select', true);
-    const form = select
-      ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof Form> })
-      : await formService.getForm({ formPath });
+    let form: Form;
+    try {
+      form = select
+        ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof Form> })
+        : await formService.getForm({ formPath });
+    } catch (error) {
+      if (
+        error instanceof ResponseError &&
+        (error.errorCode === 'ERROR' || error.errorCode === 'INTERNAL_SERVER_ERROR')
+      ) {
+        throw new ResponseError(error.errorCode, 'Fyllut form fetch failed', error.correlationId);
+      }
+      throw error;
+    }
 
     const language = lang ?? 'nb-NO';
 

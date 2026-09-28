@@ -121,6 +121,21 @@ describe('http requests', () => {
       nock.isDone();
     });
 
+    it.each([502, 504])('preserves status %i for a non-JSON gateway response', async (status) => {
+      nock('https://www.nav.no')
+        .defaultReplyHeaders({ 'Content-Type': 'text/html' })
+        .get('/gateway-error')
+        .reply(status, '<html>Gateway failure</html>');
+
+      await expect(http.get('https://www.nav.no/gateway-error')).rejects.toMatchObject({
+        constructor: ResponseError,
+        errorCode: 'ERROR',
+        status,
+      });
+
+      nock.isDone();
+    });
+
     it('defaults userMessage when backend response does not provide one', async () => {
       nock('https://www.nav.no')
         .defaultReplyHeaders({

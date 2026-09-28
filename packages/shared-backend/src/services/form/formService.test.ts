@@ -1,6 +1,10 @@
-import { Form, NavFormType, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FORM_NOT_PUBLISHED_MESSAGE,
+  Form,
+  NavFormType,
+  ResponseError,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import type { MockInstance } from 'vitest';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -73,7 +77,8 @@ describe('createFormService', () => {
   };
 
   const writeFormsToTempDir = (...forms: NavFormType[]) => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'form-service-test-'));
+    tempDir = path.join(process.cwd(), `.form-service-test-${process.pid}`);
+    fs.mkdirSync(tempDir);
     forms.forEach((form) => {
       fs.writeFileSync(path.join(tempDir!, `${form.path}.json`), JSON.stringify(form));
     });
@@ -175,8 +180,26 @@ describe('createFormService', () => {
       const service = createService({ formsLocation });
 
       await expect(service.getForm({ formPath: 'missing-form' })).rejects.toEqual(
-        new ResponseError('NOT_FOUND', `Form with path missing-form not found in directory ${formsLocation}`),
+        new ResponseError('NOT_FOUND', FORM_NOT_PUBLISHED_MESSAGE),
       );
+    });
+
+    it('does not classify an unconfigured form directory as an unpublished form', async () => {
+      const service = createService();
+
+      await expect(service.getForm({ formPath: 'nav123456' })).rejects.toMatchObject({
+        errorCode: 'SERVICE_UNAVAILABLE',
+      });
+    });
+
+    it('preserves an upstream 404 without marking the form unpublished', async () => {
+      mockFetchResponse(JSON.stringify({ message: 'not found' }), 404, 'application/json');
+      const service = createService({ formsApiStaging: true });
+
+      await expect(service.getForm({ formPath: 'nav123456' })).rejects.toMatchObject({
+        errorCode: 'NOT_FOUND',
+        message: 'not found',
+      });
     });
   });
 });

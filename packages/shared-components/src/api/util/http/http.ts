@@ -107,6 +107,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       errorResponse.message || response.statusText,
       errorResponse.correlationId,
       errorResponse.userMessage ?? TEXTS.statiske.error.serverErrorTitle,
+      response.status,
     );
   }
 

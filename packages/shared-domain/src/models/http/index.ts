@@ -20,6 +20,9 @@ interface ErrorResponse {
   correlationId?: string;
 }
 
+const INVALID_FORM_PATH_MESSAGE = 'Form path contains invalid characters.';
+const FORM_NOT_PUBLISHED_MESSAGE = 'Form absent from Fyllut published-form directory';
+
 const getErrorCodeFromStatus = (status: number): ErrorCode => {
   switch (status) {
     case 400:
@@ -78,18 +81,21 @@ class ResponseError extends Error {
   public readonly errorCode: ErrorCode;
   public readonly userMessage: string | undefined;
   public readonly correlationId: string | undefined;
+  public readonly status: number | undefined;
 
   /**
    * @param errorCode     Specific error code, will affect logging level and status code.
    * @param message       Internal english error message for logging and debugging, but it is visible in error response.
    * @param correlationId Send inn correlation id.
    * @param userMessage   Message intended for the end user and to be used in the translate() function.
+   * @param status        Actual HTTP response status, when available.
    */
-  constructor(errorCode: ErrorCode, message: string, correlationId?: string, userMessage?: string) {
+  constructor(errorCode: ErrorCode, message: string, correlationId?: string, userMessage?: string, status?: number) {
     super(message);
     this.errorCode = errorCode;
     this.correlationId = correlationId;
     this.userMessage = userMessage;
+    this.status = status;
   }
 }
 
@@ -102,5 +108,12 @@ class HttpResponseError extends ResponseError {
   }
 }
 
-export { HttpResponseError, ResponseError, getErrorCodeFromStatus, getStatusFromErrorCode };
+export {
+  FORM_NOT_PUBLISHED_MESSAGE,
+  INVALID_FORM_PATH_MESSAGE,
+  HttpResponseError,
+  ResponseError,
+  getErrorCodeFromStatus,
+  getStatusFromErrorCode,
+};
 export type { ErrorCode, ErrorResponse };

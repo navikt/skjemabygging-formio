@@ -1,4 +1,9 @@
-import { Form, formioFormsApiUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FORM_NOT_PUBLISHED_MESSAGE,
+  Form,
+  formioFormsApiUtils,
+  ResponseError,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
 import formClient from './formClient';
 
@@ -53,9 +58,13 @@ const createFormService = ({
       return client.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
     }
 
+    if (!formsLocation) {
+      throw new ResponseError('SERVICE_UNAVAILABLE', 'Published form directory is not configured');
+    }
+
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
     if (!form) {
-      throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
+      throw new ResponseError('NOT_FOUND', FORM_NOT_PUBLISHED_MESSAGE);
     }
 
     const mappedForm = formioFormsApiUtils.mapNavFormToForm(form);
