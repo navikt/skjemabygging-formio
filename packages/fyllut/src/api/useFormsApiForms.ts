@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 
 const useFormsApiForms = () => {
   const appConfig = useAppConfig();
-  const { logger } = appConfig;
   const http = appConfig.http ?? baseHttp;
   const baseUrl = '/fyllut/api/forms';
 
@@ -15,7 +14,6 @@ const useFormsApiForms = () => {
       }
 
       const url = `${baseUrl}/${path}${select ? `?select=${select}` : ''}`;
-      logger?.debug('Fetching Fyllut form');
       const form = await http.get<Form>(url);
 
       if (select?.includes('firstPanelSlug')) {
@@ -27,7 +25,7 @@ const useFormsApiForms = () => {
         return form;
       }
     },
-    [baseUrl, http, logger],
+    [baseUrl, http],
   );
 
   return {
