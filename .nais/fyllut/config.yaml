@@ -90,6 +90,8 @@ spec:
       value: {{enabled-features}}
     - name: FEATURE_ATTACHMENT_UPLOAD_FORMS
       value: "{{feature-attachment-upload-forms}}"
+    - name: FEATURE_NEW_RENDER_FORMS
+      value: "{{feature-new-render-forms}}"
     - name: DECORATOR_URL
       value: {{dekorator-url}}
     - name: FORMS_SOURCE
