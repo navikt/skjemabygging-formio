@@ -15,6 +15,16 @@ const saveDraft = () => {
   cy.get('dialog[open]').findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
 };
 
+const visitDraftSummaryForBackendSubmission = () => {
+  cy.mocksUseRouteVariant('get-soknad:success-1-sendinn-upload');
+  cy.intercept('GET', `/fyllut/api/send-inn/soknad/${draftId}`).as('retrieveDraft');
+  cy.visitRouteAndWait(
+    `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${draftId}&lang=nb-NO`,
+    ['@retrieveDraft'],
+  );
+  cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).shouldBeVisible();
+};
+
 const expectDraftFailure = (operation: string, errorCode: string, status: number) => {
   cy.wait('@draftError').then(({ request }) => {
     expect(request.body).to.deep.include({
@@ -36,7 +46,11 @@ describe('Draft persistence failures', () => {
     cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/config*', (req) => {
+      delete req.headers['if-none-match'];
+      delete req.headers['if-modified-since'];
       req.continue((res) => {
+        expect(res.statusCode).to.equal(200);
+        expect(res.body).to.be.an('object');
         res.body.loggerConfig = { enabled: true, browserOnly: false, logLevel: 'info' };
       });
     }).as('getConfig');
@@ -64,7 +78,6 @@ describe('Draft persistence failures', () => {
   it('reports a rejected draft creation and keeps the create error visible', () => {
     cy.intercept('POST', '/fyllut/api/send-inn/soknad*', rejectedDraft(503, 'SERVICE_UNAVAILABLE')).as('createDraft');
     cy.visitRouteAndWait('/fyllut/mellomlagring2mellomlagring?sub=digital');
-    cy.clickStart();
     cy.wait('@createDraft');
 
     cy.findByText(TEXTS.statiske.mellomlagringError.create.message).shouldBeVisible();
@@ -150,11 +163,8 @@ describe('Draft persistence failures', () => {
       'submitDraft',
     );
     cy.intercept('PUT', '/fyllut/api/send-inn/soknad').as('fallbackUpdate');
-    cy.visitRouteAndWait(
-      `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${draftId}&lang=nb-NO`,
-    );
-    cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).shouldBeVisible();
-    cy.clickSendNav();
+    visitDraftSummaryForBackendSubmission();
+    cy.clickSaveAndContinue();
     cy.wait(['@submitDraft', '@fallbackUpdate']);
 
     cy.findByText(TEXTS.statiske.mellomlagringError.submit.title).shouldBeVisible();
@@ -175,11 +185,8 @@ describe('Draft persistence failures', () => {
       'submitDraft',
     );
     cy.intercept('PUT', '/fyllut/api/send-inn/soknad', rejectedDraft(400, 'BAD_REQUEST')).as('fallbackUpdate');
-    cy.visitRouteAndWait(
-      `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${draftId}&lang=nb-NO`,
-    );
-    cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).shouldBeVisible();
-    cy.clickSendNav();
+    visitDraftSummaryForBackendSubmission();
+    cy.clickSaveAndContinue();
     cy.wait(['@submitDraft', '@fallbackUpdate']);
 
     cy.findByText(TEXTS.statiske.mellomlagringError.submit.title).shouldBeVisible();

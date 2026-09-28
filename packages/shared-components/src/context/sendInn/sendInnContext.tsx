@@ -92,7 +92,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringAvailable);
   // Make sure that we only create once
-  const [isCreateStarted, setIsCreateStarted] = useState(false);
+  const createStartedRef = useRef(false);
   const retrieveStartedForRef = useRef<string | undefined>(undefined);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
@@ -170,12 +170,12 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   const startMellomlagring = useCallback(
     async (submission: Submission) => {
-      if (isMellomlagringReady || isCreateStarted) {
+      if (isMellomlagringReady || createStartedRef.current) {
         return;
       }
 
+      createStartedRef.current = true;
       try {
-        setIsCreateStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
         const forceMellomlagring = !!searchParams.get('forceMellomlagring');
         const response = await createSoknad(
@@ -213,7 +213,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     },
     [
       isMellomlagringReady,
-      isCreateStarted,
       searchParams,
       appConfig,
       form,
