@@ -4,6 +4,7 @@ import {
   formsApiTranslationUtils,
   navFormUtils,
   PdfFormData,
+  ResponseError,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -29,6 +30,10 @@ const renderApplicationPdf = ({
   submissionMethod,
   appConfig,
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
+  if (!submission) {
+    throw new ResponseError('BAD_REQUEST', 'Missing submission to generate PDF');
+  }
+
   const translate = formsApiTranslationUtils.createTranslate(translations, language);
 
   const normalizedSubmission = withResolvedSubmissionAttachments(form, submission);

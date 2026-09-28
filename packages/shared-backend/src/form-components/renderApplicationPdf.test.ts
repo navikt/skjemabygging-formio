@@ -47,6 +47,20 @@ const render = (components: Component[], submission: Submission, submissionMetho
 
 const answer = (value: string) => ({ label: 'Documentation', verdi: value });
 
+describe('renderApplicationPdf submission validation', () => {
+  it.each([undefined, null])('rejects a missing submission (%s) with BAD_REQUEST', (submission) => {
+    expect(() => {
+      // @ts-expect-error Untyped HTTP request bodies can bypass the required submission type.
+      render([documentComponent], submission);
+    }).toThrowError(
+      expect.objectContaining({
+        errorCode: 'BAD_REQUEST',
+        message: 'Missing submission to generate PDF',
+      }),
+    );
+  });
+});
+
 describe('renderApplicationPdf attachment row scope', () => {
   it('keeps an unmatched primitive row answer when another row has authoritative legacy storage', () => {
     expect(
