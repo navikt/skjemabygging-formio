@@ -75,6 +75,7 @@ describe('uploadSingleFile', () => {
   });
 
   it('maps an aborted multipart upload to one non-error log', async () => {
+    const uploadInfo = vi.spyOn(logger, 'info');
     const uploadWarning = vi.spyOn(logger, 'warn');
     const handlerWarning = vi.spyOn(errorLogger, 'warn');
     const handlerError = vi.spyOn(errorLogger, 'error');
@@ -86,49 +87,46 @@ describe('uploadSingleFile', () => {
     uploadSingleFile('filinnhold')(req, {} as Response, next);
     req.emit('aborted');
     req.destroy();
-    await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
 
-    expect(next.mock.calls[0][0]).toMatchObject({
-      errorCode: 'BAD_REQUEST',
-      message: 'Upload request was aborted.',
-    });
+    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+    expect(next).not.toHaveBeenCalled();
     expect(uploadWarning).not.toHaveBeenCalled();
     expect(handlerError).not.toHaveBeenCalled();
-    const res = {
-      locals: {},
-      header: vi.fn().mockReturnThis(),
-      contentType: vi.fn().mockReturnThis(),
-      status: vi.fn().mockReturnThis(),
-      send: vi.fn().mockReturnThis(),
-    } as unknown as Response;
-    errorHandler(next.mock.calls[0][0], req, res, vi.fn());
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(handlerWarning).toHaveBeenCalledOnce();
+    expect(handlerWarning).not.toHaveBeenCalled();
 
+    uploadInfo.mockRestore();
     uploadWarning.mockRestore();
     handlerWarning.mockRestore();
     handlerError.mockRestore();
   });
 
-  it('maps a premature upload stream close to bad request', async () => {
+  it('logs a premature upload stream close without forwarding it', async () => {
+    const uploadInfo = vi.spyOn(logger, 'info');
     const req = new Readable({ read() {} }) as Readable & Request;
     req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
     const next = vi.fn();
 
     uploadSingleFile('filinnhold')(req, {} as Response, next);
     req.destroy();
-    await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
 
-    expect(next.mock.calls[0][0]).toMatchObject({
-      errorCode: 'BAD_REQUEST',
-      message: 'Upload request was aborted.',
-    });
+    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+    expect(next).not.toHaveBeenCalled();
+    uploadInfo.mockRestore();
   });
 
   it('keeps the correlation id when the client aborts a multipart upload', async () => {
     const handlerWarning = vi.spyOn(errorLogger, 'warn');
     const handlerError = vi.spyOn(errorLogger, 'error');
     const uploadWarning = vi.spyOn(logger, 'warn');
+    let loggedCorrelationId: string | undefined;
+    const uploadInfo = vi.spyOn(logger, 'info').mockImplementation((message) => {
+      if (message === 'Upload request aborted') {
+        loggedCorrelationId = correlator.getId();
+      }
+      return logger;
+    });
     let socket: Socket | undefined;
     let initialCorrelationId: string | undefined;
     const app = createUploadApp(undefined, (req) => {
@@ -150,14 +148,12 @@ describe('uploadSingleFile', () => {
           resolve();
         });
       });
-      await vi.waitFor(() => expect(handlerWarning).toHaveBeenCalledOnce());
+      await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
 
       expect(initialCorrelationId).toEqual(expect.any(String));
-      expect(handlerWarning.mock.calls[0][0]).toMatchObject({
-        errorCode: 'BAD_REQUEST',
-        message: 'Upload request was aborted.',
-        correlationId: initialCorrelationId,
-      });
+      expect(loggedCorrelationId).toBe(initialCorrelationId);
+      expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', { fieldName: 'filinnhold' });
+      expect(handlerWarning).not.toHaveBeenCalled();
       expect(handlerError).not.toHaveBeenCalled();
       expect(uploadWarning).not.toHaveBeenCalled();
     } finally {
@@ -167,6 +163,7 @@ describe('uploadSingleFile', () => {
       handlerWarning.mockRestore();
       handlerError.mockRestore();
       uploadWarning.mockRestore();
+      uploadInfo.mockRestore();
     }
   });
 

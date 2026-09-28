@@ -38,7 +38,8 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
           (req.aborted && error.message === 'Request aborted') ||
           (req.destroyed && !req.complete && error.message === 'Request closed')
         ) {
-          return next(new ResponseError('BAD_REQUEST', 'Upload request was aborted.'));
+          logger.info('Upload request aborted', { fieldName });
+          return;
         }
         return next(error);
       }
