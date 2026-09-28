@@ -1,7 +1,38 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { createServer } from 'node:http';
 import { AddressInfo, createConnection, Socket } from 'node:net';
+import request from 'supertest';
 import { logger as errorLogger } from '../../shared-backend/src/shared/logger/logger';
 import { createApp } from './app';
+import { logger } from './logger';
+
+describe('request body correlation', () => {
+  it.each(['application/json', 'application/x-www-form-urlencoded'])(
+    'retains the correlation id after parsing %s',
+    async (contentType) => {
+      const expectedId = `body-correlation-${contentType}`;
+      let loggedCorrelationId: string | undefined;
+      const info = vi.spyOn(logger, 'info').mockImplementation(() => {
+        loggedCorrelationId = correlator.getId();
+        return logger;
+      });
+
+      try {
+        await request(createApp())
+          .post('/fyllut/api/log/info')
+          .set('x-correlation-id', expectedId)
+          .type(contentType)
+          .send({ marker: contentType })
+          .expect(200);
+
+        expect(info).toHaveBeenCalledWith({ marker: contentType, source: 'frontend' });
+        expect(loggedCorrelationId).toBe(expectedId);
+      } finally {
+        info.mockRestore();
+      }
+    },
+  );
+});
 
 describe('request body aborts', () => {
   it('logs an incomplete JSON request once with a correlation id', async () => {
