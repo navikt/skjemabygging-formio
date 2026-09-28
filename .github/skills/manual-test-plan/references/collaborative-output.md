@@ -23,8 +23,10 @@ Ask the user to review the printed PDF page by page, including long cases and
 links. Check that no section or step disappears at a page break. Do not claim
 that a PDF was produced by the renderer, or that a stale PDF matches new HTML.
 Share only the reviewed PDF alongside a Trello task through an approved
-channel, after explicit approval. Do not publish HTML to GitHub Pages or
-create a GitHub issue for this path.
+channel, after explicit approval. Do not assume Trello access: attach the
+PDF only if access is actually available and approved; otherwise give the
+reviewed PDF to the user to distribute alongside the task. Do not publish
+HTML to GitHub Pages or create a GitHub issue for this path.
 
 ## Without non-developers
 

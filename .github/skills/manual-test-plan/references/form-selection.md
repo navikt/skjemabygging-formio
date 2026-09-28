@@ -33,10 +33,11 @@ Record:
 - supported submission methods
 - whether preprod must import or refresh the form
 
-Production imports overwrite the shared preprod draft. If a form is missing
-or differs from the required revision, tell the caller what a form owner
-needs to import or refresh; do not import or edit it. Remember that `preprod`
-and `preprod-alt` use the same Forms API instance.
+Production imports overwrite the shared preprod draft. If a production form
+is missing or differs from the required revision, tell the caller what a form
+owner needs to import or refresh. The test-form import script accepts only
+`MANUALTEST-` numbers; do not use it to modify production forms. Remember
+that `preprod` and `preprod-alt` use the same Forms API instance.
 
 ## Generated forms
 
@@ -49,8 +50,9 @@ test form makes the changed behavior substantially easier to isolate.
 - Keep fields and pages to the minimum needed.
 - Use a unique form number starting with `MANUALTEST-`, followed by uppercase
   letters, numbers, or hyphens, up to 20 characters total. Bygger limits form
-  numbers to 20 characters. Give the generated definition to a form owner to
-  import. Do not run import or cleanup yourself.
+  numbers to 20 characters. Import with
+  [forms-api-import.md](forms-api-import.md) after validating the definition.
+  Never replace an existing form without explicit user approval.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the
@@ -84,15 +86,16 @@ Validate:
 3. Conditional pages expose the intended components.
 4. Hidden scenario data clears.
 5. Shared-domain resolution or mapper behavior produces the intended result.
-6. After a form owner imports it, the form can be fetched before testing FyllUt.
+6. After import, the form can be fetched before testing FyllUt.
 
 Map each case's scenario choices against the exact form revision and
 conditional rules using
 [route-source-mapping.md](route-source-mapping.md). For generated forms,
 check the exact JSON and exercise its branches in the local renderer
-before handing it to a form owner. Confirm the imported revision in preprod
-before sharing the plan. Check conditional visibility, required fields,
-relevant identity or party mapping, and submission settings. Schema validity
+before importing. Read back the stored path, revision, components, submission
+methods, and conditional choices in preprod before sharing the plan. Check
+conditional visibility, required fields, relevant identity or party mapping,
+and submission settings. Schema validity
 alone does not establish behavior. Record the route per case
 in `testCases[].journeyCheck`, so branches of one form can have different
 statuses. A matching Cypress flow can support shared navigation, but
@@ -107,12 +110,13 @@ shared ID upload and introduction against the form's settings. Record
 intervening pages from this form's conditional definition, not another
 form's panel order.
 
-Before a form owner imports anything, tell the caller:
+Before importing or requesting a production form refresh, tell the caller:
 
 - which existing forms will be used unchanged
 - which production forms will be imported or refreshed
 - which test forms will be created or updated
 - which test cases each form covers
 
-Do not change Forms API. Wait for the form owner to make the required form
-available and read it back before claiming that its route is verified.
+For test forms, use the guarded CREATE or explicitly approved UPDATE workflow.
+Wait for a form owner to make a required production form available. In both
+cases read it back before claiming that its route is verified.

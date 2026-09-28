@@ -460,7 +460,7 @@ const evidenceUrl = (url) => asHttpUrl(url, 'evidence.url').replaceAll('(', '%28
 const coverageGapsHtml = plan.scope.notCoveredByTests.length
   ? `<ul>${plan.scope.notCoveredByTests.map((gap) => `<li>${escapeHtml(gap.area)}: ${escapeHtml(gap.reason)}</li>`).join('')}</ul>`
   : '<p>Ingen kjente hull i testtilfellene.</p>';
-const scopeHtml = `<section class="card">
+const scopeHtml = `<section class="card" id="dekning">
       <h2>Dekning</h2>
       ${plan.scope.included.length ? `<h3>Dette testes</h3>${list(plan.scope.included)}` : ''}
       <h3>Ikke dekket av testtilfellene</h3>${coverageGapsHtml}
@@ -591,7 +591,7 @@ const casesHtml = plan.testCases
         </p>`
       : '';
     const testUserHtml = testUsers.length ? `<h3>Testbruker</h3>${list(testUsers)}` : '';
-    return `<details id="${testCase.id.toLowerCase()}" tabindex="-1" open>
+    return `<details class="test-case" id="${testCase.id.toLowerCase()}" tabindex="-1" open>
       <summary>${escapeHtml(testCase.id)}: ${escapeHtml(testCase.title)}</summary>
       <div>
         <div class="badges">
@@ -664,6 +664,21 @@ const technicalSection = `<details class="secondary-section" id="teknisk-informa
     </div>
   </details>`;
 
+const contentsHtml = `<nav class="contents" aria-label="Innhold">
+    <h2>Innhold</h2>
+    <ul>
+      <li><a href="#dekning">Dekning</a></li>
+      <li><a href="#versjon">Sjekk versjonen</a></li>
+      <li><a href="#oppsett">Oppsett før testing</a></li>
+      <li><a href="#testoppgaver">Testoppgaver</a>
+        <ul>${plan.testCases.map((testCase) => `<li><a href="#${testCase.id.toLowerCase()}">${escapeHtml(testCase.id)}: ${escapeHtml(testCase.title)}</a></li>`).join('')}</ul>
+      </li>
+      <li><a href="#opprydding">Rydd opp etter testing</a></li>
+      <li><a href="#oppforselsanalyse">Bakgrunn for testene</a></li>
+      <li><a href="#teknisk-informasjon">Teknisk informasjon</a></li>
+    </ul>
+  </nav>`;
+
 const body = `<div class="page-tools">
     <button id="theme-toggle" type="button" aria-pressed="false">
       Mørkt tema: <span id="theme-state">av</span>
@@ -672,15 +687,18 @@ const body = `<div class="page-tools">
   <h1>${escapeHtml(plan.title)}</h1>
   <p>${escapeHtml(plan.summary)}</p>
   <p>Bruk bare syntetiske personopplysninger og filer.</p>
+  ${contentsHtml}
   ${scopeHtml}
-  <section class="card preflight">
+  <section class="card preflight" id="versjon">
     <h2>Sjekk versjonen før du tester</h2>
     <p>Åpne <a href="${escapeHtml(revisionEndpoint)}">miljøinformasjonen</a>. Sjekk at <code>${escapeHtml(revisionField)}</code> er <code>${escapeHtml(expectedCommit)}</code>. Hvis ikke, be utvikleren legge ut riktig versjon.</p>
   </section>
   ${setupSection}
-  <h2>Testoppgaver</h2>
-  ${casesHtml}
-  <section class="card" aria-labelledby="cleanup-heading">
+  <section id="testoppgaver">
+    <h2>Testoppgaver</h2>
+    ${casesHtml}
+  </section>
+  <section class="card" id="opprydding" aria-labelledby="cleanup-heading">
     <h2 id="cleanup-heading">Rydd opp etter testing</h2>
     ${
       publicCleanup.length

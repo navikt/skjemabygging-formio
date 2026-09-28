@@ -75,7 +75,8 @@
             }
             main > p,
             main > section,
-            main > details {
+            main > details,
+            main > nav {
                 max-width: 75ch;
             }
             h1,
@@ -103,6 +104,9 @@
             }
             .muted {
                 color: var(--page-text-subtle);
+            }
+            .contents {
+                margin: 1.5rem 0;
             }
             .preflight {
                 border: 0.15rem solid var(--page-border);
@@ -245,8 +249,44 @@
                 .cleanup-checklist input {
                     display: none;
                 }
+                :root,
+                :root[data-theme='dark'],
+                :root:not([data-theme]) {
+                    color-scheme: light;
+                    --page-bg-default: #ffffff;
+                    --page-bg-raised: #ffffff;
+                    --page-bg-soft: #f5f6f7;
+                    --page-text: #202733;
+                    --page-text-subtle: #49515e;
+                    --page-link: #002459;
+                    --page-border: #6f7785;
+                    --page-border-subtle: #cfd3d8;
+                    --page-focus: #202733;
+                    --page-warning-soft: #fff5e4;
+                }
+                .contents {
+                    break-after: page;
+                }
+                #oppsett,
+                #testoppgaver,
+                #opprydding,
+                #oppforselsanalyse,
+                #teknisk-informasjon,
+                .test-case + .test-case {
+                    break-before: page;
+                }
+                h2,
+                h3,
+                summary {
+                    break-inside: avoid;
+                    break-after: avoid;
+                }
+                .step {
+                    break-inside: avoid;
+                }
                 details {
                     break-inside: auto;
+                    overflow: visible;
                 }
                 details > div {
                     display: block;

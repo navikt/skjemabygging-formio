@@ -24,7 +24,7 @@ const makeHarness = (scenario) => {
     mockFile,
     `globalThis.fetch = async (url, options = {}) => {
   if (url.includes('?')) {
-    return Response.json(['new', 'empty-write'].includes(process.env.FETCH_SCENARIO) ? [] : [{
+    return Response.json(['new', 'empty-write', 'unauthorized-write'].includes(process.env.FETCH_SCENARIO) ? [] : [{
       skjemanummer: 'MANUALTEST-001',
       path: 'manualtest001',
       revision: 4,
@@ -39,6 +39,9 @@ const makeHarness = (scenario) => {
     return Response.json({ path: 'manualtest001', revision: 5 });
   }
   if (options.method === 'POST') {
+    if (process.env.FETCH_SCENARIO === 'unauthorized-write') {
+      return new Response(null, { status: 401 });
+    }
     if (process.env.FETCH_SCENARIO === 'empty-write') {
       return new Response(null, { status: 204 });
     }
@@ -156,6 +159,22 @@ test('reports a write with no response details rather than treating it as a conf
     const result = harness.run('--apply', '--confirm', operation);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /inspect Forms API before retrying/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('reports a write-only 401 even when the token permits the dry-run reads', () => {
+  const harness = makeHarness('unauthorized-write');
+  try {
+    const dryRun = harness.run();
+    assert.equal(dryRun.status, 0, dryRun.stderr);
+    const operation = dryRun.stdout.match(/Operation: (CREATE:[^\n]+)/)?.[1];
+    assert.ok(operation);
+    const result = harness.run('--apply', '--confirm', operation);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Forms API returned 401.*Refresh the token/);
+    assert.doesNotMatch(result.stdout + result.stderr, /test-token/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

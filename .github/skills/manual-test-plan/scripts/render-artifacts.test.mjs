@@ -181,6 +181,27 @@ test.each([false, true])(
         assert.match(publicOutput, /class="cleanup-checklist"/);
         assert.match(publicOutput, /<input type="checkbox" \/>TC-01: Slett challenge\.json/);
         assert.match(publicOutput, /<input type="checkbox" \/>Åpne skjemaet: Fjern testdata/);
+        const contents = publicOutput.match(/<nav class="contents" aria-label="Innhold">([\s\S]*?)<\/nav>/)?.[1];
+        assert.ok(contents);
+        for (const target of [
+          'dekning',
+          'versjon',
+          'oppsett',
+          'testoppgaver',
+          'tc-01',
+          'opprydding',
+          'oppforselsanalyse',
+          'teknisk-informasjon',
+        ]) {
+          assert.match(contents, new RegExp(`href="#${target}"`));
+          assert.match(publicOutput, new RegExp(`id="${target}"`));
+        }
+        assert.match(contents, /TC-01: A &lt;details&gt; test/);
+        assert.match(publicOutput, /class="test-case" id="tc-01"/);
+        assert.match(publicOutput, /\.contents \{\s*break-after: page;/);
+        assert.match(publicOutput, /\.test-case \+ \.test-case \{\s*break-before: page;/);
+        assert.match(publicOutput, /\.step \{\s*break-inside: avoid;/);
+        assert.match(publicOutput, /details \{\s*break-inside: auto;\s*overflow: visible;/);
       } else {
         assert.match(publicOutput, /&lt;details\\>/);
         assert.match(publicOutput, /Perform \\\*action\\\*/);

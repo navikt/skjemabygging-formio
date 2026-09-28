@@ -113,10 +113,12 @@ formats.
             "title": "Make the test form available",
             "formId": "party-form",
             "steps": [
-                "Ask the form owner to make the generated form available in preprod; do not import it as part of this skill."
+                "Dry-run the generated MANUALTEST- form import and apply only its confirmed CREATE operation; obtain explicit approval before replacing an existing form."
             ],
             "expected": "The form is available in preprod and preprod-alt.",
-            "verification": ["Fetch the form from Forms API and check its path and revision."],
+            "verification": [
+                "Fetch the form from Forms API and check its stored path, revision, components, submission methods, and conditional choices."
+            ],
             "sharedStateWarning": "preprod and preprod-alt share the same Forms API.",
             "cleanup": ["Ask the form owner to remove the generated form after testing."]
         }
@@ -125,10 +127,10 @@ formats.
         {
             "id": "party-form",
             "kind": "generated",
-            "path": "testpartyresolution001",
+            "path": "manualtestparty01",
             "title": "Manuell test - avsender og bruker",
             "artifact": "forms/party-resolution.json",
-            "notes": "Bekreft sidene og rekkefølgen i den importerte versjonen."
+            "notes": "Skjemanummer MANUALTEST-PARTY-01 gir lagret sti manualtestparty01. Bekreft sidene og rekkefølgen i den importerte versjonen."
         }
     ],
     "testCases": [

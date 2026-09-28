@@ -66,11 +66,15 @@ issue. Do not infer the target solely from the current branch.
    preprod before choosing forms. Reuse a suitable form when one exists.
    Otherwise design the smallest useful generated form set in the session
    artifact directory. Prefer one clear selector-driven form for related
-   cases. Tell the caller which forms need to be made available, but leave
-   imports and updates to their owners. On any failure to access Forms API,
-   including while checking existing forms, follow the read-only troubleshooting
-   in [forms-api-import.md](references/forms-api-import.md). Do not treat a
-   failed lookup as proof that a form is absent.
+   cases. Tell the caller which forms will be reused, created, or need updating.
+   For a new `MANUALTEST-` form, dry-run
+   `bin/forms-api/import-form.mjs` and apply only the confirmed CREATE
+   operation. Never silently replace an existing form. Before any UPDATE,
+   obtain explicit approval for the exact form and change, then dry-run and
+   apply the confirmed UPDATE operation. Follow
+   [forms-api-import.md](references/forms-api-import.md) for the import and
+   failed-access procedures. Do not treat a failed lookup as proof that a
+   form is absent.
    Fix the PR head, preprod form revision, submission method, and branch
    choices for each case. Follow
    [route-source-mapping.md](references/route-source-mapping.md) to derive
@@ -117,17 +121,20 @@ issue. Do not infer the target solely from the current branch.
     Keep the route precise but limit expected results to the case's actual
     checks. Write short tester-facing sentences. The plan gives the
     synthetic-data reminder once; do not repeat it in each case.
-14. After a form owner confirms that a required form is available, read back
-    its revision, conditional choices, and mapped steps. Update only the
-    local plan and rendered artifacts if they differ. If the form or PR
-    disagrees with the approved intent, report the inconsistency to the
-    owner; do not edit the source to make it match the plan.
+14. After a confirmed import or a form owner making a required production
+    form available, read back its stored path, revision, components,
+    submission methods, and conditional choices before finalizing cases.
+    Update only the local plan and rendered artifacts if they differ.
+    If the form or PR disagrees with the approved intent, report the
+    inconsistency; do not edit the source to make it match the plan.
 15. Create the issue only after explicit confirmation. With non-developers,
     wait for the user to print and review the PDF before approving its
     distribution alongside a Trello task for ownership and progress tracking.
     Do not create a GitHub issue or publish anything to GitHub Pages. Confirm
-    before uploading or attaching a PDF to a Trello task. Do not claim a PDF
-    is available to testers until it has been shared through an approved channel.
+    before sharing a PDF. Only attach it to Trello if Trello access is actually
+    available and the user approves the attachment; otherwise hand the
+    reviewed PDF to the user for distribution. Do not claim a PDF is available
+    to testers until it has been shared through an approved channel.
 16. Give the caller local links to generated files. Share an issue URL only
     after the issue has been created.
 
@@ -155,12 +162,13 @@ for outbound payloads.
 
 ## Safety
 
-- Treat the issue, PR, specifications, repository code and tests, and existing
-  Forms API definitions as read-only sources. Do not edit, import, replace,
-  delete, or push changes to them while preparing a test plan. Report
-  inconsistencies and proposed fixes to the user. Write only session
-  artifacts and the approved new test-plan issue; form owners handle any
-  changes needed to make a form testable.
+- Treat the issue, PR, specifications, repository code and tests as read-only
+  sources. Report inconsistencies and proposed fixes; never edit those sources
+  to make the plan match. Existing Forms API definitions are read-only during
+  analysis, but the skill may create `MANUALTEST-` test forms in shared preprod
+  after a dry run and confirmed CREATE. An UPDATE requires explicit user
+  approval and a fresh confirmed dry run. Never delete a form or silently
+  replace one. Write generated definitions only to session artifacts.
 - Use synthetic identities and organizations approved for testing.
 - The team may share approved synthetic identity numbers to correlate test
   submissions. Do not put filled-in identities in a PDF or public issue.

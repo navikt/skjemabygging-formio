@@ -123,9 +123,11 @@ flows, renderer code, and form-specific panels. Map before-form, form, and
 after-form steps separately, with a source for every transition. An
 analogous test does not prove that a different form has the same pages.
 If the form is generated, inspect its exact JSON in the session artifact
-directory. Have a form owner import it, then read back the preprod revision
-before sharing the plan. If the imported form differs, report the discrepancy
-rather than editing it. Never say "if prompted" for a required action or
+directory. Follow [forms-api-import.md](forms-api-import.md) to dry-run and
+create it, or explicitly approve an update, then read back the stored path,
+revision, components, submission methods, and conditional choices before
+sharing the plan. If the imported form differs, report the discrepancy
+rather than editing repository sources. Never say "if prompted" for a required action or
 skip an intervening page.
 
 Mark a complete source-based route `source-mapped` in that case's
