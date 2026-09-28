@@ -128,6 +128,7 @@ formats.
             "id": "party-form",
             "kind": "generated",
             "path": "manualtestparty01",
+            "skjemanummer": "MANUALTEST-PARTY-01",
             "title": "Manuell test - avsender og bruker",
             "artifact": "forms/party-resolution.json",
             "notes": "Skjemanummer MANUALTEST-PARTY-01 gir lagret sti manualtestparty01. Bekreft sidene og rekkefølgen i den importerte versjonen."
@@ -173,8 +174,8 @@ formats.
                     "expected": "Noter hvordan begge personene vises i oppsummeringen."
                 },
                 {
-                    "action": "Send inn søknaden.",
-                    "expected": "Noter hva som vises etter innsending, inkludert eventuell kvittering og mottaksdato."
+                    "action": "Send inn søknaden. Last ned PDF-en fra kvitteringen og åpne den.",
+                    "expected": "Noter kvitteringen og hvor avsender og bruker vises i PDF-en. PDF-en viser dokumentinnhold, men bekrefter ikke alene rollene registrert hos mottakeren."
                 }
             ],
             "evidence": [
@@ -203,8 +204,12 @@ formats.
   issue.
 - Include `source.issue` when an issue exists. Omit it only when the caller
   confirms that the change has no issue.
-- `environment.internBaseUrl` and `environment.ansattBaseUrl` must identify both
-  FyllUt ingresses. The renderer appends the form path.
+- `environment.name` is `preprod` or `preprod-alt`, selected from the PR's
+  deployment and live revision check, not the workflow default. If uncertain,
+  ask the user before finalizing the plan. `environment.internBaseUrl` and
+  `environment.ansattBaseUrl` must identify the matching FyllUt ingresses
+  (or Bygger ingresses for a Bygger-specific plan). The renderer appends
+  the stored form path.
 - `environment.revisionCheck` must identify the config endpoint and response
   field that expose the deployed application revision. For Bygger changes,
   resolve the missing revision method as described in
@@ -236,11 +241,14 @@ formats.
   `other`. Every action has steps, an expected result, verification, and
   cleanup.
 - A `forms-api-import` setup action must reference a form and include a
-  shared-state warning and cleanup. These steps are a handoff to the form
-  owner, not actions for the skill to perform. Cleanup may state an approved
-  restore or retention decision instead of deletion.
+  shared-state warning and cleanup. For `MANUALTEST-` forms, the skill
+  performs confirmed CREATE or explicitly approved UPDATE; a form owner
+  handles production imports. Cleanup may state an approved restore or
+  retention decision instead of deletion.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.
+- Render those references as visible links to the corresponding background
+  points, not only inside the collapsed journey details.
 - `integrationIds` references the outbound integrations exercised by the case.
 - `risks`, and the case fields `prerequisites`, `testUsers`, `evidence`, and
   `cleanup`, may be omitted when empty. The renderer treats them as empty lists.
@@ -258,6 +266,8 @@ formats.
   changing the case to verification.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
+- Each form needs the actual `skjemanummer` and stored `path` from Forms API;
+  the form-number link uses the stored path on the selected environment.
 - A generated form intended for import or deletion by its owner must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
 - Every case needs `journeyCheck` with `status` (`verified`, `source-mapped`,
@@ -293,9 +303,16 @@ formats.
   where the case tests an outcome. A verification case needs at least one.
   Navigation alone does not need a separate assessment. Keep sentences short.
   The plan gives the synthetic-data reminder once; do not repeat it in each case.
+- For submissions, decide whether the downloadable PDF on the receipt is
+  relevant to the case. Check the relevant pages and contents when it is.
+  Otherwise state briefly that the receipt and PDF cannot prove downstream
+  registration. Keep dedicated PDF and cover-page checks in the cases that
+  need them; those checks do not by themselves prove the full payload.
 - Put a shell command in the optional `steps[].command` field, not in prose
   or `evidence`. The renderer uses a code block in the HTML or issue.
-  Put deletion of local files or state in `cleanup`, not `evidence`.
+  Put necessary deletion of local files or state in `cleanup`, not `evidence`.
+  Do not require deleting downloaded PDFs containing synthetic data merely
+  because they were downloaded.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data. The team may share approved
   synthetic identity numbers in its test notes to identify a submission;

@@ -58,8 +58,13 @@ issue. Do not infer the target solely from the current branch.
    no-access handoff option when non-developers collaborate; omit it from a
    non-collaborative GitHub issue. Do not mark a handoff or a success log as
    payload verification.
-7. Record the exact head commit and establish a revision check for the target
-   application using [analysis-workflow.md](references/analysis-workflow.md).
+7. Record the exact head commit. Determine whether the PR is deployed to
+   `preprod` or `preprod-alt` from deployment evidence and the live revision
+   check in [analysis-workflow.md](references/analysis-workflow.md). Use the
+   environment carrying the PR. If this is unclear, ask the user which
+   environment to target before choosing forms or writing cases. Never default
+   to `preprod` just because the deploy workflow does. Establish the
+   application revision check for the selected environment.
 8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
    Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
@@ -120,7 +125,12 @@ issue. Do not infer the target solely from the current branch.
     substitute vague placeholders in public output.
     Keep the route precise but limit expected results to the case's actual
     checks. Write short tester-facing sentences. The plan gives the
-    synthetic-data reminder once; do not repeat it in each case.
+    synthetic-data reminder once at the top; do not repeat it in each case.
+    Put links to the related "Bakgrunn for testene" points in each case where
+    testers can see them without expanding "Om testløpet". For submissions,
+    account for the downloadable receipt PDF: check relevant visible contents
+    when they are in scope, or note what the PDF does not prove when they are
+    not. Do not replace a separate PDF or cover-page check with that note.
 14. After a confirmed import or a form owner making a required production
     form available, read back its stored path, revision, components,
     submission methods, and conditional choices before finalizing cases.
@@ -151,6 +161,7 @@ Every test case must include:
 - evidence to retain
 - cleanup when the case changes shared state
 - the production or generated form used
+- visible links to the related background points
 
 The plan must also include a short coverage section naming what the cases do
 not test and why, separate from functionality outside the pull request.
@@ -172,6 +183,9 @@ for outbound payloads.
 - Use synthetic identities and organizations approved for testing.
 - The team may share approved synthetic identity numbers to correlate test
   submissions. Do not put filled-in identities in a PDF or public issue.
+- Testers in preprod can handle downloaded files containing synthetic test
+  data. Give the synthetic-data reminder once at the start, not in every case;
+  do not require deletion of downloads merely because they are downloads.
 - Never put access tokens, cookies, secrets, real personal data, private
   source content, or security-sensitive details in generated artifacts.
 - This repository is public. Follow the review gate in

@@ -33,6 +33,12 @@ Record:
 - supported submission methods
 - whether preprod must import or refresh the form
 
+Use the form number returned by Forms API as `forms[].skjemanummer` and the
+stored path as `forms[].path`. The rendered form-number link uses that path
+on the selected PR deployment's intern ingress. These values can differ,
+particularly for generated forms. A form's presence in the shared Forms API
+does not prove it works on both deployments.
+
 Production imports overwrite the shared preprod draft. If a production form
 is missing or differs from the required revision, tell the caller what a form
 owner needs to import or refresh. The test-form import script accepts only

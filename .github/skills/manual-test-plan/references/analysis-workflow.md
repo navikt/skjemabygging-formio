@@ -139,7 +139,8 @@ cases. Do not require cplt to run Cypress. If someone with browser
 access checks the route manually, record the ordered pages, actions and
 result without filled-in identities, tokens or document contents. Use
 synthetic data for uploads, PDFs and submissions in preprod. Testing
-these actions does not need an extra approval step.
+these actions does not need an extra approval step. Do not require deleting
+downloaded PDFs containing synthetic data simply because they were downloaded.
 
 Use source maps and recorded browser observations to establish what testers must do.
 Derive expected results from the issue, approved specification, or
@@ -152,11 +153,17 @@ to the case. Navigation steps may have no expected result when the next
 action already names the page. Do not repeat the synthetic-data reminder
 in each case; the plan states it once at the top. Use short, natural
 sentences. Remove repeated setup and explanatory text that does not help
-the tester act or decide whether the behavior passed. A receipt expected
-result must not claim that another system
-received the right identities. For log or Joark checks, name the specific
-roles and values to compare; if the tester can only hand off details, say
-the downstream result remains pending.
+the tester act or decide whether the behavior passed. The receipt offers a
+downloadable PDF of the submitted application. For each submission case,
+decide whether its visible contents matter to the behavior being tested.
+When they do, have the tester download and inspect the relevant pages and
+values. Check a cover page separately when it matters. When the PDF is out
+of scope, briefly say that neither receipt nor PDF proves downstream
+registration. A PDF can show submitted values without proving the full
+request payload or downstream roles. Keep dedicated PDF and cover-page
+checks where they fit. For log or Joark checks, name the specific roles
+and values to compare; if the tester can only hand off details, say the
+downstream result remains pending.
 
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
@@ -191,8 +198,17 @@ Give the tester one short preflight check instead:
 3. Compare it with the exact pull request head commit recorded in the plan.
 4. Stop and contact the developer when it differs.
 
-For FyllUt in preprod and preprod-alt, use `/fyllut/api/config` and compare
-`gitVersion`. In these environments it identifies the monorepo application
+The manual deploy workflow `.github/workflows/manual-deploy.yaml` has separate
+`preprod` and `preprod-alt` targets; its default is not evidence of where the
+PR is deployed. Find the successful run that deployed the PR head and its
+selected environment. Cross-check the live `/fyllut/api/config` `gitVersion`
+on that environment against the exact PR head. Use its matching intern and
+ansatt ingresses in the plan. If runs are unavailable, ambiguous, or neither
+environment reports the head, ask the user which environment to target and
+whether deployment is still pending. Do not silently choose an environment
+or describe an earlier revision as the PR. Recheck the revision before each
+test session; if the environment changed, stop and confirm deployment again.
+In these environments `gitVersion` identifies the monorepo application
 commit. Bygger's `/api/config` does not expose a revision field
 (`packages/bygger-backend/src/routers/api/config.ts`). Its backend reads
 `GIT_SHA`, but that value is not available from the config response. For

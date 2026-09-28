@@ -76,6 +76,7 @@ const makePlan = (withNonDevelopers) => ({
       kind: 'production',
       title: 'Testskjema',
       path: 'testskjema',
+      skjemanummer: 'NAV 123.456',
     },
   ],
   behaviorAnalysis: [
@@ -198,6 +199,14 @@ test.each([false, true])(
         }
         assert.match(contents, /TC-01: A &lt;details&gt; test/);
         assert.match(publicOutput, /class="test-case" id="tc-01"/);
+        assert.match(
+          publicOutput,
+          /<th>Skjemanummer<\/th>[\s\S]*?<a href="https:\/\/fyllut-preprod\.intern\.dev\.nav\.no\/fyllut\/testskjema">NAV 123\.456<\/a>/,
+        );
+        assert.doesNotMatch(publicOutput, /<th>Skjemasti<\/th>/);
+        const caseHtml = publicOutput.match(/<details class="test-case" id="tc-01"[\s\S]*?<\/details>/)?.[0];
+        assert.match(caseHtml, /<strong>Bakgrunn for testen:<\/strong> <a href="#b-01">B-01: A behavior<\/a>/);
+        assert.ok(caseHtml.indexOf('Bakgrunn for testen:') < caseHtml.indexOf('Om testløpet'));
         assert.match(publicOutput, /\.contents \{\s*break-after: page;/);
         assert.match(publicOutput, /\.test-case \+ \.test-case \{\s*break-before: page;/);
         assert.match(publicOutput, /\.step \{\s*break-inside: avoid;/);
@@ -210,7 +219,7 @@ test.each([false, true])(
         assert.match(publicOutput, /\*\*Forventet:\*\* Skjemaet vises/);
         assert.match(publicOutput, /\*\*Delt tilstand:\*\* Delt testdata/);
         assert.match(publicOutput, /\*\*Område:\*\* Test/);
-        assert.match(publicOutput, /\[B-01\]\(#b-01\)/);
+        assert.match(publicOutput, /\[B\\-01: A behavior\]\(#b-01\)/);
         assert.match(publicOutput, /### B-01/);
         assert.match(publicOutput, /~~~sh\ncurl 'https:\/\/example\.invalid' \| jq '\.result'\n~~~/);
         assert.match(publicOutput, /- \[ \] TC\\-01: Slett challenge\\\.json/);
@@ -222,6 +231,100 @@ test.each([false, true])(
     }
   },
 );
+
+test.each(['preprod', 'preprod-alt'])('uses matching FyllUt ingresses for %s', (name) => {
+  const plan = makePlan(true);
+  plan.environment.name = name;
+  plan.environment.internBaseUrl = `https://fyllut-${name}.intern.dev.nav.no/fyllut`;
+  plan.environment.ansattBaseUrl = `https://fyllut-${name}.ansatt.dev.nav.no/fyllut`;
+  plan.environment.revisionCheck.endpoint = `${plan.environment.internBaseUrl}/api/config`;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    assert.match(
+      run.read('index.html'),
+      new RegExp(`href="https://fyllut-${name}\\.intern\\.dev\\.nav\\.no/fyllut/testskjema">NAV 123\\.456</a>`),
+    );
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('accepts matching Bygger ingresses with a supplied revision check', () => {
+  const plan = makePlan(false);
+  plan.environment.internBaseUrl = 'https://skjemabygging-preprod.intern.dev.nav.no';
+  plan.environment.ansattBaseUrl = 'https://skjemabygging-preprod.ansatt.dev.nav.no';
+  plan.environment.revisionCheck.endpoint = 'https://skjemabygging-preprod.intern.dev.nav.no/approved-check';
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects mixed deployment URLs rather than linking to the wrong preprod', () => {
+  const plan = makePlan(true);
+  plan.environment.ansattBaseUrl = 'https://fyllut-preprod-alt.ansatt.dev.nav.no/fyllut';
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /environment URLs must all point to the selected preprod environment/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects a revision check pointed at the other preprod environment', () => {
+  const plan = makePlan(false);
+  plan.environment.revisionCheck.endpoint = 'https://fyllut-preprod-alt.intern.dev.nav.no/fyllut/api/config';
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /environment URLs must all point to the selected preprod environment/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('requires a form number instead of guessing one from the stored path', () => {
+  const plan = makePlan(true);
+  delete plan.forms[0].skjemanummer;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /forms\[0\]\.skjemanummer/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('shows links to every related background point before the collapsed journey', () => {
+  const plan = makePlan(true);
+  plan.behaviorAnalysis.push({
+    ...structuredClone(plan.behaviorAnalysis[0]),
+    id: 'B-02',
+    behavior: 'Another behavior',
+  });
+  plan.testCases[0].behaviorIds.push('B-02');
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const html = run.read('index.html');
+    const caseStart = html.indexOf('<details class="test-case" id="tc-01"');
+    const journeyDetails = html.indexOf('<summary>Om testløpet</summary>', caseStart);
+    for (const [id, title] of [
+      ['b-01', 'A behavior'],
+      ['b-02', 'Another behavior'],
+    ]) {
+      const link = html.indexOf(`<a href="#${id}">${id.toUpperCase()}: ${title}</a>`, caseStart);
+      assert.ok(link > caseStart && link < journeyDetails, `missing visible link to ${id}`);
+      assert.match(html, new RegExp(`id="${id}"`));
+    }
+  } finally {
+    run.cleanup();
+  }
+});
 
 test('rejects obsolete artifact manifests instead of attempting legacy cleanup', () => {
   const run = render(makePlan(false));

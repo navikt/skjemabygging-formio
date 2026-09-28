@@ -156,7 +156,10 @@ if (!/^[0-9a-f]{40}$/i.test(expectedCommit)) {
 if (!plan.environment || typeof plan.environment !== 'object') {
   fail('environment is required');
 }
-asNonEmptyString(plan.environment.name, 'environment.name');
+const environmentName = asNonEmptyString(plan.environment.name, 'environment.name');
+if (!['preprod', 'preprod-alt'].includes(environmentName)) {
+  fail('environment.name must be preprod or preprod-alt');
+}
 const internBaseUrl = asHttpUrl(plan.environment.internBaseUrl, 'environment.internBaseUrl').replace(/\/$/, '');
 const ansattBaseUrl = asHttpUrl(plan.environment.ansattBaseUrl, 'environment.ansattBaseUrl').replace(/\/$/, '');
 if (!plan.environment.revisionCheck || typeof plan.environment.revisionCheck !== 'object') {
@@ -164,6 +167,15 @@ if (!plan.environment.revisionCheck || typeof plan.environment.revisionCheck !==
 }
 const revisionEndpoint = asHttpUrl(plan.environment.revisionCheck.endpoint, 'environment.revisionCheck.endpoint');
 const revisionField = asNonEmptyString(plan.environment.revisionCheck.field, 'environment.revisionCheck.field');
+const matchesEnvironment = ['fyllut', 'skjemabygging'].some(
+  (application) =>
+    new URL(internBaseUrl).hostname === `${application}-${environmentName}.intern.dev.nav.no` &&
+    new URL(ansattBaseUrl).hostname === `${application}-${environmentName}.ansatt.dev.nav.no` &&
+    new URL(revisionEndpoint).hostname === `${application}-${environmentName}.intern.dev.nav.no`,
+);
+if (!matchesEnvironment) {
+  fail('environment URLs must all point to the selected preprod environment and ingresses');
+}
 
 if (
   !Array.isArray(plan.integrations) ||
@@ -223,6 +235,7 @@ for (const [index, form] of plan.forms.entries()) {
     fail(`${prefix}.kind must be production or generated`);
   }
   asNonEmptyString(form.path, `${prefix}.path`);
+  asNonEmptyString(form.skjemanummer, `${prefix}.skjemanummer`);
   asNonEmptyString(form.title, `${prefix}.title`);
 }
 
@@ -498,13 +511,13 @@ const setupHtml = publicSetupActions
 const formsHtml = plan.forms.length
   ? `<div class="table-scroll" tabindex="0" role="region" aria-label="Skjema som brukes">
     <table>
-      <thead><tr><th>Type</th><th>Skjema</th><th>Skjemasti</th><th>Merknad</th></tr></thead>
+      <thead><tr><th>Type</th><th>Skjema</th><th>Skjemanummer</th><th>Merknad</th></tr></thead>
       <tbody>${plan.forms
         .map(
           (form) =>
             `<tr><td>${escapeHtml(form.kind === 'production' ? 'Produksjonsskjema' : 'Testskjema')}</td><td>${escapeHtml(
               form.title,
-            )}</td><td><code>${escapeHtml(form.path)}</code></td><td>${escapeHtml(form.notes ?? '')}</td></tr>`,
+            )}</td><td><a href="${escapeHtml(`${internBaseUrl}/${encodeURIComponent(form.path)}`)}">${escapeHtml(form.skjemanummer)}</a></td><td>${escapeHtml(form.notes ?? '')}</td></tr>`,
         )
         .join('')}</tbody>
     </table>
@@ -601,14 +614,16 @@ const casesHtml = plan.testCases
           ${testCase.journeyCheck.status === 'verified' ? '' : `<span class="badge">${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}</span>`}
         </div>
         <p>${escapeHtml(testCase.purpose)}</p>
+        <p><strong>Bakgrunn for testen:</strong> ${testCase.behaviorIds
+          .map(
+            (id) => `<a href="#${id.toLowerCase()}">${escapeHtml(id)}: ${escapeHtml(behaviors.get(id).behavior)}</a>`,
+          )
+          .join(', ')}</p>
         ${form ? `<p><strong>Skjema:</strong> ${escapeHtml(form.title)}</p>${formLinks}` : ''}
         <p><strong>Testløp:</strong> ${escapeHtml(testCase.journeyCheck.route)}</p>
         <details class="secondary-section">
           <summary>Om testløpet</summary>
-          <div><p>${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}: ${escapeHtml(testCase.journeyCheck.note)}</p>
-          <p>Bakgrunn: ${testCase.behaviorIds
-            .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
-            .join(', ')}</p></div>
+          <div><p>${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}: ${escapeHtml(testCase.journeyCheck.note)}</p></div>
         </details>
         ${testCase.prerequisites.length ? `<h3>Før du starter</h3>${list(testCase.prerequisites)}` : ''}
         ${testUserHtml}
@@ -758,7 +773,7 @@ const issueForms = plan.forms.length
   ? plan.forms
       .map(
         (form) =>
-          `- **${escapeMarkdown(form.title)}:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
+          `- **${escapeMarkdown(form.title)} (${escapeMarkdown(form.skjemanummer)}):** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
             form.path,
           )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`,
       )
@@ -796,7 +811,7 @@ ${option.instructions.map((step, index) => `${index + 1}. ${escapeMarkdown(step)
 
 **Område:** ${escapeMarkdown(testCase.group)}
 **Type:** ${caseModeLabel(testCase)}
-**Bakgrunn for testen:** ${testCase.behaviorIds.map((id) => `[${id}](#${id.toLowerCase()})`).join(', ')}
+**Bakgrunn for testen:** ${testCase.behaviorIds.map((id) => `[${escapeMarkdown(id)}: ${escapeMarkdown(behaviors.get(id).behavior)}](#${id.toLowerCase()})`).join(', ')}
 ${escapeMarkdown(testCase.purpose)}
 
 ${formText}
