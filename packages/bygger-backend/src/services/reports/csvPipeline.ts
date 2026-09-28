@@ -37,7 +37,7 @@ const writeCsvReport = async <Row extends object>(reportId: string, report: CsvR
       for await (const row of report.rows(controller.signal)) {
         controller.signal.throwIfAborted();
         rowCount++;
-        yield row;
+        yield { ...row, rowNumber: rowCount };
       }
     };
     await pipeline(
@@ -46,7 +46,11 @@ const writeCsvReport = async <Row extends object>(reportId: string, report: CsvR
         bom: true,
         header: true,
         delimiter: ';',
-        columns: Object.entries(report.columns).map(([key, header]) => ({ key, header: String(header) })),
+        columns: [
+          ...Object.entries(report.columns).map(([key, header]) => ({ key, header: String(header) })),
+          // A numeric column helps Excel recognize headers in otherwise text-only reports.
+          { key: 'rowNumber', header: 'radnummer' },
+        ],
       }),
       destination,
     );

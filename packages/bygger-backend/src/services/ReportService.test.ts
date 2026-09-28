@@ -50,7 +50,7 @@ describe('ReportService', () => {
 
   describe('Reports', () => {
     const CSV_HEADER_LINE =
-      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
+      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en);radnummer\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
@@ -499,9 +499,9 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
           CSV_HEADER_LINE +
-            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1\n' +
-            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2\n' +
-            'TEST3;Testskjema3;nb;Testskjema3;;\n',
+            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1;1\n' +
+            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2;2\n' +
+            'TEST3;Testskjema3;nb;Testskjema3;;;3\n',
         );
       });
 
@@ -544,7 +544,7 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
 
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Draft title;nb,en;Published title;;English title\n',
+          CSV_HEADER_LINE + 'TEST1;Draft title;nb,en;Published title;;English title;1\n',
         );
         expect(api.isDone()).toBe(true);
       });
@@ -624,6 +624,8 @@ describe('ReportService', () => {
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(3);
+        expect(report.headers.at(-1)).toBe('radnummer');
+        expect(report.forms.map((row) => row.at(-1))).toEqual(['1', '2', '3']);
 
         const formFields1 = report.forms[0];
         const formFields2 = report.forms[1];
@@ -817,7 +819,7 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1\n',
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1;1\n',
         );
       });
 
@@ -893,6 +895,8 @@ describe('ReportService', () => {
         await reportService.generate('all-forms-and-attachments', writableStream);
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(2);
+        expect(report.headers.at(-1)).toBe('radnummer');
+        expect(report.forms.map((row) => row.at(-1))).toEqual(['1', '2']);
 
         const formFields1 = report.forms[0];
         const formFields2 = report.forms[1];
@@ -908,6 +912,37 @@ describe('ReportService', () => {
         expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Uttalelse fra fagpersonell');
         expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('L8');
         expect(formFields2[report.getHeaderIndex(HEADER_LABEL)]).toBe('Uttalelse fra fagpersonell');
+      });
+    });
+
+    describe('unpublished forms', () => {
+      it('appends consecutive row numbers after filtering out published forms', async () => {
+        setupNock([
+          {
+            path: 'first',
+            skjemanummer: 'FIRST',
+            title: 'First form',
+            status: 'unpublished',
+            publishedAt: '2026-01-01T12:00:00Z',
+            publishedBy: 'example',
+          },
+          { path: 'published', status: 'published' },
+          {
+            path: 'second',
+            skjemanummer: 'SECOND',
+            title: 'Second form',
+            status: 'unpublished',
+          },
+        ]);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('unpublished-forms', writableStream);
+
+        expect(writableStream.toString()).toBe(
+          '\uFEFFskjemanummer;skjematittel;avpublisert;avpublisert av;radnummer\n' +
+            'FIRST;First form;2026-01-01T12:00:00Z;example;1\n' +
+            'SECOND;Second form;;;2\n',
+        );
       });
     });
   });

@@ -1,3 +1,4 @@
+import MemoryStream from 'memorystream';
 import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
 import { logger } from '../../logging/logger';
@@ -36,6 +37,37 @@ describe('CSV pipeline', () => {
     );
     const csv = Buffer.concat(chunks);
     expect(csv.subarray(0, 3)).toEqual(Buffer.from([0xef, 0xbb, 0xbf]));
+  });
+
+  it('appends row numbers per CSV record and restarts numbering for each export', async () => {
+    const report: CsvReport<{ value: string }> = {
+      columns: { value: 'value' },
+      rows: async function* () {
+        yield { value: 'first;"quoted"\nnext line' };
+        yield { value: 'second' };
+      },
+    };
+
+    for (let exportIndex = 0; exportIndex < 2; exportIndex++) {
+      const destination = new MemoryStream(undefined, { readable: false });
+      await writeCsvReport('numbered-test', report, destination);
+      expect(destination.toString()).toBe('\uFEFFvalue;radnummer\n"first;""quoted""\nnext line";1\nsecond;2\n');
+    }
+  });
+
+  it('includes the row number header without adding data rows to an empty report', async () => {
+    const destination = new MemoryStream(undefined, { readable: false });
+    await writeCsvReport(
+      'empty-test',
+      {
+        columns: { value: 'value' },
+        rows: async function* () {
+          yield* [];
+        },
+      },
+      destination,
+    );
+    expect(destination.toString()).toBe('\uFEFFvalue;radnummer\n');
   });
 
   it('respects a blocked slow sink and waits for its final callback', async () => {
