@@ -29,9 +29,9 @@ export const createApp = (setupDev: boolean = false) => {
   app.set('trust proxy', 1);
   app.use(httpRequestLogger);
 
+  app.use(correlator() as any);
   app.use(expressJsonMetricHandler(express.json({ limit: '50mb' })));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(correlator() as any);
   app.use(cors());
   app.set('views', buildDirectory);
   app.set('view engine', 'mustache');
