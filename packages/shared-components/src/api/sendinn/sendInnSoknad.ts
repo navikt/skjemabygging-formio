@@ -2,6 +2,7 @@ import {
   Language,
   localizationUtils,
   NavFormType,
+  ResponseError,
   Submission,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -11,7 +12,7 @@ import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attach
 export interface SendInnSoknadResponse {
   innsendingsId: string;
   hoveddokumentVariant: {
-    document: { data: Submission; language: Language | TranslationLang };
+    document: { data: Submission; language: Language | TranslationLang } | null;
   };
   shouldUploadAttachmentsInFyllut: boolean;
   endretDato: string;
@@ -60,7 +61,7 @@ export const updateSoknad = async (
   language: string,
   innsendingsId?: string,
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, logger } = appConfig;
+  const { http, baseUrl, submissionMethod } = appConfig;
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad`, {
       innsendingsId,
@@ -70,7 +71,7 @@ export const updateSoknad = async (
       submissionMethod,
     });
   } else {
-    logger?.info('Kunne ikke mellomlagre søknaden fordi innsendingsId mangler');
+    throw new ResponseError('ERROR', 'Draft submission ID is missing');
   }
 };
 
@@ -82,28 +83,27 @@ export const updateUtfyltSoknad = async (
   innsendingsId: string | undefined,
   setRedirectLocation: (location: string) => void,
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, logger } = appConfig;
+  const { http, baseUrl, submissionMethod } = appConfig;
+  if (!innsendingsId) {
+    throw new ResponseError('ERROR', 'Draft submission ID is missing');
+  }
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
 
-  if (innsendingsId) {
-    return http?.put<SendInnSoknadResponse>(
-      `${baseUrl}/api/send-inn/utfyltsoknad`,
-      {
-        innsendingsId,
-        formPath: form.path,
-        submission,
-        language: localizationUtils.getLanguageCodeAsIso639_1(language),
-        submissionMethod,
-        attachments,
-        otherDocumentation,
-      },
-      {},
-      { setRedirectLocation },
-    );
-  } else {
-    logger?.info('Kunne ikke sende inn søknaden fordi innsendingsId mangler');
-  }
+  return http?.put<SendInnSoknadResponse>(
+    `${baseUrl}/api/send-inn/utfyltsoknad`,
+    {
+      innsendingsId,
+      formPath: form.path,
+      submission,
+      language: localizationUtils.getLanguageCodeAsIso639_1(language),
+      submissionMethod,
+      attachments,
+      otherDocumentation,
+    },
+    {},
+    { setRedirectLocation },
+  );
 };
 
 export const deleteSoknad = async (

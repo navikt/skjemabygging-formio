@@ -488,23 +488,59 @@ describe('createApplicationService', () => {
     });
   });
 
-  it('normalizes sent-or-deleted draft errors through the real service and client path', async () => {
+  it.each(['get', 'update'] as const)('normalizes sent-or-deleted draft errors during %s', async (operation) => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'illegalAction.applicationSentInOrDeleted' }), {
         status: 400,
         statusText: 'Bad Request',
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      operation === 'get'
+        ? service.getApplication({ accessToken, innsendingsId })
+        : service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
+    ).rejects.toMatchObject({
+      errorCode: 'NOT_FOUND',
+      correlationId,
+    });
+  });
+
+  it('leaves other draft update BAD_REQUEST responses alertable', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ errorCode: 'validationFailure', message: 'Rejected draft state' }), {
+        status: 400,
         headers: { 'Content-Type': 'application/json' },
       }),
     );
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.getApplication({
-        accessToken,
-        innsendingsId,
+      service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
+    ).rejects.toMatchObject({ errorCode: 'BAD_REQUEST', message: 'Draft request failed' });
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps a rejected draft creation actionable without exposing the downstream response body', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'Private answer in downstream response' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.createApplication({ accessToken, innsendingsId: '', body: { formPath: 'nav123' } }),
     ).rejects.toMatchObject({
-      errorCode: 'NOT_FOUND',
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Draft request failed',
+      correlationId,
     });
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 });

@@ -144,7 +144,8 @@ export default [
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send({
-              ...convertToInnsendingApiResponse(req.body),
+              ...req.body,
+              hoveddokumentVariant: { ...req.body.hoveddokumentVariant, document: null },
               innsendingsId: uuidv4(),
             });
           },

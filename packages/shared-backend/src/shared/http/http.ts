@@ -12,6 +12,8 @@ type MimeType =
   | 'multipart/form-data';
 
 interface HttpOptions {
+  // Draft requests disable transport logs because URLs and error bodies can contain private data.
+  logDetails?: boolean;
   contentType?: MimeType;
   accept?: MimeType;
   accessToken?: string;
@@ -37,7 +39,7 @@ function get(url: string, options: HttpOptions & { responseType: 'stream' }): Pr
 function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }): Promise<HttpMetadataResponse<T>>;
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
-  logger.debug(`GET request to ${url}`);
+  if (options?.logDetails !== false) logger.debug(`GET request to ${url}`);
   const response = await fetch(url, {
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
@@ -54,7 +56,7 @@ function post<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`POST request to ${url}`);
+  if (options?.logDetails !== false) logger.debug(`POST request to ${url}`);
   const response = await fetch(url, {
     method: 'POST',
     headers: createHeaders(defaultOptions(options)),
@@ -72,7 +74,7 @@ function put<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`PUT request to ${url}`);
+  if (options?.logDetails !== false) logger.debug(`PUT request to ${url}`);
   const response = await fetch(url, {
     method: 'PUT',
     headers: createHeaders(defaultOptions(options)),
@@ -221,9 +223,11 @@ const handleResponse = async <T>(
         undefined);
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
 
-  logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
-    body: errorBody,
-  });
+  if (options?.logDetails !== false) {
+    logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
+      body: errorBody,
+    });
+  }
 
   throw error;
 };

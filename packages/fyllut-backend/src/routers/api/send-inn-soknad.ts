@@ -1,4 +1,5 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
@@ -13,8 +14,6 @@ import {
   validateInnsendingsId,
 } from './helpers/sendInn';
 
-const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
-const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
 const deleteErrorMessage = 'Kan ikke slette mellomlagret søknad.';
 
 const sendInnSoknad = {
@@ -24,9 +23,9 @@ const sendInnSoknad = {
       const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, getErrorMessage);
-      if (errorMessage) {
-        return res.sendStatus(404);
+      if (!sanitizedInnsendingsId || !validatorUtils.isValidUuid(sanitizedInnsendingsId)) {
+        next(new ResponseError('BAD_REQUEST', 'Invalid draft submission ID'));
+        return;
       }
 
       const json = await applicationService.getApplication<SendInnSoknadBody>({
@@ -95,9 +94,8 @@ const sendInnSoknad = {
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
-      if (errorMessage) {
-        next(new Error(errorMessage));
+      if (!sanitizedInnsendingsId || !validatorUtils.isValidUuid(sanitizedInnsendingsId)) {
+        next(new ResponseError('BAD_REQUEST', 'Invalid draft submission ID'));
         return;
       }
 
@@ -150,7 +148,7 @@ const sendInnSoknad = {
 const shouldUploadAttachmentsInFyllut = (soknad: SendInnSoknadBody) => {
   const shouldUploadAttachmentsInFyllut = (soknad.vedleggsListe?.length || 0) === 0;
   if (!shouldUploadAttachmentsInFyllut) {
-    logger.info(`${soknad.innsendingsId}: Attachment upload in Fyllut disabled, send-inn-frontend will be used`, {
+    logger.info('Attachment upload in Fyllut disabled, send-inn-frontend will be used', {
       skjemanummer: soknad.skjemanr,
       attachmentsCount: soknad.vedleggsListe?.length,
       formPath: soknad.skjemaPath,

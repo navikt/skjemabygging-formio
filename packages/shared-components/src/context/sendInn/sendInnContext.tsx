@@ -36,6 +36,7 @@ import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
+import { getDraftFailureMetadata } from './draftFailure';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
@@ -84,7 +85,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { setSubmission, form, submission } = useForm();
-  const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
   const { translate } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
@@ -149,14 +149,15 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const retrieveMellomlagring = useCallback(
     async (innsendingsId: string) => {
       const response = await getSoknad(innsendingsId, appConfig);
+      if (!response?.hoveddokumentVariant?.document) {
+        throw new Error('Draft retrieval returned no document');
+      }
       if (!response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
         setAttachmentPageEnabled(false);
       }
-      if (response?.hoveddokumentVariant.document) {
-        addSearchParamToUrl('lang', toLegacyLanguageCode(response.hoveddokumentVariant.document.language));
-        setSubmission(getSubmissionWithFyllutState(response, form));
-        dispatchFyllutMellomlagring({ type: 'init', response });
-      }
+      addSearchParamToUrl('lang', toLegacyLanguageCode(response.hoveddokumentVariant.document.language));
+      setSubmission(getSubmissionWithFyllutState(response, form));
+      dispatchFyllutMellomlagring({ type: 'init', response });
     },
     [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
@@ -185,27 +186,29 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           forceMellomlagring,
         );
 
-        if (soknadAlreadyExists(response)) {
+        if (response && soknadAlreadyExists(response)) {
           const url = `/${form.path}/paabegynt?sub=digital`;
           logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
           navigate(url, { replace: true });
           return;
         }
 
-        logger?.info(`${response?.innsendingsId}: Successfully created new mellomlagring`);
+        if (!response?.innsendingsId) {
+          throw new Error('Draft creation returned no submission ID');
+        }
+
+        logger?.info('Draft created');
 
         setSubmission(getSubmissionWithFyllutState(response));
         dispatchFyllutMellomlagring({ type: 'init', response });
-        setInnsendingsId(response?.innsendingsId);
+        setInnsendingsId(response.innsendingsId);
         removeSearchParamFromUrl('forceMellomlagring');
-        addSearchParamToUrl('innsendingsId', response?.innsendingsId);
-        if (response) {
-          setIsMellomlagringReady(true);
-        }
+        addSearchParamToUrl('innsendingsId', response.innsendingsId);
+        setIsMellomlagringReady(true);
         return response;
-      } catch (error: any) {
+      } catch (error) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
-        logger?.error('Failed to create mellomlagring', error);
+        logger?.error('Draft persistence failed', getDraftFailureMetadata('create', error));
       }
     },
     [
@@ -227,11 +230,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       return;
     }
     const submissionForSave = submissionParam ?? submission;
-    if (!submissionForSave) {
-      throw Error('No submission to save');
-    }
-
     try {
+      if (!submissionForSave) {
+        throw new Error('No submission to save');
+      }
       const currentLanguage = getLanguageFromSearchParams();
       const response = await updateSoknad(
         appConfig,
@@ -240,18 +242,20 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         currentLanguage,
         innsendingsId,
       );
-      logger?.info(`${innsendingsId}: Mellomlagring was updated`);
+      if (!response) {
+        throw new Error('Draft update returned no response');
+      }
+      logger?.info('Draft updated');
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
-    } catch (error: any) {
+    } catch (error) {
       if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED_NOT_FOUND' });
-        throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
-        logger?.error(`${innsendingsId}: Failed to update mellomlagring`, error as Error);
-        throw error;
       }
+      logger?.error('Draft persistence failed', getDraftFailureMetadata('update', error));
+      throw error;
     }
   };
 
@@ -344,25 +348,38 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       let redirectLocation: string | undefined = undefined;
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
-        await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
-        logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
+        const submittedDraft = await updateUtfyltSoknad(
+          appConfig,
+          form,
+          submission,
+          language,
+          innsendingsId,
+          setRedirectLocation,
+        );
+        if (!submittedDraft) {
+          throw new Error('Draft submission returned no response');
+        }
+        logger?.info('Draft submitted');
         if (redirectLocation) {
           window.location.href = redirectLocation;
         }
-      } catch (submitError: any) {
+      } catch (submitError) {
         if (isNotFoundError(submitError)) {
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
         } else {
-          logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
           try {
-            await updateSoknad(appConfig, form, submission, language, innsendingsId);
+            const savedDraft = await updateSoknad(appConfig, form, submission, language, innsendingsId);
+            if (!savedDraft) {
+              throw new Error('Fallback draft update returned no response', { cause: submitError });
+            }
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
+            logger?.error('Draft submission failed', getDraftFailureMetadata('submit', submitError));
           } catch (updateError) {
-            logger?.error(
-              `${innsendingsId}: Failed to update mellomlagring after a failed submit`,
-              updateError as Error,
-            );
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
+            logger?.error('Draft persistence failed', {
+              ...getDraftFailureMetadata('fallback_update', updateError),
+              submissionFailure: getDraftFailureMetadata('submit', submitError),
+            });
           }
         }
       }
@@ -450,27 +467,20 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
             setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+            logger?.info('Draft retrieved');
           } else if (isMellomlagringAvailable) {
-            const response = await startMellomlagring(submission!);
-            if (response) {
-              setIsMellomlagringReady(true);
-              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
-            }
+            await startMellomlagring(submission!);
           }
-        } catch (error: any) {
+        } catch (error) {
           retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
-            logger?.info(
-              `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
-              error as Error,
-            );
+            logger?.info('Draft not found during retrieval', getDraftFailureMetadata('retrieve', error));
             const formPath = pathname.split('/')[1];
             const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
             navigate('/soknad-ikke-funnet', { state: { url } });
             return;
           }
-          logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
+          logger?.error('Draft persistence failed', getDraftFailureMetadata('retrieve', error));
           dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
         }
       }
@@ -487,7 +497,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     pathname,
     retrieveMellomlagring,
     isMellomlagringReady,
-    soknadNotFoundUrl,
     startMellomlagring,
     submission,
   ]);
