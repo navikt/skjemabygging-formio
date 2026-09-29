@@ -83,4 +83,59 @@ describe('resolveValidation', () => {
       pattern: undefined,
     });
   });
+
+  it.each([
+    ['{"min":"0","max":"180"}', { min: 0, max: 180 }],
+    ['{"min":0,"max":"14"}', { min: 0, max: 14 }],
+    [
+      '{"minLength":"0","maxLength":"14","min":"-2.5","max":" 14.5 ","minYear":"1900","maxYear":"2030"}',
+      { minLength: 0, maxLength: 14, min: -2.5, max: 14.5, minYear: 1900, maxYear: 2030 },
+    ],
+  ])('normalizes authored numeric constraints from %s without changing the definition', (json, expected) => {
+    const validate: Component['validate'] = JSON.parse(json);
+    const component = createComponent({ validate });
+
+    expect(resolveValidation(component)).toMatchObject(expected);
+    expect(component.validate).toEqual(JSON.parse(json));
+  });
+
+  it.each([
+    '{"minLength":"","maxLength":" \\t ","min":"14px","max":"1e309","minYear":"NaN","maxYear":"Infinity"}',
+    '{"minLength":null,"maxLength":false,"min":true,"max":[],"minYear":["2020"],"maxYear":{}}',
+  ])('leaves empty and invalid authored constraints unset: %s', (json) => {
+    const validate: Component['validate'] = JSON.parse(json);
+
+    expect(resolveValidation(createComponent({ validate }))).toEqual({
+      minLength: undefined,
+      maxLength: undefined,
+      min: undefined,
+      max: undefined,
+      minYear: undefined,
+      maxYear: undefined,
+      digitsOnly: undefined,
+      pattern: undefined,
+    });
+  });
+
+  it('leaves non-finite numeric constraints unset', () => {
+    const validate = {
+      minLength: Number.NaN,
+      maxLength: Number.POSITIVE_INFINITY,
+      min: Number.NEGATIVE_INFINITY,
+      max: Number.NaN,
+      minYear: Number.NEGATIVE_INFINITY,
+      maxYear: Number.POSITIVE_INFINITY,
+    };
+
+    expect(resolveValidation(createComponent({ validate }))).toEqual({
+      minLength: undefined,
+      maxLength: undefined,
+      min: undefined,
+      max: undefined,
+      minYear: undefined,
+      maxYear: undefined,
+      digitsOnly: undefined,
+      pattern: undefined,
+    });
+  });
 });

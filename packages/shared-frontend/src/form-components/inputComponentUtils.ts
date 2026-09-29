@@ -50,18 +50,27 @@ const resolvePattern = (component: Component): PatternRule | undefined =>
       }
     : undefined;
 
+const resolveNumericConstraint = (value: unknown): number | undefined => {
+  if (typeof value !== 'number' && (typeof value !== 'string' || value.trim() === '')) {
+    return undefined;
+  }
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : undefined;
+};
+
 /**
  * The generic constraints authored on a component. Everything that follows from the component type
  * itself (a valid email, a valid account number, ...) is owned by the rendered component, so this
  * only maps what the form author declared. `validate.custom` is not evaluated at all.
  */
 const resolveValidation = (component: Component): FieldValidationProp => ({
-  minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
-  maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
-  min: typeof component.validate?.min === 'number' ? component.validate.min : undefined,
-  max: typeof component.validate?.max === 'number' ? component.validate.max : undefined,
-  minYear: typeof component.validate?.minYear === 'number' ? component.validate.minYear : undefined,
-  maxYear: typeof component.validate?.maxYear === 'number' ? component.validate.maxYear : undefined,
+  minLength: resolveNumericConstraint(component.validate?.minLength),
+  maxLength: resolveNumericConstraint(component.validate?.maxLength),
+  min: resolveNumericConstraint(component.validate?.min),
+  max: resolveNumericConstraint(component.validate?.max),
+  minYear: resolveNumericConstraint(component.validate?.minYear),
+  maxYear: resolveNumericConstraint(component.validate?.maxYear),
   digitsOnly: component.validate?.digitsOnly,
   pattern: resolvePattern(component),
 });

@@ -54,6 +54,22 @@ describe('validateValue', () => {
     expect(validateValue('abc', 'Name', { required: true, minLength: 2, maxLength: 5 })).toBeUndefined();
   });
 
+  it.each([14, 180])('enforces inclusive numeric limits from zero to %s', (max) => {
+    const rules = { numberType: 'integer' as const, min: 0, max };
+
+    expect(validateValue('-1', 'Number', rules)).toEqual({
+      textKey: TEXTS.validering.min,
+      params: { field: 'Number', min: 0 },
+    });
+    expect(validateValue(String(max + 1), 'Number', rules)).toEqual({
+      textKey: TEXTS.validering.max,
+      params: { field: 'Number', max },
+    });
+    expect(validateValue('0', 'Number', rules)).toBeUndefined();
+    expect(validateValue(String(max), 'Number', rules)).toBeUndefined();
+    expect(validateValue('', 'Number', rules)).toBeUndefined();
+  });
+
   it('validates raw and submission date values', () => {
     expect(validateValue('31.12.2024', 'Date', { date: true })).toBeUndefined();
     expect(validateValue('2024-12-31', 'Date', { date: true })).toBeUndefined();
