@@ -21,7 +21,7 @@ const IntroPage = ({ onStart }: Props) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const form = useFormDefinitionForm();
   const { saveDraft, canSaveDraft, status } = useFormActions();
-  const { submission, setSubmission } = useSubmissionState();
+  const { submission, setSubmission, getLatestSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
   const { tokenExpiration } = useNologinToken();
   const introPage = form.introPage;
@@ -38,13 +38,19 @@ const IntroPage = ({ onStart }: Props) => {
     }
   }, [setSubmission, submissionMethod]);
 
-  const handleStart = async () => {
-    if (isDynamic && !submission?.selfDeclaration) {
+  const validateSelfDeclaration = () => {
+    if (isDynamic && !getLatestSubmission()?.selfDeclaration) {
       setSelfDeclarationError(translate('introPage.selfDeclaration.validationError'));
+      return false;
+    }
+    return true;
+  };
+
+  const handleStart = async () => {
+    if (!validateSelfDeclaration()) {
       return;
     }
-
-    if (canSaveDraft && !(await saveDraft())) {
+    if (canSaveDraft && (!(await saveDraft()) || !validateSelfDeclaration())) {
       return;
     }
 

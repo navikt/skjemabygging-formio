@@ -163,6 +163,7 @@ import {
   digitalnologinDigitalNoLoginForm,
   digitalnologinDigitalNoLoginTranslations,
 } from '../data/forms-api/digitalnologin/digitalnologinDigitalNoLoginForm';
+import { draftSaveRaceForm, draftSaveRaceTranslations } from '../data/forms-api/draft-save-race/draftSaveRaceForm';
 import {
   drivingListDeprecatedForm,
   drivingListDeprecatedTranslations,
@@ -421,6 +422,7 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: draftSaveRaceForm(), translations: draftSaveRaceTranslations() },
   { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
