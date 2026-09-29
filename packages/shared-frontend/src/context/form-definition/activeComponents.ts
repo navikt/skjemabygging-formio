@@ -8,18 +8,21 @@ import {
   type CheckConditionOptions,
   type SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { isObjectRecord } from '../../utils/isObjectRecord';
 
 const conditionallyTraversedTypes = new Set(['container', 'panel', 'fieldset', 'navSkjemagruppe']);
 
 type ConditionRow = Parameters<typeof checkCondition>[1];
 
-const getChildConditionRow = (component: Component, data: SubmissionData): ConditionRow => {
+const getChildConditionRow = (component: Component, row: ConditionRow, data: SubmissionData): ConditionRow => {
   if (component.type !== 'container') {
-    return [];
+    return row;
   }
 
-  const value = data[component.key];
-  return typeof value === 'object' && value !== null ? value : undefined;
+  const parentRow = isObjectRecord(row) ? row : data;
+  const value = parentRow[component.key];
+  // An absent container must not fall back to the root condition scope.
+  return isObjectRecord(value) ? value : {};
 };
 
 const resolveActiveComponents = (
@@ -51,7 +54,7 @@ const resolveActiveComponents = (
           form,
           submission,
           options,
-          getChildConditionRow(component, data),
+          getChildConditionRow(component, row, data),
           evaluateChildConditionals,
         ),
       },

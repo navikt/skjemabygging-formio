@@ -261,6 +261,10 @@ import {
   navUnitSelectionForm,
   navUnitSelectionTranslations,
 } from '../data/forms-api/nav-unit-selection/navUnitSelectionForm';
+import {
+  nestedConditionsForm,
+  nestedConditionsTranslations,
+} from '../data/forms-api/nested-conditions/nestedConditionsForm';
 import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-render/newRenderForm';
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
@@ -417,6 +421,7 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },

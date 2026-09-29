@@ -7,6 +7,7 @@ import {
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
+import { isObjectRecord } from '../../utils/isObjectRecord';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -33,9 +34,6 @@ interface DataGridScopeArgs {
   includeImplicitRows?: boolean;
 }
 
-const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
 const shouldScopeChildRow = (component: ComponentDefinition) =>
   Boolean(component.key && (('tree' in component && component.tree) || component.input));
 
@@ -45,7 +43,7 @@ const getChildRow = (component: ComponentDefinition, row: object | undefined) =>
   }
 
   const childRow = row[component.key];
-  return isObjectRecord(childRow) ? childRow : row;
+  return isObjectRecord(childRow) ? childRow : {};
 };
 
 /**
