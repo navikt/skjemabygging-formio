@@ -20,55 +20,11 @@
  *   START_PID=12345
  */
 
-import { spawn } from 'child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'fs';
-import { get } from 'http';
-import { createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { createFyllutTestStack } from './lib/fyllut-test-stack.mjs';
-
-const isPortFree = (port) =>
-  new Promise((resolve) => {
-    const server = createServer();
-    server.once('error', () => resolve(false));
-    server.once('listening', () => {
-      server.close();
-      resolve(true);
-    });
-    server.listen(port);
-  });
-
-const canRespond = (url) =>
-  new Promise((resolve) => {
-    const request = get(url, (response) => {
-      const healthy = response.statusCode >= 200 && response.statusCode < 300;
-      response.destroy();
-      resolve(healthy);
-    });
-    request.setTimeout(1000, () => request.destroy());
-    request.once('error', () => resolve(false));
-  });
-
-const waitForHealth = async (url, timeout = 60000) => {
-  const deadline = Date.now() + timeout;
-  while (Date.now() < deadline) {
-    if (await canRespond(url)) return;
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-  throw new Error(`${url} not ready after ${timeout}ms`);
-};
-
-const waitForListeningPorts = async (ports, timeout = 60000) => {
-  const deadline = Date.now() + timeout;
-  while (Date.now() < deadline) {
-    if (ports.every((childPorts) => childPorts.size === 0)) return;
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-  throw new Error(
-    `Servers did not confirm listening on ports: ${ports.flatMap((childPorts) => [...childPorts]).join(', ')}`,
-  );
-};
+import { isPortFree, startManagedStack } from './lib/managed-test-stack.mjs';
 
 const getFreePorts = async (count, start = 3440) => {
   const ports = [];
@@ -80,7 +36,6 @@ const getFreePorts = async (count, start = 3440) => {
   return ports;
 };
 
-const isWindows = process.platform === 'win32';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const nodeExecutable = process.execPath;
 const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
@@ -151,117 +106,36 @@ if (!configs[target] || unknownArgs.length > 0) {
   process.exit(1);
 }
 
-const { commands, healthUrls, listeningPorts, summaryLines, onReady, onCleanup } = await configs[target]();
-const ports = listeningPorts.flat();
-if (!(await Promise.all(ports.map((port) => isPortFree(port)))).every(Boolean)) {
-  throw new Error(`Port collision before startup: ${ports.join(', ')}`);
-}
-
-const procs = [];
-const pendingPorts = listeningPorts.map((childPorts) => new Set(childPorts));
-let startupFailure;
-const failedToStart = new Promise((_, reject) => {
-  startupFailure = reject;
-});
-let ready = false;
-let shuttingDown = false;
-
-const shutdown = async (signal, code = 0) => {
-  if (shuttingDown) return;
-  shuttingDown = true;
-  await Promise.all(procs.map((p) => killProcess(p.pid, signal)));
-  try {
-    onCleanup?.();
-  } catch (error) {
-    console.error(error);
-    code = 1;
-  }
-  process.exit(code);
-};
-
-for (const [index, [cmd, args, env = {}, cwd = repoRoot]] of commands.entries()) {
-  const child = spawn(cmd, args, {
-    stdio: ['inherit', 'pipe', 'inherit'],
-    shell: false,
-    detached: !isWindows,
-    cwd,
-    env: { ...process.env, ...env },
-  });
-  procs.push(child);
-  let bufferedOutput = '';
-  child.stdout.on('data', (chunk) => {
-    process.stdout.write(chunk);
-    bufferedOutput += chunk.toString();
-    const lines = bufferedOutput.split(/\r?\n/);
-    bufferedOutput = lines.pop();
-    for (const rawLine of lines) {
-      // Vite colors its URL output when stdout is a terminal.
-      // eslint-disable-next-line no-control-regex
-      const line = rawLine.replace(/\x1b\[[0-9;]*m/g, '');
-      const match =
-        index === 0 && target === 'fyllut'
-          ? line.match(/Server started and listening at https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d+)/)
-          : line.match(/Local:\s+https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d+)/);
-      if (!match) continue;
-      const port = Number(match[1]);
-      if (!listeningPorts[index].includes(port)) {
-        startupFailure(new Error(`${cmd} listened on unexpected port ${port}`));
-      } else {
-        pendingPorts[index].delete(port);
-      }
-    }
-  });
-  child.once('error', (error) => {
-    if (!ready) startupFailure(error);
-    else void shutdown('SIGTERM', 1);
-  });
-  child.once('exit', (code, signal) => {
-    const error = new Error(`${cmd} exited ${signal ? `with ${signal}` : `with code ${code}`} before shutdown`);
-    if (!ready) startupFailure(error);
-    else if (!shuttingDown) {
-      console.error(error);
-      void shutdown('SIGTERM', code || 1);
-    }
-  });
-}
-
-const killProcess = (pid, signal) =>
-  new Promise((resolve) => {
-    if (!pid) {
-      resolve();
-      return;
-    }
-
-    if (isWindows) {
-      const killer = spawn('taskkill', ['/pid', String(pid), '/t', '/f'], { stdio: 'ignore', shell: false });
-      killer.once('exit', () => resolve());
-      killer.once('error', () => resolve());
-      return;
-    }
-
+const config = await configs[target]();
+const controller = new AbortController();
+let stack;
+let shutdownPromise;
+const shutdown = (code) => {
+  controller.abort(new Error('STACK_INTERRUPTED'));
+  shutdownPromise ??= (async () => {
     try {
-      process.kill(-pid, signal);
-    } catch {
-      /* already gone */
+      await stack?.stop();
+      process.exitCode = code;
+    } catch (error) {
+      console.error(error);
+      process.exitCode = 1;
     }
-    resolve();
-  });
-
-process.on('SIGINT', () => void shutdown('SIGINT', 130));
-process.on('SIGTERM', () => void shutdown('SIGTERM', 143));
-
+  })();
+  return shutdownPromise;
+};
+process.on('SIGINT', () => void shutdown(130));
+process.on('SIGTERM', () => void shutdown(143));
 try {
-  await Promise.race([
-    Promise.all([...healthUrls.map((url) => waitForHealth(url)), waitForListeningPorts(pendingPorts)]),
-    failedToStart,
-  ]);
-  if (shuttingDown) throw new Error('Startup interrupted');
-  onReady?.();
-  ready = true;
-  console.log('');
-  console.log(summaryLines.join('\n'));
+  stack = await startManagedStack(config, {
+    signal: controller.signal,
+    onFailure: (error) => {
+      console.error(error);
+      void shutdown(1);
+    },
+  });
+  console.log(`\n${config.summaryLines.join('\n')}`);
   console.log(`START_PID=${process.pid}`);
 } catch (error) {
   console.error(error);
-  await shutdown('SIGTERM', 1);
+  await shutdown(1);
 }

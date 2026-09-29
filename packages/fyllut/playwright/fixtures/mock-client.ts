@@ -1,7 +1,4 @@
-const adminURL = process.env.FYLLUT_PLAYWRIGHT_MOCK_ADMIN_URL;
-
-const restoreRouteVariants = async () => {
-  if (!adminURL) throw new Error('Missing mock admin URL');
+const restoreRouteVariants = async (adminURL: string) => {
   const response = await fetch(`${adminURL}/api/mock/custom-route-variants`, {
     method: 'DELETE',
     signal: AbortSignal.timeout(10000),
@@ -11,8 +8,7 @@ const restoreRouteVariants = async () => {
   }
 };
 
-const useRouteVariant = async (id: string) => {
-  if (!adminURL) throw new Error('Missing mock admin URL');
+const useRouteVariant = async (adminURL: string, id: string) => {
   const response = await fetch(`${adminURL}/api/mock/custom-route-variants`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },

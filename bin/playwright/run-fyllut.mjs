@@ -1,160 +1,97 @@
 #!/usr/bin/env node
-import { spawn } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { execFileSync, spawn } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { checkDiscovery, checkMigration, checkResults, flattenDiscovery } from './check-migration.mjs';
+import { checkBuild } from './test-epoch.mjs';
 
-const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
+const root = resolve(import.meta.dirname, '../..');
+const args = process.argv.slice(2).filter((arg) => arg !== '--');
+const mode = args.includes('--built') ? 'built' : 'dev';
+const listOnly = args.includes('--list');
+const selection = args.filter((arg) => !['--built', '--list'].includes(arg));
+// Do not allow runner options to disable isolation, retries or the result reporter.
+for (let index = 0; index < selection.length; index++) {
+  if (selection[index] === '--grep') {
+    assert(selection[++index], '--grep needs a value');
+  } else {
+    assert(!selection[index].startsWith('-'), `Unsupported runner argument: ${selection[index]}`);
+  }
+}
 const runId = `${Date.now()}-${process.pid}`;
 const output = resolve(root, 'packages/fyllut/.runtime/playwright', runId);
-const args = process.argv.slice(2).filter((arg) => arg !== '--');
-const startupTimeout = 90000;
-const maxStarts = 2;
-
 mkdirSync(output, { recursive: true });
-
-const stop = (child) =>
-  new Promise((done) => {
-    if (!child || child.exitCode !== null || child.signalCode !== null) return done();
-    const timer = setTimeout(() => child.kill('SIGKILL'), 5000);
-    child.once('exit', () => {
-      clearTimeout(timer);
-      done();
-    });
-    child.kill('SIGTERM');
-  });
-
-const httpReady = async (url, timeout = 15000) => {
-  const until = Date.now() + timeout;
-  while (Date.now() < until) {
-    try {
-      const response = await fetch(url, { signal: AbortSignal.timeout(1500) });
-      if (response.ok) return;
-    } catch {
-      // The launcher can still be starting; the bounded loop below reports a failure.
-    }
-    await new Promise((done) => setTimeout(done, 250));
-  }
-  throw new Error(`HTTP readiness timed out: ${url}`);
-};
-
-const start = async () => {
-  for (let attempt = 1; attempt <= maxStarts; attempt++) {
-    const child = spawn(process.execPath, ['bin/start.mjs', 'fyllut', '--no-runtime-config'], {
-      cwd: root,
-      env: process.env,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    const addresses = {};
-    let buffer = '';
-    try {
-      const ready = await new Promise((done, fail) => {
-        const timer = setTimeout(
-          () => fail(new Error(`FyllUt startup timed out after ${startupTimeout}ms`)),
-          startupTimeout,
-        );
-        const failed = (error) => {
-          clearTimeout(timer);
-          fail(error);
-        };
-        child.once('error', failed);
-        child.once('exit', (code, signal) =>
-          failed(new Error(`FyllUt launcher exited before readiness: ${code ?? signal}`)),
-        );
-        child.stdout.on('data', (chunk) => {
-          process.stdout.write(chunk);
-          buffer += chunk.toString();
-          const lines = buffer.split(/\r?\n/);
-          buffer = lines.pop() ?? '';
-          for (const line of lines) {
-            const match = /^(FYLLUT_(?:MOCK_URL|MOCK_ADMIN_PORT|BACKEND_URL|FRONTEND_URL)|START_PID)=(.+)$/.exec(line);
-            if (match) addresses[match[1]] = match[2];
-            if (match?.[1] === 'START_PID') {
-              clearTimeout(timer);
-              done({ child, addresses });
-            }
-          }
-        });
-        child.stderr.on('data', (chunk) => process.stderr.write(chunk));
-      });
-      if (Number(ready.addresses.START_PID) !== child.pid) throw new Error('Launcher identity mismatch');
-      const { FYLLUT_FRONTEND_URL, FYLLUT_BACKEND_URL, FYLLUT_MOCK_URL, FYLLUT_MOCK_ADMIN_PORT } = ready.addresses;
-      if (!FYLLUT_FRONTEND_URL || !FYLLUT_BACKEND_URL || !FYLLUT_MOCK_URL || !FYLLUT_MOCK_ADMIN_PORT) {
-        throw new Error('Incomplete FyllUt startup contract');
-      }
-      await Promise.all([
-        httpReady(`${FYLLUT_BACKEND_URL}/fyllut/internal/isready`),
-        httpReady(`${FYLLUT_FRONTEND_URL}/`),
-        httpReady(`${FYLLUT_MOCK_URL}/forms-api/v1/global-translations`),
-        httpReady(`http://127.0.0.1:${FYLLUT_MOCK_ADMIN_PORT}/api/about`),
-      ]);
-      if (child.exitCode !== null || child.signalCode !== null) throw new Error('Launcher stopped during readiness');
-      return ready;
-    } catch (error) {
-      console.error(`FyllUt startup attempt ${attempt}/${maxStarts}: ${error.message}`);
-      await stop(child);
-      if (attempt === maxStarts) throw error;
-    }
-  }
-  throw new Error('FyllUt startup attempts exhausted');
-};
-
-let launcher;
+const env = { ...process.env, FYLLUT_PLAYWRIGHT_MODE: mode, FYLLUT_PLAYWRIGHT_OUTPUT_DIR: output };
+const command = [
+  resolve(root, 'packages/fyllut/node_modules/@playwright/test/cli.js'),
+  'test',
+  '--config',
+  'packages/fyllut/playwright.config.ts',
+];
 let runner;
-let interrupted = false;
-const interrupt = (signal) => {
-  interrupted = true;
-  runner?.kill(signal);
-  if (!runner) void stop(launcher).then(() => process.exit(signal === 'SIGINT' ? 130 : 143));
-};
-process.on('SIGINT', () => interrupt('SIGINT'));
-process.on('SIGTERM', () => interrupt('SIGTERM'));
-
-try {
-  const ready = await start();
-  launcher = ready.child;
-  const { FYLLUT_FRONTEND_URL, FYLLUT_MOCK_ADMIN_PORT } = ready.addresses;
-  const baseURL = new URL(FYLLUT_FRONTEND_URL).origin;
-  console.log(
-    [
-      `PLAYWRIGHT_RUN_ID=${runId}`,
-      'PLAYWRIGHT_MODE=dev',
-      `PLAYWRIGHT_BASE_URL=${baseURL}`,
-      `PLAYWRIGHT_MOCK_ADMIN_URL=http://127.0.0.1:${FYLLUT_MOCK_ADMIN_PORT}`,
-      `PLAYWRIGHT_OWNER_PID=${launcher.pid}`,
-      `PLAYWRIGHT_ARTIFACTS=${output}`,
-    ].join('\n'),
-  );
-  const exitCode = await new Promise((done, fail) => {
-    runner = spawn(
-      process.execPath,
-      [
-        resolve(root, 'packages/fyllut/node_modules/@playwright/test/cli.js'),
-        'test',
-        '--config',
-        'packages/fyllut/playwright.config.ts',
-        ...args,
-      ],
-      {
-        cwd: root,
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          FYLLUT_PLAYWRIGHT_BASE_URL: baseURL,
-          FYLLUT_PLAYWRIGHT_MOCK_ADMIN_URL: `http://127.0.0.1:${FYLLUT_MOCK_ADMIN_PORT}`,
-          FYLLUT_PLAYWRIGHT_OUTPUT_DIR: output,
-        },
-      },
-    );
-    runner.once('error', fail);
-    runner.once('exit', (code, signal) => done(code ?? (signal ? 1 : 0)));
+let interrupted;
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, () => {
+    interrupted = signal;
+    runner?.kill(signal);
   });
-  await stop(launcher);
-  if (interrupted) process.exit(process.exitCode || 130);
-  process.exitCode = exitCode;
+}
+try {
+  const inventory = JSON.parse(
+    readFileSync(resolve(root, 'packages/fyllut/playwright/migration/inventory.json'), 'utf8'),
+  );
+  const implemented = checkMigration(inventory);
+  const discover = (filters) =>
+    JSON.parse(
+      execFileSync(process.execPath, [...command, ...filters, '--list', '--reporter=json'], {
+        cwd: root,
+        env,
+        encoding: 'utf8',
+        maxBuffer: 10 * 1024 * 1024,
+      }),
+    );
+  const all = discover([]);
+  checkDiscovery(implemented, flattenDiscovery(all), mode);
+  const report = selection.length ? discover(selection) : all;
+  const selectedIds = flattenDiscovery(report).map(
+    (test) => test.annotations.find((annotation) => annotation.type === 'migration-id')?.description,
+  );
+  assert(selectedIds.length, 'EMPTY_SELECTION');
+  const selected = implemented.filter((entry) => selectedIds.includes(entry.id));
+  checkDiscovery(selected, flattenDiscovery(report), mode);
+  writeFileSync(resolve(output, 'discovery.json'), JSON.stringify(report, null, 2));
+  writeFileSync(resolve(output, 'source.diff'), execFileSync('git', ['diff', 'HEAD', '--'], { cwd: root }));
+  const manifest = {
+    runId,
+    mode,
+    listOnly,
+    selection,
+    selectedIds,
+    commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+    untracked: execFileSync('git', ['ls-files', '--others', '--exclude-standard'], {
+      cwd: root,
+      encoding: 'utf8',
+    }).trim(),
+    fixtureVersion: 'dev-local/mr-sha/forms@git-sha',
+  };
+  writeFileSync(resolve(output, 'run.json'), JSON.stringify(manifest, null, 2));
+  console.log(`PLAYWRIGHT_MODE=${mode}\nPLAYWRIGHT_ARTIFACTS=${output}\nPLAYWRIGHT_IDS=${selectedIds.join(',')}`);
+  if (!listOnly) {
+    checkBuild(mode);
+    const exitCode = await new Promise((done, fail) => {
+      runner = spawn(process.execPath, [...command, ...selection], { cwd: root, env, stdio: 'inherit' });
+      runner.once('error', fail);
+      runner.once('exit', (code) => done(code ?? 1));
+    });
+    assert.equal(exitCode, 0, 'PLAYWRIGHT_RUN_FAILED');
+    assert(!interrupted, `PLAYWRIGHT_INTERRUPTED: ${interrupted}`);
+    assert(!existsSync(resolve(output, 'fatal-cleanup.txt')), 'EPOCH_CLEANUP_FAILED');
+    const results = JSON.parse(readFileSync(resolve(output, 'results.json'), 'utf8'));
+    checkResults(selected, results, mode);
+    console.log(`Verified actual results for ${selected.length} migration IDs (${mode}).`);
+  }
 } catch (error) {
   console.error(error);
-  await stop(runner);
-  await stop(launcher);
-  process.exitCode = 1;
+  process.exitCode = interrupted === 'SIGINT' ? 130 : interrupted === 'SIGTERM' ? 143 : 1;
 }

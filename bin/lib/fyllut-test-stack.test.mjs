@@ -7,6 +7,25 @@ import { createFyllutTestStack } from './fyllut-test-stack.mjs';
 
 const ports = [4101, 4102, 4103, 4104];
 
+test('built stack serves frontend from compiled backend with deterministic fixture metadata', () => {
+  const stack = createFyllutTestStack({
+    repoRoot: '/repo',
+    ports,
+    shouldWriteRuntimeConfig: false,
+    mode: 'built',
+    epoch: 'epoch',
+  });
+  assert.equal(stack.commands.length, 2);
+  assert.deepEqual(stack.commands[1][1], ['/repo/packages/fyllut-backend/dist/server.mjs']);
+  assert.equal(stack.commands[1][2].PORT, '4103');
+  assert.equal(stack.commands[1][2].FYLLUT_BUILD_DIR, '/repo/packages/fyllut/dist');
+  assert.equal(stack.commands[1][2].GIT_SHA, 'git-sha');
+  assert.equal(stack.commands[1][2].MONOREPO_GIT_SHA, 'mr-sha');
+  assert.equal(stack.commands[1][2].PDF_FOOTER_ENV_SLUG, 'dev-local');
+  assert.deepEqual(stack.listeningPorts, [[4101, 4102], [4103]]);
+  assert.equal(stack.healthUrls.at(-1), 'http://127.0.0.1:4103/fyllut/');
+});
+
 test('fyllut stack exposes its URLs and commands without writing shared runtime config', () => {
   const stack = createFyllutTestStack({ repoRoot: '/repo', ports, shouldWriteRuntimeConfig: false });
 

@@ -1,4 +1,3 @@
-import { useRouteVariant } from '../../fixtures/mock-client';
 import { expect, test } from '../../fixtures/test';
 import { visitForm } from '../../helpers/form';
 
@@ -16,7 +15,7 @@ test.describe('Data fetcher', () => {
             },
           ],
         },
-        async ({ readyPage: page }) => {
+        async ({ readyPage: page, useRouteVariant }) => {
           await useRouteVariant('get-register-data-activities:success-empty');
           const activities = page.waitForResponse(
             (response) =>

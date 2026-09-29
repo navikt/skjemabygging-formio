@@ -1,11 +1,19 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const createFyllutTestStack = ({ repoRoot, ports, shouldWriteRuntimeConfig, nodeExecutable = process.execPath }) => {
+const createFyllutTestStack = ({
+  repoRoot,
+  ports,
+  shouldWriteRuntimeConfig,
+  nodeExecutable = process.execPath,
+  mode = 'dev',
+  epoch,
+}) => {
+  if (!['dev', 'built'].includes(mode)) throw new Error(`Unsupported FyllUt stack mode: ${mode}`);
   const [mockPort, mockAdminPort, backendPort, frontendPort] = ports;
   const mockUrl = `http://127.0.0.1:${mockPort}`;
   const backendUrl = `http://127.0.0.1:${backendPort}`;
-  const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
+  const frontendUrl = `http://127.0.0.1:${mode === 'built' ? backendPort : frontendPort}/fyllut`;
   const runtimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
   const fyllutBackendEnv = {
     NODE_ENV: 'development',
@@ -20,6 +28,21 @@ const createFyllutTestStack = ({ repoRoot, ports, shouldWriteRuntimeConfig, node
     TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
     FAMILIE_PDF_GENERATOR_URL: mockUrl,
     TEAM_LOGS_URL: `${mockUrl}/team-logs`,
+    ...(epoch
+      ? {
+          NO_DECORATOR: 'true',
+          FEATURE_NEW_RENDER_FORMS: '*',
+          GIT_SHA: 'git-sha',
+          MONOREPO_GIT_SHA: 'mr-sha',
+          PDF_FOOTER_ENV_SLUG: 'dev-local',
+        }
+      : {}),
+    ...(mode === 'built'
+      ? {
+          PORT: String(backendPort),
+          FYLLUT_BUILD_DIR: resolve(repoRoot, 'packages/fyllut/dist'),
+        }
+      : {}),
   };
   let runtimeWritten = false;
 
@@ -34,35 +57,41 @@ const createFyllutTestStack = ({ repoRoot, ports, shouldWriteRuntimeConfig, node
           `--server.port=${mockPort}`,
           `--plugins.adminApi.port=${mockAdminPort}`,
         ],
-        {},
+        epoch ? { FYLLUT_PLAYWRIGHT_EPOCH: epoch } : {},
         resolve(repoRoot, 'mocks'),
       ],
       [
         nodeExecutable,
-        [
-          resolve(repoRoot, 'node_modules/vite/bin/vite.js'),
-          '--clearScreen',
-          'false',
-          '--strictPort',
-          '--port',
-          String(backendPort),
-        ],
+        mode === 'built'
+          ? [resolve(repoRoot, 'packages/fyllut-backend/dist/server.mjs')]
+          : [
+              resolve(repoRoot, 'node_modules/vite/bin/vite.js'),
+              '--clearScreen',
+              'false',
+              '--strictPort',
+              '--port',
+              String(backendPort),
+            ],
         fyllutBackendEnv,
         resolve(repoRoot, 'packages/fyllut-backend'),
       ],
-      [
-        nodeExecutable,
-        [
-          resolve(repoRoot, 'node_modules/vite/bin/vite.js'),
-          '--clearScreen',
-          'false',
-          '--strictPort',
-          '--port',
-          String(frontendPort),
-        ],
-        { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
-        resolve(repoRoot, 'packages/fyllut'),
-      ],
+      ...(mode === 'built'
+        ? []
+        : [
+            [
+              nodeExecutable,
+              [
+                resolve(repoRoot, 'node_modules/vite/bin/vite.js'),
+                '--clearScreen',
+                'false',
+                '--strictPort',
+                '--port',
+                String(frontendPort),
+              ],
+              { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
+              resolve(repoRoot, 'packages/fyllut'),
+            ],
+          ]),
     ],
     healthUrls: [
       `${mockUrl}/forms-api/v1/global-translations`,
@@ -70,7 +99,7 @@ const createFyllutTestStack = ({ repoRoot, ports, shouldWriteRuntimeConfig, node
       `${backendUrl}/fyllut/internal/isready`,
       `${frontendUrl}/`,
     ],
-    listeningPorts: [[mockPort, mockAdminPort], [backendPort], [frontendPort]],
+    listeningPorts: [[mockPort, mockAdminPort], [backendPort], ...(mode === 'built' ? [] : [[frontendPort]])],
     summaryLines: [
       `FYLLUT_MOCK_URL=${mockUrl}`,
       `FYLLUT_MOCK_ADMIN_PORT=${mockAdminPort}`,

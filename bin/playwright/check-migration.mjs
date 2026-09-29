@@ -135,7 +135,8 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
   return implemented;
 };
 
-const checkDiscovery = (implemented, discovered) => {
+const checkDiscovery = (implemented, discovered, mode = 'built') => {
+  assert(['dev', 'built'].includes(mode), 'Invalid execution mode');
   assert(Array.isArray(discovered), 'Discovery must be a flat array of Playwright tests');
   assert.equal(discovered.length, implemented.length, 'Unexpected number of Playwright tests');
   const seen = new Set();
@@ -153,7 +154,12 @@ const checkDiscovery = (implemented, discovered) => {
       test.annotations.some((a) => a.type === 'cypress-source' && a.description === expected.source),
       `Missing backlink: ${id}`,
     );
-    assert(!test.skipped && test.expectedStatus !== 'skipped', `Skipped Playwright test: ${id}`);
+    const expectedSkip = mode === 'dev' && id === 'F086-T002';
+    assert.equal(test.expectedStatus === 'skipped' || !!test.skipped, expectedSkip, `Unexpected skip: ${id}`);
+    assert(
+      ['passed', ...(expectedSkip ? ['skipped'] : [])].includes(test.expectedStatus ?? 'passed'),
+      `Unexpected expected status: ${id}`,
+    );
   }
 };
 
@@ -172,6 +178,8 @@ const flattenDiscovery = (report) => {
           titlePath: [...nested, spec.title],
           annotations: entry.annotations ?? [],
           expectedStatus: entry.expectedStatus,
+          results: entry.results,
+          status: entry.status,
         });
       }
     }
@@ -179,6 +187,21 @@ const flattenDiscovery = (report) => {
   };
   for (const suite of report.suites) visit(suite, [], true);
   return results;
+};
+
+const checkResults = (implemented, report, mode) => {
+  assert(implemented.length > 0, 'EMPTY_SELECTION');
+  const tests = flattenDiscovery(report);
+  checkDiscovery(implemented, tests, mode);
+  for (const test of tests) {
+    const id = test.annotations.find((annotation) => annotation.type === 'migration-id').description;
+    const skipped = mode === 'dev' && id === 'F086-T002';
+    assert.equal(test.results?.length, 1, `Missing result or retry: ${id}`);
+    assert.equal(test.results[0].retry, 0, `Retry: ${id}`);
+    assert.equal(test.results[0].status, skipped ? 'skipped' : 'passed', `Unexpected result: ${id}`);
+    assert.equal(test.status, skipped ? 'skipped' : 'expected', `Unexpected aggregate status: ${id}`);
+    assert.equal(test.results[0].errors?.length ?? 0, 0, `Result errors: ${id}`);
+  }
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
@@ -196,4 +219,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   );
 }
 
-export { checkDiscovery, checkMigration, flattenDiscovery };
+export { checkDiscovery, checkMigration, checkResults, flattenDiscovery };

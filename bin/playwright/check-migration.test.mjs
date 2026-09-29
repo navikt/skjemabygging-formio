@@ -172,7 +172,7 @@ test('implementation requires exact Cypress pointer and Playwright discovery bac
   assert.doesNotThrow(() => checkDiscovery(entries, discovered));
   assert.throws(() => checkDiscovery(entries, [{ ...discovered[0], annotations: [] }]), /Expected one migration ID/);
   assert.throws(() => checkDiscovery(entries, [{ ...discovered[0], titlePath: ['different'] }]), /Wrong target title/);
-  assert.throws(() => checkDiscovery(entries, [{ ...discovered[0], skipped: true }]), /Skipped Playwright test/);
+  assert.throws(() => checkDiscovery(entries, [{ ...discovered[0], skipped: true }]), /Unexpected skip/);
   const report = {
     suites: [
       {
