@@ -1,6 +1,7 @@
 import {
   Component,
   ComponentProperties,
+  DeclarationType,
   Form,
   FormPropertiesType,
   PublishedTranslations,
@@ -693,6 +694,36 @@ describe('ReportService', () => {
           [title ?? '', '', '  Fallback,label  '],
           [' Preferred,title ', 'N6', 'Different label'],
         ]);
+      });
+
+      it.each([
+        { declarationType: undefined, label: '', text: '' },
+        { declarationType: DeclarationType.none, label: '', text: '' },
+        { declarationType: DeclarationType.default, label: 'Standard', text: '' },
+        { declarationType: DeclarationType.custom, label: 'Tilpasset', text: 'Custom declaration' },
+      ])('reports declaration type $declarationType as "$label"', async ({ declarationType, label, text }) => {
+        const form: Form = {
+          title: 'Declaration form',
+          skjemanummer: 'EXAMPLE',
+          path: 'declaration-form',
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            declarationType,
+            declarationText: 'Custom declaration',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          },
+          components: [],
+        };
+        setupNock([form]);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms).toHaveLength(1);
+        expect(report.forms[0][report.getHeaderIndex('erklæringstype')]).toBe(label);
+        expect(report.forms[0][report.getHeaderIndex('tilpasset erklæringstekst')]).toBe(text);
       });
 
       it('has correct url fields', async () => {

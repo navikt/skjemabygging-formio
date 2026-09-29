@@ -45,7 +45,7 @@ type SummaryRow = {
 };
 
 const declarationLabels: Record<DeclarationType, string> = {
-  [DeclarationType.none]: 'Ingen',
+  [DeclarationType.none]: '',
   [DeclarationType.default]: 'Standard',
   [DeclarationType.custom]: 'Tilpasset',
 };
