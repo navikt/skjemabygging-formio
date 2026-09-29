@@ -1,6 +1,6 @@
 # FyllUt Playwright pilot
 
-This is the prototype for #2207. It does not replace or disable any Cypress tests. The register in `migration/inventory.json` records 795 declarations in 89 Cypress files at `b637d46d1d84e27ee3229215af5fa54a4589600b`. The earlier 86-file, 787-declaration baseline remains in its reconciliation history. Existing IDs were preserved when new source tests were added. The 38 tests in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. Eight tests have Playwright counterparts. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 795 declarations in 89 Cypress files at `b637d46d1d84e27ee3229215af5fa54a4589600b`. The earlier 86-file, 787-declaration baseline remains in its reconciliation history. Existing IDs were preserved when new source tests were added. The 38 tests in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. Ten tests have Playwright counterparts. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 After installing workspace dependencies and the Chromium browser (`pnpm --dir packages/fyllut exec playwright install chromium`), run from the repository root:
 
@@ -8,6 +8,7 @@ After installing workspace dependencies and the Chromium browser (`pnpm --dir pa
 pnpm playwright:fyllut
 pnpm build:fyllut
 pnpm playwright:fyllut:built
+pnpm playwright:fyllut:verify
 pnpm playwright:fyllut -- components-customized/bankaccount.spec.ts
 pnpm playwright:fyllut -- components-deprecated-complex/data-fetcher.spec.ts
 node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.test.mjs
@@ -15,11 +16,19 @@ node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.te
 
 The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes. The fixed test ports are 3440 through 3443; occupied ports fail rather than selecting alternatives or stopping foreign services.
 
-The launcher requires successful bind notifications from its own children and HTTP readiness. Teardown closes browser contexts, restores variants, signals only owned process groups, escalates bounded shutdown to SIGKILL if needed, and awaits actual exit before another epoch. Failed cleanup poisons the run. Cypress runtime configuration is not written or deleted.
+The launcher requires successful bind notifications from its own children and HTTP readiness. Teardown closes browser contexts, checks final mock evidence, restores variants, signals only owned process groups, escalates bounded shutdown to SIGKILL if needed, and awaits actual exit before another epoch. A dedicated epoch-owner process handles worker loss through IPC disconnect, including SIGKILL of the worker. Failed reset, cleanup or unexpected owner loss poisons the run and prevents another epoch. Cypress runtime configuration is not written or deleted.
 
-Reports are under `packages/fyllut/.runtime/playwright/<run-id>/`. `run.json` records mode, selected IDs and commit, `source.diff` records tracked worktree changes, and each epoch records its immutable test ID, attempt, URLs, PIDs, startup duration and stop time. JSON results are checked against the exact selected IDs; discovery is not runtime evidence. F029-T002 confirms `get-register-data-activities:success-empty` and checks the backend response and empty-state UI. Submission body evidence is a separate step.
+Reports are under `packages/fyllut/.runtime/playwright/<run-id>/`. `run.json` records mode, selected IDs, commit and built-entrypoint timestamps/hashes. `source.diff` records tracked worktree changes, including staged new files; untracked paths are listed separately and must be staged or captured for final review evidence. Each epoch records its immutable test ID, attempt, URLs, owner/child PIDs, startup duration and stop time. JSON results are checked against the exact selected IDs; discovery is not runtime evidence. F029-T002 confirms `get-register-data-activities:success-empty` and checks the backend response and empty-state UI.
 
-The eight source IDs are F004-T005/T006 (bank account), F017-T007 (date boundary), F029-T002 (empty mock variant), F061-T001 (attachment errors and focus), F073-T001/T003 (axe), and F086-T001 (static PDF). Each existing Cypress test keeps running and points to its counterpart; each Playwright test annotates the source path and ID.
+The ten source IDs are F004-T005/T006 (bank account), F017-T007 (date boundary), F029-T002 (empty mock variant), F061-T001/T004 (attachment errors/focus and four-file submission), F073-T001/T003 (axe), and F086-T001/T002 (static PDF and compiled-backend routing). Each existing Cypress test keeps running and points to its counterpart; each Playwright test annotates the source path and ID.
+
+Dev must report nine passes and only F086-T002 skipped. Built must report all
+ten passed. F086-T002 makes a real HTTP request through the epoch's API context
+and requires a 404 from the compiled backend; Vite's fallback is not equivalent.
+F061-T004 uploads all four source-fixture files, checks the receipt and requires
+completed, body-validated tc07 calls on both observed routes. The backend receives
+the deterministic fixture metadata `dev-local/mr-sha/forms@git-sha`; this is not
+the tested Git commit.
 
 To verify Playwright's collected test list against the register without starting servers, run:
 
@@ -61,6 +70,34 @@ pnpm exec vitest run --config mocks/vitest.playwright.config.ts
 The HTTP test compares instrumented and ordinary response statuses, body hashes
 and headers. It normalizes only generated request IDs and transport timestamps.
 Do not run it concurrently with another local stack using ports 3440–3443.
+
+## Technical failure controls
+
+`pnpm playwright:fyllut:verify` requires the same prior FyllUt build. It runs
+Node lifecycle/register/result/HTTP tests and isolated mock Vitest tests, then
+separate real Playwright runs. These technical cases are not migration IDs.
+Inner failures are intentional; the outer command succeeds only when each
+case has the expected ID, nonzero exit and specific error, without retry or
+timeout standing in for the intended failure.
+
+The controls cover unknown variants, missing outbound calls, wrong variants
+returning HTTP 200, an actual body mismatch returning HTTP 400, reset/restore
+failures, combined test/teardown errors, cleanup poisoning, a foreign port
+collision, a second owner, forbidden `.only`, and an empty selection. A held
+real backend PDF call tests teardown across two epochs without a fixed sleep.
+Worker SIGTERM/SIGKILL tests verify that owned servers exit and that a new epoch
+is refused after ownership loss.
+
+Reports are under `.runtime/playwright/verify-<run-id>/`; `summary.json` records
+the checked outcomes. The hold-PDF hook is enabled only by technical-test
+configuration. Ordinary mock startup has neither that hook nor its control
+endpoint. If a run fails, inspect its epoch `stack.log`, mock metadata and
+Playwright trace. A `fatal-cleanup.txt` marker means the run cannot continue
+with another stack. Do not delete it to make the same run proceed.
+
+All commands are local. There is no new CI workflow, sharding, existing-server
+mode or Cypress removal. Final Cypress/Playwright comparisons and human review
+remain separate acceptance gates.
 
 In CPLT, the documented `sandbox.allow_cache_exec = ["ms-playwright"]` setting permits running Playwright's Chromium. Localhost access must also be active for the app and mock server. All eight browser journeys passed in an AI-run CPLT session. The mock-server log confirmed that `success-empty` handled the activities request. A negative-control run using `success` instead failed on the empty-array assertion, receiving three activities. Developer coverage and Playwright-practice review is still pending.
 

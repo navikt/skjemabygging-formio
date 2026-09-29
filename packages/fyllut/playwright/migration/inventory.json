@@ -10265,7 +10265,7 @@
           "sourceHash": "df162ad025f92bdbb8687688bd874913e0b9ab314b8524ddc6e82104539b1ccb",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Upload all four files and reach Oppsummering as in F061-T003.",
@@ -15885,7 +15885,7 @@
           "sourceHash": "b40644dba404e06cc49b8fd6e712d960944d54731dd62af82a6d59f5887ae521",
           "modifiers": [],
           "buildOnly": true,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Built/distribution-only route: GET /fyllut/pdfstatic returns HTTP 404, not a local dev-only skip."

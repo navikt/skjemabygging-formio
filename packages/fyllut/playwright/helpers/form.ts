@@ -25,6 +25,13 @@ const nextStep = async (page: Page) => {
     .click();
 };
 
+const saveAndContinue = async (page: Page) => {
+  await page
+    .getByRole('button', { name: /^(Lagre og fortsett|Save and continue)$/ })
+    .or(page.getByRole('link', { name: /^(Lagre og fortsett|Save and continue)$/ }))
+    .click();
+};
+
 const showAllSteps = async (page: Page) => {
   await page.getByRole('button', { name: /Vis alle steg|Show all steps/ }).click();
   await expect(page.locator('.aksel-form-progress__collapsible')).toHaveAttribute('data-state', 'open');
@@ -48,4 +55,4 @@ const downloadApplication = async (page: Page) => {
   expect(data && typeof data === 'object' && Object.keys(data).length).toBeTruthy();
 };
 
-export { downloadApplication, nextStep, showAllSteps, visitForm };
+export { downloadApplication, nextStep, saveAndContinue, showAllSteps, visitForm };

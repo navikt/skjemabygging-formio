@@ -123,9 +123,9 @@ test('current 89-file register passes with 795 planned tests and 38 reviewed pil
   );
 });
 
-test('eight pilot pointers match the current working tree', () => {
+test('ten pilot pointers match the current working tree', () => {
   const entries = checkMigration(currentInventory);
-  assert.equal(entries.length, 8);
+  assert.equal(entries.length, 10);
 });
 
 test('source or inventory tampering fails closed', () => {
@@ -151,6 +151,38 @@ test('source or inventory tampering fails closed', () => {
         .reverse(),
     );
   assert.throws(() => checkMigration(moved, read), /Moved migration ID/);
+  const rewrittenIds = structuredClone(inventory);
+  const attachments = rewrittenIds.files.find((file) => file.id === 'F074');
+  attachments.tests.forEach((entry, index) => {
+    entry.id = `F074-T${String(index + 1).padStart(3, '0')}`;
+  });
+  rewrittenIds.sourceOrderOverrides.F074 = attachments.tests.map((entry) => entry.id);
+  assert.throws(() => checkMigration(rewrittenIds, read), /Stable source order changed/);
+  const alphabetized = structuredClone(inventory);
+  alphabetized.files.sort((a, b) => a.source.localeCompare(b.source));
+  assert.throws(() => checkMigration(alphabetized, read), /Source IDs changed/);
+  for (const mutate of [
+    (copy) => {
+      copy.files[0].tests[1].id = copy.files[0].tests[0].id;
+    },
+    (copy) => {
+      copy.files[0].tests.pop();
+    },
+  ]) {
+    const changed = structuredClone(inventory);
+    mutate(changed);
+    assert.throws(() => checkMigration(changed, read), /Invalid test IDs|Inventory total is inconsistent/);
+  }
+  const customized = inventory.files.find((file) => file.id === 'F003');
+  const changedHelper = read(customized.source).replace(
+    "cy.wait('@uploadIdFile').its('response.statusCode').should('eq', 201)",
+    "cy.wait('@uploadIdFile').its('response.statusCode').should('eq', 202)",
+  );
+  assert.notEqual(changedHelper, read(customized.source), 'Helper test must actually change its source');
+  assert.throws(
+    () => checkMigration(inventory, (path) => (path === customized.source ? changedHelper : read(path))),
+    /Source changed/,
+  );
 });
 
 test('implementation requires exact Cypress pointer and Playwright discovery backlink', () => {

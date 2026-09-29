@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { checkDiscovery, checkMigration, checkResults, flattenDiscovery } from './check-migration.mjs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { relative, resolve } from 'node:path';
+import { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery } from './check-migration.mjs';
 import { checkBuild } from './test-epoch.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
@@ -38,10 +39,28 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
   });
 }
 try {
+  const buildFiles = listOnly ? [] : checkBuild(mode);
   const inventory = JSON.parse(
     readFileSync(resolve(root, 'packages/fyllut/playwright/migration/inventory.json'), 'utf8'),
   );
   const implemented = checkMigration(inventory);
+  checkSourceSet(inventory);
+  assert.deepEqual(
+    implemented.map((entry) => entry.id).sort(),
+    [
+      'F004-T005',
+      'F004-T006',
+      'F017-T007',
+      'F029-T002',
+      'F061-T001',
+      'F061-T004',
+      'F073-T001',
+      'F073-T003',
+      'F086-T001',
+      'F086-T002',
+    ],
+    'The step 1b run must declare exactly its ten migration IDs',
+  );
   const discover = (filters) =>
     JSON.parse(
       execFileSync(process.execPath, [...command, ...filters, '--list', '--reporter=json'], {
@@ -74,11 +93,15 @@ try {
       encoding: 'utf8',
     }).trim(),
     fixtureVersion: 'dev-local/mr-sha/forms@git-sha',
+    build: buildFiles.map((file) => ({
+      file: relative(root, file),
+      modifiedAt: statSync(file).mtime.toISOString(),
+      sha256: createHash('sha256').update(readFileSync(file)).digest('hex'),
+    })),
   };
   writeFileSync(resolve(output, 'run.json'), JSON.stringify(manifest, null, 2));
   console.log(`PLAYWRIGHT_MODE=${mode}\nPLAYWRIGHT_ARTIFACTS=${output}\nPLAYWRIGHT_IDS=${selectedIds.join(',')}`);
   if (!listOnly) {
-    checkBuild(mode);
     const exitCode = await new Promise((done, fail) => {
       runner = spawn(process.execPath, [...command, ...selection], { cwd: root, env, stdio: 'inherit' });
       runner.once('error', fail);

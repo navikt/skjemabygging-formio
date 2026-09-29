@@ -118,6 +118,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           });
       });
 
+      // Playwright: F061-T004 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > submits attachments with the form
       it('submits attachments with the form', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');

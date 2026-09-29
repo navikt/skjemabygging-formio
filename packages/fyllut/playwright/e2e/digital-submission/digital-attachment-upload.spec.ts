@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures/test';
-import { visitForm } from '../../helpers/form';
+import { prepareAttachmentSubmission, sendToNav, visitAttachments } from '../../helpers/attachments';
+import { saveAndContinue } from '../../helpers/form';
 
 test.describe('Digital submission with attachments uploaded in Fyllut', () => {
   test.describe('Form with attachments', () => {
@@ -15,26 +16,12 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
         ],
       },
       async ({ readyPage: page }) => {
-        const next = page
-          .getByRole('button', { name: /^(Lagre og fortsett|Save and continue)$/ })
-          .or(page.getByRole('link', { name: /^(Lagre og fortsett|Save and continue)$/ }));
-        await visitForm(page, '/fyllut/formwithattachments?sub=digital');
-        await page.getByRole('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ }).check();
-        await next.click();
-        await expect(page.getByRole('heading', { name: 'Dine opplysninger' })).toBeVisible();
-        await next.click();
-        await expect(page.getByRole('heading', { level: 2, name: 'Diverse' })).toBeVisible();
-        await page
-          .getByRole('group', { name: /Radiopanel 1/ })
-          .getByLabel('Radiovalg 1')
-          .check();
-        await next.click();
-        await expect(page.getByRole('heading', { level: 2, name: 'Vedlegg' })).toBeVisible();
+        await visitAttachments(page);
 
         for (const name of [/Vedlegg 1/, /Vedlegg 2/, /Annen dokumentasjon/]) {
           await page.getByRole('group', { name }).getByRole('radio', { name: 'Jeg laster opp dette nå' }).check();
         }
-        await next.click();
+        await saveAndContinue(page);
         const summary = page.locator('[data-cy=error-summary]');
         await expect(summary).toBeVisible();
         const errors = [
@@ -54,5 +41,34 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
         await expect(attachment.getByRole('button', { name: 'Velg fil' })).toBeFocused();
       },
     );
+    test.describe('uploading files', () => {
+      test(
+        'submits attachments with the form',
+        {
+          annotation: [
+            { type: 'migration-id', description: 'F061-T004' },
+            {
+              type: 'cypress-source',
+              description: 'packages/fyllut/cypress/e2e/digital-submission/digital-attachment-upload.cy.ts',
+            },
+          ],
+        },
+        async ({ readyPage: page, useRouteVariant, mockEvidence }) => {
+          await prepareAttachmentSubmission(page);
+          await mockEvidence.expectRoutes({
+            'post-familie-pdf': 'success-tc07',
+            'post-digital-soknad': 'success-tc07',
+          });
+          await useRouteVariant('post-familie-pdf:success-tc07');
+          await useRouteVariant('post-digital-soknad:success-tc07');
+          await sendToNav(page);
+          await expect(page.getByRole('heading', { level: 2, name: 'Kvittering' })).toBeVisible();
+          for (const name of ['Vedlegg 1', 'Vedlegg 2', 'Vedlegg upload-only', 'Annet vedlegg 1']) {
+            await expect(page.getByText(name, { exact: true })).toBeVisible();
+          }
+          await mockEvidence.verify();
+        },
+      );
+    });
   });
 });

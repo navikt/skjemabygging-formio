@@ -12,6 +12,19 @@ const isPortFree = (port) =>
 
 const stopChild = async (child, graceMs = 3000) => {
   if (!child.pid) return;
+  if (process.platform === 'win32') {
+    const code = await new Promise((done, fail) => {
+      const killer = spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
+      killer.once('error', fail);
+      killer.once('exit', done);
+    });
+    const deadline = Date.now() + 5000;
+    while (child.exitCode === null && child.signalCode === null && Date.now() < deadline) await delay(50);
+    if (code !== 0 || (child.exitCode === null && child.signalCode === null)) {
+      throw new Error(`STACK_CLEANUP_FAILED: taskkill ${child.pid} returned ${code} without confirmed exit`);
+    }
+    return;
+  }
   const groupAlive = () => {
     try {
       process.kill(process.platform === 'win32' ? child.pid : -child.pid, 0);
@@ -42,7 +55,13 @@ const stopChild = async (child, graceMs = 3000) => {
 
 const startManagedStack = async (
   { commands, listeningPorts, healthUrls, onReady, onCleanup },
-  { timeoutMs = 60000, log = (chunk) => process.stdout.write(chunk), signal, onFailure = () => {} } = {},
+  {
+    timeoutMs = 60000,
+    log = (chunk) => process.stdout.write(chunk),
+    signal,
+    onFailure = () => {},
+    onSpawn = () => {},
+  } = {},
 ) => {
   const ports = listeningPorts.flat();
   if (!(await Promise.all(ports.map(isPortFree))).every(Boolean)) {
@@ -86,6 +105,7 @@ const startManagedStack = async (
         },
       );
       children.push(child);
+      if (child.pid) onSpawn(child.pid);
       child.stdout.on('data', log);
       child.stderr.on('data', log);
       child.on('message', (message) => {
@@ -109,7 +129,7 @@ const startManagedStack = async (
             .filter((url) => !healthy.has(url))
             .map(async (url) => {
               try {
-                const response = await fetch(url, { signal: AbortSignal.timeout(1000) });
+                const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(1000) });
                 await response.body?.cancel();
                 if (response.ok) healthy.add(url);
               } catch (error) {

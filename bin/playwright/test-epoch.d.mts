@@ -14,13 +14,15 @@ type Epoch = {
     stop: () => Promise<void>;
 };
 
-declare const checkBuild: (mode: string) => void;
+declare const checkBuild: (mode: string, repoRoot?: string) => string[];
 declare const startTestEpoch: (options: {
     mode: string;
     testId: string;
     attempt: number;
     output: string;
     signal?: AbortSignal;
+    observeMocks?: boolean;
+    mockFault?: 'hold-pdf';
 }) => Promise<Epoch>;
 
 export { checkBuild, startTestEpoch, type Epoch };

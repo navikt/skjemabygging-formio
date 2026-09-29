@@ -28,6 +28,17 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
   const sources = new Set();
   const targets = new Set();
   const sourceOrderOverrides = inventory.sourceOrderOverrides ?? {};
+  const stableOrders = {
+    F063: [...Array.from({ length: 25 }, (_, index) => migrationId('F063', index)), 'F063-T027', 'F063-T026'],
+    F074: [
+      ...Array.from({ length: 8 }, (_, index) => migrationId('F074', index)),
+      'F074-T015',
+      ...Array.from({ length: 6 }, (_, index) => migrationId('F074', index + 8)),
+    ],
+  };
+  for (const [fileId, order] of Object.entries(stableOrders)) {
+    assert.deepEqual(sourceOrderOverrides[fileId], order, `Stable source order changed: ${fileId}`);
+  }
   assert.deepEqual(
     Object.keys(sourceOrderOverrides).sort(),
     Object.keys(sourceOrderOverrides)
@@ -204,13 +215,17 @@ const checkResults = (implemented, report, mode) => {
   }
 };
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  const inventory = JSON.parse(readFileSync(resolve(root, inventoryPath), 'utf8'));
+const checkSourceSet = (inventory) => {
   assert.deepEqual(
     listSources(resolve(root, 'packages/fyllut/cypress/e2e')).sort(),
     inventory.files.map((file) => file.source).sort(),
     'Cypress file set changed. Reconcile the register.',
   );
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const inventory = JSON.parse(readFileSync(resolve(root, inventoryPath), 'utf8'));
+  checkSourceSet(inventory);
   const implemented = checkMigration(inventory);
   assert(implemented.length === 0 || process.argv[2], 'Playwright discovery JSON required for implemented tests');
   if (process.argv[2]) checkDiscovery(implemented, flattenDiscovery(JSON.parse(readFileSync(process.argv[2], 'utf8'))));
@@ -219,4 +234,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   );
 }
 
-export { checkDiscovery, checkMigration, checkResults, flattenDiscovery };
+export { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery };
