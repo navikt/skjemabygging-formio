@@ -148,6 +148,10 @@ import {
   datagridSkjemagruppeBugTranslations,
 } from '../data/forms-api/datagrid/datagridSkjemagruppeBugForm';
 import {
+  datePickerCrossPageForm,
+  datePickerCrossPageTranslations,
+} from '../data/forms-api/date-picker-cross-page/datePickerCrossPageForm';
+import {
   datePickerDeprecatedForm,
   datePickerDeprecatedTranslations,
 } from '../data/forms-api/date-picker/datePickerDeprecatedForm';
@@ -422,6 +426,7 @@ const allForms = [
   { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
   { form: dataFetcherContainerDeprecatedForm(), translations: dataFetcherContainerDeprecatedTranslations() },
   { form: dataFetcherDeprecatedForm(), translations: dataFetcherDeprecatedTranslations() },
+  { form: datePickerCrossPageForm(), translations: datePickerCrossPageTranslations() },
   { form: datePickerDeprecatedForm(), translations: datePickerDeprecatedTranslations() },
   { form: datagridContainerForm(), translations: datagridContainerTranslations() },
   { form: datagridLogicBugForm(), translations: datagridLogicBugTranslations() },

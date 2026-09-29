@@ -1,9 +1,9 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { FieldValidationProp } from '../../components/types';
+import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { resolveValidation } from '../inputComponentUtils';
-import { usePageComponents } from '../PageComponentsContext';
 import { resolveCustomValidationRules } from './customValidationRules';
 
 /**
@@ -17,14 +17,14 @@ import { resolveCustomValidationRules } from './customValidationRules';
  */
 const useResolvedValidation = (component: Component): FieldValidationProp => {
   const { submission } = useSubmissionState();
-  const pageComponents = usePageComponents();
+  const { components: formComponents } = useFormDefinitionForm();
 
   return useMemo(
     () => ({
       ...resolveValidation(component),
-      ...resolveCustomValidationRules(component, { submission, pageComponents }),
+      ...resolveCustomValidationRules(component, { submission, formComponents }),
     }),
-    [component, pageComponents, submission],
+    [component, formComponents, submission],
   );
 };
 

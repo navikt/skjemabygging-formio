@@ -9,7 +9,7 @@ import {
   flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
-import { ComponentDefinition, DateOffsetDefinition, DatePickerRangeDefinition } from './component-types';
+import { DateOffsetDefinition, DatePickerRangeDefinition } from './component-types';
 
 const normalizeArrayIndexes = (submissionPath: string) => submissionPath.replace(/\[\d+]/g, '');
 
@@ -18,10 +18,7 @@ const getCurrentRowPrefix = (submissionPath: string) => submissionPath.match(/^(
 type DatePickerDefinitionInput = Component & DatePickerRangeDefinition;
 type MonthPickerDefinitionInput = Component & DateOffsetDefinition;
 
-const getBeforeDateInputSubmissionPath = (
-  component: DatePickerDefinitionInput,
-  pageComponents: ComponentDefinition[],
-) => {
+const getBeforeDateInputSubmissionPath = (component: DatePickerDefinitionInput, formComponents: Component[]) => {
   if (!component.beforeDateInputKey) {
     return undefined;
   }
@@ -39,23 +36,18 @@ const getBeforeDateInputSubmissionPath = (
     return `${currentRowPrefix}${component.beforeDateInputKey.slice(normalizedRowPrefix.length)}`;
   }
 
-  return flattenComponentsWithBaseSubmissionPath(pageComponents)
-    .map((pageComponent) => getResolvedSubmissionPath(pageComponent))
-    .find(
-      (submissionPath) =>
-        submissionPath !== currentPath &&
-        normalizeArrayIndexes(submissionPath) === component.beforeDateInputKey &&
-        (!currentRowPrefix || submissionPath.startsWith(currentRowPrefix)),
-    );
+  return flattenComponentsWithBaseSubmissionPath(formComponents)
+    .map((formComponent) => getResolvedSubmissionPath(formComponent))
+    .find((submissionPath) => submissionPath !== currentPath && submissionPath === component.beforeDateInputKey);
 };
 
 const getDatePickerFromDate = (
   component: DatePickerDefinitionInput,
-  pageComponents: ComponentDefinition[],
+  formComponents: Component[],
   submission?: Submission,
 ) => {
   if (component.beforeDateInputKey) {
-    const beforeDateInputPath = getBeforeDateInputSubmissionPath(component, pageComponents);
+    const beforeDateInputPath = getBeforeDateInputSubmissionPath(component, formComponents);
     const beforeDateInputValue =
       beforeDateInputPath && submissionUtils.getSubmissionValue(beforeDateInputPath, submission);
 

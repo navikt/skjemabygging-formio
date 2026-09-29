@@ -1,4 +1,5 @@
 import DatePicker from '../../../components/date/DatePicker';
+import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { DatePickerDefinition } from '../../component-types';
 import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
@@ -10,11 +11,10 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import { usePageComponents } from '../../PageComponentsContext';
 
 const InputDatePicker = ({ component, submissionPath }: InputComponentProps<DatePickerDefinition>) => {
   const { submission } = useSubmissionState();
-  const pageComponents = usePageComponents();
+  const form = useFormDefinitionForm();
   const statePath = resolveSubmissionPath(component, submissionPath);
   const validation = useResolvedValidation(component);
 
@@ -26,7 +26,7 @@ const InputDatePicker = ({ component, submissionPath }: InputComponentProps<Date
       required={isRequired(component)}
       fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
-      fromDate={getDatePickerFromDate(component, pageComponents, submission)}
+      fromDate={getDatePickerFromDate(component, form.components, submission)}
       toDate={getDatePickerToDate(component)}
       readMore={resolveReadMore(component)}
       validation={validation}

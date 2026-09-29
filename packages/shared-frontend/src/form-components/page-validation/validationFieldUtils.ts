@@ -10,7 +10,10 @@ const toFieldValidationInput = (context: ValidationFieldsContext): FieldValidati
   required: isRequired(context.component),
   validation: {
     ...resolveValidation(context.component),
-    ...resolveCustomValidationRules(context.component, context),
+    ...resolveCustomValidationRules(context.component, {
+      submission: context.submission,
+      formComponents: context.form.components,
+    }),
   },
 });
 

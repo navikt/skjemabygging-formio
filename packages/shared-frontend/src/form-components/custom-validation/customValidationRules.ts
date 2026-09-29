@@ -1,18 +1,17 @@
 import { Component, Submission, dateUtils, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { DateMessages, ValidationRules } from '../../validation/validators';
-import { ComponentDefinition } from '../component-types';
 import { getBeforeDateInputSubmissionPath, getDatePickerFromDate, getDatePickerToDate } from '../dateDefinitionUtils';
 import { CustomValidationRuleSpec, recognizeCustomValidation } from './customValidationScripts';
 
 /**
  * What a recognized legacy expression needs in order to become plain value rules: the current
- * submission (for the value it compares against) and the components of the page (for the sibling a
+ * submission (for the value it compares against) and the components of the form (for the field a
  * date period is measured from). Both the rendered input adapter and the headless page rebuild have
  * these, which is what lets them produce identical rules.
  */
 interface CustomValidationContext {
   submission?: Submission;
-  pageComponents: ComponentDefinition[];
+  formComponents: Component[];
 }
 
 interface DateBound {
@@ -64,9 +63,9 @@ const withStricterDateBounds = (
 const toDatePeriodRules = (
   component: Component,
   rule: Extract<CustomValidationRuleSpec, { type: 'datePeriod' }>,
-  { submission, pageComponents }: CustomValidationContext,
+  { submission, formComponents }: CustomValidationContext,
 ): ValidationRules => {
-  const fromDatePath = getBeforeDateInputSubmissionPath(component, pageComponents);
+  const fromDatePath = getBeforeDateInputSubmissionPath(component, formComponents);
   const fromDateValue = fromDatePath ? submissionUtils.getSubmissionValue(fromDatePath, submission) : undefined;
 
   // `new Date(undefined)` made every comparison in the script false, so an unanswered start date
@@ -77,7 +76,7 @@ const toDatePeriodRules = (
 
   return withStricterDateBounds(
     {
-      fromDate: getDatePickerFromDate(component, pageComponents, submission),
+      fromDate: getDatePickerFromDate(component, formComponents, submission),
       toDate: getDatePickerToDate(component),
     },
     {

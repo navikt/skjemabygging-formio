@@ -159,7 +159,7 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
       context.value,
       toDatePickerValidation({
         ...toFieldValidationInput(context),
-        fromDate: getDatePickerFromDate(context.component, context.pageComponents, context.submission),
+        fromDate: getDatePickerFromDate(context.component, context.form.components, context.submission),
         toDate: getDatePickerToDate(context.component),
       }),
     ),
