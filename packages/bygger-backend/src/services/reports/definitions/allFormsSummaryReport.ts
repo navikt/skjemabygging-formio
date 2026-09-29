@@ -4,6 +4,7 @@ import {
   navFormUtils,
   Recipient,
   ResponseError,
+  signatureUtils,
   SubmissionType,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -23,6 +24,7 @@ type SummaryRow = {
   submissionTypes: string;
   subsequentSubmissionTypes: string;
   signatureCount: number;
+  signerLabels: string;
   path: string;
   attachmentCount: number;
   attachmentNames: string;
@@ -77,6 +79,7 @@ const allFormsSummaryReport = ({
     submissionTypes: 'submissionTypes',
     subsequentSubmissionTypes: 'subsequentSubmissionTypes',
     signatureCount: 'signaturfelt',
+    signerLabels: 'hvem signerer, hvis ikke standard',
     path: 'path',
     attachmentCount: 'antall vedlegg',
     attachmentNames: 'vedleggsnavn',
@@ -150,6 +153,11 @@ const allFormsSummaryReport = ({
         submissionTypes: formatSubmissionTypes(submissionTypes),
         subsequentSubmissionTypes: formatSubmissionTypes(reportSubsequentSubmissionTypes),
         signatureCount: properties.signatures?.length || 1,
+        signerLabels: signatureUtils
+          .mapBackwardCompatibleSignatures(properties.signatures)
+          .map((signature) => signature.label?.trim())
+          .filter(Boolean)
+          .join(', '),
         path,
         attachmentCount: attachments.length,
         attachmentNames: attachments

@@ -318,6 +318,75 @@ describe('ReportService', () => {
         ]);
       });
 
+      it.each<{
+        name: string;
+        signatures: FormPropertiesType['signatures'];
+        expected: string;
+      }>([
+        { name: 'missing signatures', signatures: undefined, expected: '' },
+        { name: 'empty signature list', signatures: [], expected: '' },
+        {
+          name: 'default signature',
+          signatures: [{ label: '', description: '', key: 'default' }],
+          expected: '',
+        },
+        {
+          name: 'instructions without a signer label',
+          signatures: [{ label: ' \t ', description: 'Sign here', key: 'instructions' }],
+          expected: '',
+        },
+        {
+          name: 'one custom signer',
+          signatures: [{ label: ' Doctor ', description: 'Medical confirmation', key: 'doctor' }],
+          expected: 'Doctor',
+        },
+        {
+          name: 'multiple signers with an empty label between them',
+          signatures: [
+            { label: ' Doctor ', description: '', key: 'doctor' },
+            { label: ' \t ', description: '', key: 'default' },
+            { label: ' Applicant ', description: '', key: 'applicant' },
+          ],
+          expected: 'Doctor, Applicant',
+        },
+        { name: 'legacy default signatures', signatures: {}, expected: '' },
+        {
+          name: 'legacy custom signers',
+          signatures: {
+            signature1: ' Doctor ',
+            signature1Description: 'Medical confirmation',
+            signature2: ' ',
+            signature3: 'Applicant',
+          },
+          expected: 'Doctor, Applicant',
+        },
+      ])('reports who signs for $name', async ({ signatures, expected }) => {
+        const form: Form = {
+          title: 'Signer labels',
+          skjemanummer: 'EXAMPLE',
+          path: 'signer-labels',
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['PAPER'],
+            subsequentSubmissionTypes: [],
+            signatures,
+          },
+          components: [],
+        };
+        setupNock([form]);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.headers.slice(report.getHeaderIndex('signaturfelt'), report.getHeaderIndex('path'))).toEqual([
+          'signaturfelt',
+          'hvem signerer, hvis ikke standard',
+        ]);
+        expect(report.forms).toHaveLength(1);
+        expect(report.forms[0][report.getHeaderIndex('hvem signerer, hvis ikke standard')]).toBe(expected);
+      });
+
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 
