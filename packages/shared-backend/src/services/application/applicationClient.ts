@@ -79,13 +79,12 @@ interface DeleteApplicationProps extends ApplicationBaseProps {
 
 const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   const { baseUrl, accessToken, innsendingsId, correlationId } = props;
-  logger.info('Getting draft');
+  logger.info(`${innsendingsId}: Getting draft`);
 
   try {
     return await http.get<T>(getDraftUrl(baseUrl, innsendingsId), {
       accessToken,
       accept: 'application/json',
-      logDetails: false,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
@@ -101,13 +100,12 @@ const sanitizeDraftError = (error: unknown): ResponseError => {
 const createApplication = async <T>(props: CreateApplicationProps): Promise<DraftResponse<T>> => {
   const { baseUrl, accessToken, body, force, envQualifier, correlationId, innsendingsId } = props;
   const forceParam = force ? '?force=true' : '';
-  logger.info('Creating soknad');
+  logger.info(`${innsendingsId ? `${innsendingsId}: ` : ''}Creating draft`);
 
   try {
     const response = await http.post<T>(`${getDraftUrl(baseUrl)}${forceParam}`, body, {
       accessToken,
       responseType: 'metadata',
-      logDetails: false,
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
     });
     return {
@@ -121,12 +119,11 @@ const createApplication = async <T>(props: CreateApplicationProps): Promise<Draf
 
 const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
   const { baseUrl, accessToken, body, innsendingsId, correlationId } = props;
-  logger.info('Updating draft');
+  logger.info(`${innsendingsId}: Updating draft`);
 
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
       accessToken,
-      logDetails: false,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
@@ -139,7 +136,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
  */
 const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) => {
   const { baseUrl, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
-  logger.info('Submitting completed draft');
+  logger.info(`${innsendingsId}: Submitting completed draft`);
 
   let response;
   try {
@@ -147,7 +144,6 @@ const submitCompletedApplication = async (props: SubmitCompletedApplicationProps
       accessToken,
       redirect: 'manual',
       responseType: 'metadata',
-      logDetails: false,
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
     });
   } catch (error) {

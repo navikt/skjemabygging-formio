@@ -25,6 +25,8 @@ describe('createApplicationService', () => {
   });
 
   it('handles draft operations through the real service and client path', async () => {
+    const infoSpy = vi.spyOn(logger, 'info');
+    const debugSpy = vi.spyOn(logger, 'debug');
     const fetchSpy = vi
       .spyOn(global, 'fetch')
       .mockResolvedValueOnce(
@@ -85,6 +87,13 @@ describe('createApplicationService', () => {
         type: 'digital',
       }),
     ).resolves.toBeUndefined();
+
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Getting draft`);
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Creating draft`);
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Updating draft`);
+    expect(debugSpy).toHaveBeenCalledWith(`GET request to ${baseUrl}${draftPath}/${innsendingsId}`);
+    expect(debugSpy).toHaveBeenCalledWith(`POST request to ${baseUrl}${draftPath}`);
+    expect(debugSpy).toHaveBeenCalledWith(`PUT request to ${baseUrl}${draftPath}/${innsendingsId}`);
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
@@ -175,11 +184,11 @@ describe('createApplicationService', () => {
     );
   });
 
-  it('sanitizes completed draft submission failures without transport logs', async () => {
+  it('logs completed draft submission failures with the downstream response body', async () => {
     const warnSpy = vi.spyOn(logger, 'warn');
     const infoSpy = vi.spyOn(logger, 'info');
     vi.spyOn(global, 'fetch').mockResolvedValue(
-      new Response(JSON.stringify({ message: 'Private answer in downstream response' }), {
+      new Response(JSON.stringify({ message: 'Downstream service unavailable' }), {
         status: 503,
         headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
@@ -193,8 +202,10 @@ describe('createApplicationService', () => {
       message: 'Draft request failed',
       correlationId,
     });
-    expect(infoSpy).toHaveBeenCalledWith('Submitting completed draft');
-    expect(warnSpy).not.toHaveBeenCalled();
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Submitting completed draft`);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 503'), {
+      body: { message: 'Downstream service unavailable' },
+    });
   });
 
   it('handles attachment operations and records upload metrics through the real service and client path', async () => {
@@ -543,13 +554,15 @@ describe('createApplicationService', () => {
     await expect(
       service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
     ).rejects.toMatchObject({ errorCode: 'BAD_REQUEST', message: 'Draft request failed' });
-    expect(warnSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 400'), {
+      body: { errorCode: 'validationFailure', message: 'Rejected draft state' },
+    });
   });
 
-  it('keeps a rejected draft creation actionable without exposing the downstream response body', async () => {
+  it('logs rejected draft creation with the downstream response body', async () => {
     const warnSpy = vi.spyOn(logger, 'warn');
     vi.spyOn(global, 'fetch').mockResolvedValue(
-      new Response(JSON.stringify({ message: 'Private answer in downstream response' }), {
+      new Response(JSON.stringify({ message: 'Downstream service unavailable' }), {
         status: 503,
         headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
@@ -563,6 +576,8 @@ describe('createApplicationService', () => {
       message: 'Draft request failed',
       correlationId,
     });
-    expect(warnSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 503'), {
+      body: { message: 'Downstream service unavailable' },
+    });
   });
 });

@@ -1,6 +1,9 @@
 import { getStatusFromErrorCode, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 
-type DraftOperation = 'create' | 'retrieve' | 'update' | 'submit' | 'fallback_update';
+type DraftOperation = 'create' | 'retrieve' | 'update' | 'delete' | 'submit' | 'fallback_update';
+
+const formatDraftLogMessage = (innsendingsId: string | null | undefined, message: string) =>
+  innsendingsId ? `${innsendingsId}: ${message}` : message;
 
 const getDraftFailureMetadata = (operation: DraftOperation, error: unknown) => {
   if (error instanceof ResponseError) {
@@ -40,4 +43,4 @@ const getSubmissionFailureLog = (submitError: unknown, fallback?: { error: unkno
     : undefined;
 };
 
-export { getDraftFailureMetadata, getSubmissionFailureLog, shouldLogDraftFailure };
+export { formatDraftLogMessage, getDraftFailureMetadata, getSubmissionFailureLog, shouldLogDraftFailure };

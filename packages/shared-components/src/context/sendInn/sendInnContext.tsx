@@ -36,7 +36,12 @@ import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
-import { getDraftFailureMetadata, getSubmissionFailureLog, shouldLogDraftFailure } from './draftFailure';
+import {
+  formatDraftLogMessage,
+  getDraftFailureMetadata,
+  getSubmissionFailureLog,
+  shouldLogDraftFailure,
+} from './draftFailure';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
@@ -192,7 +197,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           return;
         }
 
-        logger?.info('Draft created');
+        logger?.info(formatDraftLogMessage(response?.innsendingsId, 'Draft created'));
 
         setSubmission(getSubmissionWithFyllutState(response));
         dispatchFyllutMellomlagring({ type: 'init', response });
@@ -242,7 +247,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         currentLanguage,
         innsendingsId,
       );
-      logger?.info('Draft updated');
+      logger?.info(formatDraftLogMessage(innsendingsId, 'Draft updated'));
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
     } catch (error) {
@@ -252,7 +257,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
         if (shouldLogDraftFailure(error)) {
-          logger?.error('Draft persistence failed', getDraftFailureMetadata('update', error));
+          logger?.error(
+            formatDraftLogMessage(innsendingsId, 'Draft persistence failed'),
+            getDraftFailureMetadata('update', error),
+          );
         }
         throw error;
       }
@@ -266,14 +274,19 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
     try {
       await deleteSoknad(appConfig, innsendingsId);
-      logger?.info(`${innsendingsId}: Mellomlagring was deleted`);
-    } catch (error: any) {
+      logger?.info(formatDraftLogMessage(innsendingsId, 'Draft deleted'));
+    } catch (error) {
       if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });
         throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED' });
-        logger?.error(`${innsendingsId}: Failed to delete mellomlagring`, error as Error);
+        if (shouldLogDraftFailure(error)) {
+          logger?.error(
+            formatDraftLogMessage(innsendingsId, 'Failed to delete draft'),
+            getDraftFailureMetadata('delete', error),
+          );
+        }
         throw error;
       }
     }
@@ -349,7 +362,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
         await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
-        logger?.info('Draft submitted');
+        logger?.info(formatDraftLogMessage(innsendingsId, 'Draft submitted'));
         if (redirectLocation) {
           window.location.href = redirectLocation;
         }
@@ -361,11 +374,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             await updateSoknad(appConfig, form, submission, language, innsendingsId);
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
             const failureLog = getSubmissionFailureLog(submitError);
-            if (failureLog) logger?.error(failureLog.message, failureLog.metadata);
+            if (failureLog)
+              logger?.error(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
           } catch (updateError) {
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
             const failureLog = getSubmissionFailureLog(submitError, { error: updateError });
-            if (failureLog) logger?.error(failureLog.message, failureLog.metadata);
+            if (failureLog)
+              logger?.error(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
           }
         }
       }
@@ -453,25 +468,31 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
             setIsMellomlagringReady(true);
-            logger?.info('Draft retrieved');
+            logger?.info(formatDraftLogMessage(innsendingsIdFromParams, 'Draft retrieved'));
           } else if (isMellomlagringAvailable) {
             const response = await startMellomlagring(submission!);
             if (response) {
               setIsMellomlagringReady(true);
-              logger?.info('Draft created');
+              logger?.info(formatDraftLogMessage(response.innsendingsId, 'Draft created'));
             }
           }
         } catch (error) {
           retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
-            logger?.info('Draft not found during retrieval', getDraftFailureMetadata('retrieve', error));
+            logger?.info(
+              formatDraftLogMessage(innsendingsIdFromParams, 'Draft not found during retrieval'),
+              getDraftFailureMetadata('retrieve', error),
+            );
             const formPath = pathname.split('/')[1];
             const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
             navigate('/soknad-ikke-funnet', { state: { url } });
             return;
           }
           if (shouldLogDraftFailure(error)) {
-            logger?.error('Draft persistence failed', getDraftFailureMetadata('retrieve', error));
+            logger?.error(
+              formatDraftLogMessage(innsendingsIdFromParams, 'Draft persistence failed'),
+              getDraftFailureMetadata('retrieve', error),
+            );
           }
           dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
         }
