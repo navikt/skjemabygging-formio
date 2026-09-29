@@ -154,7 +154,9 @@ const allFormsSummaryReport = ({
         signatureCount: properties.signatures?.length || 1,
         path,
         attachmentCount: attachments.length,
-        attachmentNames: attachments.map((attachment) => attachment.vedleggstittel).join(', '),
+        attachmentNames: attachments
+          .map((attachment) => attachment.vedleggstittel?.trim() || attachment.label?.trim())
+          .join(', '),
         submissionUrl,
         paperSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
           ? submissionUrl

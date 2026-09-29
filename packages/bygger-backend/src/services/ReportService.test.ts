@@ -641,6 +641,59 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // empty components array
       });
 
+      it.each([undefined, '', ' \t '])('uses the label when the attachment title is %j', async (title) => {
+        const form: Form = {
+          path: 'attachment-labels',
+          skjemanummer: 'EXAMPLE',
+          title: 'Form,unchanged',
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          },
+          components: [
+            {
+              key: 'attachments',
+              label: 'Attachments',
+              type: 'panel',
+              isAttachmentPanel: true,
+              components: [
+                {
+                  key: 'missing-title',
+                  label: '  Fallback,label  ',
+                  type: 'attachment',
+                  properties: { vedleggstittel: title },
+                },
+                {
+                  key: 'named',
+                  label: 'Different label',
+                  type: 'attachment',
+                  properties: { vedleggstittel: ' Preferred,title ', vedleggskode: 'N6' },
+                },
+              ],
+            },
+          ],
+        };
+        setupNock([form]);
+        const summaryStream = createWritableStream();
+        await reportService.generate('all-forms-summary', summaryStream);
+        const summary = parseReport(summaryStream.toString());
+
+        expect(summary.forms[0][summary.getHeaderIndex('vedleggsnavn')]).toBe('Fallback,label, Preferred,title');
+        expect(summary.forms[0][summary.getHeaderIndex('antall vedlegg')]).toBe('2');
+        expect(summary.forms[0][summary.getHeaderIndex('skjematittel')]).toBe('Form,unchanged');
+
+        setupNock([form]);
+        const attachmentsStream = createWritableStream();
+        await reportService.generate('all-forms-and-attachments', attachmentsStream);
+        const attachments = parseReport(attachmentsStream.toString());
+        expect(attachments.forms.map((row) => row.slice(2, 5))).toEqual([
+          [title ?? '', '', '  Fallback,label  '],
+          [' Preferred,title ', 'N6', 'Different label'],
+        ]);
+      });
+
       it('has correct url fields', async () => {
         const HEADER_INNSENDING = 'innsendingsurl';
         const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
