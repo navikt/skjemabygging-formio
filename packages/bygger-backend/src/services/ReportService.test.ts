@@ -5,6 +5,7 @@ import {
   FormPropertiesType,
   PublishedTranslations,
   Recipient,
+  SubmissionType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
@@ -839,20 +840,131 @@ describe('ReportService', () => {
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe('"[""PAPER""]"');
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
-        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe('');
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
 
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
-        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test3`);
+        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe('');
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
-        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test3`);
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe('');
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
+      });
+
+      describe('URLs for supported submission options', () => {
+        const submissionUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut/url-options';
+        const subsequentUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/url-options';
+        const paperUrl = `${submissionUrl}?sub=paper`;
+        const noLoginUrl = `${submissionUrl}?sub=digitalnologin`;
+        const paperSubsequentUrl = `${subsequentUrl}?sub=paper`;
+        const staticPdfUrl = `${submissionUrl}/pdf?type=ettersending`;
+
+        it.each<{
+          name: string;
+          submissionTypes: SubmissionType[];
+          subsequentSubmissionTypes: SubmissionType[];
+          hasAttachments: boolean;
+          urls: string[];
+        }>([
+          {
+            name: 'digital submission without subsequent submission',
+            submissionTypes: ['DIGITAL'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: [submissionUrl, '', '', '', '', ''],
+          },
+          {
+            name: 'paper submission and digital subsequent submission',
+            submissionTypes: ['PAPER'],
+            subsequentSubmissionTypes: ['DIGITAL'],
+            hasAttachments: true,
+            urls: ['', paperUrl, '', subsequentUrl, '', ''],
+          },
+          {
+            name: 'nologin submission without subsequent submission',
+            submissionTypes: ['DIGITAL_NO_LOGIN'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: ['', '', noLoginUrl, '', '', ''],
+          },
+          {
+            name: 'static PDF with attachments',
+            submissionTypes: ['STATIC_PDF'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: ['', '', '', '', '', staticPdfUrl],
+          },
+          {
+            name: 'static PDF without attachments',
+            submissionTypes: ['STATIC_PDF'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: false,
+            urls: ['', '', '', '', '', ''],
+          },
+          {
+            name: 'fill-in and download without a cover page',
+            submissionTypes: ['PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: ['', submissionUrl, '', '', '', ''],
+          },
+          {
+            name: 'legacy fill-in and download with no submission types',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: ['', submissionUrl, '', '', '', ''],
+          },
+          {
+            name: 'all options with attachments',
+            submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+            hasAttachments: true,
+            urls: [submissionUrl, paperUrl, noLoginUrl, subsequentUrl, paperSubsequentUrl, staticPdfUrl],
+          },
+          {
+            name: 'all options without attachments',
+            submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+            hasAttachments: false,
+            urls: [submissionUrl, paperUrl, noLoginUrl, '', '', ''],
+          },
+        ])('$name', async ({ submissionTypes, subsequentSubmissionTypes, hasAttachments, urls }) => {
+          const form: Form = {
+            path: 'url-options',
+            skjemanummer: 'EXAMPLE',
+            title: 'URL options',
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              submissionTypes,
+              subsequentSubmissionTypes,
+            },
+            components: hasAttachments
+              ? [
+                  {
+                    key: 'attachments',
+                    label: 'Attachments',
+                    type: 'panel',
+                    isAttachmentPanel: true,
+                    components: [{ key: 'document', label: 'Document', type: 'attachment' }],
+                  },
+                ]
+              : [],
+          };
+          setupNock([form]);
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+
+          expect(report.forms).toHaveLength(1);
+          expect(report.forms[0].slice(-7)).toEqual([...urls, '1']);
+        });
       });
 
       it('does not include testform', async () => {

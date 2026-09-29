@@ -157,13 +157,16 @@ const allFormsSummaryReport = ({
         attachmentNames: attachments
           .map((attachment) => attachment.vedleggstittel?.trim() || attachment.label?.trim())
           .join(', '),
-        submissionUrl,
+        submissionUrl: submissionTypesUtils.isDigitalSubmission(submissionTypes) ? submissionUrl : '',
         paperSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
           ? submissionUrl
           : submissionTypesUtils.isPaperSubmission(submissionTypes)
             ? `${submissionUrl}?sub=paper`
             : '',
-        subsequentSubmissionUrl: hasAttachments ? subsequentSubmissionUrl : '',
+        subsequentSubmissionUrl:
+          submissionTypesUtils.isDigitalSubmission(subsequentSubmissionTypes) && hasAttachments
+            ? subsequentSubmissionUrl
+            : '',
         paperSubsequentSubmissionUrl:
           submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachments
             ? `${subsequentSubmissionUrl}?sub=paper`
