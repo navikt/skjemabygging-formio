@@ -16,8 +16,10 @@ for (const file of inventory.files) {
 }
 const sources = new Map();
 const read = (path) => {
-  if (!sources.has(path))
-    sources.set(path, execFileSync('git', ['show', `${inventory.revision}:${path}`], { encoding: 'utf8' }));
+  if (!sources.has(path)) {
+    const source = execFileSync('git', ['show', `${inventory.revision}:${path}`], { encoding: 'utf8' });
+    sources.set(path, source.replace(/^\s*\/\/ Playwright: .*\n/gm, ''));
+  }
   return sources.get(path);
 };
 const bank = inventory.files.find((file) => file.id === 'F004');
@@ -86,14 +88,39 @@ test('per-test hashes include applicable hooks, exclude sibling hooks, and detec
   );
 });
 
-test('current 86-file register passes with 787 planned tests and 38 reviewed pilot checklists', () => {
+test('current 89-file register passes with 795 planned tests and 38 reviewed pilot checklists', () => {
   assert.equal(checkMigration(inventory, read).length, 0);
+  assert.equal(inventory.files.length, 89);
+  assert.equal(inventory.staticTestDeclarations, 795);
   const pilots = inventory.files.filter((file) => ['F004', 'F017', 'F061', 'F073', 'F086'].includes(file.id));
   assert.equal(
     pilots.reduce((count, file) => count + file.tests.length, 0),
     38,
   );
   assert.equal(inventory.files.find((file) => file.id === 'F063').tests.at(-1).id, 'F063-T026');
+  assert.deepEqual(
+    inventory.files
+      .find((file) => file.id === 'F074')
+      .tests.slice(8, 11)
+      .map((entry) => entry.id),
+    ['F074-T015', 'F074-T009', 'F074-T010'],
+  );
+  assert.deepEqual(
+    inventory.files.slice(-3).map(({ id, tests }) => [id, tests.length]),
+    [
+      ['F087', 1],
+      ['F088', 5],
+      ['F089', 1],
+    ],
+  );
+  assert.equal(
+    inventory.files.find((file) => file.id === 'F074').tests.find((entry) => entry.id === 'F074-T010').title,
+    'does not submit a deleted attachment without uploaded files',
+  );
+  assert.equal(
+    inventory.files.find((file) => file.id === 'F085').tests.find((entry) => entry.id === 'F085-T005').title,
+    'sends all values and the versioned footer',
+  );
 });
 
 test('eight pilot pointers match the current working tree', () => {
@@ -113,8 +140,17 @@ test('source or inventory tampering fails closed', () => {
   incomplete.files.find((file) => file.id === 'F004').tests[0].coverageChecklist = [];
   assert.throws(() => checkMigration(incomplete, read), /Missing pilot checklist/);
   const moved = structuredClone(inventory);
-  moved.files.find((file) => file.id === 'F063').tests.at(-1).id = 'F063-T027';
-  assert.throws(() => checkMigration(moved, read), /Invalid test IDs|Moved migration ID/);
+  moved.files
+    .find((file) => file.id === 'F074')
+    .tests.splice(
+      8,
+      2,
+      ...moved.files
+        .find((file) => file.id === 'F074')
+        .tests.slice(8, 10)
+        .reverse(),
+    );
+  assert.throws(() => checkMigration(moved, read), /Moved migration ID/);
 });
 
 test('implementation requires exact Cypress pointer and Playwright discovery backlink', () => {

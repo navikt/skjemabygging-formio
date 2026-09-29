@@ -7,6 +7,7 @@ import { parseSource } from './migration-source.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const inventoryPath = 'packages/fyllut/playwright/migration/inventory.json';
 const pilotIds = new Set(['F004', 'F017', 'F061', 'F073', 'F086']);
+const migrationId = (fileId, index) => `${fileId}-T${String(index + 1).padStart(3, '0')}`;
 const listSources = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -15,11 +16,25 @@ const listSources = (dir) =>
 
 const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, path), 'utf8')) => {
   assert.match(inventory.revision, /^[a-f0-9]{40}$/, 'Invalid inventory baseline revision');
-  assert.equal(inventory.staticTestDeclarations, 787, 'Unexpected baseline test total');
-  assert.equal(inventory.files.length, 86, 'Unexpected source file total');
+  assert(Number.isInteger(inventory.staticTestDeclarations), 'Invalid source test total');
+  assert(inventory.staticTestDeclarations > 0, 'Empty source test total');
+  assert(Array.isArray(inventory.files) && inventory.files.length > 0, 'Empty source file register');
+  assert.equal(
+    inventory.files.reduce((count, file) => count + file.tests.length, 0),
+    inventory.staticTestDeclarations,
+    'Inventory total is inconsistent',
+  );
   const ids = new Set();
   const sources = new Set();
   const targets = new Set();
+  const sourceOrderOverrides = inventory.sourceOrderOverrides ?? {};
+  assert.deepEqual(
+    Object.keys(sourceOrderOverrides).sort(),
+    Object.keys(sourceOrderOverrides)
+      .filter((fileId) => inventory.files.some((file) => file.id === fileId))
+      .sort(),
+    'Unknown source-order override',
+  );
   assert.equal(inventory.sharedSources.length, 4, 'Unexpected shared source count');
   assert.equal(new Set(inventory.sharedSources.map((entry) => entry.path)).size, 4, 'Duplicate shared source');
   const implemented = [];
@@ -44,12 +59,15 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
     );
     assert.deepEqual(
       file.tests.map((test) => test.id).sort(),
-      file.tests.map((_, index) => `${file.id}-T${String(index + 1).padStart(3, '0')}`).sort(),
+      file.tests.map((_, index) => migrationId(file.id, index)).sort(),
       `Invalid test IDs: ${file.id}`,
     );
+    assert.deepEqual(
+      file.tests.map((test) => test.id),
+      sourceOrderOverrides[file.id] ?? file.tests.map((_, index) => migrationId(file.id, index)),
+      `Moved migration ID: ${file.id}`,
+    );
     file.tests.forEach((test, index) => {
-      const expectedIndex = file.id === 'F063' && index >= 25 ? 52 - index : index + 1;
-      assert.equal(test.id, `${file.id}-T${String(expectedIndex).padStart(3, '0')}`, `Moved migration ID: ${test.id}`);
       assert(!ids.has(test.id), `Duplicate migration ID: ${test.id}`);
       ids.add(test.id);
       const actual = current.tests[index];
@@ -101,7 +119,7 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       }
     });
   }
-  assert.equal(ids.size, inventory.staticTestDeclarations, 'Inventory total is inconsistent');
+  assert.equal(ids.size, inventory.staticTestDeclarations, 'Duplicate or missing migration ID');
   assert.equal(
     [...pilotIds].reduce((count, id) => count + inventory.files.find((file) => file.id === id).tests.length, 0),
     38,

@@ -3,6 +3,13 @@ import { expect, test } from '../../fixtures/test';
 import { showAllSteps, visitForm } from '../../helpers/form';
 
 const scanPage = async (page: import('@playwright/test').Page) => {
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length),
+      { message: 'Expected page animations to finish before the accessibility scan' },
+    )
+    .toBe(0);
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 };
