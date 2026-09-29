@@ -499,8 +499,8 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
           CSV_HEADER_LINE +
-            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1;1\n' +
-            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2;2\n' +
+            'TEST1;Testskjema1;nb, en, nn;Testskjema1;Testskjema1;Testskjema1;1\n' +
+            'TEST2;Testskjema2;nb, en;Testskjema2;;Testskjema2;2\n' +
             'TEST3;Testskjema3;nb;Testskjema3;;;3\n',
         );
       });
@@ -544,7 +544,7 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
 
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Draft title;nb,en;Published title;;English title;1\n',
+          CSV_HEADER_LINE + 'TEST1;Draft title;nb, en;Published title;;English title;1\n',
         );
         expect(api.isDone()).toBe(true);
       });
@@ -636,7 +636,7 @@ describe('ReportService', () => {
         expect(formFields2[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('0'); // no components
         expect(formFields3[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('0'); // empty components array
 
-        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe('Annet,Uttalelse fra fagpersonell'); // has attachments
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe('Annet, Uttalelse fra fagpersonell'); // has attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // no components
         expect(formFields3[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // empty components array
       });
@@ -766,8 +766,13 @@ describe('ReportService', () => {
           `${fyllutBaseUrl}/test1/pdf?type=ettersending`,
         );
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe(
-          '"[""DIGITAL"",""PAPER"",""STATIC_PDF""]"',
+          '"[""DIGITAL"", ""PAPER"", ""STATIC_PDF""]"',
         );
+        expect(formFields1[report.getHeaderIndex('submissionTypes')]).toBe(
+          '"[""DIGITAL"", ""PAPER"", ""STATIC_PDF""]"',
+        );
+        expect(formFields2[report.getHeaderIndex('submissionTypes')]).toBe('[]');
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe('"[""PAPER""]"');
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
@@ -816,7 +821,7 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1;1\n',
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en, nn;;Testskjema1;Testskjema1;1\n',
         );
       });
 

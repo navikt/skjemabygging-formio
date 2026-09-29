@@ -20,8 +20,8 @@ type SummaryRow = {
   unpublishedChanges: string;
   changedAt?: string;
   changedBy?: string;
-  submissionTypes: SubmissionType[];
-  subsequentSubmissionTypes: SubmissionType[];
+  submissionTypes: string;
+  subsequentSubmissionTypes: string;
   signatureCount: number;
   path: string;
   attachmentCount: number;
@@ -49,6 +49,8 @@ const declarationLabels: Record<DeclarationType, string> = {
   [DeclarationType.default]: 'Standard',
   [DeclarationType.custom]: 'Tilpasset',
 };
+
+const formatSubmissionTypes = (types: SubmissionType[]) => `[${types.map((type) => JSON.stringify(type)).join(', ')}]`;
 
 const recipientAddress = (recipientId: string | undefined, recipients: Map<string | undefined, Recipient>) => {
   if (!recipientId) return 'Standard';
@@ -147,12 +149,12 @@ const allFormsSummaryReport = ({
         unpublishedChanges: status === 'pending' ? 'ja' : status === 'published' ? 'nei' : '',
         changedAt,
         changedBy,
-        submissionTypes,
-        subsequentSubmissionTypes: reportSubsequentSubmissionTypes,
+        submissionTypes: formatSubmissionTypes(submissionTypes),
+        subsequentSubmissionTypes: formatSubmissionTypes(reportSubsequentSubmissionTypes),
         signatureCount: properties.signatures?.length || 1,
         path,
         attachmentCount: attachments.length,
-        attachmentNames: attachments.map((attachment) => attachment.vedleggstittel).join(','),
+        attachmentNames: attachments.map((attachment) => attachment.vedleggstittel).join(', '),
         submissionUrl,
         paperSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
           ? submissionUrl

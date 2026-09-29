@@ -40,7 +40,7 @@ const publishedLanguagesReport = ({
       yield {
         formNumber: form.skjemanummer,
         formTitle: form.title,
-        languages: Object.keys(translations).join(','),
+        languages: Object.keys(translations).join(', '),
         titleNb: titleFor('nb'),
         titleNn: titleFor('nn'),
         titleEn: titleFor('en'),
