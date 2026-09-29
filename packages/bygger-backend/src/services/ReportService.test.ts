@@ -194,43 +194,23 @@ describe('ReportService', () => {
       });
 
       describe('intro page', () => {
-        it('reports whether the intro page is enabled', async () => {
-          const publishedForms = [
-            {
-              title: 'Enabled intro page',
-              components: [],
-              skjemanummer: 'TEST1',
-              path: 'enabled-intro-page',
-              introPage: {
-                enabled: true,
-                introduction: '',
-                selfDeclaration: '',
-                sections: { prerequisites: {} },
-              },
-              properties: {
-                skjemanummer: 'TEST1',
-                submissionTypes: [],
-                subsequentSubmissionTypes: [],
-              } as unknown as FormPropertiesType,
+        it('reports the intro page as yes or blank', async () => {
+          const publishedForms: Form[] = [true, false, undefined].map((enabled, index) => ({
+            title: 'Intro page',
+            components: [],
+            skjemanummer: 'EXAMPLE',
+            path: `intro-page-${index}`,
+            introPage:
+              enabled === undefined
+                ? undefined
+                : { enabled, introduction: '', selfDeclaration: '', sections: { prerequisites: {} } },
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              submissionTypes: [],
+              subsequentSubmissionTypes: [],
             },
-            {
-              title: 'Disabled intro page',
-              components: [],
-              skjemanummer: 'TEST2',
-              path: 'disabled-intro-page',
-              introPage: {
-                enabled: false,
-                introduction: '',
-                selfDeclaration: '',
-                sections: { prerequisites: {} },
-              },
-              properties: {
-                skjemanummer: 'TEST2',
-                submissionTypes: [],
-                subsequentSubmissionTypes: [],
-              } as unknown as FormPropertiesType,
-            },
-          ];
+          }));
           setupNock(publishedForms);
 
           const writableStream = createWritableStream();
@@ -238,8 +218,7 @@ describe('ReportService', () => {
           const report = parseReport(writableStream.toString());
           const introPageEnabledIndex = report.getHeaderIndex('introside aktivert');
 
-          expect(report.forms[0][introPageEnabledIndex]).toBe('ja');
-          expect(report.forms[1][introPageEnabledIndex]).toBe('nei');
+          expect(report.forms.map((row) => row[introPageEnabledIndex])).toEqual(['ja', '', '']);
         });
       });
 
