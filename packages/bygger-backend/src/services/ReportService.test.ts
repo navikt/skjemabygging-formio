@@ -800,6 +800,17 @@ describe('ReportService', () => {
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(3);
+        expect(report.headers.slice(-7)).toEqual([
+          HEADER_INNSENDING,
+          HEADER_INNSENDING_PAPER,
+          'innsendingsurl (nologin)',
+          HEADER_ETTERSENDING,
+          HEADER_ETTERSENDING_PAPER,
+          HEADER_ETTERSENDING_STATIC_PDF,
+          'radnummer',
+        ]);
+        expect(report.headers.slice(0, -7).some((header) => header.includes('url'))).toBe(false);
+        expect(report.forms.every((row) => row.length === report.headers.length)).toBe(true);
 
         const formFields1 = report.forms[0];
         const formFields2 = report.forms[1];
