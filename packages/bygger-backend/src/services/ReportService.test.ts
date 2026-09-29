@@ -312,6 +312,33 @@ describe('ReportService', () => {
         expect(report.forms.map((row) => row[report.getHeaderIndex('må velge enhet (papir)')])).toEqual(['ja', '', '']);
       });
 
+      it('reports general instructions as yes or blank', async () => {
+        const forms: Form[] = ['General instructions', '', ' \t ', undefined].map((instructions, index) => ({
+          title: 'General instructions',
+          skjemanummer: 'EXAMPLE',
+          path: `general-instructions-${index}`,
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['PAPER'],
+            subsequentSubmissionTypes: [],
+            descriptionOfSignatures: instructions,
+          },
+          components: [],
+        }));
+        setupNock(forms);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms.map((row) => row[report.getHeaderIndex('generelle instruksjoner')])).toEqual([
+          'ja',
+          '',
+          '',
+          '',
+        ]);
+      });
+
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 

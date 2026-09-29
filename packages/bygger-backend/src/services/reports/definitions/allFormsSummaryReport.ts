@@ -179,7 +179,7 @@ const allFormsSummaryReport = ({
         subsequentSubmissionDeadline: properties.ettersendelsesfrist,
         recipientAddress: recipientAddress(properties.mottaksadresseId, recipients),
         requiresPaperUnit: properties.enhetMaVelgesVedPapirInnsending ? 'ja' : '',
-        hasGeneralInstructions: yesNo(properties.descriptionOfSignatures?.trim()),
+        hasGeneralInstructions: properties.descriptionOfSignatures?.trim() ? 'ja' : '',
         introPageEnabled: yesNo(form.introPage?.enabled),
         noLoginSubmissionUrl: submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes)
           ? `${submissionUrl}?sub=digitalnologin`
