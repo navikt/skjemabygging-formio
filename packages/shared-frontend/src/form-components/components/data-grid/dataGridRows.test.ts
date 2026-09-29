@@ -332,6 +332,35 @@ describe('dataGridRows', () => {
     ).toEqual(['showField', 'field']);
   });
 
+  it('evaluates explicit attachment array values without borrowing another row answer', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'rows',
+      label: 'Rows',
+      type: 'datagrid',
+      navId: 'rows',
+      input: true,
+      tree: true,
+      components: [
+        {
+          key: 'explanation',
+          label: 'Explanation',
+          type: 'textfield',
+          navId: 'explanation',
+          customConditional: 'show = !!row.document?.some(attachment => attachment.value === "ettersender")',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const document = { attachmentId: 'document', navId: 'document', type: 'other' as const, value: 'ettersender' };
+    const submission = { data: { rows: [{ document: [document] }, {}] } };
+    const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
+
+    expect(scopes.map((scope) => scope.activeComponents.map((component) => component.key))).toEqual([
+      ['explanation'],
+      [],
+    ]);
+  });
+
   it('keeps static hidden fields in the row scope while applying their authored condition', () => {
     const datagrid: ComponentDefinition = {
       key: 'repeterende',
@@ -451,6 +480,57 @@ describe('dataGridRows', () => {
     expect(
       visible.find((component) => component.key === 'egenskaper')?.components?.map((component) => component.key),
     ).toEqual(['alder', 'brukerDyretMedisiner']);
+  });
+
+  it('preserves nested container scope through layouts independently for each data grid row', () => {
+    const components: ComponentDefinition[] = [
+      {
+        key: 'journey',
+        label: 'Journey',
+        type: 'container',
+        input: true,
+        components: [
+          {
+            key: 'layout',
+            label: 'Layout',
+            type: 'navSkjemagruppe',
+            components: [
+              {
+                key: 'expenses',
+                label: 'Expenses',
+                type: 'container',
+                input: true,
+                tree: true,
+                components: [
+                  {
+                    key: 'notice',
+                    label: 'Notice',
+                    type: 'alertstripe',
+                    customConditional: 'show = row.parking > 0;',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    const form = createForm(components);
+    const rows = [
+      { journey: { expenses: { parking: 100 } }, expenses: { parking: 0 } },
+      { journey: { expenses: { parking: 0 } }, expenses: { parking: 100 } },
+      { journey: { parking: 100 }, expenses: { parking: 100 } },
+      { parking: 100, expenses: { parking: 100 } },
+    ];
+    const data = { parking: 100, rows };
+
+    expect(
+      rows.map((row) =>
+        getActiveRowComponents(components, row, data, form)[0].components?.[0].components?.[0].components?.map(
+          (component) => component.key,
+        ),
+      ),
+    ).toEqual([['notice'], [], [], []]);
   });
 
   it('filters selectboxes-based custom conditionals against row data', () => {

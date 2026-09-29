@@ -17,6 +17,7 @@ import {
   translationService,
 } from '../../../services';
 import { requireBase64Decode } from '../../../utils/base64';
+import { createPdfFooterVersion } from '../../../utils/pdfFooterVersion';
 
 const getCoverPageTitle = (
   form: { title: string; properties: { skjemanummer: string } },
@@ -31,7 +32,7 @@ const application: RequestHandler = async (req, res, next) => {
     const submission = requestUtil.getBodyValue<string>(req, 'submission');
     const form = await formService.getForm({
       formPath,
-      select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+      select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
     });
     const submissionParsed = JSON.parse(submission);
     const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
@@ -47,7 +48,16 @@ const application: RequestHandler = async (req, res, next) => {
       language,
       translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
-      appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
+      appConfig: {
+        config: {
+          gitVersion: createPdfFooterVersion(form, {
+            envSlug: config.pdfFooterEnvSlug,
+            gitSha: config.gitSha,
+            monorepoGitSha: config.monorepoGitSha,
+          }),
+          isDelingslenke: config.isDelingslenke,
+        },
+      },
     });
 
     const applicationPdfBase64 = await applicationPdfService.createPdf({
@@ -70,7 +80,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const submission = requestUtil.getBodyValue<string>(req, 'submission');
     const form = await formService.getForm({
       formPath,
-      select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+      select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
     });
     const submissionParsed = JSON.parse(submission);
     const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
@@ -85,7 +95,16 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       language,
       translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
-      appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
+      appConfig: {
+        config: {
+          gitVersion: createPdfFooterVersion(form, {
+            envSlug: config.pdfFooterEnvSlug,
+            gitSha: config.gitSha,
+            monorepoGitSha: config.monorepoGitSha,
+          }),
+          isDelingslenke: config.isDelingslenke,
+        },
+      },
     });
 
     const recipient = await recipientService.getRecipient({

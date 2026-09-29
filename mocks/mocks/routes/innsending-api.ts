@@ -46,6 +46,7 @@ import tc21c from '../data/test-cases/tc21c-innsending-nologin-soknad-body.json'
 import tc21d from '../data/test-cases/tc21d-innsending-nologin-soknad-body.json';
 import tc21e from '../data/test-cases/tc21e-innsending-soknad-body.json';
 import tc21f from '../data/test-cases/tc21f-innsending-soknad-body.json';
+import tc22 from '../data/test-cases/tc22-innsending-nologin-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
@@ -416,16 +417,15 @@ export default [
     ],
   },
   {
-    id: 'delete-soknad',
-    url: '/send-inn/fyllUt/v1/soknad/:innsendingsId',
+    id: 'delete-digital-application',
+    url: '/send-inn/v1/application-digital/:innsendingsId',
     method: 'DELETE',
     variants: [
       {
         id: 'success',
-        type: 'json',
+        type: 'status',
         options: {
-          status: 200,
-          body: {},
+          status: 204,
         },
       },
       {
@@ -569,6 +569,20 @@ export default [
         options: {
           status: 500,
           body: { message: 'Feil ved nedlasting av fil', errorCode: 'fileDownloadError' },
+        },
+      },
+    ],
+  },
+  {
+    id: 'delete-nologin-application',
+    url: '/send-inn/v1/application-nologin/:innsendingsId',
+    method: 'DELETE',
+    variants: [
+      {
+        id: 'success',
+        type: 'status',
+        options: {
+          status: 204,
         },
       },
     ],
@@ -876,6 +890,17 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc21d,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc22',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc22,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             okResponseHandlerNologinSubmission,
           ),

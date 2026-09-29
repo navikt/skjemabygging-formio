@@ -6,6 +6,7 @@ import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper
 import { applicationPdfService, applicationService, formService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { requireBase64Decode } from '../../utils/base64';
+import { createPdfFooterVersion } from '../../utils/pdfFooterVersion';
 import { getFyllutUrl } from '../../utils/url';
 import { assembleSendInnSoknadBody, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -32,7 +33,7 @@ const sendInnUtfyltSoknad = {
 
       const form = await formService.getForm({
         formPath,
-        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+        select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
       });
 
       const logMeta: LogMetadata = {
@@ -53,7 +54,16 @@ const sendInnUtfyltSoknad = {
         language,
         translations,
         submissionMethod,
-        appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
+        appConfig: {
+          config: {
+            gitVersion: createPdfFooterVersion(form, {
+              envSlug: config.pdfFooterEnvSlug,
+              gitSha: config.gitSha,
+              monorepoGitSha: config.monorepoGitSha,
+            }),
+            isDelingslenke: config.isDelingslenke,
+          },
+        },
       });
 
       const applicationPdfBase64 = await applicationPdfService.createPdf({

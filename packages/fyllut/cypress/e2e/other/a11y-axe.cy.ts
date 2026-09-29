@@ -2,6 +2,14 @@
  * Tests that accessibility is working as expected for various components using the axe library
  */
 
+const checkA11yWhenStable = () => {
+  cy.document().should((document) => {
+    const runningAnimations = document.getAnimations().filter((animation) => animation.playState === 'running');
+    expect(runningAnimations).to.have.length(0);
+  });
+  cy.checkA11y();
+};
+
 describe('Axe: Accessibility testing', () => {
   describe('Test on the intro page', () => {
     // Playwright: F073-T001 | packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Test on the intro page > Static intro page
@@ -9,10 +17,9 @@ describe('Axe: Accessibility testing', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/cypressaxe');
       cy.defaultWaits();
-      // Sometimes checkA11y fails if you do it to early, so this is instead of doing cy.wait(1000) or similar.
       cy.contains('Axe testing i Cypress').should('exist');
       cy.injectAxe();
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
   });
 
@@ -27,7 +34,7 @@ describe('Axe: Accessibility testing', () => {
 
     it('Person', () => {
       cy.findByRole('heading', { name: 'Person' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     // Playwright: F073-T003 | packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Penger og konto
@@ -35,37 +42,37 @@ describe('Axe: Accessibility testing', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Penger og konto' }).click();
       cy.findByRole('heading', { name: 'Penger og konto' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     it('Bedrift / organisasjon', () => {
       cy.contains('Bedrift / organisasjon').click();
       cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     it('Dato og tid', () => {
       cy.contains('Dato og tid').click();
       cy.findByRole('heading', { name: 'Dato og tid' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     it('Standard felter', () => {
       cy.contains('Standard felter').click();
       cy.findByRole('heading', { name: 'Standard felter' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     it('Layout', () => {
       cy.contains('Layout').click();
       cy.findByRole('heading', { name: 'Layout' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
 
     it('Data', () => {
       cy.contains('Data').click();
       cy.findByRole('heading', { name: 'Data' }).should('exist');
-      cy.checkA11y();
+      checkA11yWhenStable();
     });
   });
 });

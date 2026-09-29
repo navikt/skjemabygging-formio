@@ -60,6 +60,8 @@ const isValidUuid = (value: string): boolean => {
   return validUuidExpr.test(value);
 };
 
+const isValidFormPath = (value: string): boolean => /^[a-z0-9]+$/.test(value);
+
 const isEmpty = (value: any) => {
   return value === '' || value === null || value === undefined || (Array.isArray(value) && value.length === 0);
 };
@@ -83,6 +85,7 @@ const validatorUtils = {
   isNationalIdentityNumber,
   isValidCoverPageValue,
   isValidUuid,
+  isValidFormPath,
   isValidAttachmentId,
   isEmpty,
   isValidMinLength,

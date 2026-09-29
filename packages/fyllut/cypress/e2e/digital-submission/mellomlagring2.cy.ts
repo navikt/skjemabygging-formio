@@ -275,7 +275,7 @@ describe('Mellomlagring v2', () => {
     });
 
     it('shows an error when deleting mellomlagring fails', () => {
-      cy.mocksUseRouteVariant('delete-soknad:failure');
+      cy.mocksUseRouteVariant('delete-digital-application:failure');
       cy.visitRouteAndWait(
         `/fyllut/mellomlagring2mellomlagring/gave?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
         ['@getMellomlagringValid'],
@@ -283,7 +283,7 @@ describe('Mellomlagring v2', () => {
 
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
-      cy.wait('@deleteMellomlagring');
+      cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 500);
       cy.findByRole('dialog', { name: TEXTS.grensesnitt.confirmDeletePrompt.title })
         .should('be.visible')
         .and('contain.text', TEXTS.statiske.mellomlagringError.delete.message);
@@ -485,14 +485,14 @@ describe('Mellomlagring v2', () => {
         });
 
         it('shows an error when deleting mellomlagring from summary fails', () => {
-          cy.mocksUseRouteVariant('delete-soknad:failure');
+          cy.mocksUseRouteVariant('delete-digital-application:failure');
           cy.visitRouteAndWait(
             `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
           testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
-          cy.wait('@deleteMellomlagring');
+          cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 500);
           cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
         });
 

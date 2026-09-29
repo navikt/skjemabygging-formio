@@ -54,7 +54,7 @@ interface UploadAttachmentProps extends AttachmentBaseProps {
 }
 
 interface DeleteAttachmentProps extends ApplicationBaseProps {
-  attachmentId?: string;
+  attachmentId: string;
   fileId?: string;
   type: ApplicationType;
 }
@@ -65,6 +65,10 @@ interface DownloadAttachmentProps extends AttachmentBaseProps {
 
 interface SubmitApplicationProps extends ApplicationBaseProps {
   body: SubmitApplicationRequest;
+  type: ApplicationType;
+}
+
+interface DeleteApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
@@ -106,20 +110,6 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
 
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
-      accessToken,
-      headers: createHeaders({ correlationId, innsendingsId }),
-    });
-  } catch (error) {
-    throw normalizeApplicationError(error);
-  }
-};
-
-const deleteApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
-  const { baseUrl, accessToken, innsendingsId, correlationId } = props;
-  logger.info(`Deleting soknad ${innsendingsId}`);
-
-  try {
-    return await http.delete<T>(getDraftUrl(baseUrl, innsendingsId), undefined, {
       accessToken,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
@@ -246,6 +236,40 @@ const deleteAttachment = async (props: DeleteAttachmentProps): Promise<void> => 
     attachmentId,
     correlationId,
     fileId,
+    targetUrl,
+  });
+};
+
+const deleteApplication = async (props: DeleteApplicationProps): Promise<void> => {
+  const { baseUrl, accessToken, innsendingsId, type, correlationId, logMeta = {} } = props;
+  const targetUrl = getApplicationUrl(baseUrl, type, innsendingsId);
+  logger.info(`${innsendingsId}: Deleting ${type} application`, {
+    ...logMeta,
+    correlationId,
+    targetUrl,
+  });
+
+  try {
+    await http.delete(targetUrl, undefined, {
+      accessToken,
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    const normalizedError = normalizeApplicationError(error);
+    logger.warn(`${innsendingsId}: Failed to delete ${type} application`, {
+      ...logMeta,
+      correlationId: normalizedError.correlationId ?? correlationId,
+      errorCode: normalizedError.errorCode,
+      errorMessage: normalizedError.message,
+      httpResponseStatus: getStatusFromErrorCode(normalizedError.errorCode),
+      targetUrl,
+    });
+    throw normalizedError;
+  }
+
+  logger.info(`${innsendingsId}: Successfully deleted ${type} application`, {
+    ...logMeta,
+    correlationId,
     targetUrl,
   });
 };

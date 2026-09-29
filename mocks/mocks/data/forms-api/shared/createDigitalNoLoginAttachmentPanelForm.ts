@@ -1,4 +1,4 @@
-import { attachment, panel, textField } from '../../../form-builder/components';
+import { attachment, panel, textField, yourInformation } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
@@ -6,9 +6,14 @@ import formProperties from '../../../form-builder/form/formProperties';
 interface CreateDigitalNoLoginAttachmentPanelFormOptions {
   path: string;
   title: string;
+  useYourInformationComponent?: boolean;
 }
 
-const createDigitalNoLoginAttachmentPanelForm = ({ path, title }: CreateDigitalNoLoginAttachmentPanelFormOptions) =>
+const createDigitalNoLoginAttachmentPanelForm = ({
+  path,
+  title,
+  useYourInformationComponent = false,
+}: CreateDigitalNoLoginAttachmentPanelFormOptions) =>
   form({
     title,
     formNumber: 'DIGITAL-NOLOGIN-ATTACHMENT-PANEL',
@@ -17,7 +22,11 @@ const createDigitalNoLoginAttachmentPanelForm = ({ path, title }: CreateDigitalN
       panel({
         title: 'Dine opplysninger',
         key: 'dineOpplysninger',
-        components: [textField({ key: 'tekstfelt', label: 'Tekstfelt', validate: { required: true } })],
+        components: [
+          useYourInformationComponent
+            ? yourInformation()
+            : textField({ key: 'tekstfelt', label: 'Tekstfelt', validate: { required: true } }),
+        ],
       }),
       panel({
         title: 'Vedlegg',

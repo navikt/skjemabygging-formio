@@ -1,6 +1,7 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { saveLatestSubmission } from './saveLatestSubmission';
 
 type FormActionStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
 
@@ -30,28 +31,17 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
   const [status, setStatus] = useState<FormActionStatus>('idle');
   const [error, setError] = useState<unknown>();
   const saveLoopRef = useRef<Promise<boolean> | null>(null);
-  const hasQueuedSaveRef = useRef(false);
 
   const saveDraft = useCallback(async () => {
     if (!saveHandler) return false;
 
-    hasQueuedSaveRef.current = true;
     if (!saveLoopRef.current) {
       saveLoopRef.current = (async () => {
         setStatus('saving');
         setError(undefined);
 
         try {
-          while (hasQueuedSaveRef.current) {
-            hasQueuedSaveRef.current = false;
-            const latestSubmission = getLatestSubmission();
-            if (!latestSubmission) {
-              return false;
-            }
-
-            await saveHandler(latestSubmission);
-          }
-          return true;
+          return await saveLatestSubmission(getLatestSubmission, saveHandler);
         } catch (e) {
           setError(e);
           return false;

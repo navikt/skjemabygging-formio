@@ -10,6 +10,41 @@ const createForm = (components: Component[]): Form =>
   }) as Form;
 
 describe('activeComponents', () => {
+  it('evaluates an alert on an attachment panel like any other conditional component', () => {
+    const form = createForm([
+      {
+        key: 'attachments',
+        label: 'Attachments',
+        type: 'panel',
+        isAttachmentPanel: true,
+        components: [
+          {
+            key: 'document',
+            label: 'Documentation',
+            type: 'attachment',
+            input: true,
+          },
+          {
+            key: 'notice',
+            label: 'Notice',
+            type: 'alertstripe',
+            customConditional: 'show = data.document?.value === "ettersender";',
+          },
+        ],
+      },
+    ]);
+    const document = { attachmentId: 'document', navId: 'document', type: 'default' as const, value: 'ettersender' };
+    const submission = { data: { document } };
+
+    expect(getActivePanels(form, { data: {} })[0].components?.map((component) => component.key)).toEqual(['document']);
+    expect(getActivePanels(form, submission)[0].components?.map((component) => component.key)).toEqual([
+      'document',
+      'notice',
+    ]);
+    document.value = 'harIkke';
+    expect(getActivePanels(form, submission)[0].components?.map((component) => component.key)).toEqual(['document']);
+  });
+
   it('filters inactive panels and descendants while preserving authored order', () => {
     const form = createForm([
       {
@@ -73,6 +108,139 @@ describe('activeComponents', () => {
 
     const [panel] = getActivePanels(form, { data: { person: { hasDetails: false } } });
     expect(panel.components?.[0].components?.map((component) => component.key)).toEqual(['name']);
+  });
+
+  it('resolves nested containers relative to their parent, not a matching root key', () => {
+    const form = createForm([
+      {
+        key: 'panel',
+        label: 'Panel',
+        type: 'panel',
+        components: [
+          {
+            key: 'journey',
+            label: 'Journey',
+            type: 'container',
+            input: true,
+            tree: true,
+            components: [
+              {
+                key: 'expenses',
+                label: 'Expenses',
+                type: 'container',
+                input: true,
+                tree: true,
+                customConditional: 'show = row.useCar === true;',
+                components: [
+                  {
+                    key: 'notice',
+                    label: 'Notice',
+                    type: 'alertstripe',
+                    customConditional: 'show = row.parking > 0 && data.allowExpenses === true;',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    const getNotices = (parking: number | undefined, rootParking: number) => {
+      const [panel] = getActivePanels(form, {
+        data: {
+          allowExpenses: true,
+          useCar: false,
+          parking: rootParking,
+          expenses: { parking: rootParking },
+          journey: {
+            useCar: true,
+            parking: rootParking,
+            expenses: parking === undefined ? undefined : { parking },
+          },
+        },
+      });
+      return panel.components?.[0].components?.[0].components?.map((component) => component.key);
+    };
+
+    expect(getNotices(100, 0)).toEqual(['notice']);
+    expect(getNotices(0, 100)).toEqual([]);
+    expect(getNotices(undefined, 100)).toEqual([]);
+  });
+
+  it.each(['panel', 'fieldset', 'navSkjemagruppe'])('preserves the enclosing row through a %s', (type) => {
+    const form = createForm([
+      {
+        key: 'panel',
+        label: 'Panel',
+        type: 'panel',
+        components: [
+          {
+            key: 'expenses',
+            label: 'Expenses',
+            type: 'container',
+            input: true,
+            tree: true,
+            components: [
+              {
+                key: 'layout',
+                label: 'Layout',
+                type,
+                input: false,
+                components: [
+                  {
+                    key: 'notice',
+                    label: 'Notice',
+                    type: 'alertstripe',
+                    customConditional: 'show = row.parking > 0;',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    const getNotices = (parking: number, rootParking: number) =>
+      getActivePanels(form, {
+        data: { parking: rootParking, expenses: { parking, layout: { parking: rootParking } } },
+      })[0].components?.[0].components?.[0].components?.map((component) => component.key);
+
+    expect(getNotices(100, 0)).toEqual(['notice']);
+    expect(getNotices(0, 100)).toEqual([]);
+  });
+
+  it('keeps root row and data conditions working through layout components', () => {
+    const form = createForm([
+      {
+        key: 'panel',
+        label: 'Panel',
+        type: 'panel',
+        components: [
+          {
+            key: 'layout',
+            label: 'Layout',
+            type: 'navSkjemagruppe',
+            components: [
+              {
+                key: 'rowNotice',
+                label: 'Row notice',
+                type: 'alertstripe',
+                customConditional: 'show = row.enabled === true;',
+              },
+              {
+                key: 'dataNotice',
+                label: 'Data notice',
+                type: 'alertstripe',
+                customConditional: 'show = data.enabled === true;',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    expect(getActivePanels(form, { data: { enabled: true } })[0].components?.[0].components).toHaveLength(2);
+    expect(getActivePanels(form, { data: { enabled: false } })[0].components?.[0].components).toEqual([]);
   });
 
   it('keeps data-grid child templates for row-scoped conditional evaluation', () => {

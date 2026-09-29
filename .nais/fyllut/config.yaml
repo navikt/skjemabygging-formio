@@ -83,18 +83,25 @@ spec:
         - host: {{this.host}}
       {{/each}}
   envFrom:
+    # Contains NOLOGIN_JWT_SECRET and CAPTCHA_HMAC_SECRET
     - secret: nologin
   env:
     - name: ENABLED_FEATURES
       value: {{enabled-features}}
     - name: FEATURE_ATTACHMENT_UPLOAD_FORMS
       value: "{{feature-attachment-upload-forms}}"
+    - name: FEATURE_NEW_RENDER_FORMS
+      value: "{{feature-new-render-forms}}"
     - name: DECORATOR_URL
       value: {{dekorator-url}}
     - name: FORMS_SOURCE
       value: {{forms-source}}
+    - name: PDF_FOOTER_ENV_SLUG
+      value: "{{pdf-footer-env-slug}}"
     - name: NOLOGIN_TOKEN_LIFETIME_HOURS
       value: "{{nologin.token-lifetime-hours}}"
+    - name: CAPTCHA_POW_DIFFICULTY
+      value: "{{captcha.pow-difficulty}}"
     - name: SKJEMABYGGING_PROXY_URL
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID

@@ -179,7 +179,7 @@ describe('Digital no login', () => {
         cy.findByText('test.txt').should('exist');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
         cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
-        cy.wait('@deleteAllFiles');
+        cy.wait('@deleteAllFiles').its('response.statusCode').should('eq', 204);
       });
     });
   });
@@ -187,10 +187,6 @@ describe('Digital no login', () => {
   describe('Captcha', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept({
-        method: 'POST',
-        url: '/fyllut/api/send-inn/nologin-application/attachments/personal-id',
-      }).as('uploadPersonalId');
       cy.intercept({
         method: 'POST',
         url: '/fyllut/api/captcha',
@@ -215,13 +211,32 @@ describe('Digital no login', () => {
     });
 
     it('reuses the token on second upload without invoking captcha again', () => {
+      const uploadTokens: unknown[] = [];
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id', (request) => {
+        uploadTokens.push(request.headers.nologintoken);
+      }).as('uploadIdFile');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/personal-id/*').as('deleteIdFile');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@uploadIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(201);
+        expect(typeof request.headers.nologintoken).to.equal('string');
+      });
+      cy.get('@captchaRequest.all').should('have.length', 1);
       cy.findByRole('button', { name: 'Slett filen' }).click();
-      cy.uploadFile('small-file.txt', { verifyUpload: true });
-      // expect two invocations of @uploadPersonalId, but only one of @captchaRequest
-      cy.wait(['@uploadPersonalId', '@uploadPersonalId']);
-      cy.get('@uploadPersonalId.all').should('have.length', 2);
+      cy.wait('@deleteIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(204);
+        expect(request.headers.nologintoken === uploadTokens[0]).to.equal(true);
+      });
+      cy.findByText('id-billy-bruker.jpg').should('not.exist');
+      cy.uploadFile('small-file.txt');
+      cy.wait('@uploadIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(201);
+        expect(uploadTokens.length).to.equal(2);
+        expect(request.headers.nologintoken === uploadTokens[0]).to.equal(true);
+      });
+      cy.findByText('small-file.txt').should('be.visible');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
       cy.get('@captchaRequest.all').should('have.length', 1);
     });
   });

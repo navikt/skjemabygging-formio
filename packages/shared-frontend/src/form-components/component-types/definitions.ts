@@ -38,7 +38,7 @@ interface DateOffsetDefinition {
 
 interface DatePickerRangeDefinition extends DateOffsetDefinition {
   beforeDateInputKey?: string;
-  mayBeEqual?: string;
+  mayBeEqual?: boolean | string;
   specificEarliestAllowedDate?: string;
   specificLatestAllowedDate?: string;
 }

@@ -1,5 +1,12 @@
-import { Component, NavFormType, PanelValidation } from '@navikt/skjemadigitalisering-shared-domain';
-import { findFormStartingPoint } from './panelValidation';
+import {
+  Component,
+  NavFormType,
+  Panel,
+  PanelValidation,
+  Submission,
+  SubmissionAttachment,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { findFirstValidationErrorInAttachmentPanel, findFormStartingPoint } from './panelValidation';
 
 const input = (key) =>
   ({
@@ -63,6 +70,49 @@ const panelWithNestedInputValid: PanelValidation = {
 };
 
 describe('panelValidationUtils', () => {
+  describe('findFirstValidationErrorInAttachmentPanel', () => {
+    it('returns the component when a later repeated attachment is invalid', () => {
+      const attachmentComponent = {
+        type: 'attachment',
+        key: 'other',
+        navId: 'other',
+        label: 'Other attachments',
+      } as Component;
+      const attachmentPanel = { components: [attachmentComponent] } as Panel;
+      const attachments: SubmissionAttachment[] = [
+        {
+          attachmentId: 'other',
+          navId: 'other',
+          type: 'other',
+          value: 'leggerVedNaa',
+          files: [
+            {
+              fileId: 'file-1',
+              attachmentId: 'other',
+              innsendingId: 'submission-1',
+              fileName: 'first.txt',
+              size: 1,
+            },
+          ],
+        },
+        {
+          attachmentId: 'other-1',
+          navId: 'other',
+          type: 'other',
+          value: 'leggerVedNaa',
+          files: [],
+        },
+      ];
+      const submission = { data: {}, attachments } as Submission;
+      const validator = (_label: string, attachment?: SubmissionAttachment) =>
+        attachment?.value === 'leggerVedNaa' && attachment.files?.length === 0 ? 'File missing' : undefined;
+
+      expect(findFirstValidationErrorInAttachmentPanel(attachmentPanel, submission, validator)).toBe(
+        attachmentComponent,
+      );
+    });
+  });
+
   describe('findFormStartingPoint', () => {
     describe('When form has validation errors', () => {
       it('returns key of first input component with an error', () => {

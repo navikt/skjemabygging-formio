@@ -2,6 +2,7 @@ import {
   CoverPageDownloadType,
   I18nTranslationReplacements,
   ResponseError,
+  stringUtils,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
@@ -14,14 +15,14 @@ const addressLine = (text?: string, prefix: string = ', ') => {
   }
 
   if (!validatorUtils.isValidCoverPageValue(text)) {
-    throw new ResponseError('BAD_REQUEST', `Invalid value for cover page: ${text}`);
+    throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
   }
 
   return `${prefix}${text}`;
 };
 
 const getTitle = (title: string, number: string) => {
-  return `${number} ${title}`;
+  return stringUtils.normalizeUnicode(`${number} ${title}`);
 };
 
 const parseLanguage = (language: string) => {

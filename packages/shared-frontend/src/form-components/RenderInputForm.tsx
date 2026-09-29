@@ -2,12 +2,11 @@ import { ReactNode } from 'react';
 import { ValidationScopeProvider } from '../context/validation/ValidationScopeContext';
 import { ComponentDefinition } from './component-types';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
-import { PageComponentsProvider } from './PageComponentsContext';
 import RenderInputComponent from './RenderInputComponent';
 
 interface Props {
   // The page key is only supplied by the top-level (page) render. Nested renders (container, row,
-  // datagrid, ...) omit it and inherit the validation scope and the page components from context.
+  // datagrid, ...) omit it and inherit the validation scope from context.
   pageKey?: string;
   components: ComponentDefinition[];
   componentRegistry?: InputComponentRegistry;
@@ -36,19 +35,19 @@ const RenderInputForm = ({ pageKey, components, componentRegistry = inputCompone
     </>
   );
 
-  return withPageScope(pageKey, components, content);
+  return withPageScope(pageKey, content);
 };
 
 // A new scope instance per page: leaving a page keeps its registered fields (the summary page
 // validates every page), while fields that disappear within the page unregister themselves.
-const withPageScope = (pageKey: string | undefined, components: ComponentDefinition[], content: ReactNode) => {
+const withPageScope = (pageKey: string | undefined, content: ReactNode) => {
   if (pageKey === undefined) {
     return content;
   }
 
   return (
     <ValidationScopeProvider key={pageKey} pageKey={pageKey}>
-      <PageComponentsProvider components={components}>{content}</PageComponentsProvider>
+      {content}
     </ValidationScopeProvider>
   );
 };

@@ -361,7 +361,7 @@ describe('Form navigation', () => {
 
         cy.findByRole('button', { name: 'Avbryt og slett' }).click();
         cy.findByRole('button', { name: 'Ja, avbryt og slett utkast' }).click();
-        cy.wait('@deleteMellomlagring');
+        cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 200);
 
         cy.verifyNavRedirect();
 

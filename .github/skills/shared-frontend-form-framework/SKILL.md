@@ -178,10 +178,11 @@ Only the headless rebuild knows about form definitions. Generic components,
   `RenderInputComponent` renders it inside `UnvalidatedFields` and the headless
   rebuild skips it.
 
-If a component genuinely needs the page component list (e.g. a date picker's
-sibling `beforeDateInputKey` lookup), read it with `usePageComponents()`
-(`form-components/PageComponentsContext.tsx`) inside the **adapter** — do not
-thread it as a prop, and do not put form definitions on the validation scope.
+If an adapter needs another field's definition (e.g. a date picker's
+`beforeDateInputKey` lookup), read the enriched form through
+`useFormDefinitionForm()` inside the **adapter**. References can cross pages;
+use the same full form in the headless rebuild while retaining indexed datagrid
+row paths. Do not put form definitions on generic controls or the validation scope.
 
 ## Validation & error behaviour (framework rules)
 

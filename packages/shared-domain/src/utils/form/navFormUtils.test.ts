@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
+import { checkCondition, navFormioUtils } from '../formio';
 import { navFormUtils } from './navFormUtils';
 import formWithContainer from './testdata/nav-form/conditional-container';
 import formWithCustomConditional from './testdata/nav-form/conditional-custom';
@@ -769,6 +770,32 @@ describe('navFormUtils', () => {
   });
 
   describe('getAllActivePanelsFromForm', () => {
+    it('uses the original evaluator for explicit canonical value paths in every panel helper', () => {
+      const form = {
+        components: [
+          {
+            key: 'conditionalPanel',
+            type: 'panel',
+            customConditional: 'show = data.document.value === "ettersender"',
+            components: [],
+          },
+        ],
+      };
+      const submission = {
+        data: { document: { attachmentId: 'document', navId: 'document', type: 'default', value: 'ettersender' } },
+      };
+
+      for (const getPanels of [
+        navFormUtils.getAllActivePanelsFromForm,
+        navFormUtils.getActivePanelsFromForm,
+        navFormUtils.getActiveComponentsFromForm,
+      ]) {
+        expect(getPanels(form, submission).map((panel) => panel.key)).toEqual(['conditionalPanel']);
+      }
+      expect(navFormioUtils.checkCondition).toBe(checkCondition);
+      expect(submission.data.document).not.toHaveProperty('key');
+    });
+
     it('keeps attachment panels in authored order while the legacy helper excludes them', () => {
       const form = {
         components: [

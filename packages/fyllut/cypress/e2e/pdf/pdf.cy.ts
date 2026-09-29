@@ -135,7 +135,7 @@ describe('Pdf', () => {
         cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
 
-      it('All values', () => {
+      it('sends all values and the versioned footer', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc03');
         const date = '20.10.2025';
 

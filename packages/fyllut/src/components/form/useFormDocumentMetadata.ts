@@ -8,7 +8,7 @@ const useFormDocumentMetadata = (form?: FormMetadata) => {
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
     const metaNameDescr = document.querySelector('meta[name="description"]');
-    const metaNameOgDescr = document.querySelector('meta[name="og:description"]');
+    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
     const setHeaderProp = (headerObj: Element | null, metaPropValue: string) => {
       headerObj?.setAttribute('content', metaPropValue);
     };

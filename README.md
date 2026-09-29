@@ -4,6 +4,10 @@ Byggeren lar deg bygge form.io-skjemaer. Publisering av skjema vil bli en ny com
 [skjemautfylling-formio repoet](https://github.com/navikt/skjemautfylling-formio),
 og disse dataene vil så deployes sammen med fyllut.
 
+## 📖 Terminologi
+
+Se [Norwegian-to-English terminology](docs/TERMINOLOGY.md) for foretrukne engelske navn på norske fagtermer i kode.
+
 ## 🚀 Utvikling
 
 ## Installere pakker lokalt

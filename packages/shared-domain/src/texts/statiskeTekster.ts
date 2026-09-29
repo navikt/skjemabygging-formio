@@ -85,8 +85,8 @@ export const statiske = {
     temporarilyUnavailable: 'Det er ikke mulig å sende inn digitalt uten å logge inn nå. Velg innsending på papir.',
   },
   paabegynt: {
-    activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
-    oneActiveTaskHeading: 'Du har ett påbegynt utkast til denne søknaden',
+    activeTasksHeading: 'Du har {{amount}} påbegynte utkast',
+    oneActiveTaskHeading: 'Du har ett påbegynt utkast',
     activeTasksBody: 'Vil du fortsette eller starte på en ny?',
     continueTask: 'Fortsett på utkast',
     startNewTask: 'Start på ny',

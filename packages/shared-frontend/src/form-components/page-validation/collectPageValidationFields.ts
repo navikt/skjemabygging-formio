@@ -62,7 +62,6 @@ const collectPageValidationFields = ({
         submission,
         submissionMethod,
         currentLanguage,
-        pageComponents: components,
         collectChildren: collect,
       });
     });

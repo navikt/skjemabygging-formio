@@ -120,7 +120,7 @@ export interface Component {
   specificEarliestAllowedDate?: string;
   specificLatestAllowedDate?: string;
   beforeDateInputKey?: string;
-  mayBeEqual?: string;
+  mayBeEqual?: boolean | string;
   earliestAllowedDate?: string;
   latestAllowedDate?: string;
   getValue?: () => string;

@@ -46,7 +46,7 @@ const NologinTokenProvider = ({ children, form }: Props) => {
   const { logEvent } = useIntegration();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const navigate = useNavigate();
-  const [nologinToken, setNologinToken] = useState<string>();
+  const tokenRef = useRef<string>();
   const [honeypot, setHoneypot] = useState('');
   const [tokenExpiration, setTokenExpiration] = useState<number>();
   const tokenRequestRef = useRef<Promise<string | undefined>>();
@@ -56,8 +56,8 @@ const NologinTokenProvider = ({ children, form }: Props) => {
       return undefined;
     }
 
-    if (nologinToken) {
-      return nologinToken;
+    if (tokenRef.current) {
+      return tokenRef.current;
     }
 
     if (tokenRequestRef.current) {
@@ -67,7 +67,8 @@ const NologinTokenProvider = ({ children, form }: Props) => {
     const tokenRequest = (async () => {
       const token = await sessions.createNoLoginToken({ honeypot });
       if (token) {
-        setNologinToken(token);
+        // Requests can reuse an earlier callback before React commits the expiration update.
+        tokenRef.current = token;
         setTokenExpiration(getTokenExpiration(token));
       }
 
@@ -82,10 +83,10 @@ const NologinTokenProvider = ({ children, form }: Props) => {
         tokenRequestRef.current = undefined;
       }
     }
-  }, [honeypot, nologinToken, sessions, submissionMethod]);
+  }, [honeypot, sessions, submissionMethod]);
 
   const clearNologinToken = useCallback(() => {
-    setNologinToken(undefined);
+    tokenRef.current = undefined;
     setTokenExpiration(undefined);
   }, []);
 

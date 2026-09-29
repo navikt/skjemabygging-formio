@@ -29,6 +29,30 @@ describe('[endpoint] forsteside', () => {
     expect(generateFileMock.isDone()).toBe(true);
   });
 
+  it('rejects invalid unknown user information before calling the proxy', async () => {
+    const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
+    const next = mockNext();
+    const req = mockRequest({
+      headers: {
+        AzureAccessToken: '',
+      },
+      body: {
+        foerstesidetype: 'ETTERSENDELSE',
+        ukjentBrukerPersoninfo: 'Test\\',
+      },
+    });
+
+    await forsteside.post(req, mockResponse(), next);
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        errorCode: 'BAD_REQUEST',
+        message: 'Unknown user information contains invalid characters.',
+      }),
+    );
+    expect(generateFileMock.isDone()).toBe(false);
+  });
+
   describe('validateForstesideRequest', () => {
     it('If theme is set not on existing address, use default netsPostboks', async () => {
       const body = await validateForstesideRequest({

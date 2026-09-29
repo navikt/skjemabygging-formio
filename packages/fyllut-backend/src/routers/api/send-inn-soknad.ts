@@ -133,13 +133,14 @@ const sendInnSoknad = {
         return;
       }
 
-      const response = await applicationService.deleteApplication({
+      await applicationService.deleteApplication({
         accessToken: tokenxAccessToken,
         innsendingsId: sanitizedInnsendingsId,
+        type: 'digital',
       });
 
       logger.debug(`Successfylly deleted soknad with innsendingsId ${sanitizedInnsendingsId}`);
-      res.json(response);
+      res.json({ status: 'OK' });
     } catch (error) {
       next(error);
     }

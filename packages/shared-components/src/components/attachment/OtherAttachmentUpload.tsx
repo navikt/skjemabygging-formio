@@ -69,10 +69,7 @@ const OtherAttachmentUpload = ({
 
   const handleDelete = async (attachmentId: string) => {
     try {
-      const submissionAttachment = submissionAttachments.find((att) => att.attachmentId === attachmentId);
-      if ((submissionAttachment?.files ?? []).length > 0) {
-        await handleDeleteAttachment(attachmentId);
-      }
+      await handleDeleteAttachment(attachmentId);
       setAttachments((current) => {
         if (current.length === 1) {
           const [{ value }] = current;

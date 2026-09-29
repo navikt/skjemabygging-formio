@@ -148,6 +148,10 @@ import {
   datagridSkjemagruppeBugTranslations,
 } from '../data/forms-api/datagrid/datagridSkjemagruppeBugForm';
 import {
+  datePickerCrossPageForm,
+  datePickerCrossPageTranslations,
+} from '../data/forms-api/date-picker-cross-page/datePickerCrossPageForm';
+import {
   datePickerDeprecatedForm,
   datePickerDeprecatedTranslations,
 } from '../data/forms-api/date-picker/datePickerDeprecatedForm';
@@ -159,6 +163,7 @@ import {
   digitalnologinDigitalNoLoginForm,
   digitalnologinDigitalNoLoginTranslations,
 } from '../data/forms-api/digitalnologin/digitalnologinDigitalNoLoginForm';
+import { draftSaveRaceForm, draftSaveRaceTranslations } from '../data/forms-api/draft-save-race/draftSaveRaceForm';
 import {
   drivingListDeprecatedForm,
   drivingListDeprecatedTranslations,
@@ -257,6 +262,10 @@ import {
   navUnitSelectionForm,
   navUnitSelectionTranslations,
 } from '../data/forms-api/nav-unit-selection/navUnitSelectionForm';
+import {
+  nestedConditionsForm,
+  nestedConditionsTranslations,
+} from '../data/forms-api/nested-conditions/nestedConditionsForm';
 import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-render/newRenderForm';
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
@@ -413,6 +422,8 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: draftSaveRaceForm(), translations: draftSaveRaceTranslations() },
+  { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
@@ -422,6 +433,7 @@ const allForms = [
   { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
   { form: dataFetcherContainerDeprecatedForm(), translations: dataFetcherContainerDeprecatedTranslations() },
   { form: dataFetcherDeprecatedForm(), translations: dataFetcherDeprecatedTranslations() },
+  { form: datePickerCrossPageForm(), translations: datePickerCrossPageTranslations() },
   { form: datePickerDeprecatedForm(), translations: datePickerDeprecatedTranslations() },
   { form: datagridContainerForm(), translations: datagridContainerTranslations() },
   { form: datagridLogicBugForm(), translations: datagridLogicBugTranslations() },

@@ -1,5 +1,4 @@
 import { Component, Form } from '../../models';
-import { attachmentChoiceValue } from './attachmentChoices';
 import { getComponentActualValue } from './resolveConditionalValue';
 import { ConditionComponent, ConditionData, ConditionInput, ConditionObject, ConditionRow } from './types';
 
@@ -21,9 +20,7 @@ const checkSimpleConditional = (
     return true;
   }
 
-  const value = attachmentChoiceValue(
-    getComponentActualValue(condition.when, data, row, instance, form),
-  ) as ConditionInput;
+  const value = getComponentActualValue(condition.when, data, row, instance, form);
   const eq = String(condition.eq);
   const show = String(condition.show);
 

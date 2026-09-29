@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
@@ -25,6 +25,7 @@ const FormPage = () => {
     useFormPageController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError } = useFormNavigation('panel');
   const previousPanelKeys = useRef<string[]>(panels.map((panel) => panel.key));
+  const continueFromPageRef = useRef<(pageKey: string) => void>();
   const nextLabel =
     submissionMethod === 'digital' ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next;
 
@@ -76,19 +77,32 @@ const FormPage = () => {
     focusHashTarget();
   }, [components, hash, state]);
 
+  // A save may outlive page or condition changes; resume against the current page only.
+  useLayoutEffect(() => {
+    continueFromPageRef.current = (pageKey) => {
+      if (currentPanel?.key !== pageKey || !goToNext()) {
+        return;
+      }
+      if (isLast) {
+        goToSummary({ validationErrorPages: validatePages(panels.map((panel) => panel.key)) });
+        return;
+      }
+      goToPanel(panels[currentIndex + 1]?.key);
+    };
+
+    return () => {
+      continueFromPageRef.current = undefined;
+    };
+  }, [currentPanel, goToNext, isLast, goToSummary, validatePages, panels, goToPanel, currentIndex]);
+
   const handleNext = async () => {
-    const valid = goToNext();
-    if (!valid) {
+    if (!currentPanel) {
       return;
     }
-    if (canSaveDraft && !(await saveDraft())) {
+    if (canSaveDraft && (!goToNext() || !(await saveDraft()))) {
       return;
     }
-    if (isLast) {
-      goToSummary({ validationErrorPages: validatePages(panels.map((panel) => panel.key)) });
-      return;
-    }
-    goToPanel(panels[currentIndex + 1]?.key);
+    continueFromPageRef.current?.(currentPanel.key);
   };
 
   const handlePrevious = () => {

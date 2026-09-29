@@ -16,8 +16,6 @@ interface ValidationFieldsContext<T extends Component = Component> {
   submission?: Submission;
   submissionMethod?: SubmissionMethod;
   currentLanguage: string;
-  /** The components of the page being rebuilt, for configuration that points at a sibling. */
-  pageComponents: ComponentDefinition[];
   /** Collect the fields of nested components (containers, rows, data grid rows). */
   collectChildren: (components: ComponentDefinition[]) => ValidationField[];
 }

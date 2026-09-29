@@ -109,10 +109,10 @@ export const updateUtfyltSoknad = async (
 export const deleteSoknad = async (
   appConfig: AppConfigContextType,
   innsendingsId: string,
-): Promise<{ status: string; info: string } | undefined> => {
+): Promise<void | undefined> => {
   const { http, baseUrl, logger } = appConfig;
   if (innsendingsId) {
-    return http?.delete(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
+    return http?.delete(`${baseUrl}/api/send-inn/digital-application/${innsendingsId}`);
   } else {
     logger?.info('Kunne ikke slette søknaden fordi innsendingsId mangler');
   }

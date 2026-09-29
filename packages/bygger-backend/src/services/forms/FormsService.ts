@@ -1,4 +1,4 @@
-import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { logger } from '../../logging/logger';
 import { createHeaders } from '../utils/formsApiUtils';
@@ -22,10 +22,11 @@ const createFormsService = (formsApiUrl: string): FormsService => {
   const post = async (body: FormPostBody, accessToken: string): Promise<Form> => {
     logger.info(`Create new form ${body.skjemanummer} ${body.title}`);
     const componentsWithNavIds = navFormUtils.enrichComponentsWithNavIds(body.components);
+    const title = stringUtils.normalizeUnicode(body.title);
     const response = await fetchWithErrorHandling(formsUrl, {
       method: 'POST',
       headers: createHeaders(accessToken),
-      body: JSON.stringify({ ...body, components: componentsWithNavIds }),
+      body: JSON.stringify({ ...body, title, components: componentsWithNavIds }),
     });
     return response.data as Form;
   };
@@ -33,10 +34,11 @@ const createFormsService = (formsApiUrl: string): FormsService => {
   const put = async (formPath: string, body: FormPutBody, revision: number, accessToken: string): Promise<Form> => {
     logger.info(`Update form ${formPath} (revision ${revision})`);
     const componentsWithNavIds = navFormUtils.enrichComponentsWithNavIds(body.components);
+    const title = stringUtils.normalizeUnicode(body.title);
     const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}`, {
       method: 'PUT',
       headers: createHeaders(accessToken, revision),
-      body: JSON.stringify({ ...body, components: componentsWithNavIds }),
+      body: JSON.stringify({ ...body, title, components: componentsWithNavIds }),
     });
     return response.data as Form;
   };

@@ -8,6 +8,7 @@ type SetupTokenMocksOptions = {
   pid?: string;
   tokenxAccessToken?: string;
   azureAccessToken?: string;
+  azureTokenRequestCount?: number;
   tokenxEndpoint?: string;
 };
 
@@ -38,10 +39,11 @@ const setupTokenMocks = async ({
   pid = '12345678911',
   tokenxAccessToken = 'tokenx-access-token-for-unittest',
   azureAccessToken = 'azure-access-token',
+  azureTokenRequestCount = 1,
   tokenxEndpoint = 'http://tokenx-unittest.nav.no/token',
 }: SetupTokenMocksOptions = {}) => {
   const key = await generateJwk();
-  const azureTokenSetup = setupAzureTokenMocks({ azureAccessToken });
+  const azureTokenSetup = setupAzureTokenMocks({ azureAccessToken, count: azureTokenRequestCount });
   const scopes = [
     nock(extractHost(config.idporten!.idportenJwksUri))
       .get(extractPath(config.idporten!.idportenJwksUri))

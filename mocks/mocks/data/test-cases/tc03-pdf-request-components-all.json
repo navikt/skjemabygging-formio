@@ -346,6 +346,6 @@
     "lowerleft": "Skjemanummer: components",
     "upperRight": null,
     "upperMiddle": null,
-    "lowerMiddle": "Versjon: local"
+    "lowerMiddle": "Versjon: dev-local/mr-sha/forms@git-sha"
   }
 }

@@ -1,8 +1,9 @@
+import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request } from 'express';
 
 const isValidPath = (path: string, strict: boolean = true) => {
   if (strict) {
-    return /^[a-z0-9]+$/.test(path);
+    return validatorUtils.isValidFormPath(path);
   }
 
   return /^[A-Za-z0-9_-]+$/.test(path);

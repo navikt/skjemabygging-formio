@@ -16,6 +16,7 @@ router.post('/:innsendingsId/attachments/:attachmentId', uploadSingleFile('filin
 router.get('/:innsendingsId/attachments/:attachmentId/:fileId', attachmentsEndpoints.get);
 router.delete('/:innsendingsId/attachments/:attachmentId', attachmentsEndpoints.delete);
 router.delete('/:innsendingsId/attachments/:attachmentId/*fileId', attachmentsEndpoints.delete);
+router.delete('/:innsendingsId', applicationEndpoints.delete);
 router.post('/:innsendingsId', azurePdfGeneratorToken, applicationEndpoints.post);
 
 export default router;

@@ -22,6 +22,11 @@ export const createApp = (setupDev: boolean = false) => {
   const noApiStaticInternalRegex = /^(?!.*\/(internal|static|api)\/).*$/;
 
   const app = express();
+  // The NAIS HAProxy ingress replaces X-Forwarded-For with a single value, the client address
+  // observed by the Google load balancer, discarding any client supplied prefix. Trusting exactly
+  // one hop therefore gives the real client address in req.ip, without letting a client spoof it.
+  // Anything higher would trust a client supplied value and defeat the rate limiter.
+  app.set('trust proxy', 1);
   app.use(httpRequestLogger);
 
   app.use(expressJsonMetricHandler(express.json({ limit: '50mb' })));

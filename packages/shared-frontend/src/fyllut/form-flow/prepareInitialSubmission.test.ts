@@ -22,7 +22,7 @@ describe('prepareInitialSubmission', () => {
           label: 'Details',
           type: 'textfield',
           input: true,
-          customConditional: 'show = data.documentation && data.documentation.key === "ettersender";',
+          customConditional: 'show = !!data.documentation?.some(attachment => attachment.value === "ettersender");',
         },
       ]);
       const prepared = prepareInitialSubmission(
