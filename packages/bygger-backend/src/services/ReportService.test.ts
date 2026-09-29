@@ -860,6 +860,7 @@ describe('ReportService', () => {
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(3);
+        expect(report.headers).not.toContain('første publiseringsdato');
         expect(report.headers.slice(-7)).toEqual([
           HEADER_INNSENDING,
           HEADER_INNSENDING_PAPER,

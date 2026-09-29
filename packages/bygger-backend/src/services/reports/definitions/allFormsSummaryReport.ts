@@ -41,7 +41,6 @@ type SummaryRow = {
   noLoginSubmissionUrl: string;
   hasUploadedPdfs: string;
   staticPdfEnabled: string;
-  firstPublishedAt: '';
 };
 
 const declarationLabels: Record<DeclarationType, string> = {
@@ -90,7 +89,6 @@ const allFormsSummaryReport = ({
     introPageEnabled: 'introside aktivert',
     hasUploadedPdfs: 'har opplastede PDF-er',
     staticPdfEnabled: 'STATIC_PDF aktivert',
-    firstPublishedAt: 'første publiseringsdato',
     submissionUrl: 'innsendingsurl',
     paperSubmissionUrl: 'innsendingsurl (papir)',
     noLoginSubmissionUrl: 'innsendingsurl (nologin)',
@@ -186,8 +184,6 @@ const allFormsSummaryReport = ({
           : '',
         hasUploadedPdfs: yesNo(pdfs.length),
         staticPdfEnabled: yesNo(submissionTypesUtils.isStaticPdf(submissionTypes)),
-        // Stage 1 has no authoritative first-publication contract. Never substitute the latest publication date.
-        firstPublishedAt: '',
       };
     }
   },
