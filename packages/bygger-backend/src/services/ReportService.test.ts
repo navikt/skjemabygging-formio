@@ -550,7 +550,6 @@ describe('ReportService', () => {
       });
 
       it('has correct attachment fields', async () => {
-        const HEADER_HAS_ATTACHMENTS = 'har vedlegg';
         const HEADER_NUMBER_OF_ATTACHMENTS = 'antall vedlegg';
         const HEADER_ATTACHMENT_NAMES = 'vedleggsnavn';
 
@@ -624,16 +623,14 @@ describe('ReportService', () => {
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(3);
+        expect(report.headers).not.toContain('har vedlegg');
+        expect(report.forms.every((row) => row.length === report.headers.length)).toBe(true);
         expect(report.headers.at(-1)).toBe('radnummer');
         expect(report.forms.map((row) => row.at(-1))).toEqual(['1', '2', '3']);
 
         const formFields1 = report.forms[0];
         const formFields2 = report.forms[1];
         const formFields3 = report.forms[2];
-
-        expect(formFields1[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('ja'); // has attachments
-        expect(formFields2[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('nei'); // no components
-        expect(formFields3[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('nei'); // empty components array
 
         expect(formFields1[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('2'); // has attachments
         expect(formFields2[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('0'); // no components

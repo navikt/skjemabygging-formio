@@ -24,7 +24,6 @@ type SummaryRow = {
   subsequentSubmissionTypes: SubmissionType[];
   signatureCount: number;
   path: string;
-  hasAttachments: string;
   attachmentCount: number;
   attachmentNames: string;
   submissionUrl: string;
@@ -78,7 +77,6 @@ const allFormsSummaryReport = ({
     subsequentSubmissionTypes: 'subsequentSubmissionTypes',
     signatureCount: 'signaturfelt',
     path: 'path',
-    hasAttachments: 'har vedlegg',
     attachmentCount: 'antall vedlegg',
     attachmentNames: 'vedleggsnavn',
     submissionUrl: 'innsendingsurl',
@@ -153,7 +151,6 @@ const allFormsSummaryReport = ({
         subsequentSubmissionTypes: reportSubsequentSubmissionTypes,
         signatureCount: properties.signatures?.length || 1,
         path,
-        hasAttachments: yesNo(hasAttachments),
         attachmentCount: attachments.length,
         attachmentNames: attachments.map((attachment) => attachment.vedleggstittel).join(','),
         submissionUrl,
