@@ -1,5 +1,11 @@
 import { formUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormsApiTranslationMap, hasErrorCode, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Form,
+  FormsApiTranslationMap,
+  hasErrorCode,
+  SubmissionData,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface RenderFormBootstrap {
@@ -21,6 +27,10 @@ const formSelect = 'title,skjemanummer,path,revision,introPage,components,proper
 
 const createRenderFormBootstrapService = ({ http, backendBaseUrl }: Props): RenderFormBootstrapService => ({
   load: async (formPath) => {
+    if (!validatorUtils.isValidFormPath(formPath)) {
+      return undefined;
+    }
+
     const form = await http
       .get<Form>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`)
       .then((form) => {

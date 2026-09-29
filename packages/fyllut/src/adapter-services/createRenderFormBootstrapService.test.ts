@@ -8,7 +8,7 @@ vi.mock('@navikt/skjemadigitalisering-shared-components', () => ({
 }));
 
 const form: Form = {
-  path: 'test-form',
+  path: 'testform',
   title: 'Test form',
   skjemanummer: 'TEST',
   components: [],
@@ -40,9 +40,19 @@ describe('createRenderFormBootstrapService', () => {
       form: { ...form, firstPanelSlug: 'first-page' },
       translations: {},
     });
-    expect(get).toHaveBeenNthCalledWith(1, expect.stringContaining('/fyllut/api/forms/test-form?select='));
-    expect(get).toHaveBeenNthCalledWith(2, '/fyllut/api/forms/test-form/translations');
+    expect(get).toHaveBeenNthCalledWith(1, expect.stringContaining('/fyllut/api/forms/testform?select='));
+    expect(get).toHaveBeenNthCalledWith(2, '/fyllut/api/forms/testform/translations');
   });
+
+  it.each(['', '&', '../form', 'form?select=path', 'form#page', 'invalid-form'])(
+    'returns a missing form for an invalid route without making requests: %s',
+    async (formPath) => {
+      const { get, service } = setup();
+
+      await expect(service.load(formPath)).resolves.toBeUndefined();
+      expect(get).not.toHaveBeenCalled();
+    },
+  );
 
   it('returns a missing form only when the form request returns NOT_FOUND', async () => {
     const { get, service } = setup();
@@ -53,6 +63,7 @@ describe('createRenderFormBootstrapService', () => {
   });
 
   it.each([
+    new ResponseError('BAD_REQUEST', 'Invalid select parameter'),
     new ResponseError('SERVICE_UNAVAILABLE', 'Service unavailable'),
     new ResponseError('UNAUTHORIZED', 'Authentication required'),
     new TypeError('Failed to fetch'),

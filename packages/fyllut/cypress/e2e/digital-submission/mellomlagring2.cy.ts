@@ -191,9 +191,7 @@ describe('Mellomlagring v2', () => {
       cy.intercept('GET', `/fyllut/api/send-inn/soknad/${updateErrorInnsendingsId}`).as(
         'getMellomlagringForInnsendingWithUpdateError',
       );
-      cy.intercept('DELETE', `/fyllut/api/send-inn/digital-application/${validInnsendingsId}`).as(
-        'deleteMellomlagring',
-      );
+      cy.intercept('DELETE', `/fyllut/api/send-inn/soknad/${validInnsendingsId}`).as('deleteMellomlagring');
     });
 
     it('creates and updates mellomlagring', () => {
@@ -285,7 +283,7 @@ describe('Mellomlagring v2', () => {
 
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
-      cy.wait('@deleteMellomlagring');
+      cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 500);
       cy.findByRole('dialog', { name: TEXTS.grensesnitt.confirmDeletePrompt.title })
         .should('be.visible')
         .and('contain.text', TEXTS.statiske.mellomlagringError.delete.message);
@@ -494,7 +492,7 @@ describe('Mellomlagring v2', () => {
           );
 
           testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
-          cy.wait('@deleteMellomlagring');
+          cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 500);
           cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
         });
 

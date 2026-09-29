@@ -11,5 +11,9 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index',
     },
+    rollupOptions: {
+      // Share runtime classes such as ResponseError with the consuming backend.
+      external: ['@navikt/skjemadigitalisering-shared-domain'],
+    },
   },
 });
