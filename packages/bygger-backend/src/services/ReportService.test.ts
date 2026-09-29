@@ -290,6 +290,28 @@ describe('ReportService', () => {
         });
       });
 
+      it('reports the paper unit requirement as yes or blank', async () => {
+        const forms: Form[] = [true, false, undefined].map((requiresUnit, index) => ({
+          title: 'Paper unit requirement',
+          skjemanummer: 'EXAMPLE',
+          path: `paper-unit-${index}`,
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['PAPER'],
+            subsequentSubmissionTypes: [],
+            enhetMaVelgesVedPapirInnsending: requiresUnit,
+          },
+          components: [],
+        }));
+        setupNock(forms);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms.map((row) => row[report.getHeaderIndex('må velge enhet (papir)')])).toEqual(['ja', '', '']);
+      });
+
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 

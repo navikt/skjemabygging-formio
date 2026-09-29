@@ -178,7 +178,7 @@ const allFormsSummaryReport = ({
         customDeclarationText: declarationType === DeclarationType.custom ? (properties.declarationText ?? '') : '',
         subsequentSubmissionDeadline: properties.ettersendelsesfrist,
         recipientAddress: recipientAddress(properties.mottaksadresseId, recipients),
-        requiresPaperUnit: yesNo(properties.enhetMaVelgesVedPapirInnsending),
+        requiresPaperUnit: properties.enhetMaVelgesVedPapirInnsending ? 'ja' : '',
         hasGeneralInstructions: yesNo(properties.descriptionOfSignatures?.trim()),
         introPageEnabled: yesNo(form.introPage?.enabled),
         noLoginSubmissionUrl: submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes)
