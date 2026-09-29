@@ -53,7 +53,7 @@ const declarationLabels: Record<DeclarationType, string> = {
 const formatSubmissionTypes = (types: SubmissionType[]) => `[${types.map((type) => JSON.stringify(type)).join(', ')}]`;
 
 const recipientAddress = (recipientId: string | undefined, recipients: Map<string | undefined, Recipient>) => {
-  if (!recipientId) return 'Standard';
+  if (!recipientId) return '';
   const recipient = recipients.get(recipientId);
   if (!recipient) {
     throw new ResponseError('INTERNAL_SERVER_ERROR', 'Report recipient lookup failed');

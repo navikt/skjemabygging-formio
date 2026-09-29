@@ -244,7 +244,7 @@ describe('ReportService', () => {
       });
 
       describe('recipient address', () => {
-        it('reports standard and selected recipient addresses', async () => {
+        it('leaves the standard recipient blank and reports selected recipient addresses', async () => {
           const publishedForms = [
             {
               title: 'Standard recipient',
@@ -285,7 +285,7 @@ describe('ReportService', () => {
           const report = parseReport(writableStream.toString());
           const recipientAddressIndex = report.getHeaderIndex('mottaksadresse');
 
-          expect(report.forms[0][recipientAddressIndex]).toBe('Standard');
+          expect(report.forms[0][recipientAddressIndex]).toBe('');
           expect(report.forms[1][recipientAddressIndex]).toBe('Example office, Postboks 123, 0123 Oslo');
         });
       });
