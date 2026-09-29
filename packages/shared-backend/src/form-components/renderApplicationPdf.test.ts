@@ -62,6 +62,29 @@ describe('renderApplicationPdf submission validation', () => {
 });
 
 describe('renderApplicationPdf attachment row scope', () => {
+  it('evaluates explicit canonical value paths without modifying the submitted answers', () => {
+    const components: Component[] = [
+      { key: 'always', label: 'Always', type: 'textfield', input: true },
+      {
+        key: 'explanation',
+        label: 'Explanation',
+        type: 'textfield',
+        input: true,
+        customConditional: 'show = data.document.value === "ettersender"',
+      },
+    ];
+    const document = createAttachment('document', 'ettersender');
+    const submission = { data: { document, always: 'Base', explanation: 'More information' } };
+
+    expect(render(components, submission)?.verdiliste).toEqual([
+      { label: 'Always', verdi: 'Base' },
+      { label: 'Explanation', verdi: 'More information' },
+    ]);
+    document.value = 'harIkke';
+    expect(render(components, submission)?.verdiliste).toEqual([{ label: 'Always', verdi: 'Base' }]);
+    expect(document).not.toHaveProperty('key');
+  });
+
   it('keeps an unmatched primitive row answer when another row has authoritative legacy storage', () => {
     expect(
       render(

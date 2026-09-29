@@ -10,6 +10,41 @@ const createForm = (components: Component[]): Form =>
   }) as Form;
 
 describe('activeComponents', () => {
+  it('evaluates an alert on an attachment panel like any other conditional component', () => {
+    const form = createForm([
+      {
+        key: 'attachments',
+        label: 'Attachments',
+        type: 'panel',
+        isAttachmentPanel: true,
+        components: [
+          {
+            key: 'document',
+            label: 'Documentation',
+            type: 'attachment',
+            input: true,
+          },
+          {
+            key: 'notice',
+            label: 'Notice',
+            type: 'alertstripe',
+            customConditional: 'show = data.document?.value === "ettersender";',
+          },
+        ],
+      },
+    ]);
+    const document = { attachmentId: 'document', navId: 'document', type: 'default' as const, value: 'ettersender' };
+    const submission = { data: { document } };
+
+    expect(getActivePanels(form, { data: {} })[0].components?.map((component) => component.key)).toEqual(['document']);
+    expect(getActivePanels(form, submission)[0].components?.map((component) => component.key)).toEqual([
+      'document',
+      'notice',
+    ]);
+    document.value = 'harIkke';
+    expect(getActivePanels(form, submission)[0].components?.map((component) => component.key)).toEqual(['document']);
+  });
+
   it('filters inactive panels and descendants while preserving authored order', () => {
     const form = createForm([
       {

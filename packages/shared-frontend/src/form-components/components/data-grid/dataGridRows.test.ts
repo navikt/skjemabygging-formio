@@ -332,6 +332,35 @@ describe('dataGridRows', () => {
     ).toEqual(['showField', 'field']);
   });
 
+  it('evaluates explicit attachment array values without borrowing another row answer', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'rows',
+      label: 'Rows',
+      type: 'datagrid',
+      navId: 'rows',
+      input: true,
+      tree: true,
+      components: [
+        {
+          key: 'explanation',
+          label: 'Explanation',
+          type: 'textfield',
+          navId: 'explanation',
+          customConditional: 'show = !!row.document?.some(attachment => attachment.value === "ettersender")',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const document = { attachmentId: 'document', navId: 'document', type: 'other' as const, value: 'ettersender' };
+    const submission = { data: { rows: [{ document: [document] }, {}] } };
+    const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
+
+    expect(scopes.map((scope) => scope.activeComponents.map((component) => component.key))).toEqual([
+      ['explanation'],
+      [],
+    ]);
+  });
+
   it('keeps static hidden fields in the row scope while applying their authored condition', () => {
     const datagrid: ComponentDefinition = {
       key: 'repeterende',
