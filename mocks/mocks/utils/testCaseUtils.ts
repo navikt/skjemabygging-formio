@@ -1,6 +1,8 @@
-const filterKeys = (obj, excludeKeys) => {
+import { reportValidation, type Middleware } from './playwrightEvidence';
+
+const filterKeys = (obj, excludeKeys: string[]) => {
   if (!obj || typeof obj !== 'object') return obj;
-  const filtered = Array.isArray(obj) ? [...obj] : { ...obj };
+  const filtered = structuredClone(obj);
 
   excludeKeys.forEach((keyPath) => {
     const keys = keyPath.split('.');
@@ -66,10 +68,8 @@ const findMismatches = (obj1, obj2, path = '') => {
   return mismatches;
 };
 
-const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
-
-const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
-  const filteredActual = filterKeys(deepCopy(actualBody), excludeKeys);
+const verifyJsonBody = (actualBody, expectedBody, excludeKeys: string[] = []) => {
+  const filteredActual = filterKeys(actualBody, excludeKeys);
   const filteredExpected = filterKeys(expectedBody, excludeKeys);
 
   if (JSON.stringify(filteredActual) === JSON.stringify(filteredExpected)) {
@@ -79,21 +79,34 @@ const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
   return findMismatches(filteredActual, filteredExpected) || [];
 };
 
-export const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
-  return async (req, res) => {
-    const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
-    if (mismatches.length) {
-      console.error(
-        `Unexpected request body (${JSON.stringify(req.body)}) - mismatches: ${JSON.stringify(mismatches)}`,
+const compareBodyMiddleware = (expectedBody: unknown, excludeKeys: string[] = [], onSuccess): Middleware => {
+  return async (req, res, next) => {
+    try {
+      const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
+      reportValidation(
+        req,
+        mismatches.map((mismatch) => mismatch.path),
       );
-      res.status(400);
-      res.contentType('application/json; charset=UTF-8');
-      res.send({
-        message: 'Bad Request: Verification of request body failed',
-        mismatches: mismatches,
-      });
-      return;
+      if (mismatches.length) {
+        if (process.env.FYLLUT_PLAYWRIGHT_EPOCH)
+          console.error(`BODY_MISMATCH: ${mismatches.map((mismatch) => mismatch.path).join(', ')}`);
+        else
+          console.error(
+            `Unexpected request body (${JSON.stringify(req.body)}) - mismatches: ${JSON.stringify(mismatches)}`,
+          );
+        res.status(400);
+        res.set({ 'Content-Type': 'application/json; charset=UTF-8' });
+        res.send({
+          message: 'Bad Request: Verification of request body failed',
+          mismatches: mismatches,
+        });
+        return;
+      }
+      await onSuccess(req, res);
+    } catch (error) {
+      next(error);
     }
-    onSuccess(req, res);
   };
 };
+
+export { compareBodyMiddleware, verifyJsonBody };

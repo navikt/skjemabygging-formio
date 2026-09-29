@@ -31,6 +31,37 @@ pnpm playwright:fyllut --grep 'data is empty'
 
 `--list` starts no servers. Use the root runners for execution. They allow file selectors and `--grep`, not options that override workers, retries or reporters. Empty selections fail. The checker rejects changed Cypress test logic or shared helpers, missing pointers, incorrect or duplicate Playwright IDs, unexpected skips and incomplete results. It does not establish behavioral equivalence; developers must compare assertions, hooks and helper behavior using the checklists.
 
+## Outbound mock evidence
+
+Playwright epochs opt into observation of `post-familie-pdf` and
+`post-digital-soknad`. The executed handler records its actual variant, response
+status, completion and request-bound comparator result. Only the comparator can
+report a passed body comparison. Selecting a variant or receiving HTTP 200 is
+not proof.
+
+The mock server binds to loopback in this mode. Its `/__playwright` control
+router supports one owner per immutable process epoch, expected route variants,
+snapshots and release. Concurrent owners, old epochs and reused leases are
+rejected. Ordinary mock startup does not expose this router. The existing JSON,
+middleware and text responses retain their contracts.
+
+Evidence contains IDs, status and mismatch field paths, never request bodies.
+The tc07 fixtures and their excluded fields remain unchanged. Expected and
+actual bodies are both copied before filtering, so repeated comparisons cannot
+mutate shared fixtures. The mock loader can reload modules; this does not
+reset the process's epoch or reassign its requests to another test.
+
+The isolated HTTP contract test runs without a browser:
+
+```sh
+node --test bin/playwright/mock-protocol.test.mjs
+pnpm exec vitest run --config mocks/vitest.playwright.config.ts
+```
+
+The HTTP test compares instrumented and ordinary response statuses, body hashes
+and headers. It normalizes only generated request IDs and transport timestamps.
+Do not run it concurrently with another local stack using ports 3440–3443.
+
 In CPLT, the documented `sandbox.allow_cache_exec = ["ms-playwright"]` setting permits running Playwright's Chromium. Localhost access must also be active for the app and mock server. All eight browser journeys passed in an AI-run CPLT session. The mock-server log confirmed that `success-empty` handled the activities request. A negative-control run using `success` instead failed on the empty-array assertion, receiving three activities. Developer coverage and Playwright-practice review is still pending.
 
 CPLT resolves permissions when it starts. Launching from a parent directory does not automatically apply this repository's approved `.cplt.toml`; resuming a conversation or changing directories later does not change those permissions. Successful runs in one approved environment do not establish general CPLT compatibility. On Linux, port grants also permit connections to remote hosts on those ports. The Playwright runner requires its four ports to be free and does not expand permissions. Native pnpm and Chromium must already be executable, workspace dependencies installed, and the ordinary Git hook readable for local commits. Resolve registry authentication outside the agent session; never put credentials in test configuration.

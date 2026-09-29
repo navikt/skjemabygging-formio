@@ -8,6 +8,8 @@ const createFyllutTestStack = ({
   nodeExecutable = process.execPath,
   mode = 'dev',
   epoch,
+  observeMocks = true,
+  mockFault,
 }) => {
   if (!['dev', 'built'].includes(mode)) throw new Error(`Unsupported FyllUt stack mode: ${mode}`);
   const [mockPort, mockAdminPort, backendPort, frontendPort] = ports;
@@ -56,8 +58,14 @@ const createFyllutTestStack = ({
           '--no-plugins.inquirerCli.enabled',
           `--server.port=${mockPort}`,
           `--plugins.adminApi.port=${mockAdminPort}`,
+          ...(epoch ? ['--server.host=127.0.0.1', '--plugins.adminApi.host=127.0.0.1'] : []),
         ],
-        epoch ? { FYLLUT_PLAYWRIGHT_EPOCH: epoch } : {},
+        epoch && observeMocks
+          ? {
+              FYLLUT_PLAYWRIGHT_EPOCH: epoch,
+              ...(mockFault ? { FYLLUT_PLAYWRIGHT_TEST_FAULT: mockFault } : {}),
+            }
+          : { FYLLUT_PLAYWRIGHT_EPOCH: '', FYLLUT_PLAYWRIGHT_TEST_FAULT: '' },
         resolve(repoRoot, 'mocks'),
       ],
       [

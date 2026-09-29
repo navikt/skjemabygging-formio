@@ -77,7 +77,7 @@ const startManagedStack = async (
     for (const [index, [command, args, env, cwd]] of commands.entries()) {
       const child = spawn(
         command,
-        ['--import', fileURLToPath(new URL('./report-listening.mjs', import.meta.url)), ...args],
+        ['--require', fileURLToPath(new URL('./report-listening.mjs', import.meta.url)), ...args],
         {
           cwd,
           env: { ...process.env, ...env },
