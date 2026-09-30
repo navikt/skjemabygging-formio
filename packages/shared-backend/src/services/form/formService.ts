@@ -53,6 +53,10 @@ const createFormService = ({
       return client.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
     }
 
+    if (!formsLocation) {
+      throw new ResponseError('SERVICE_UNAVAILABLE', 'Published form directory is not configured');
+    }
+
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
     if (!form) {
       throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
