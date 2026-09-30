@@ -279,6 +279,14 @@ import {
 } from '../data/forms-api/phone-number/phoneNumberDeprecatedForm';
 import { radioDeprecatedForm, radioDeprecatedTranslations } from '../data/forms-api/radio/radioDeprecatedForm';
 import {
+  rendererFallbackForm,
+  rendererFallbackTranslations,
+} from '../data/forms-api/renderer-initialization/rendererFallbackForm';
+import {
+  rendererReadyForm,
+  rendererReadyTranslations,
+} from '../data/forms-api/renderer-initialization/rendererReadyForm';
+import {
   selectBoxesDeprecatedForm,
   selectBoxesDeprecatedTranslations,
 } from '../data/forms-api/select-boxes/selectBoxesDeprecatedForm';
@@ -422,6 +430,8 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: rendererFallbackForm(), translations: rendererFallbackTranslations() },
+  { form: rendererReadyForm(), translations: rendererReadyTranslations() },
   { form: draftSaveRaceForm(), translations: draftSaveRaceTranslations() },
   { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },

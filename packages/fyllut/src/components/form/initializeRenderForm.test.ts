@@ -44,7 +44,7 @@ const setup = () => {
     updateDraft: vi.fn(),
     deleteDraft: vi.fn(),
   };
-  const initialize = () =>
+  const initialize = (overrides: Partial<Parameters<typeof initializeRenderForm>[0]> = {}) =>
     initializeRenderForm({
       formPath: form.path,
       routePath: 'first-page',
@@ -53,6 +53,7 @@ const setup = () => {
       bootstrapService,
       applications,
       loadKey: 'load-key',
+      ...overrides,
     });
   return { bootstrapService, initialize };
 };
@@ -146,6 +147,31 @@ describe('initializeRenderForm', () => {
     vi.mocked(findUnsupportedCustomValidation).mockReturnValue(unsupportedCustomValidation);
 
     await expect(initialize()).resolves.toEqual({ type: 'unsupportedByRenderer', unsupportedCustomValidation });
+    expect(bootstrapService.getPrefillData).not.toHaveBeenCalled();
+    expect(initializeDigitalDraft).not.toHaveBeenCalled();
+  });
+
+  it('redirects an unsupported deep link to the intro, then resolves legacy fallback without side effects', async () => {
+    const { bootstrapService, initialize } = setup();
+    const unsupportedCustomValidation = [
+      { componentKey: 'field', componentType: 'textfield', script: 'valid = false;' },
+    ];
+    vi.mocked(findUnsupportedCustomValidation).mockReturnValue(unsupportedCustomValidation);
+    vi.mocked(bootstrapService.load).mockResolvedValue({
+      form: { ...form, properties: { ...form.properties, submissionTypes: ['PAPER', 'DIGITAL'] } },
+      translations: {},
+    });
+    const options = { search: '?lang=en', submissionMethod: undefined };
+
+    await expect(initialize({ ...options, routePath: 'first-page' })).resolves.toEqual({
+      type: 'redirect',
+      pathname: '/test-form',
+      search: '?lang=en',
+    });
+    await expect(initialize({ ...options, routePath: '' })).resolves.toEqual({
+      type: 'unsupportedByRenderer',
+      unsupportedCustomValidation,
+    });
     expect(bootstrapService.getPrefillData).not.toHaveBeenCalled();
     expect(initializeDigitalDraft).not.toHaveBeenCalled();
   });

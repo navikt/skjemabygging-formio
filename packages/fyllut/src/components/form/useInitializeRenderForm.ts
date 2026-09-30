@@ -84,6 +84,8 @@ const useInitializeRenderForm = ({
             navigate('/soknad-ikke-funnet', { replace: true });
             return;
           case 'redirect':
+            // Resolve the destination instead of reusing the redirect for the same load key.
+            loadRef.current = undefined;
             navigate({ pathname: result.pathname, search: result.search }, { replace: true });
         }
       })
