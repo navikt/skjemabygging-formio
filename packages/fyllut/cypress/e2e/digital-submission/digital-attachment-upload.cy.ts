@@ -98,7 +98,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           });
       });
 
-      it('submits attachments with the form', () => {
+      it('submits attachments and grants the user digital access', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');
         cy.clickSendNav();
