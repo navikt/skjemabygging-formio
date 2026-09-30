@@ -1,6 +1,8 @@
 packages:
   - 'packages/*'
   - 'mocks'
+linkWorkspacePackages: true
+injectWorkspacePackages: true
 allowBuilds:
   '@scarf/scarf': false
   core-js: true
