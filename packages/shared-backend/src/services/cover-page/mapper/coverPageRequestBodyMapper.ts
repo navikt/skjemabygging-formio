@@ -3,6 +3,7 @@ import {
   I18nTranslationReplacements,
   ResponseError,
   stringUtils,
+  TEXTS,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
@@ -44,6 +45,7 @@ const createRequestBody = ({
   type = 'SKJEMA',
   formNumber,
   formTitle,
+  archiveTitle = formTitle,
   languageCode,
   tema = '',
   vedleggsliste = [],
@@ -54,6 +56,7 @@ const createRequestBody = ({
   type?: ForstesideRequestBody['foerstesidetype'];
   formNumber: string;
   formTitle: string;
+  archiveTitle?: string;
   languageCode: string;
   tema?: string;
   vedleggsliste?: string[];
@@ -65,7 +68,7 @@ const createRequestBody = ({
   navSkjemaId: formNumber,
   spraakkode: parseLanguage(languageCode),
   overskriftstittel: formTitle,
-  arkivtittel: formTitle,
+  arkivtittel: archiveTitle,
   tema,
   vedleggsliste,
   dokumentlisteFoersteside,
@@ -156,16 +159,31 @@ const createRequestBodyFromDownloadData = (
     throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
   }
 
-  const formTitle = getTitle(translate ? translate(form.title) : form.title, form.skjemanummer);
+  const translatedFormTitle = translate ? translate(form.title) : form.title;
+  const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
+  const isSubsequentSubmission = type === 'ETTERSENDELSE';
+  const coverPageTitle = isSubsequentSubmission
+    ? stringUtils.normalizeUnicode(
+        translate
+          ? translate(TEXTS.statiske.staticPdf.ettersendingCoverPageTitle, {
+              formNumber: form.skjemanummer,
+              title: form.title,
+            })
+          : `Ettersending til ${formTitle}`,
+      )
+    : formTitle;
 
   return createRequestBody({
     type,
     formNumber: formNumber ?? form.skjemanummer,
-    formTitle,
+    formTitle: coverPageTitle,
+    archiveTitle: isSubsequentSubmission
+      ? stringUtils.normalizeUnicode(`Ettersending til ${form.skjemanummer} ${translatedFormTitle}`)
+      : undefined,
     languageCode,
     tema: properties?.tema,
     vedleggsliste: attachments,
-    dokumentlisteFoersteside: [formTitle, ...attachments],
+    dokumentlisteFoersteside: isSubsequentSubmission ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),
   });
