@@ -205,8 +205,13 @@ describe('Digital no login', () => {
     });
 
     it('allows uploading files after captcha is completed', () => {
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@captchaRequest').its('response.statusCode').should('equal', 200);
+      cy.wait('@uploadIdFile').its('response.statusCode').should('equal', 201);
+      cy.findByText('id-billy-bruker.jpg').should('be.visible');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
       cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).should('not.exist');
     });
 
