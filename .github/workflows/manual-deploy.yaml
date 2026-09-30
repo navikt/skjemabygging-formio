@@ -27,7 +27,7 @@ jobs:
       - uses: pnpm/action-setup@v6
         with:
           run_install: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: '24.14.0'
           cache: 'pnpm'
@@ -67,7 +67,7 @@ jobs:
       - uses: pnpm/action-setup@v6
         with:
           run_install: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: '24.14.0'
           cache: 'pnpm'
@@ -107,7 +107,7 @@ jobs:
     steps:
       - uses: 'actions/checkout@v7'
       - name: 'Deploy to preprod'
-        uses: 'nais/deploy/actions/deploy@v2'
+        uses: 'nais/deploy/actions/deploy@v3'
         env:
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/bygger/nais.yaml'
@@ -124,7 +124,7 @@ jobs:
     steps:
       - uses: 'actions/checkout@v7'
       - name: 'Deploy to preprod'
-        uses: 'nais/deploy/actions/deploy@v2'
+        uses: 'nais/deploy/actions/deploy@v3'
         env:
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/fyllut/config.yaml'
