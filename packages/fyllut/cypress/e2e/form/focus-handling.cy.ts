@@ -183,7 +183,8 @@ describe('Focus handling', () => {
     });
   });
 
-  describe('One-time field focus', () => {
+  // Direct-hash visits must load a fresh app, not reuse the previous test's route.
+  describe('One-time field focus', { testIsolation: true }, () => {
     const openSummaryErrors = () => {
       cy.visit('/fyllut/errorfocus/oppsummering?sub=paper');
       cy.defaultWaits();

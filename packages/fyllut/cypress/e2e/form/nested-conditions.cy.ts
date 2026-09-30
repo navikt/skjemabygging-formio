@@ -9,8 +9,9 @@ describe('Nested condition scope', () => {
     cy.defaultInterceptsMellomlagring();
     cy.visit('/fyllut/nestedconditions?sub=digital');
     cy.defaultWaits();
-    cy.clickStart();
     cy.wait('@createMellomlagring');
+    cy.clickStart();
+    cy.wait('@updateMellomlagring').its('response.statusCode').should('equal', 200);
     cy.findByRole('heading', { name: 'Expenses', level: 2 }).should('be.visible');
   });
 
