@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
@@ -12,13 +12,13 @@ import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
+import { useFieldFocus } from './useFieldFocus';
 import { useFormPageController } from './useFormPageController';
 
 const FormPage = () => {
   const { translate } = useLanguage();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { panelSlug } = useParams<{ panelSlug?: string }>();
-  const { hash, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormActions();
   const { schedulePageValidation, validatePages } = useValidationActions();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } =
@@ -28,6 +28,8 @@ const FormPage = () => {
   const continueFromPageRef = useRef<(pageKey: string) => void>();
   const nextLabel =
     submissionMethod === 'digital' ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next;
+
+  useFieldFocus();
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
@@ -48,34 +50,6 @@ const FormPage = () => {
       schedulePageValidation(currentPanel.key);
     }
   }, [components, currentPanel, schedulePageValidation]);
-
-  useEffect(() => {
-    const locationStateFocusId = typeof state === 'object' && state && 'focusId' in state ? state.focusId : undefined;
-    const targetId = (locationStateFocusId as string | undefined) ?? hash.slice(1);
-    if (!targetId) {
-      return;
-    }
-    const focusHashTarget = (remainingAttempts = 20) => {
-      const element = document.getElementById(targetId);
-      if (!element) {
-        if (remainingAttempts > 1) {
-          requestAnimationFrame(() => focusHashTarget(remainingAttempts - 1));
-        }
-        return;
-      }
-      element.scrollIntoView({ block: 'center' });
-      const focusTarget =
-        element.matches('input, select, textarea, button, [tabindex]') || element.tabIndex >= 0
-          ? element
-          : element.querySelector<HTMLElement>('input, select, textarea, button, [tabindex]');
-      focusTarget?.focus({ preventScroll: true });
-      if (focusTarget && document.activeElement !== focusTarget && remainingAttempts > 1) {
-        requestAnimationFrame(() => focusHashTarget(remainingAttempts - 1));
-      }
-    };
-
-    focusHashTarget();
-  }, [components, hash, state]);
 
   // A save may outlive page or condition changes; resume against the current page only.
   useLayoutEffect(() => {

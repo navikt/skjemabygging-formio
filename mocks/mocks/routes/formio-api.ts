@@ -173,6 +173,7 @@ import {
   emailDeprecatedTranslations,
 } from '../data/forms-api/email-deprecated/emailDeprecatedForm';
 import { errorSummaryForm, errorSummaryTranslations } from '../data/forms-api/error-summary/errorSummaryForm';
+import { errorFocusForm, errorFocusTranslations } from '../data/forms-api/focus-handling/errorFocusForm';
 import { focusHandlingForm, focusHandlingTranslations } from '../data/forms-api/focus-handling/focusHandlingForm';
 import {
   formNavigationCypress101Form,
@@ -456,6 +457,7 @@ const allForms = [
   { form: emailDeprecatedForm(), translations: emailDeprecatedTranslations() },
   { form: errorSummaryForm(), translations: errorSummaryTranslations() },
   { form: focusHandlingForm(), translations: focusHandlingTranslations() },
+  { form: errorFocusForm(), translations: errorFocusTranslations() },
   { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
   { form: initialSubmissionValuesForm(), translations: initialSubmissionValuesTranslations() },
   { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },

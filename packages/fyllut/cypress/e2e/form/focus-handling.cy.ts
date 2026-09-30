@@ -182,4 +182,85 @@ describe('Focus handling', () => {
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
   });
+
+  describe('One-time field focus', () => {
+    const openSummaryErrors = () => {
+      cy.visit('/fyllut/errorfocus/oppsummering?sub=paper');
+      cy.defaultWaits();
+      cy.clickDownloadInstructions();
+    };
+
+    it('preserves focus during conditional changes and restores heading focus for next, back and stepper navigation', () => {
+      openSummaryErrors();
+      cy.findByRole('link', { name: 'Du må fylle ut: Answer' }).click();
+      cy.findByRole('textbox', { name: 'Answer' }).should('have.focus');
+      cy.location('hash').should('equal', '');
+      cy.window().its('history.state.usr').should('not.have.property', 'focusId');
+      cy.findByRole('textbox', { name: 'Answer' }).type('My answer');
+
+      cy.findByRole('checkbox', { name: /^Show details/ }).click();
+      cy.findByRole('textbox', { name: /^Details/ }).should('be.visible');
+      cy.findByRole('checkbox', { name: /^Show details/ }).should('have.focus');
+      cy.findByRole('radio', { name: 'First choice' }).check();
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Follow-up', level: 2 }).should('have.focus');
+      cy.clickPreviousStep();
+      cy.findByRole('heading', { name: 'Answers', level: 2 }).should('have.focus');
+      cy.findByRole('textbox', { name: 'Answer' }).should('have.value', 'My answer');
+
+      cy.findByRole('textbox', { name: 'Answer' }).clear();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.clickDownloadInstructions();
+      cy.findByRole('link', { name: 'Du må fylle ut: Answer' }).click();
+      cy.findByRole('textbox', { name: 'Answer' }).should('have.focus');
+      cy.findByRole('link', { name: 'Follow-up' }).click();
+      cy.findByRole('heading', { name: 'Follow-up', level: 2 }).should('have.focus');
+      cy.go('back');
+      cy.findByRole('heading', { name: 'Answers', level: 2 }).should('have.focus');
+    });
+
+    it('allows fresh group-focus requests and still focuses same-page errors', () => {
+      openSummaryErrors();
+      cy.findByRole('link', { name: 'Du må fylle ut: Choice' }).click();
+      cy.findByRole('group', { name: 'Choice' }).should('have.focus');
+      cy.findByRole('radio', { name: 'First choice' }).should('not.be.checked');
+      cy.findByRole('radio', { name: 'Second choice' }).should('not.be.checked');
+      cy.location('hash').should('equal', '');
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.clickDownloadInstructions();
+      cy.findByRole('link', { name: 'Du må fylle ut: Choice' }).click();
+      cy.findByRole('group', { name: 'Choice' }).should('have.focus');
+
+      cy.clickNextStep();
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+        cy.findByRole('link', { name: 'Du må fylle ut: Answer' }).click();
+      });
+      cy.findByRole('textbox', { name: 'Answer' }).should('have.focus');
+    });
+
+    it('consumes a direct field hash without replaying it after a conditional update', () => {
+      cy.visit('/fyllut/errorfocus/answers?sub=paper#input-answer');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: 'Answer' }).should('have.focus');
+      cy.location('hash').should('equal', '');
+      cy.findByRole('checkbox', { name: /^Show details/ }).click();
+      cy.findByRole('textbox', { name: /^Details/ }).should('be.visible');
+      cy.findByRole('checkbox', { name: /^Show details/ }).should('have.focus');
+    });
+
+    it('does not revive an expired field request when a missing target later becomes visible', () => {
+      cy.visit('/fyllut/errorfocus/answers?sub=paper#input-details');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: /^Details/ }).should('not.exist');
+      cy.location('hash').should('equal', '');
+      cy.findByRole('checkbox', { name: /^Show details/ }).click();
+      cy.findByRole('textbox', { name: /^Details/ }).should('be.visible');
+      cy.findByRole('checkbox', { name: /^Show details/ }).should('have.focus');
+    });
+  });
 });
