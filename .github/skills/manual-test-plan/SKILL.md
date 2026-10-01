@@ -82,11 +82,14 @@ target solely from the current branch.
    to `preprod` just because the deploy workflow does. Establish the
    application revision check for the selected environment.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
-   preprod before choosing forms. Reuse a suitable form when one exists.
-   Otherwise design the smallest useful generated form set in the session
-   artifact directory, preferring one selector-driven form for related cases.
-   Tell the caller which forms will be reused, created, or need updating.
-   Import `MANUALTEST-` forms only as described in
+   preprod before choosing forms. Prefer a suitable production form and treat
+   its production definition as the reference: when the preprod copy differs,
+   ask the caller to import the production form through Bygger rather than
+   testing the outdated copy. When no production form suits, design the
+   smallest useful generated form set in the session artifact directory,
+   preferring one selector-driven form for related cases. Tell the caller
+   which forms will be reused, imported, created, or need updating. Create
+   `MANUALTEST-` forms only as described in
    [forms-api-import.md](references/forms-api-import.md): dry-run, apply only
    the confirmed CREATE, and obtain explicit approval for the exact change
    before any UPDATE. Never silently replace a form. A failed lookup is not
@@ -134,8 +137,8 @@ target solely from the current branch.
       to review every page of the printed PDF, including links, steps, and
       coverage gaps, before requesting approval to share it. Do not claim a PDF
       exists merely because the HTML was rendered.
-14. After a confirmed import or a form owner making a required production
-    form available, read back its stored path, revision, components,
+14. After a confirmed import or the caller importing a required production
+    form, read back its stored path, revision, components,
     submission methods, and conditional choices before finalizing cases.
     Update only the local plan and rendered artifacts if they differ.
     If the form or PR disagrees with the approved intent, report the

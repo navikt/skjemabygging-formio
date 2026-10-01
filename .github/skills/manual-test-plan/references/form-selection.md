@@ -5,25 +5,51 @@
 Prefer a production form when it already contains the relevant components,
 conditions, submission methods, and legacy or modern data shape.
 
-First inspect published definitions in `navikt/skjemautfylling-formio` or
-production Forms API metadata. Then check whether each candidate already exists
-in preprod Forms API and inspect its current revision. A preprod form can differ
-from the production snapshot.
+The production definition is the reference. A preprod copy of a production form
+can be outdated or carry someone's unpublished draft, so never judge suitability
+or write a route from the preprod variant when it differs from production.
 
-Use the helper without exposing the token or full form definition:
+1. Inspect the published production definition in `navikt/skjemautfylling-formio`
+   or production Forms API metadata, and decide whether it covers the case.
+2. Check whether the form exists in preprod Forms API and inspect its current
+   revision. Use the helper without exposing the token or full form definition:
 
-```bash
-node bin/forms-api/inspect-preprod-forms.mjs \
-  --query '<title-or-form-number>'
+    ```bash
+    node bin/forms-api/inspect-preprod-forms.mjs \
+      --query '<title-or-form-number>'
 
-node bin/forms-api/inspect-preprod-forms.mjs \
-  --path '<form-path>'
-```
+    node bin/forms-api/inspect-preprod-forms.mjs \
+      --path '<form-path>'
+    ```
 
-If either inspection fails to access Forms API, follow the proxy and token
-troubleshooting in
-[forms-api-import.md](forms-api-import.md). Do not choose a replacement form
-based on a failed lookup.
+    If an inspection fails to access Forms API, follow the proxy and token
+    troubleshooting in [forms-api-import.md](forms-api-import.md). Do not choose
+    a replacement form based on a failed lookup.
+
+3. Compare the preprod definition with production (title, components,
+   conditionals, properties, submission methods, introduction page).
+    - **Production form suitable and preprod differs or is missing:** bring
+      preprod in line with production by importing it. Do not test against the
+      differing preprod variant.
+    - **Production form not suitable:** create a `MANUALTEST-` form as described
+      below. Do not rely on the preprod version of a production form that may be
+      outdated.
+    - **Form exists only in preprod:** it is not a production form. Use it only
+      when the caller confirms it is the intended test form; otherwise generate
+      one.
+
+Importing a production form is simple but the skill cannot run it: it needs the
+user's Bygger session. Ask the caller to open Bygger in the selected
+environment, choose Admin > "Importer skjema fra produksjon"
+(`/import/skjema`), select the form paths, and press "Importer". The import
+overwrites the shared preprod draft with the production title, components,
+properties, introduction page, and form translations, and removes preprod form
+translations that production lacks. `preprod` and `preprod-alt` share one Forms
+API, so the overwrite affects both and discards any unpublished preprod edits.
+Name the forms and this effect, and wait for the caller's confirmation that the
+import ran. Then read the form back with the helper and check that it matches
+production before mapping routes. The test-form import script accepts only
+`MANUALTEST-` numbers; do not use it to modify production forms.
 
 Record:
 
@@ -31,19 +57,13 @@ Record:
 - why the form covers the case
 - required branch choices
 - supported submission methods
-- whether preprod must import or refresh the form
+- whether the form was imported from production, and the revision read back
 
 Use the form number returned by Forms API as `forms[].skjemanummer` and the
 stored path as `forms[].path`. The rendered form-number link uses that path
 on the selected PR deployment's intern ingress. These values can differ,
 particularly for generated forms. A form's presence in the shared Forms API
 does not prove it works on both deployments.
-
-Production imports overwrite the shared preprod draft. If a production form
-is missing or differs from the required revision, tell the caller what a form
-owner needs to import or refresh. The test-form import script accepts only
-`MANUALTEST-` numbers; do not use it to modify production forms. Remember
-that `preprod` and `preprod-alt` use the same Forms API instance.
 
 ## Generated forms
 
@@ -106,13 +126,13 @@ not establish behavior. Map each case's route with
 statuses. An HTTP 200 on the form URL or Forms API metadata does not prove a
 complete journey.
 
-Before importing or requesting a production form refresh, tell the caller:
+Before creating a form or asking the caller to import one, tell them:
 
 - which existing forms will be used unchanged
-- which production forms will be imported or refreshed
+- which production forms the caller must import into preprod
 - which test forms will be created or updated
 - which test cases each form covers
 
 For test forms, use the guarded CREATE or explicitly approved UPDATE workflow.
-Wait for a form owner to make a required production form available. In both
-cases read it back before claiming that its route is verified.
+Wait for the caller to confirm a requested production import. In both cases
+read the form back before claiming that its route is verified.

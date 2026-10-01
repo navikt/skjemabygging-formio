@@ -242,8 +242,8 @@ formats.
   cleanup.
 - A `forms-api-import` setup action must reference a form and include a
   shared-state warning and cleanup. For `MANUALTEST-` forms, the skill
-  performs confirmed CREATE or explicitly approved UPDATE; a form owner
-  handles production imports. The skill never deletes forms, so cleanup states
+  performs confirmed CREATE or explicitly approved UPDATE; the caller
+  imports production forms through Bygger. The skill never deletes forms, so cleanup states
   a retention or approved restore decision.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.

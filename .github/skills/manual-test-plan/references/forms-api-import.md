@@ -1,8 +1,8 @@
 # Preprod Forms API access and test-form imports
 
 `preprod` and `preprod-alt` share one Forms API instance. Treat production
-forms as read-only sources; a form owner handles imports or refreshes of
-production forms. The skill may create a new `MANUALTEST-` form in preprod
+forms as read-only sources; the caller imports them into preprod through
+Bygger as described in [form-selection.md](form-selection.md). The skill may create a new `MANUALTEST-` form in preprod
 after checking for an existing form and validating its local definition.
 Updating a test form requires explicit user approval for the specific form
 and change. Never delete a form or silently replace an existing one. Keep
@@ -94,7 +94,7 @@ write, inspect Forms API before retrying: the response does not prove the
 write did not happen. Dry-run again to check whether the operation is still
 CREATE or is now UPDATE; never reuse an old confirmation or automatically
 replace a newly created form. If the refreshed token still cannot write,
-report the blocker and have an authorized form owner make the form available.
+report the blocker and ask the caller to have someone with access make the form available.
 
 After every import, fetch the form from Forms API by its **stored** path.
 Check its revision and actual components (including required fields and
