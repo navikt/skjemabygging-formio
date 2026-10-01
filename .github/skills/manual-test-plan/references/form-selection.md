@@ -94,27 +94,17 @@ Validate:
 5. Shared-domain resolution or mapper behavior produces the intended result.
 6. After import, the form can be fetched before testing FyllUt.
 
-Map each case's scenario choices against the exact form revision and
-conditional rules using
-[route-source-mapping.md](route-source-mapping.md). For generated forms,
-check the exact JSON and exercise its branches in the local renderer
-before importing. Read back the stored path, revision, components, submission
-methods, and conditional choices in preprod before sharing the plan. Check
-conditional visibility, required fields, relevant identity or party mapping,
-and submission settings. Schema validity
-alone does not establish behavior. Record the route per case
-in `testCases[].journeyCheck`, so branches of one form can have different
-statuses. A matching Cypress flow can support shared navigation, but
-cannot prove that a different form's panels appear in preprod. Turn an
-unresolved runtime-dependent transition into a concrete observation
-task for the tester, not a requirement to run Cypress in cplt. An HTTP
-200 on the form URL or Forms API metadata does not prove a complete journey.
-
-For `DIGITAL_NO_LOGIN`, use
-[digital-no-login-journey.md](digital-no-login-journey.md) to map the
-shared ID upload and introduction against the form's settings. Record
-intervening pages from this form's conditional definition, not another
-form's panel order.
+For generated forms, check the exact JSON and exercise its branches in the
+local renderer before importing. Then read back the stored path, revision,
+components, submission methods, and conditional choices in preprod before
+sharing the plan. Check conditional visibility, required fields, relevant
+identity or party mapping, and submission settings; schema validity alone does
+not establish behavior. Map each case's route with
+[route-source-mapping.md](route-source-mapping.md), including the
+`DIGITAL_NO_LOGIN` section, and record it per case in
+`testCases[].journeyCheck`, so branches of one form can have different
+statuses. An HTTP 200 on the form URL or Forms API metadata does not prove a
+complete journey.
 
 Before importing or requesting a production form refresh, tell the caller:
 

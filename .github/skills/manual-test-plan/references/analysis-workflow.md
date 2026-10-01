@@ -115,55 +115,35 @@ For each changed behavior:
    Reuse those terms in tester-facing instructions instead of exposing internal
    type, function, or field names.
 
-Reconstruct the full ordered route for each case, not once per form. Fix the
-PR head commit, preprod form revision, submission method, identity or
-authentication path, and conditional choices. Follow
-[route-source-mapping.md](route-source-mapping.md) for matching Cypress
-flows, renderer code, and form-specific panels. Map before-form, form, and
-after-form steps separately, with a source for every transition. An
-analogous test does not prove that a different form has the same pages.
-If the form is generated, inspect its exact JSON in the session artifact
-directory. Follow [forms-api-import.md](forms-api-import.md) to dry-run and
-create it, or explicitly approve an update, then read back the stored path,
-revision, components, submission methods, and conditional choices before
-sharing the plan. If the imported form differs, report the discrepancy
-rather than editing repository sources. Never say "if prompted" for a required action or
-skip an intervening page.
+Reconstruct the full ordered route for each case, not once per form. Follow
+[route-source-mapping.md](route-source-mapping.md) for how to map routes, mark
+them `source-mapped`, and handle transitions the sources leave unknown. For a
+generated form, inspect its exact JSON in the session artifact directory and
+follow [forms-api-import.md](forms-api-import.md) to dry-run and create it (or
+explicitly approve an update), then read it back before sharing the plan.
+If the imported form differs, report the discrepancy rather than editing
+repository sources.
 
-Mark a complete source-based route `source-mapped` in that case's
-`journeyCheck`. It has not been exercised in preprod. If sources leave a
-transition unknown, describe the specific page or action for the tester
-to inspect and what to record. Mark that part exploratory rather than
-inventing steps; keep independently supported cases as verification
-cases. Do not require cplt to run Cypress. If someone with browser
-access checks the route manually, record the ordered pages, actions and
-result without filled-in identities, tokens or document contents. Use
-synthetic data for uploads, PDFs and submissions in preprod. Testing
-these actions does not need an extra approval step. Do not require deleting
-downloaded PDFs containing synthetic data simply because they were downloaded.
-
-Use source maps and recorded browser observations to establish what testers must do.
-Derive expected results from the issue, approved specification, or
-established baseline contract, including when observed behavior differs
-from confirmed intent.
+Use source maps and recorded browser observations to establish what testers
+must do. Derive expected results from the issue, approved specification, or
+established baseline contract, including when observed behavior differs from
+confirmed intent.
 
 For each step, name the page, field, document, or status the tester should
-actually see. Keep the route complete, but assess only outcomes relevant
-to the case. Navigation steps may have no expected result when the next
-action already names the page. Do not repeat the synthetic-data reminder
-in each case; the plan states it once at the top. Use short, natural
-sentences. Remove repeated setup and explanatory text that does not help
-the tester act or decide whether the behavior passed. The receipt offers a
-downloadable PDF of the submitted application. For each submission case,
-decide whether its visible contents matter to the behavior being tested.
-When they do, have the tester download and inspect the relevant pages and
-values. Check a cover page separately when it matters. When the PDF is out
-of scope, briefly say that neither receipt nor PDF proves downstream
-registration. A PDF can show submitted values without proving the full
-request payload or downstream roles. Keep dedicated PDF and cover-page
-checks where they fit. For log or Joark checks, name the specific roles
-and values to compare; if the tester can only hand off details, say the
-downstream result remains pending.
+actually see. Keep the route complete, but assess only outcomes relevant to the
+case. Navigation steps may have no expected result when the next action already
+names the page. Use short, natural sentences, and remove repeated setup and
+explanation that does not help the tester act or judge the result.
+
+The receipt offers a downloadable PDF of the submitted application. For each
+submission case, decide whether its visible contents matter to the behavior
+being tested. When they do, have the tester download and inspect the relevant
+pages and values, and check a cover page separately when it matters. When the
+PDF is out of scope, briefly say that neither receipt nor PDF proves downstream
+registration. A PDF shows submitted values, not the full request payload or
+downstream roles. For log or Joark checks, name the specific roles and values
+to compare; if the tester can only hand off details, say the downstream result
+remains pending.
 
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component

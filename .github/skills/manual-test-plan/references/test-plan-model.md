@@ -302,17 +302,12 @@ formats.
 - Keep all actions needed to follow the journey, but include `expected` only
   where the case tests an outcome. A verification case needs at least one.
   Navigation alone does not need a separate assessment. Keep sentences short.
-  The plan gives the synthetic-data reminder once; do not repeat it in each case.
-- For submissions, decide whether the downloadable PDF on the receipt is
-  relevant to the case. Check the relevant pages and contents when it is.
-  Otherwise state briefly that the receipt and PDF cannot prove downstream
-  registration. Keep dedicated PDF and cover-page checks in the cases that
-  need them; those checks do not by themselves prove the full payload.
+  The plan states the synthetic-data reminder once at the top, not per case.
+- For submissions, handle the receipt PDF as described in
+  [analysis-workflow.md](analysis-workflow.md).
 - Put a shell command in the optional `steps[].command` field, not in prose
   or `evidence`. The renderer uses a code block in the HTML or issue.
   Put necessary deletion of local files or state in `cleanup`, not `evidence`.
-  Do not require deleting downloaded PDFs containing synthetic data merely
-  because they were downloaded.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data. The team may share approved
   synthetic identity numbers in its test notes to identify a submission;

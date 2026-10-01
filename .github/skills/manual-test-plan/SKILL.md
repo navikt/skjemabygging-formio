@@ -70,29 +70,22 @@ issue. Do not infer the target solely from the current branch.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Reuse a suitable form when one exists.
    Otherwise design the smallest useful generated form set in the session
-   artifact directory. Prefer one clear selector-driven form for related
-   cases. Tell the caller which forms will be reused, created, or need updating.
-   For a new `MANUALTEST-` form, dry-run
-   `bin/forms-api/import-form.mjs` and apply only the confirmed CREATE
-   operation. Never silently replace an existing form. Before any UPDATE,
-   obtain explicit approval for the exact form and change, then dry-run and
-   apply the confirmed UPDATE operation. Follow
-   [forms-api-import.md](references/forms-api-import.md) for the import and
-   failed-access procedures. Do not treat a failed lookup as proof that a
-   form is absent.
-   Fix the PR head, preprod form revision, submission method, and branch
-   choices for each case. Follow
-   [route-source-mapping.md](references/route-source-mapping.md) to derive
-   steps from matching Cypress flows, renderer behavior, and the exact form.
-   Make unresolved transitions explicit observation steps for the tester;
-   do not require Cypress to run in cplt. For digital submission without login, also read
-   [digital-no-login-journey.md](references/digital-no-login-journey.md).
-10. Write tester-facing HTML and GitHub issue content in
-    Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
-    technical users questions in English. Keep local technical instructions
-    and documentation in English. Follow
-    [test-plan-model.md](references/test-plan-model.md).
-11. Generate the canonical plan JSON and run:
+   artifact directory, preferring one selector-driven form for related cases.
+   Tell the caller which forms will be reused, created, or need updating.
+   Import `MANUALTEST-` forms only as described in
+   [forms-api-import.md](references/forms-api-import.md): dry-run, apply only
+   the confirmed CREATE, and obtain explicit approval for the exact change
+   before any UPDATE. Never silently replace a form. A failed lookup is not
+   proof that a form is absent.
+10. Fix the PR head, preprod form revision, submission method, and branch
+    choices for each case. Derive its steps with
+    [route-source-mapping.md](references/route-source-mapping.md), which also
+    covers digital submission without login.
+11. Write tester-facing HTML and GitHub issue content in Norwegian, using terms
+    from FyllUt, Bygger, the form, and the issue. Ask technical users questions
+    in English. Keep local technical instructions and documentation in English.
+    Follow [test-plan-model.md](references/test-plan-model.md).
+12. Generate the canonical plan JSON and run:
 
     ```bash
     node .github/skills/manual-test-plan/scripts/render-artifacts.mjs \
@@ -105,32 +98,30 @@ issue. Do not infer the target solely from the current branch.
     open it in a browser and choose Print > Save as PDF. Keep the HTML and
     canonical JSON local; share only the reviewed PDF alongside the Trello task.
 
-12. Read [collaborative-output.md](references/collaborative-output.md) and
-    produce the output for the caller's collaboration choice.
-13. Review the HTML or issue for sensitive content and redact or omit it
-    before printing or asking to create the issue. For every case, compare
-    every rendered HTML or issue step with that case's
-    source map or a recorded manual browser observation, including required
-    actions and intermediate pages. Label source-mapped routes as untested in
-    preprod. If a transition lacks support, give the tester an exact
-    observation task and mark that part exploratory. Keep independently
-    supported cases as verification cases. Reject conditional wording for
-    mandatory actions and unsupported downstream claims. On the GitHub
-    issue path, show the caller the entire rendered issue body before
-    requesting approval. On the collaborative path, ask the user to review
-    every page of the printed PDF, including links, steps, and coverage gaps,
-    before requesting approval to share it. Do not claim a PDF exists merely
-    because the HTML was rendered. Keep `internal`
-    setup and evidence only in the local internal-instructions file; never
-    substitute vague placeholders in public output.
-    Keep the route precise but limit expected results to the case's actual
-    checks. Write short tester-facing sentences. The plan gives the
-    synthetic-data reminder once at the top; do not repeat it in each case.
-    Put links to the related "Bakgrunn for testene" points in each case where
-    testers can see them without expanding "Om testløpet". For submissions,
-    account for the downloadable receipt PDF: check relevant visible contents
-    when they are in scope, or note what the PDF does not prove when they are
-    not. Do not replace a separate PDF or cover-page check with that note.
+13. Read [collaborative-output.md](references/collaborative-output.md) and
+    produce the output for the caller's collaboration choice. Then review it:
+    - **Sensitive content:** redact or omit it before printing or asking to
+      create the issue. Keep `internal` setup and evidence only in the local
+      internal-instructions file; never substitute vague placeholders in
+      public output.
+    - **Routes:** compare every rendered step, including required actions and
+      intermediate pages, with that case's source map or recorded browser
+      observation. Label source-mapped routes as untested in preprod. Give the
+      tester an exact observation task for an unsupported transition, mark that
+      part exploratory, and keep independently supported cases as verification
+      cases. Reject conditional wording for mandatory actions and unsupported
+      downstream claims.
+    - **Wording:** write short tester-facing sentences and limit expected
+      results to the case's actual checks. Link the related "Bakgrunn for
+      testene" points in each case where testers can see them without
+      expanding "Om testløpet".
+    - **Submissions:** handle the receipt PDF as described in
+      [analysis-workflow.md](references/analysis-workflow.md).
+    - **Approval:** on the GitHub issue path, show the entire rendered issue
+      body before requesting approval. On the collaborative path, ask the user
+      to review every page of the printed PDF, including links, steps, and
+      coverage gaps, before requesting approval to share it. Do not claim a PDF
+      exists merely because the HTML was rendered.
 14. After a confirmed import or a form owner making a required production
     form available, read back its stored path, revision, components,
     submission methods, and conditional choices before finalizing cases.
@@ -180,12 +171,13 @@ for outbound payloads.
   after a dry run and confirmed CREATE. An UPDATE requires explicit user
   approval and a fresh confirmed dry run. Never delete a form or silently
   replace one. Write generated definitions only to session artifacts.
-- Use synthetic identities and organizations approved for testing.
+- Use synthetic identities, organizations, and data for uploads, PDFs, and
+  submissions in preprod; none of these needs an extra approval step.
 - The team may share approved synthetic identity numbers to correlate test
   submissions. Do not put filled-in identities in a PDF or public issue.
-- Testers in preprod can handle downloaded files containing synthetic test
-  data. Give the synthetic-data reminder once at the start, not in every case;
-  do not require deletion of downloads merely because they are downloads.
+- Give the synthetic-data reminder once at the top of the plan, not in every
+  case. Do not require deleting downloaded files that contain synthetic data
+  merely because they were downloaded.
 - Never put access tokens, cookies, secrets, real personal data, private
   source content, or security-sensitive details in generated artifacts.
 - This repository is public. Follow the review gate in
