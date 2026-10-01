@@ -37,6 +37,7 @@ before asking to create the issue:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/create-issue.mjs \
+  --repo navikt/skjemabygging-formio \
   --title '<issue-title>' \
   --body <artifact-directory>/github-issue.md
 ```

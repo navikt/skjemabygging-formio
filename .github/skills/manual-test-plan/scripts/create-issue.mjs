@@ -17,12 +17,12 @@ const getArgument = (name) => {
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
-  node create-issue.mjs --title <title> --body <github-issue.md>
-  node create-issue.mjs --title <title> --body <github-issue.md> \\
+  node create-issue.mjs --title <title> --body <github-issue.md> [--repo <owner/name>]
+  node create-issue.mjs --title <title> --body <github-issue.md> [--repo <owner/name>] \\
     --apply --confirm <operation>
 
 Dry-run is the default. The script creates an issue only after an exact
-confirmation.
+confirmation. --repo defaults to the repository of the current directory.
 `);
   process.exit(0);
 }
@@ -35,11 +35,15 @@ if (!title) {
 if (title.length > 256) {
   fail('--title must be at most 256 characters');
 }
-if (!getArgument('--body') || !existsSync(bodyPath) || !lstatSync(bodyPath).isFile()) {
+if (!getArgument('--body') || !existsSync(bodyPath)) {
   fail('--body must reference an existing file');
 }
-if (lstatSync(bodyPath).isSymbolicLink()) {
+const bodyStat = lstatSync(bodyPath);
+if (bodyStat.isSymbolicLink()) {
   fail('--body cannot be a symbolic link');
+}
+if (!bodyStat.isFile()) {
+  fail('--body must reference an existing file');
 }
 
 const body = readFileSync(bodyPath, 'utf8');
@@ -53,13 +57,18 @@ const gh = (...args) =>
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
 
-const repository = (() => {
-  try {
-    return JSON.parse(gh('repo', 'view', '--json', 'nameWithOwner')).nameWithOwner;
-  } catch (error) {
-    fail(`could not determine GitHub repository: ${error.stderr?.toString().trim() || error.message}`);
-  }
-})();
+const repository =
+  getArgument('--repo')?.trim() ||
+  (() => {
+    try {
+      return JSON.parse(gh('repo', 'view', '--json', 'nameWithOwner')).nameWithOwner;
+    } catch (error) {
+      fail(`could not determine GitHub repository: ${error.stderr?.toString().trim() || error.message}`);
+    }
+  })();
+if (!/^[\w.-]+\/[\w.-]+$/.test(repository)) {
+  fail('--repo must be in the form owner/name');
+}
 
 const digest = createHash('sha256').update(`${title}\n${body}`).digest('hex').slice(0, 12);
 const operation = `CREATE-ISSUE:${digest}`;
