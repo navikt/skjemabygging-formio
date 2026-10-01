@@ -120,7 +120,7 @@ formats.
                 "Fetch the form from Forms API and check its stored path, revision, components, submission methods, and conditional choices."
             ],
             "sharedStateWarning": "preprod and preprod-alt share the same Forms API.",
-            "cleanup": ["Ask the form owner to remove the generated form after testing."]
+            "cleanup": ["Keep the generated form in Forms API; a form owner decides later whether to remove it."]
         }
     ],
     "forms": [
@@ -243,8 +243,8 @@ formats.
 - A `forms-api-import` setup action must reference a form and include a
   shared-state warning and cleanup. For `MANUALTEST-` forms, the skill
   performs confirmed CREATE or explicitly approved UPDATE; a form owner
-  handles production imports. Cleanup may state an approved restore or
-  retention decision instead of deletion.
+  handles production imports. The skill never deletes forms, so cleanup states
+  a retention or approved restore decision.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.
 - Render those references as visible links to the corresponding background
@@ -268,7 +268,7 @@ formats.
 - `formId` must reference an entry in `forms`.
 - Each form needs the actual `skjemanummer` and stored `path` from Forms API;
   the form-number link uses the stored path on the selected environment.
-- A generated form intended for import or deletion by its owner must use the
+- A generated form intended for import must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
 - Every case needs `journeyCheck` with `status` (`verified`, `source-mapped`,
   or `unverified`). `verified` means this exact route was observed in a

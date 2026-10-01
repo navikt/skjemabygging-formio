@@ -343,7 +343,7 @@ for (const [index, action] of plan.setupActions.entries()) {
     }
     asNonEmptyString(action.sharedStateWarning, `${prefix}.sharedStateWarning`);
     if (cleanup.length === 0) {
-      fail(`${prefix}.cleanup must describe deletion, restoration, or retention`);
+      fail(`${prefix}.cleanup must describe restoration or retention`);
     }
   } else if (action.sharedStateWarning !== undefined) {
     asNonEmptyString(action.sharedStateWarning, `${prefix}.sharedStateWarning`);

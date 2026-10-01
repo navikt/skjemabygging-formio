@@ -48,7 +48,9 @@ issue. Do not infer the target solely from the current branch.
    cases. Without an issue or approved specification, also confirm inferred
    intent. If the PR description and committed code disagree, ask for a
    decision. Follow [analysis-workflow.md](references/analysis-workflow.md).
-6. Identify observable behavior, regression risk, integrations, environments,
+6. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
+   Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
+7. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
    generate verification cases for an outbound integration until its concrete
@@ -58,15 +60,13 @@ issue. Do not infer the target solely from the current branch.
    no-access handoff option when non-developers collaborate; omit it from a
    non-collaborative GitHub issue. Do not mark a handoff or a success log as
    payload verification.
-7. Record the exact head commit. Determine whether the PR is deployed to
+8. Record the exact head commit. Determine whether the PR is deployed to
    `preprod` or `preprod-alt` from deployment evidence and the live revision
    check in [analysis-workflow.md](references/analysis-workflow.md). Use the
    environment carrying the PR. If this is unclear, ask the user which
    environment to target before choosing forms or writing cases. Never default
    to `preprod` just because the deploy workflow does. Establish the
    application revision check for the selected environment.
-8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
-   Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Reuse a suitable form when one exists.
    Otherwise design the smallest useful generated form set in the session
