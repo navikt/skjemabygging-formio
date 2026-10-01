@@ -1,12 +1,13 @@
 ---
 name: manual-test-plan
 description: >-
-    Analyze an issue and its implementation pull request, or a pull request when
-    no issue exists, and create a manual test plan for skjemabygging-formio,
+    Analyze an issue and its implementation pull request, or a pull request
+    directly (with or without a linked issue), and create a manual test plan
+    for skjemabygging-formio,
     including suitable production or generated forms, environment revision
     verification, a GitHub issue for developer-only testing, or local HTML
     for a PDF printed by the user when testing with non-developers.
-    Accept an issue number after /manual-test-plan. Use only when
+    Accept an issue or pull request number or URL after /manual-test-plan. Use only when
     the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
 ---
@@ -15,13 +16,15 @@ disable-model-invocation: true
 
 Create an executable manual test plan for a change in this repository. Read
 the invocation's `ARGUMENTS` before asking for a target. For example,
-`/manual-test-plan 2179` supplies `2179` as the target issue in
+`/manual-test-plan 2179` supplies `2179` as the target in
 `navikt/skjemabygging-formio`; fetch it without asking for the number again.
-Treat a bare number in `ARGUMENTS` as an issue number, never a pull request
-number. Also accept an issue URL. Only if `ARGUMENTS` and the caller's message
-contain no target, ask for the issue URL or number when an issue exists. Ask
-for the pull request only when the caller confirms that the change has no
-issue. Do not infer the target solely from the current branch.
+The target can be an issue or a pull request, given as a number or URL. GitHub
+numbers issues and pull requests in one sequence, so resolve a bare number
+through GitHub as described in
+[analysis-workflow.md](references/analysis-workflow.md) instead of assuming
+its type. Only if `ARGUMENTS` and the caller's message contain no target, ask
+for an issue or pull request. A pull request needs no issue. Do not infer the
+target solely from the current branch.
 
 ## Language
 
@@ -34,10 +37,11 @@ issue. Do not infer the target solely from the current branch.
 ## Required workflow
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
-2. Fetch the supplied issue and its linked specification. Find its
-   implementation pull request using the open-first search in
-   [analysis-workflow.md](references/analysis-workflow.md). When the caller
-   confirms that no issue exists, fetch the supplied pull request. Analyze
+2. For an issue target, fetch the issue and its linked specification, and find
+   its implementation pull request using the open-first search in
+   [analysis-workflow.md](references/analysis-workflow.md). For a pull request
+   target, fetch the pull request and any issue it links; with no linked
+   issue, continue without one. Analyze
    the committed pull request diff in both cases. Do not use an uncommitted
    or local-only diff as the source for a plan. Read affected files at the
    committed PR head even if they are missing from the local checkout.

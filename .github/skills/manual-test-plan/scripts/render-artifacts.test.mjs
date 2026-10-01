@@ -769,3 +769,15 @@ test('rejects a case with no route check', () => {
     run.cleanup();
   }
 });
+
+test('renders a plan for a pull request without a linked issue', () => {
+  const plan = makePlan(true);
+  delete plan.source.issue;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    assert.doesNotMatch(run.read('index.html'), /<strong>Sak:<\/strong>/);
+  } finally {
+    run.cleanup();
+  }
+});

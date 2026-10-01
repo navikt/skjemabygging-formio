@@ -202,8 +202,8 @@ formats.
 - `source.type` must be `pull-request`. `source.number` and `source.url` must
   identify the implementation pull request, even when the skill started from an
   issue.
-- Include `source.issue` when an issue exists. Omit it only when the caller
-  confirms that the change has no issue.
+- Include `source.issue` when the pull request implements an issue, whichever
+  one the skill started from. Omit it when no issue is linked.
 - `environment.name` is `preprod` or `preprod-alt`, selected from the PR's
   deployment and live revision check, not the workflow default. If uncertain,
   ask the user before finalizing the plan. `environment.internBaseUrl` and

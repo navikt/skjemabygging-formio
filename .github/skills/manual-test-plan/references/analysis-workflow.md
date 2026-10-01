@@ -3,10 +3,15 @@
 ## Inputs
 
 First read the skill invocation's `ARGUMENTS` and any target in the caller's
-message. Ask for the issue URL or number only if neither contains a target:
+message. Ask only if neither contains a target:
 
-> Provide the issue for the change. If no issue exists, provide the pull request
-> instead.
+> Provide the issue or pull request for the change.
+
+Issues and pull requests share one number sequence. Resolve a bare number with
+`gh api repos/navikt/skjemabygging-formio/issues/<number> --jq 'has("pull_request")'`:
+`true` is a pull request, `false` an issue. Accept an issue or pull request
+URL directly. If the lookup fails, ask the caller what the number refers to
+rather than guessing.
 
 When the caller supplies an issue, inspect its linked pull requests and search
 the repository's **open** pull requests for the issue number, URL, and related
@@ -17,9 +22,14 @@ exists. If several plausible PRs remain, ask the caller which one to test.
 Ask for the PR when no implementation can be identified. Do not produce an
 implementation test plan from the issue alone.
 
-Accept a pull request as the starting input only when the caller says that no
-issue exists. If a supplied pull request links an issue, use that issue as the
-primary intent source.
+A pull request is a valid starting input whether or not an issue exists. Look
+for linked issues through its closing references
+(`gh pr view <number> --json closingIssuesReferences`) and issue links in its
+body. If it links an issue, use that issue and its specification as the primary
+intent source and confirm that the PR implements it. If several issues are
+linked, ask which one describes the intent to test. If none is linked, continue
+from the PR alone: treat the PR description as unconfirmed intent and confirm
+the inferred intent with the caller before writing verification cases.
 
 Do not accept a local branch, working-tree diff, patch file, or commit range as
 the only input. Read the committed PR diff and any affected file content at
