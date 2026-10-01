@@ -12,7 +12,8 @@ or write a route from the preprod variant when it differs from production.
 1. Inspect the published production definition in `navikt/skjemautfylling-formio`
    or production Forms API metadata, and decide whether it covers the case.
 2. Check whether the form exists in preprod Forms API and inspect its current
-   revision. Use the helper without exposing the token or full form definition:
+   revision. Also search preprod for forms that have no production variant,
+   such as earlier `MANUALTEST-` forms, that already cover the case. Use the helper without exposing the token or full form definition:
 
     ```bash
     node bin/forms-api/inspect-preprod-forms.mjs \
@@ -26,7 +27,7 @@ or write a route from the preprod variant when it differs from production.
     troubleshooting in [forms-api-import.md](forms-api-import.md). Do not choose
     a replacement form based on a failed lookup.
 
-3. Compare the preprod definition with production (title, components,
+3. For a form that exists in production, compare the preprod definition with it (title, components,
    conditionals, properties, submission methods, introduction page).
     - **Production form suitable and preprod differs or is missing:** bring
       preprod in line with production by importing it. Do not test against the
@@ -34,9 +35,14 @@ or write a route from the preprod variant when it differs from production.
     - **Production form not suitable:** create a `MANUALTEST-` form as described
       below. Do not rely on the preprod version of a production form that may be
       outdated.
-    - **Form exists only in preprod:** it is not a production form. Use it only
-      when the caller confirms it is the intended test form; otherwise generate
-      one.
+    - **Form exists only in preprod:** it has no production variant, so the
+      preprod definition is the reference. A previously generated `MANUALTEST-`
+      form or another test form there can be suitable. Inspect its current
+      definition and revision, reuse it when it covers the case, and record the
+      revision. If it almost fits, change it only through the approved UPDATE
+      workflow in [forms-api-import.md](forms-api-import.md); otherwise generate
+      a new one. Note that anyone can edit a preprod form, so read it back
+      again before each test session.
 
 Importing a production form is simple but the skill cannot run it: it needs the
 user's Bygger session. Ask the caller to open Bygger in the selected
