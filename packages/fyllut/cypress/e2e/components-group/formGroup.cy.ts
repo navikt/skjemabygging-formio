@@ -1,3 +1,7 @@
+// Aksel includes the fieldset description in the group's accessible name.
+const describedGroupName = 'Skjemagruppe med beskrivelse Dette er en beskrivelse av gruppen';
+const translatedDescribedGroupName = 'Skjemagruppe med beskrivelse (en) Dette er en beskrivelse av gruppen (en)';
+
 describe('FormGroup', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -33,7 +37,7 @@ describe('FormGroup', () => {
     });
 
     it('should show description', () => {
-      cy.findByRole('group', { name: 'Skjemagruppe med beskrivelse' }).within(() => {
+      cy.findByRole('group', { name: describedGroupName }).within(() => {
         cy.findByText('Dette er en beskrivelse av gruppen')
           .should('be.visible')
           .and('have.prop', 'tagName', 'P')
@@ -73,7 +77,7 @@ describe('FormGroup', () => {
     });
 
     it('should translate description', () => {
-      cy.findByRole('group', { name: 'Skjemagruppe med beskrivelse (en)' })
+      cy.findByRole('group', { name: translatedDescribedGroupName })
         .findByText('Dette er en beskrivelse av gruppen (en)')
         .should('be.visible');
     });

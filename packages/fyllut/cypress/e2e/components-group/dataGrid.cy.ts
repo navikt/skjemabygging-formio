@@ -1,3 +1,7 @@
+// Aksel includes the fieldset description in the group's accessible name.
+const groupName = 'Repeterende data Beskrivelse av tabellen';
+const translatedGroupName = 'Repeterende data (en) Beskrivelse av tabellen (en)';
+
 describe('DataGrid', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -10,18 +14,18 @@ describe('DataGrid', () => {
     });
 
     it('should render label as legend', () => {
-      cy.findByRole('group', { name: 'Repeterende data' }).find('> legend').should('contain.text', 'Repeterende data');
+      cy.findByRole('group', { name: groupName }).find('> legend').should('contain.text', 'Repeterende data');
     });
 
     it('should render description', () => {
-      cy.findByRole('group', { name: 'Repeterende data' })
+      cy.findByRole('group', { name: groupName })
         .findByText('Beskrivelse av tabellen')
         .should('be.visible')
         .and('have.css', 'margin', '0px');
     });
 
     it('should render rowTitle per row', () => {
-      cy.findByRole('group', { name: 'Repeterende data' })
+      cy.findByRole('group', { name: groupName })
         .findByRole('heading', { level: 3, name: 'Rad 1' })
         .should('be.visible');
     });
@@ -43,7 +47,7 @@ describe('DataGrid', () => {
         .findByRole('button', { name: /Legg til rad/i })
         .click();
       cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 2);
-      cy.findByRole('group', { name: 'Repeterende data' }).within(() => {
+      cy.findByRole('group', { name: groupName }).within(() => {
         cy.findByRole('heading', { level: 3, name: 'Rad 1' }).should('be.visible');
         cy.findByRole('heading', { level: 3, name: 'Rad 2' }).should('be.visible');
         cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
@@ -56,7 +60,7 @@ describe('DataGrid', () => {
     });
 
     it('should pad row cards without adding padding or a trailing field margin to the grid', () => {
-      cy.findByRole('group', { name: 'Repeterende data' })
+      cy.findByRole('group', { name: groupName })
         .find('[data-cy="fieldset-content"]')
         .should('have.css', 'padding', '0px');
       cy.findByRole('textbox', { name: 'Navn' })
@@ -78,19 +82,19 @@ describe('DataGrid', () => {
     });
 
     it('should translate label', () => {
-      cy.findByRole('group', { name: 'Repeterende data (en)' })
+      cy.findByRole('group', { name: translatedGroupName })
         .find('> legend')
         .should('contain.text', 'Repeterende data (en)');
     });
 
     it('should translate description', () => {
-      cy.findByRole('group', { name: 'Repeterende data (en)' })
+      cy.findByRole('group', { name: translatedGroupName })
         .findByText('Beskrivelse av tabellen (en)')
         .should('be.visible');
     });
 
     it('should translate rowTitle', () => {
-      cy.findByRole('group', { name: 'Repeterende data (en)' })
+      cy.findByRole('group', { name: translatedGroupName })
         .findByRole('heading', { level: 3, name: 'Rad (en) 1' })
         .should('be.visible');
     });
