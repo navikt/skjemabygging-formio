@@ -173,7 +173,7 @@ test.each([false, true])(
       assert.match(publicOutput, /Dekkes av automatiserte feiltester/);
       assert.match(publicOutput, /Testløpet er gjennomgått/);
       assert.match(publicOutput, /Slett challenge(?:\\)?\.json/);
-      assert.match(run.read('manifest.json'), /"schemaVersion": 3/);
+      assert.match(run.read('manifest.json'), /"manifestVersion": 1/);
       if (collaboration) {
         assert.equal(run.exists('test-plan.pdf'), false);
         assert.match(run.result.stdout, /No PDF generated/);
@@ -330,10 +330,25 @@ test('rejects obsolete artifact manifests instead of attempting legacy cleanup',
   const run = render(makePlan(false));
   try {
     assert.equal(run.result.status, 0, run.result.stderr);
-    run.write('manifest.json', JSON.stringify({ schemaVersion: 2, files: [] }));
+    run.write('manifest.json', JSON.stringify({ manifestVersion: 2, files: [] }));
     const rerun = run.rerun();
     assert.equal(rerun.status, 1);
-    assert.match(rerun.stderr, /supported schemaVersion/);
+    assert.match(rerun.stderr, /supported manifestVersion/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('still accepts a manifest written with the legacy schemaVersion field', () => {
+  const run = render(makePlan(false));
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const manifest = JSON.parse(run.read('manifest.json'));
+    const { manifestVersion, ...rest } = manifest;
+    run.write('manifest.json', JSON.stringify({ schemaVersion: 3, ...rest }));
+    const rerun = run.rerun();
+    assert.equal(rerun.status, 0, rerun.stderr);
+    assert.match(run.read('manifest.json'), /"manifestVersion": 1/);
   } finally {
     run.cleanup();
   }

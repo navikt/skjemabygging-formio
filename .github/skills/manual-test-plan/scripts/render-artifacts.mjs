@@ -980,11 +980,11 @@ if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()
     const previousManifest = JSON.parse(readFileSync(previousManifestPath, 'utf8'));
     if (
       !previousManifest ||
-      previousManifest.schemaVersion !== 3 ||
+      !(previousManifest.manifestVersion === 1 || previousManifest.schemaVersion === 3) ||
       !Array.isArray(previousManifest.files) ||
       previousManifest.files.length === 0
     ) {
-      throw new Error('manifest must contain a supported schemaVersion and a non-empty files array');
+      throw new Error('manifest must contain a supported manifestVersion and a non-empty files array');
     }
     if (
       previousManifest.files.some((entry) => entry?.path === 'test-plan.pdf') &&
@@ -1052,7 +1052,7 @@ for (const { artifact } of generatedArtifacts) {
 
 writeFileSync(
   join(outputDirectory, 'manifest.json'),
-  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
+  `${JSON.stringify({ manifestVersion: 1, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
 if (plan.collaboration.withNonDevelopers) {
