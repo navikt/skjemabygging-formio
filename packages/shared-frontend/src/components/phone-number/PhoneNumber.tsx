@@ -2,6 +2,7 @@ import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import Alert from '../alert/Alert';
@@ -36,6 +37,7 @@ const PhoneNumber = ({
   validation,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
+  const { translate } = useLanguage();
   const { formData } = useRuntimeServices();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const phoneNumberValue =
@@ -125,7 +127,7 @@ const PhoneNumber = ({
       />
       {error && (
         <Alert variant="warning" marginBottom="space-0">
-          {TEXTS.statiske.phoneNumber.fetchError}
+          {translate(TEXTS.statiske.phoneNumber.fetchError)}
         </Alert>
       )}
     </FormElementBox>
