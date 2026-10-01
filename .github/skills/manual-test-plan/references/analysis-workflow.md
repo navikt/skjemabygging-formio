@@ -22,14 +22,28 @@ exists. If several plausible PRs remain, ask the caller which one to test.
 Ask for the PR when no implementation can be identified. Do not produce an
 implementation test plan from the issue alone.
 
-A pull request is a valid starting input whether or not an issue exists. Look
-for linked issues through its closing references
-(`gh pr view <number> --json closingIssuesReferences`) and issue links in its
-body. If it links an issue, use that issue and its specification as the primary
-intent source and confirm that the PR implements it. If several issues are
-linked, ask which one describes the intent to test. If none is linked, continue
-from the PR alone: treat the PR description as unconfirmed intent and confirm
-the inferred intent with the caller before writing verification cases.
+A pull request is a valid starting input whether or not an issue exists, but
+always check whether one does. Never conclude "no issue" from the PR body alone.
+Look in:
+
+- the PR's closing references
+  (`gh pr view <number> --json closingIssuesReferences,body,title,headRefName`)
+- issue numbers and URLs in the PR title, body, branch name, review comments,
+  and commit messages
+- issues that mention the PR, from the timeline
+  (`gh api repos/navikt/skjemabygging-formio/issues/<number>/timeline`) and
+  `gh issue list --repo navikt/skjemabygging-formio --state all --search '<PR number or URL>'`
+- open and closed issues matching the PR's title and terms, when the sources
+  above give no candidate
+
+A mention alone does not establish that the PR implements the issue; compare
+the issue's criteria with the PR description and diff. If a confirmed issue is
+found, use it and its specification as the primary intent source and record it
+as `source.issue`. If several issues are plausible, or a candidate is only
+weakly related, ask the caller which one describes the intent to test. Tell the
+caller which sources you checked. Only when none is found, continue from the PR
+alone: treat the PR description as unconfirmed intent and confirm the inferred
+intent with the caller before writing verification cases.
 
 Do not accept a local branch, working-tree diff, patch file, or commit range as
 the only input. Read the committed PR diff and any affected file content at

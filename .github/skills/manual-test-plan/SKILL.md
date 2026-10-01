@@ -23,7 +23,8 @@ numbers issues and pull requests in one sequence, so resolve a bare number
 through GitHub as described in
 [analysis-workflow.md](references/analysis-workflow.md) instead of assuming
 its type. Only if `ARGUMENTS` and the caller's message contain no target, ask
-for an issue or pull request. A pull request needs no issue. Do not infer the
+for an issue or pull request. A pull request needs no issue, but the skill
+checks for one. Do not infer the
 target solely from the current branch.
 
 ## Language
@@ -40,8 +41,9 @@ target solely from the current branch.
 2. For an issue target, fetch the issue and its linked specification, and find
    its implementation pull request using the open-first search in
    [analysis-workflow.md](references/analysis-workflow.md). For a pull request
-   target, fetch the pull request and any issue it links; with no linked
-   issue, continue without one. Analyze
+   target, fetch the pull request and search for the issue it implements
+   using the checks in [analysis-workflow.md](references/analysis-workflow.md);
+   continue without an issue only when none is found. Analyze
    the committed pull request diff in both cases. Do not use an uncommitted
    or local-only diff as the source for a plan. Read affected files at the
    committed PR head even if they are missing from the local checkout.
