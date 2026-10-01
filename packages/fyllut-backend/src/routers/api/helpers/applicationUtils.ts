@@ -19,7 +19,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
-
 const assembleSubmitApplicationRequest = (
   innsendingsId: string,
   form: Form,
@@ -27,12 +26,14 @@ const assembleSubmitApplicationRequest = (
   language: TranslationLang,
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
+  authenticatedSenderId?: string,
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
   const bruker = extractBruker(form, submission);
   const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+    extractAvsender(form, submission, authenticatedSenderId) ??
+    (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
@@ -101,7 +102,18 @@ const extractBruker = (form: Form, submission: Submission): BrukerDto | undefine
   return undefined;
 };
 
-const extractAvsender = (form: Form, submission: Submission): AvsenderId | undefined => {
+/**
+ * Extracts the sender of the application.
+ *
+ * `authenticatedSenderId` is the identity number of the logged-in submitter,
+ * and is only set for authenticated submissions (channel NAV_NO in the
+ * archive). It is used when the form carries no sender id of its own.
+ */
+const extractAvsender = (
+  form: Form,
+  submission: Submission,
+  authenticatedSenderId?: string,
+): AvsenderId | undefined => {
   const sender = senderUtils.getSender(form, submission.data);
   if (sender) {
     if (sender.person) {
@@ -123,7 +135,13 @@ const extractAvsender = (form: Form, submission: Submission): AvsenderId | undef
   const avsenderFornavn = submission.data.fornavnAvsender;
   const avsenderEtternavn = submission.data.etternavnAvsender;
   if (avsenderFornavn && avsenderEtternavn) {
-    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
+    const navn = `${avsenderFornavn} ${avsenderEtternavn}`;
+    // These legacy fields hold no identity number. The archive requires an id
+    // for senders on logged-in submissions, so use the authenticated identity.
+    if (authenticatedSenderId) {
+      return { id: removeSpaces(authenticatedSenderId), idType: 'FNR', navn };
+    }
+    return { navn };
   }
   return undefined;
 };

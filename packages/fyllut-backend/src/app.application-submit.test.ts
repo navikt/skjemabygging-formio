@@ -1,4 +1,8 @@
-import { SubmitApplicationRequest, SubmitApplicationResponse } from '@navikt/skjemadigitalisering-shared-backend';
+import {
+  AvsenderId,
+  SubmitApplicationRequest,
+  SubmitApplicationResponse,
+} from '@navikt/skjemadigitalisering-shared-backend';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
@@ -17,6 +21,12 @@ const { sendInnConfig, familiePdfGeneratorUrl, formsApiUrl } = config;
 const soknadPdf = Buffer.from('fake-pdf-content-for-tests');
 const encodedSoknadPdf = soknadPdf.toString('base64');
 
+// The logged-in sender (idporten pid used by setupTokenMocks) and the person
+// the application is about are deliberately different, to model submitting on
+// behalf of somebody else.
+const LOGGED_IN_SENDER_PID = '12345678911';
+const APPLICATION_SUBJECT_FNR = '10987654321';
+
 const submitApplicationTestCases: SubmitApplicationTestCase[] = [
   {
     name: 'digital',
@@ -24,6 +34,8 @@ const submitApplicationTestCases: SubmitApplicationTestCase[] = [
     formRevision: 37,
     route: '/fyllut/api/send-inn/digital-application/65ed0008-ec72-4c90-8b44-165d3c265da0',
     sendInnPath: '/v1/application-digital/65ed0008-ec72-4c90-8b44-165d3c265da0',
+    // Logged-in submission, i.e. channel NAV_NO in the archive.
+    expectedAvsender: { id: LOGGED_IN_SENDER_PID, idType: 'FNR' },
     setupTokens: async () => {
       const tokenSetup = await setupTokenMocks();
       return {
@@ -60,7 +72,7 @@ describe('Fyllut backend :: submit application', () => {
 
   it.each(submitApplicationTestCases)(
     'creates and submits the $name application request with formRevision in mainDocumentAlt',
-    async ({ innsendingsId, formRevision, route, sendInnPath, setupTokens }) => {
+    async ({ innsendingsId, formRevision, route, sendInnPath, expectedAvsender, setupTokens }) => {
       const applicationData = createApplicationData();
       const mockFormData = createMockFormData(formRevision);
       const submitResponse = createSubmitResponse(innsendingsId, mockFormData.title);
@@ -92,7 +104,7 @@ describe('Fyllut backend :: submit application', () => {
       expectSuccessfulSubmitResponse(res.body, submitResponse);
 
       expect(capturedRequestBody).toBeDefined();
-      expectSubmitRequest(capturedRequestBody!);
+      expectSubmitRequest(capturedRequestBody!, expectedAvsender);
       expect(decodeMainDocumentAlt(capturedRequestBody!.mainDocumentAlt)).toEqual({
         language: 'nb',
         formRevision,
@@ -154,7 +166,16 @@ const createMockFormData = (revision: number) => ({
 
 const createApplicationData = () => ({
   formPath: 'nav123456',
-  submission: { data: { fodselsnummerDNummerSoker: '12345678911', field: 'value' } },
+  submission: {
+    data: {
+      fodselsnummerDNummerSoker: APPLICATION_SUBJECT_FNR,
+      field: 'value',
+      // Legacy avsender fields, since this form has no `type: 'sender'`
+      // component. See routers/api/helpers/applicationUtils.ts.
+      fornavnAvsender: 'Ola',
+      etternavnAvsender: 'Nordmann',
+    },
+  },
   attachments: [],
   language: 'nb',
 });
@@ -179,6 +200,7 @@ type SubmitApplicationTestCase = {
   formRevision: number;
   route: string;
   sendInnPath: string;
+  expectedAvsender?: Partial<AvsenderId>;
   setupTokens: (innsendingsId: string) => Promise<TokenSetupResult>;
 };
 
@@ -204,9 +226,9 @@ const expectSuccessfulSubmitResponse = (responseBody: unknown, submitResponse: S
   });
 };
 
-const expectSubmitRequest = (requestBody: SubmitApplicationRequest) => {
+const expectSubmitRequest = (requestBody: SubmitApplicationRequest, expectedAvsender?: Partial<AvsenderId>) => {
   expect(requestBody).toMatchObject({
-    bruker: '12345678911',
+    bruker: APPLICATION_SUBJECT_FNR,
     formNumber: 'NAV 12.34-56',
     title: 'Application title',
     tema: 'BIL',
@@ -215,4 +237,13 @@ const expectSubmitRequest = (requestBody: SubmitApplicationRequest) => {
     attachments: [],
     otherUploadAvailable: false,
   });
+
+  if (expectedAvsender) {
+    // DoD: for a logged-in sender (channel NAV_NO) the archive requires an id,
+    // not only a name.
+    expect(requestBody.avsender).toMatchObject(expectedAvsender);
+  } else {
+    // No logged-in sender, so only a name is available.
+    expect(requestBody.avsender?.id).toBeUndefined();
+  }
 };
