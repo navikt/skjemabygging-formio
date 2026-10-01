@@ -27,7 +27,6 @@ import {
 } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
-import './styles/tokens.css';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 

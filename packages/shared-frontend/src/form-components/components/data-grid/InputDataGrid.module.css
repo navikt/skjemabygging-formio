@@ -1,18 +1,3 @@
-.fieldset {
-  border: 0;
-  margin: 0;
-  min-inline-size: 0;
-  padding: 0;
-}
-
-.content {
-  margin-top: var(--ax-space-16);
-}
-
-.description {
-  margin-top: var(--ax-space-8);
-}
-
 .rows {
   display: grid;
   gap: var(--ax-space-16);
@@ -24,10 +9,15 @@
   padding: var(--ax-space-16);
 }
 
+.row > [data-form-component]:last-child > * {
+  margin-block-end: 0;
+}
+
 .rowHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--ax-space-16);
-  margin-bottom: var(--ax-space-16);
+  flex-wrap: wrap;
+  margin-block-end: var(--ax-space-16);
 }

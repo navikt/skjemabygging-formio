@@ -18,7 +18,7 @@ const SummaryDataFetcher = (props: FormComponentProps<DataFetcherDefinition>) =>
       <DefaultLabel {...props} />
       <FormSummary.Value>
         <Box marginBlock="space-16" asChild>
-          <List data-aksel-migrated-v8>
+          <List>
             {selected.map((value) => (
               <List.Item key={`${key}-${navId}-${value}`}>{value}</List.Item>
             ))}

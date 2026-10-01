@@ -4,11 +4,17 @@
 
 .icon {
   position: absolute;
-  left: -100px;
-  top: 7px;
+  inset-inline-start: -100px;
+  inset-block-start: var(--ax-space-8);
 }
 
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 1279px) {
+  .icon {
+    display: none;
+  }
+}
+
+@media print {
   .icon {
     display: none;
   }

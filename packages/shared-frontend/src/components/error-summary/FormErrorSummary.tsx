@@ -11,6 +11,7 @@ import {
   useValidationErrorsForPages,
 } from '../../context/validation/ValidationContext';
 import { inputId } from '../../utils/inputId';
+import styles from './FormErrorSummary.module.css';
 
 interface Props {
   pageKey?: string;
@@ -66,7 +67,12 @@ const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
   };
 
   return (
-    <ErrorSummary ref={ref} heading={translate(TEXTS.validering.error)} data-cy="error-summary">
+    <ErrorSummary
+      ref={ref}
+      heading={translate(TEXTS.validering.error)}
+      data-cy="error-summary"
+      className={styles.summary}
+    >
       {errors.map((error) => {
         const { submissionPath, message } = error;
         const id = inputId(submissionPath);

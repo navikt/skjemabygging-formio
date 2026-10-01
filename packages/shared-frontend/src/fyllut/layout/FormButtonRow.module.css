@@ -4,14 +4,14 @@
   justify-content: flex-end;
   gap: var(--ax-space-16);
   flex-wrap: wrap;
-  margin-bottom: var(--ax-space-20);
+  margin-block-end: var(--ax-space-20);
 }
 
 .row > button,
 .row > a {
-  min-width: 12rem;
+  min-inline-size: 12rem;
   flex-grow: 1;
-  max-width: 19.5rem;
+  max-inline-size: 19.5rem;
 }
 
 .center {
@@ -29,7 +29,13 @@
 
   .row > button,
   .row > a {
-    min-width: 100%;
-    max-width: 100%;
+    min-inline-size: 100%;
+    max-inline-size: 100%;
+  }
+}
+
+@media print {
+  .row {
+    display: none;
   }
 }

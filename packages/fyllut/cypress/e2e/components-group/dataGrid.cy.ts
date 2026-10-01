@@ -10,20 +10,20 @@ describe('DataGrid', () => {
     });
 
     it('should render label as legend', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .find('fieldset > .aksel-fieldset__legend-formio-template')
-        .first()
-        .should('contain.text', 'Repeterende data');
+      cy.findByRole('group', { name: 'Repeterende data' }).find('> legend').should('contain.text', 'Repeterende data');
     });
 
     it('should render description', () => {
-      cy.get('[data-component-key="datagrid1"]').find('.description').should('contain.text', 'Beskrivelse av tabellen');
+      cy.findByRole('group', { name: 'Repeterende data' })
+        .findByText('Beskrivelse av tabellen')
+        .should('be.visible')
+        .and('have.css', 'margin', '0px');
     });
 
     it('should render rowTitle per row', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
-        .should('contain.text', 'Rad');
+      cy.findByRole('group', { name: 'Repeterende data' })
+        .findByRole('heading', { level: 3, name: 'Rad 1' })
+        .should('be.visible');
     });
 
     it('should show custom addAnother button text', () => {
@@ -43,12 +43,31 @@ describe('DataGrid', () => {
         .findByRole('button', { name: /Legg til rad/i })
         .click();
       cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 2);
-      cy.get('[data-component-key="datagrid1"]').contains('button', 'Fjern rad').should('exist');
+      cy.findByRole('group', { name: 'Repeterende data' }).within(() => {
+        cy.findByRole('heading', { level: 3, name: 'Rad 1' }).should('be.visible');
+        cy.findByRole('heading', { level: 3, name: 'Rad 2' }).should('be.visible');
+        cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
+      });
     });
 
     it('child textfield should be interactable', () => {
       cy.findAllByRole('textbox', { name: 'Navn' }).first().type('Test');
       cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
+    });
+
+    it('should pad row cards without adding padding or a trailing field margin to the grid', () => {
+      cy.findByRole('group', { name: 'Repeterende data' })
+        .find('[data-cy="fieldset-content"]')
+        .should('have.css', 'padding', '0px');
+      cy.findByRole('textbox', { name: 'Navn' })
+        .closest('[data-component-key]')
+        .should(($field) => {
+          const row = $field[0].parentElement!;
+          const fieldBox = $field[0].firstElementChild!;
+
+          expect(getComputedStyle(row).padding).to.equal('16px');
+          expect(getComputedStyle(fieldBox).marginBottom).to.equal('0px');
+        });
     });
   });
 
@@ -59,22 +78,21 @@ describe('DataGrid', () => {
     });
 
     it('should translate label', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .find('fieldset > .aksel-fieldset__legend-formio-template')
-        .first()
+      cy.findByRole('group', { name: 'Repeterende data (en)' })
+        .find('> legend')
         .should('contain.text', 'Repeterende data (en)');
     });
 
     it('should translate description', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .find('.description')
-        .should('contain.text', 'Beskrivelse av tabellen (en)');
+      cy.findByRole('group', { name: 'Repeterende data (en)' })
+        .findByText('Beskrivelse av tabellen (en)')
+        .should('be.visible');
     });
 
     it('should translate rowTitle', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
-        .should('contain.text', 'Rad (en)');
+      cy.findByRole('group', { name: 'Repeterende data (en)' })
+        .findByRole('heading', { level: 3, name: 'Rad (en) 1' })
+        .should('be.visible');
     });
 
     it('should translate addAnother button text', () => {

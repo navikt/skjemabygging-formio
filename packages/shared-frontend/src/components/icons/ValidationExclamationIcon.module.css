@@ -1,0 +1,5 @@
+.icon {
+  vertical-align: sub;
+  color: var(--ax-text-warning-decoration);
+  margin-inline: var(--ax-space-4);
+}

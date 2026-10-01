@@ -42,7 +42,7 @@ const InputDataGridRow = ({
   return (
     <div className={styles.row}>
       <div className={styles.rowHeader}>
-        <Heading level="3" size="small" className="aksel-fieldset__legend-formio-template">
+        <Heading level="3" size="small">
           {translate(label)} {index + 1}
         </Heading>
         {removable && (

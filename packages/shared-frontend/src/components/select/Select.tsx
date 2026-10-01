@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import styles from '../shared/FieldControl.module.css';
 import { toChoiceFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
@@ -100,6 +101,7 @@ const Select = ({
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       {renderedSelectType === 'select' ? (
         <AkselSelect
+          className={styles.choice}
           id={inputId(statePath)}
           label={
             <TranslatedLabel
@@ -109,7 +111,7 @@ const Select = ({
               translationKey={label}
             />
           }
-          description={<TranslatedDescription translationKey={description} />}
+          description={description ? <TranslatedDescription translationKey={description} /> : undefined}
           hideLabel={hideLabel}
           value={current}
           onChange={handleSelectChange}
@@ -125,6 +127,7 @@ const Select = ({
         </AkselSelect>
       ) : (
         <Combobox
+          className={styles.choice}
           id={inputId(statePath)}
           label={
             <TranslatedLabel
@@ -134,7 +137,7 @@ const Select = ({
               translationKey={label}
             />
           }
-          description={<TranslatedDescription translationKey={description} />}
+          description={description ? <TranslatedDescription translationKey={description} /> : undefined}
           hideLabel={hideLabel}
           options={options}
           selectedOptions={selectedOptions}

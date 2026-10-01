@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import styles from '../shared/FieldControl.module.css';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -72,12 +73,13 @@ const DatePicker = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      <AkselDatePicker {...datepickerProps}>
+      <AkselDatePicker {...datepickerProps} wrapperClassName={styles.pickerRoot}>
         <AkselDatePicker.Input
           {...inputProps}
+          className={styles.picker}
           id={inputId(statePath)}
           label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
-          description={<TranslatedDescription translationKey={description} />}
+          description={description ? <TranslatedDescription translationKey={description} /> : undefined}
           error={error}
           readOnly={readOnly}
           value={displayValue}

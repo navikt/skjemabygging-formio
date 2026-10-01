@@ -26,7 +26,7 @@ const SummarySelectBoxes = (props: FormComponentProps<SelectBoxesDefinition>) =>
       <DefaultLabel {...props} />
       <FormSummary.Value>
         <Box marginBlock="space-16" asChild>
-          <List data-aksel-migrated-v8>
+          <List>
             {valueObjects.map((boxValue) => (
               <List.Item key={`${key}-${navId}-${boxValue}`}>{boxValue}</List.Item>
             ))}

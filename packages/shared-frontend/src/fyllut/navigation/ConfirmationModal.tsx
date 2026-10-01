@@ -2,6 +2,7 @@ import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { ReactNode, useState } from 'react';
 import Alert from '../../components/alert/Alert';
 import { useLanguage } from '../../context/language/LanguageContext';
+import styles from './ConfirmationModal.module.css';
 
 interface Props {
   open: boolean;
@@ -72,14 +73,19 @@ const ConfirmationModal = ({
       aria-label={texts.title}
       onClose={onClose}
       header={{ heading: translateIfAvailable(texts.title) }}
-      style={{ maxWidth: width === 'small' ? '30rem' : '50rem' }}
+      className={width === 'small' ? styles.small : styles.large}
     >
       <Modal.Body>
         {children ?? (texts.body && <BodyShort>{translateIfAvailable(texts.body)}</BodyShort>)}
         {error && <Alert variant="error">{translateIfAvailable(error)}</Alert>}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant={confirmType} onClick={handleConfirm} loading={isLoading}>
+        <Button
+          variant={confirmType === 'danger' ? 'primary' : confirmType}
+          data-color={confirmType === 'danger' ? 'danger' : undefined}
+          onClick={handleConfirm}
+          loading={isLoading}
+        >
           {translateIfAvailable(texts.confirm)}
         </Button>
         {texts.cancel && (

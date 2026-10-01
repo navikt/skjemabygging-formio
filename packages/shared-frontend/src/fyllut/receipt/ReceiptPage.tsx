@@ -10,6 +10,7 @@ import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import FormHeader from '../layout/FormHeader';
 import { getMyPageUrl } from '../navigation/navUrls';
+import styles from './ReceiptPage.module.css';
 
 interface Props {
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
@@ -88,16 +89,9 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
             </b>
           </BodyShort>
           <Box marginBlock="space-16" asChild>
-            <List data-aksel-migrated-v8>
+            <List>
               <List.Item
-                icon={
-                  <CheckmarkCircleFillIcon
-                    color="currentColor"
-                    style={{ color: 'var(--ax-text-success-decoration)' }}
-                    fontSize="1.5rem"
-                    aria-hidden
-                  />
-                }
+                icon={<CheckmarkCircleFillIcon className={styles.successIcon} fontSize="1.5rem" aria-hidden />}
               >
                 <HStack gap="space-8">
                   {receipt.title}
@@ -118,14 +112,7 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
               {receipt.receivedAttachments.map((attachment, index) => (
                 <List.Item
                   key={`${attachment.id}-${index}`}
-                  icon={
-                    <CheckmarkCircleFillIcon
-                      color="currentColor"
-                      style={{ color: 'var(--ax-text-success-decoration)' }}
-                      fontSize="1.5rem"
-                      aria-hidden
-                    />
-                  }
+                  icon={<CheckmarkCircleFillIcon className={styles.successIcon} fontSize="1.5rem" aria-hidden />}
                 >
                   {attachment.title}
                 </List.Item>
@@ -140,7 +127,7 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
               <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading)}</b>
             </BodyShort>
             <Box marginBlock="space-16" asChild>
-              <List data-aksel-migrated-v8>
+              <List>
                 {receipt.attachmentsToSendLater.map((attachment, index) => (
                   <List.Item key={`${attachment.id}-${index}`}>{attachment.title}</List.Item>
                 ))}
@@ -155,7 +142,7 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
               <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading)}</b>
             </BodyShort>
             <Box marginBlock="space-16" asChild>
-              <List data-aksel-migrated-v8>
+              <List>
                 {receipt.attachmentsToBeSentByOthers.map((attachment, index) => (
                   <List.Item key={`${attachment.id}-${index}`}>{attachment.title}</List.Item>
                 ))}

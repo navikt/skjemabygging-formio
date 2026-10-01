@@ -10,6 +10,7 @@ import TextArea from '../text-area/TextArea';
 import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
+import styles from './AttachmentOptionSelect.module.css';
 
 interface Props {
   title: ReactNode;
@@ -89,7 +90,7 @@ const AttachmentOptionSelect = ({
     <UnvalidatedFields>
       <div className={className}>
         {implicitValueKey ? (
-          <div className="mb-4" id={inputId(statePath)} tabIndex={-1}>
+          <div className={styles.implicitChoice} id={inputId(statePath)} tabIndex={-1}>
             <Label>{title}</Label>
             <BodyShort>{description}</BodyShort>
             {error && (

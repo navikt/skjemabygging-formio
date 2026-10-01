@@ -18,7 +18,6 @@ const InputFormGroup = ({ component, componentRegistry }: InputFormGroupProps) =
 
   const contentClassName = [
     styles.content,
-    backgroundColor ? 'aksel-fieldset__content--background-color' : undefined,
     backgroundColor ? styles.background : undefined,
     backgroundColor && type === 'navSkjemagruppe' ? styles.backgroundNavGroup : undefined,
   ]

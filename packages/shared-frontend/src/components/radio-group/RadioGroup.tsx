@@ -72,7 +72,7 @@ const RadioGroup = ({
             translationKey={legend}
           />
         }
-        description={<TranslatedDescription translationKey={description} />}
+        description={description ? <TranslatedDescription translationKey={description} /> : undefined}
         value={current}
         onChange={(nextValue: string) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
         error={currentError}

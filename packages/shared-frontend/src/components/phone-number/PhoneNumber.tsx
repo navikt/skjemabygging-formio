@@ -12,6 +12,7 @@ import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import InternalTextField from '../text-field/InternalTextField';
 import { BaseFieldProps, PhoneNumberValidation } from '../types';
+import styles from './PhoneNumber.module.css';
 import { DEFAULT_AREA_CODE, PhoneNumberValue, toPhoneNumberRules } from './phoneNumberValidation';
 
 const fallbackAreaCodeOptions: ComponentValue[] = [{ value: DEFAULT_AREA_CODE, label: DEFAULT_AREA_CODE }];
@@ -88,10 +89,14 @@ const PhoneNumber = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      <Label as="p" aria-hidden>
+      <Label as="div" className={styles.label} aria-hidden>
         <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
       </Label>
-      <TranslatedDescription translationKey={description} />
+      {description && (
+        <div className={styles.description}>
+          <TranslatedDescription translationKey={description} />
+        </div>
+      )}
       <Select
         statePath={`${statePath}.areaCode`}
         label={TEXTS.statiske.phoneNumber.areaCodeLabel}
@@ -100,12 +105,14 @@ const PhoneNumber = ({
         required={false}
         readOnly={readOnly}
         selectType="combobox"
+        marginBottom="space-16"
       />
       <InternalTextField
         key={selectedAreaCode}
         statePath={`${statePath}.number`}
         label={label}
         hideLabel
+        marginBottom="space-0"
         required={required}
         readOnly={readOnly}
         readMore={readMore}
@@ -116,7 +123,11 @@ const PhoneNumber = ({
         }
         validation={toPhoneNumberRules(true, selectedAreaCode, validation)}
       />
-      {error && <Alert variant="warning">{TEXTS.statiske.phoneNumber.fetchError}</Alert>}
+      {error && (
+        <Alert variant="warning" marginBottom="space-0">
+          {TEXTS.statiske.phoneNumber.fetchError}
+        </Alert>
+      )}
     </FormElementBox>
   );
 };

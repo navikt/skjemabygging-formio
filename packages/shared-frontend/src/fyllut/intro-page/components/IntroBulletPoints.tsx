@@ -13,7 +13,7 @@ const IntroBulletPoints = ({ values }: Props) => {
 
   return (
     <Box marginBlock="space-16" asChild>
-      <List data-aksel-migrated-v8>
+      <List>
         {values.map((item, index) => (
           <List.Item key={index}>
             <InnerHtml content={item} className={styles.content} />

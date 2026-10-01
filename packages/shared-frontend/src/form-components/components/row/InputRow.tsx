@@ -23,7 +23,7 @@ const getChildStyle = (component: Component): FieldStyle | undefined => {
   }
 
   return {
-    '--field-width': `calc(${component.widthPercent}% - var(--ax-space-24))`,
+    '--field-width': `calc(${component.widthPercent}% - var(--row-column-gap) * ${1 - component.widthPercent / 100})`,
   };
 };
 
