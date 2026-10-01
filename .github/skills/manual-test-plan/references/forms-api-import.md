@@ -9,6 +9,10 @@ and change. Never delete a form or silently replace an existing one. Keep
 generated JSON and any generator in the session artifact directory; do not
 edit repository code, tests, the issue, PR, or specification.
 
+The scripts and their flags are described in
+[`bin/forms-api/README.md`](../../../../bin/forms-api/README.md). This file
+covers the workflow around them.
+
 ## Token and access
 
 If Forms API access fails after the proxy check below, ask the caller to run

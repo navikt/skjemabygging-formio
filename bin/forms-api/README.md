@@ -12,8 +12,7 @@ node bin/forms-api/import-form.mjs --form <generated-form.json>
 
 The token comes from `FORMS_API_ACCESS_TOKEN` or
 `packages/bygger-backend/.env`. Obtain it with `pnpm get-tokens forms-api`;
-never put the token in a command argument or output. A `401` requires a new
-token and another dry run before applying a change.
+never put it in a command argument or output.
 
 Import is a dry run unless invoked with
 `--apply --confirm '<operation>'`. It accepts only generated form numbers
@@ -22,10 +21,10 @@ beginning with `MANUALTEST-` and refuses an existing number unless
 replacing a form. These scripts never delete forms; generated forms stay in
 the shared Forms API until a form owner removes them.
 
-The manual-test-plan skill describes the full form-selection, token-refresh,
-proxy, and approval workflow in
+This file is the tool reference. Token refresh, proxy troubleshooting, failed
+writes, readback, and the approval workflow are in
 `.github/skills/manual-test-plan/references/forms-api-import.md`. Other tools
 can call these scripts directly without invoking that skill.
 
-Run their tests locally with `pnpm exec vitest run bin/forms-api/*.test.mjs`.
-These tests are not part of CI.
+Run their tests with `pnpm test:skills` (also covers the manual-test-plan
+scripts). CI runs this command.
