@@ -1,6 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLocation, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 import { useStepperState } from '../../../context/stepper/StepperContext';
 import { PanelDefinition } from '../../component-types';
@@ -12,7 +12,6 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   const { submissionPath, translate, component, panelValidationList, legacyAttachmentPanelMode } = props;
   const { title, components, navId, key } = component;
   const { search, state } = useLocation();
-  const navigate = useNavigate();
   const { isOpen: isStepperOpen } = useStepperState();
   const childComponents = components ?? [];
 
@@ -42,11 +41,9 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
 
       <FormSummary.Footer>
         <FormSummary.EditLink
-          href={search ? `../${key}${search}` : `../${key}`}
-          onClick={(event) => {
-            event.preventDefault();
-            navigate({ pathname: `../${key}`, search }, { state });
-          }}
+          as={Link}
+          to={{ pathname: `../${key}`, search }}
+          state={state}
           aria-label={legacyAttachmentPanelMode && !isStepperOpen ? translate(title) : undefined}
         >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
