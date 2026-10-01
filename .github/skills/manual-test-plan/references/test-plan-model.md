@@ -312,8 +312,6 @@ formats.
 - Do not include secrets or real personal data. The team may share approved
   synthetic identity numbers in its test notes to identify a submission;
   public artifacts contain instructions, not filled-in identity numbers.
-- Write fields rendered in HTML or GitHub issues in
-  Norwegian, with terminology from the application, forms, issue, and approved
-  specification. Write `internal` setup and evidence fields in English. The
-  canonical JSON contains both audiences, so shared fields used by the public
-  outputs remain in Norwegian.
+- Follow the Language rules in `SKILL.md`. The canonical JSON contains both
+  audiences, so fields used by the public outputs remain in Norwegian and
+  `internal` fields are in English.

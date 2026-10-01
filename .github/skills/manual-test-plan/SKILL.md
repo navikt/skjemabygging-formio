@@ -23,6 +23,14 @@ contain no target, ask for the issue URL or number when an issue exists. Ask
 for the pull request only when the caller confirms that the change has no
 issue. Do not infer the target solely from the current branch.
 
+## Language
+
+- Tester-facing HTML and GitHub issue content, including the plan fields they
+  render, is in Norwegian, using terms from FyllUt, Bygger, the form, and the
+  issue.
+- Questions to technical users, `internal` setup and evidence fields, local
+  instructions, documentation, and code are in English.
+
 ## Required workflow
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
@@ -81,10 +89,8 @@ issue. Do not infer the target solely from the current branch.
     choices for each case. Derive its steps with
     [route-source-mapping.md](references/route-source-mapping.md), which also
     covers digital submission without login.
-11. Write tester-facing HTML and GitHub issue content in Norwegian, using terms
-    from FyllUt, Bygger, the form, and the issue. Ask technical users questions
-    in English. Keep local technical instructions and documentation in English.
-    Follow [test-plan-model.md](references/test-plan-model.md).
+11. Write the plan following the Language rules above and
+    [test-plan-model.md](references/test-plan-model.md).
 12. Generate the canonical plan JSON and run:
 
     ```bash

@@ -40,8 +40,10 @@ missing, mark the identity check **unverified** and try Joark or hand it off.
 Do not claim that the logs expose payload fields without inspecting them:
 this repo's FyllUt logs only identify the submission, form number, request
 path, and outcome
-(`packages/shared-backend/src/services/application/applicationClient.ts:341-367`,
-`packages/fyllut-backend/src/routers/api/send-inn/application/common.ts:38-43`).
+(`submitApplication` in
+`packages/shared-backend/src/services/application/applicationClient.ts` and the
+`logMeta` in `generatePdfAndSubmit` in
+`packages/fyllut-backend/src/routers/api/send-inn/application/common.ts`).
 FyllUt itself is not deployed in the team's `team-soknad-dev-ee5e` project.
 
 ### Joark
@@ -64,7 +66,7 @@ form number and path, submission method, which synthetic identity was
 entered as `bruker` and which as `avsender`, visible receipt status or
 reference, and any error. A no-login receipt may not show `innsendingsId`:
 the backend maps its date and attachments but not that ID
-(`packages/fyllut-backend/src/services/nologin/receiptMapper.ts:9-16`).
+(`mapToReceiptSummary` in `packages/fyllut-backend/src/services/nologin/receiptMapper.ts`).
 Record the ID only if available; do not tell the tester to find it on the
 receipt. Share the synthetic identity numbers with the team member who
 will do the follow-up. Assign the check to someone with team-log or Joark

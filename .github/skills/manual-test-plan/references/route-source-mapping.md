@@ -69,13 +69,17 @@ flow only after checking that the case uses the matching method and settings;
 they do not prove this form's preprod behavior. Write a required ID upload as
 a required step. Check the form and implementation for the actual
 self-declaration and later page sequence. See
-`packages/fyllut/cypress/e2e/other/digitalnologin.cy.ts:90-121`,
-`packages/fyllut/cypress/e2e/digital-submission/nologin.cy.ts:17-36`, and
-`packages/shared-components/src/pages/intro/IntroPageButtonRow.tsx:27-38`.
+the "Form without attachments" tests in
+`packages/fyllut/cypress/e2e/other/digitalnologin.cy.ts`, the "Submission of
+application" setup in
+`packages/fyllut/cypress/e2e/digital-submission/nologin.cy.ts`, and
+`navigateToFormPage` in
+`packages/shared-components/src/pages/intro/IntroPageButtonRow.tsx`.
 
 The first panel is defined by the form, not by the submission method. For
-example, `nologin.cy.ts:31-36` goes through `Veiledning` before
-`Dine opplysninger`, while `digitalnologin.cy.ts:119-121` starts at
+example, the "Submission of application" setup in `nologin.cy.ts` goes
+through `Veiledning` before `Dine opplysninger`, while "lets you upload a file
+when selecting a type of personal ID" in `digitalnologin.cy.ts` starts at
 `Dine opplysninger`. Inspect the specific form revision and conditionals
 before naming `Veiledning`, `Dine opplysninger`, `Avsender`, or other pages.
 If the sources cannot establish the sequence, tell the tester which page to
