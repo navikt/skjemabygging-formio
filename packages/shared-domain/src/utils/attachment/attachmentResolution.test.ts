@@ -80,6 +80,28 @@ describe('attachment resolution shared by summary, PDF and submission metadata',
     }
   });
 
+  it('treats a null answer or null parent as unanswered and keeps the legacy record', () => {
+    const legacy = createAttachment('leggerVedNaa');
+    const containerForm = {
+      components: [{ key: 'container', type: 'container', input: true, tree: true, components: [component] }],
+    } as Form;
+    const cases: Array<[Form, string, Submission]> = [
+      [form, 'documentation', { data: { documentation: null }, attachments: [legacy] } as unknown as Submission],
+      [
+        containerForm,
+        'container.documentation',
+        { data: { container: null }, attachments: [legacy] } as unknown as Submission,
+      ],
+    ];
+    for (const [testForm, submissionPath, submission] of cases) {
+      expect(attachmentUtils.resolveSubmissionAttachments(testForm, submission)).toEqual([legacy]);
+      expect(attachmentUtils.resolveAttachmentsAtPath(component, submissionPath, submission)).toEqual({
+        attachments: [legacy],
+        source: 'top-level',
+      });
+    }
+  });
+
   it('retains empty-array legacy fallback, matching existing hydration semantics', () => {
     const legacy = createAttachment('leggerVedNaa');
     const submission = { data: { documentation: [] }, attachments: [legacy] };
