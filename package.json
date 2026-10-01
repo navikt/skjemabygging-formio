@@ -45,6 +45,7 @@
     "test:shared-components": "pnpm --filter @navikt/skjemadigitalisering-shared-components run test",
     "test:shared-frontend": "pnpm --filter @navikt/skjemadigitalisering-shared-frontend run test",
     "test:shared-backend": "pnpm --filter @navikt/skjemadigitalisering-shared-backend run test",
+    "test:skills": "vitest run .github/skills/manual-test-plan/scripts bin/forms-api",
     "test:coverage": "pnpm -r --if-present run test:coverage",
     "cypress:bygger": "pnpm --filter @navikt/bygger-frontend run cypress",
     "cypress:fyllut": "pnpm --filter @navikt/fyllut-frontend run cypress",

@@ -205,6 +205,5 @@ for outbound payloads.
 - Keep generated plans in the session artifact directory unless the caller
   explicitly requests repository files.
 
-Run script tests locally with
-`pnpm exec vitest run .github/skills/manual-test-plan/scripts/*.test.mjs bin/forms-api/*.test.mjs`.
-They are intentionally not included in CI.
+Run the script tests with `pnpm test:skills`. CI runs them in
+`build-and-test.yaml`.
