@@ -1,8 +1,10 @@
 # Canonical test plan model
 
 Use schema version `4`. Store the canonical JSON in the session artifact
-directory. The renderer validates required fields before producing other
-formats.
+directory. [plan.schema.json](plan.schema.json) defines the structure: required
+fields, types, enums and ID patterns. The renderer validates against it, then
+checks the cross-field rules below, before producing other formats. This file
+holds the example and the rules a schema cannot express.
 
 ```json
 {
@@ -190,7 +192,6 @@ formats.
 
 ## Field rules
 
-- `slug` must contain lowercase letters, numbers, and hyphens only.
 - `collaboration.withNonDevelopers` records the caller's answer. `true` produces
   local HTML for manual PDF printing. `false` produces a GitHub issue document.
 - Use `scope.included` and `scope.excluded` to separate implemented PR behavior
@@ -215,18 +216,16 @@ formats.
   resolve the missing revision method as described in
   [analysis-workflow.md](analysis-workflow.md) before generating a plan.
 - `behaviorAnalysis` must contain the behavior matrix used to derive the test
-  plan. Behavior IDs must be unique and match `B-<number>`.
-- Behavior confidence is `high`, `medium`, or `low`. Aligned and suspected
-  defects require high confidence because their intended result is confirmed.
-  Open questions use medium or low confidence.
-- Behavior status is `aligned`, `suspected-defect`, or `open-question`.
+  plan. Behavior IDs must be unique.
+- Aligned and suspected-defect behaviors require high confidence because their
+  intended result is confirmed. Open questions use medium or low confidence.
 - `integrations` contains every outbound integration affected by the change.
-  Integration IDs must be unique and match `INT-<number>`. Each integration
+  Integration IDs must be unique. Each integration
   references covered behaviors and has concrete evidence instructions.
   Use `evidence.options` for alternative methods. Each option has a unique
-  lowercase `id`, `audience` (`public` or `internal`), `method`, `owner`,
-  `instructions` (ordered steps), and `expected` (the specific observable
-  result). `repositoryReferences` and a URL are optional. For a submission,
+  lowercase `id`, `audience`, `method`, `owner`, `instructions` (ordered
+  steps), and `expected` (the specific observable result).
+  `repositoryReferences` and a URL are optional. For a submission,
   provide separate `team-logs` and `joark` options as described in
   [integration-evidence.md](integration-evidence.md). For collaboration with
   non-developers, also provide `handoff`. The renderer omits handoff from a
@@ -235,24 +234,20 @@ formats.
 - Every integration must be linked from at least one test case. If no approved
   evidence method exists, resolve that question before creating verification
   cases.
-- `setupActions` contains structured setup. IDs match `SETUP-<number>`.
-  `audience` is `public` or `internal`; `kind` is `forms-api-import`,
-  `form-verification`, `test-user`, `feature-toggle`, `shared-state`, or
-  `other`. Every action has steps, an expected result, verification, and
-  cleanup.
+- `setupActions` contains structured setup. Every action has steps, an
+  expected result, verification, and cleanup.
 - A `forms-api-import` setup action must reference a form and include a
   shared-state warning and cleanup. For `MANUALTEST-` forms, the skill
   performs confirmed CREATE or explicitly approved UPDATE; the caller
   imports production forms through Bygger. The skill never deletes forms, so cleanup states
   a retention or approved restore decision.
-- Case IDs must be unique and match `TC-<number>`.
+- Case IDs must be unique.
 - Every case must reference one or more entries in `behaviorAnalysis`.
 - Render those references as visible links to the corresponding background
   points, not only inside the collapsed journey details.
 - `integrationIds` references the outbound integrations exercised by the case.
 - `risks`, and the case fields `prerequisites`, `testUsers`, `evidence`, and
   `cleanup`, may be omitted when empty. The renderer treats them as empty lists.
-- Case mode is `verification` or `exploratory`.
 - A verification case may reference `aligned` or `suspected-defect` behaviors
   with high confidence, and its route must be source-mapped or observed
   in a browser. Its expected results
@@ -264,14 +259,12 @@ formats.
   trust the tester's judgment rather than inventing a pass criterion. Once the
   route and intended outcome are confirmed, update the expected results before
   changing the case to verification.
-- Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
 - Each form needs the actual `skjemanummer` and stored `path` from Forms API;
   the form-number link uses the stored path on the selected environment.
 - A generated form intended for import must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
-- Every case needs `journeyCheck` with `status` (`verified`, `source-mapped`,
-  or `unverified`). `verified` means this exact route was observed in a
+- Every case needs `journeyCheck` with a `status`. `verified` means this exact route was observed in a
   browser; `source-mapped` means its steps are grounded in the matching
   Cypress flows, implementation and exact form revision but have not
   been exercised in preprod. Neither is a claim that downstream payload

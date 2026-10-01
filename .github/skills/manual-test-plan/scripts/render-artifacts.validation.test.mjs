@@ -143,7 +143,7 @@ test('rejects a case with no route check', () => {
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /testCases\[0\]\.journeyCheck\.status/);
+    assert.match(run.result.stderr, /testCases\[0\]\.journeyCheck is required/);
   } finally {
     run.cleanup();
   }

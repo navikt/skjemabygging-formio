@@ -1,0 +1,293 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/navikt/skjemabygging-formio/.github/skills/manual-test-plan/references/plan.schema.json",
+  "title": "Manual test plan, schema version 4",
+  "description": "Structural contract for the canonical plan JSON. Cross-references, uniqueness and rules that depend on several fields are checked by scripts/render/validate-plan.mjs. The x-message keyword supplies the text shown to the user when the keyword it sits next to fails.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "slug",
+    "title",
+    "summary",
+    "scope",
+    "collaboration",
+    "source",
+    "environment",
+    "behaviorAnalysis",
+    "integrations",
+    "setupActions",
+    "forms",
+    "testCases"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 4, "x-message": "must be 4" },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "x-message": "must contain lowercase letters, numbers, and hyphens only"
+    },
+    "title": { "$ref": "#/definitions/text" },
+    "summary": { "$ref": "#/definitions/text" },
+    "scope": {
+      "type": "object",
+      "x-message": "must contain included, excluded, and notCoveredByTests lists",
+      "required": ["included", "excluded", "notCoveredByTests"],
+      "properties": {
+        "included": { "$ref": "#/definitions/strings" },
+        "excluded": { "$ref": "#/definitions/strings" },
+        "notCoveredByTests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["area", "reason"],
+            "properties": {
+              "area": { "$ref": "#/definitions/text" },
+              "reason": { "$ref": "#/definitions/text" }
+            }
+          }
+        }
+      }
+    },
+    "collaboration": {
+      "type": "object",
+      "required": ["withNonDevelopers"],
+      "properties": { "withNonDevelopers": { "type": "boolean" } }
+    },
+    "source": {
+      "type": "object",
+      "required": ["repository", "type", "number", "url", "ref", "commitSha"],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$",
+          "x-message": "must use owner/repository format"
+        },
+        "type": { "const": "pull-request", "x-message": "must be pull-request" },
+        "number": { "type": "integer", "minimum": 1, "x-message": "must be a positive pull request number" },
+        "url": { "$ref": "#/definitions/httpUrl" },
+        "ref": { "$ref": "#/definitions/text" },
+        "commitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{40}$",
+          "x-message": "must be a 40-character Git commit SHA"
+        },
+        "issue": {
+          "type": "object",
+          "required": ["number", "url"],
+          "properties": {
+            "number": { "type": "integer", "minimum": 1 },
+            "url": { "$ref": "#/definitions/httpUrl" }
+          }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "required": ["name", "internBaseUrl", "ansattBaseUrl", "revisionCheck"],
+      "properties": {
+        "name": { "enum": ["preprod", "preprod-alt"], "x-message": "must be preprod or preprod-alt" },
+        "internBaseUrl": { "$ref": "#/definitions/httpUrl" },
+        "ansattBaseUrl": { "$ref": "#/definitions/httpUrl" },
+        "revisionCheck": {
+          "type": "object",
+          "required": ["endpoint", "field"],
+          "properties": {
+            "endpoint": { "$ref": "#/definitions/httpUrl" },
+            "field": { "$ref": "#/definitions/text" }
+          }
+        }
+      }
+    },
+    "risks": { "$ref": "#/definitions/strings" },
+    "behaviorAnalysis": {
+      "type": "array",
+      "minItems": 1,
+      "x-message": "must contain at least one behavior",
+      "items": {
+        "type": "object",
+        "required": ["id", "behavior", "before", "intended", "implemented", "evidence", "confidence", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^B-\\d+$", "x-message": "must match B-<number>" },
+          "behavior": { "$ref": "#/definitions/text" },
+          "before": { "$ref": "#/definitions/text" },
+          "intended": { "$ref": "#/definitions/text" },
+          "implemented": { "$ref": "#/definitions/text" },
+          "evidence": { "$ref": "#/definitions/nonEmptyStrings" },
+          "confidence": { "enum": ["high", "medium", "low"], "x-message": "must be high, medium, or low" },
+          "status": {
+            "enum": ["aligned", "suspected-defect", "open-question"],
+            "x-message": "must be aligned, suspected-defect, or open-question"
+          }
+        }
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "system", "behaviorIds", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^INT-\\d+$", "x-message": "must match INT-<number>" },
+          "system": { "$ref": "#/definitions/text" },
+          "behaviorIds": { "$ref": "#/definitions/nonEmptyStrings" },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "array",
+                "minItems": 1,
+                "x-message": "must contain at least one option",
+                "items": {
+                  "allOf": [
+                    { "$ref": "#/definitions/evidenceOption" },
+                    {
+                      "required": ["id"],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                          "x-message": "must use lowercase letters, numbers, and hyphens"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "if": { "not": { "required": ["options"] } },
+            "then": { "$ref": "#/definitions/evidenceOption" }
+          }
+        }
+      }
+    },
+    "setupActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "audience", "kind", "title", "expected", "steps", "verification", "cleanup"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^SETUP-\\d+$", "x-message": "must match SETUP-<number>" },
+          "audience": { "$ref": "#/definitions/audience" },
+          "kind": {
+            "enum": ["forms-api-import", "form-verification", "test-user", "feature-toggle", "shared-state", "other"],
+            "x-message": "is invalid"
+          },
+          "title": { "$ref": "#/definitions/text" },
+          "expected": { "$ref": "#/definitions/text" },
+          "steps": { "$ref": "#/definitions/nonEmptyStrings" },
+          "verification": { "$ref": "#/definitions/nonEmptyStrings" },
+          "cleanup": { "$ref": "#/definitions/strings" },
+          "formId": { "type": "string" },
+          "sharedStateWarning": { "$ref": "#/definitions/text" }
+        },
+        "if": { "properties": { "kind": { "const": "forms-api-import" } }, "required": ["kind"] },
+        "then": {
+          "required": ["formId", "sharedStateWarning"],
+          "properties": {
+            "formId": { "$ref": "#/definitions/text" },
+            "cleanup": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string" },
+              "x-message": "must describe restoration or retention"
+            }
+          }
+        }
+      }
+    },
+    "forms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "path", "skjemanummer", "title"],
+        "properties": {
+          "id": { "$ref": "#/definitions/text" },
+          "kind": { "enum": ["production", "generated"], "x-message": "must be production or generated" },
+          "path": { "$ref": "#/definitions/text" },
+          "skjemanummer": { "$ref": "#/definitions/text" },
+          "title": { "$ref": "#/definitions/text" },
+          "artifact": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "testCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "group", "title", "purpose", "mode", "priority", "behaviorIds", "journeyCheck", "steps"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^TC-\\d+$", "x-message": "must match TC-<number>" },
+          "group": { "$ref": "#/definitions/text" },
+          "title": { "$ref": "#/definitions/text" },
+          "purpose": { "$ref": "#/definitions/text" },
+          "mode": { "enum": ["verification", "exploratory"], "x-message": "must be verification or exploratory" },
+          "priority": { "enum": ["P0", "P1", "P2", "P3"], "x-message": "must be P0, P1, P2, or P3" },
+          "behaviorIds": { "$ref": "#/definitions/nonEmptyStrings" },
+          "formId": { "type": "string" },
+          "integrationIds": { "$ref": "#/definitions/strings" },
+          "prerequisites": { "$ref": "#/definitions/strings" },
+          "testUsers": { "$ref": "#/definitions/strings" },
+          "evidence": { "$ref": "#/definitions/strings" },
+          "cleanup": { "$ref": "#/definitions/strings" },
+          "journeyCheck": {
+            "type": "object",
+            "required": ["status", "route", "note"],
+            "properties": {
+              "status": {
+                "enum": ["verified", "source-mapped", "unverified"],
+                "x-message": "must be verified, source-mapped, or unverified"
+              },
+              "route": { "$ref": "#/definitions/text" },
+              "note": { "$ref": "#/definitions/text" },
+              "evidence": { "$ref": "#/definitions/strings" }
+            }
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "x-message": "must contain at least one step",
+            "items": {
+              "type": "object",
+              "required": ["action"],
+              "properties": {
+                "action": { "$ref": "#/definitions/text" },
+                "expected": { "$ref": "#/definitions/text" },
+                "command": { "$ref": "#/definitions/text" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "text": { "type": "string", "pattern": "\\S", "x-message": "must be a non-empty string" },
+    "httpUrl": {
+      "type": "string",
+      "pattern": "^https?://\\S+$",
+      "x-message": "must be a valid http or https URL"
+    },
+    "strings": { "type": "array", "items": { "type": "string" }, "x-message": "must be an array of strings" },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "x-message": "must be an array with at least one string"
+    },
+    "audience": { "enum": ["public", "internal"], "x-message": "must be public or internal" },
+    "evidenceOption": {
+      "type": "object",
+      "required": ["audience", "method", "owner", "expected", "instructions"],
+      "properties": {
+        "audience": { "$ref": "#/definitions/audience" },
+        "method": { "$ref": "#/definitions/text" },
+        "owner": { "$ref": "#/definitions/text" },
+        "expected": { "$ref": "#/definitions/text" },
+        "url": { "$ref": "#/definitions/httpUrl" },
+        "instructions": { "$ref": "#/definitions/nonEmptyStrings" },
+        "repositoryReferences": { "$ref": "#/definitions/strings" }
+      }
+    }
+  }
+}
