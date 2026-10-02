@@ -7,13 +7,13 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "types": ["node"],
+    "ignoreDeprecations": "6.0",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "mocks/**/*.ts"
-  ],
+  "include": ["mocks/**/*.ts"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

@@ -13,61 +13,18 @@
  *   pnpm start:bygger:mocks
  *
  * Output (printed after servers are ready, easy to parse):
- *   START_PID=12345
  *   FYLLUT_MOCK_URL=http://127.0.0.1:3000
  *   FYLLUT_MOCK_ADMIN_PORT=3310
  *   FYLLUT_BACKEND_URL=http://127.0.0.1:3001
- *   FYLLUT_FRONTEND_URL=http://127.0.0.1:3002
+ *   FYLLUT_FRONTEND_URL=http://127.0.0.1:3002/fyllut
+ *   START_PID=12345
  */
 
-import { spawn } from 'child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'fs';
-import { connect, createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-
-const isPortFree = (port) =>
-  new Promise((resolve) => {
-    const server = createServer();
-    server.once('error', () => resolve(false));
-    server.once('listening', () => {
-      server.close();
-      resolve(true);
-    });
-    server.listen(port);
-  });
-
-const loopbackHosts = ['127.0.0.1', '::1'];
-
-const canConnect = (port, host) =>
-  new Promise((resolve) => {
-    const socket = connect(port, host);
-    const done = (connected) => {
-      socket.removeAllListeners();
-      socket.destroy();
-      resolve(connected);
-    };
-    socket.once('connect', () => done(true));
-    socket.once('error', () => done(false));
-  });
-
-const waitForPort = (port, timeout = 60000) =>
-  new Promise((resolve, reject) => {
-    const start = Date.now();
-    const attempt = async () => {
-      const checks = await Promise.all(loopbackHosts.map((host) => canConnect(port, host)));
-      if (checks.some(Boolean)) {
-        resolve();
-        return;
-      }
-      if (Date.now() - start > timeout) {
-        reject(new Error(`Port ${port} not ready after ${timeout}ms`));
-        return;
-      }
-      setTimeout(() => void attempt(), 250);
-    };
-    void attempt();
-  });
+import { createFyllutTestStack } from './lib/fyllut-test-stack.mjs';
+import { isPortFree, startManagedStack } from './lib/managed-test-stack.mjs';
 
 const getFreePorts = async (count, start = 3440) => {
   const ports = [];
@@ -79,13 +36,10 @@ const getFreePorts = async (count, start = 3440) => {
   return ports;
 };
 
-const isWindows = process.platform === 'win32';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const nodeExecutable = process.execPath;
 const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
-const mocksTsNodeCliPath = resolve(repoRoot, 'mocks/node_modules/ts-node/dist/bin.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
-const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
 const normalizedArgs = args.filter((arg) => arg !== '--');
 const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
@@ -93,111 +47,39 @@ const unknownArgs = normalizedArgs.filter((arg) => arg !== '--no-runtime-config'
 
 const configs = {
   fyllut: async () => {
-    const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
-    const mockUrl = `http://127.0.0.1:${mockPort}`;
-    const backendUrl = `http://127.0.0.1:${backendPort}`;
-    const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
-    const fyllutBackendEnv = {
-      NODE_ENV: 'development',
-      MOCKS_ENABLED: 'true',
-      SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
-      AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
-      FORMIO_API_SERVICE: mockUrl,
-      FORMS_API_URL: `${mockUrl}/forms-api`,
-      SEND_INN_HOST: `${mockUrl}/send-inn`,
-      TILLEGGSSTONADER_HOST: `${mockUrl}/register-data`,
-      KODEVERK_URL: `${mockUrl}/kodeverk`,
-      TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-      FAMILIE_PDF_GENERATOR_URL: mockUrl,
-      TEAM_LOGS_URL: `${mockUrl}/team-logs`,
-    };
-    return {
-      commands: [
-        [
-          nodeExecutable,
-          [
-            mocksTsNodeCliPath,
-            'mocks/server.ts',
-            '--no-plugins.inquirerCli.enabled',
-            `--server.port=${mockPort}`,
-            `--plugins.adminApi.port=${mockAdminPort}`,
-          ],
-          {},
-          resolve(repoRoot, 'mocks'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
-          fyllutBackendEnv,
-          resolve(repoRoot, 'packages/fyllut-backend'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
-          { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
-          resolve(repoRoot, 'packages/fyllut'),
-        ],
-      ],
-      ports: [mockPort, mockAdminPort, backendPort, frontendPort],
-      summaryLines: [
-        `FYLLUT_MOCK_URL=${mockUrl}`,
-        `FYLLUT_MOCK_ADMIN_PORT=${mockAdminPort}`,
-        `FYLLUT_BACKEND_URL=${backendUrl}`,
-        `FYLLUT_FRONTEND_URL=${frontendUrl}`,
-      ],
-      onReady: shouldWriteRuntimeConfig
-        ? () => {
-            mkdirSync(resolve(repoRoot, 'packages/fyllut/.runtime'), { recursive: true });
-            writeFileSync(
-              fyllutCypressRuntimePath,
-              JSON.stringify(
-                {
-                  baseUrl: `http://127.0.0.1:${frontendPort}`,
-                  env: {
-                    SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
-                    AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
-                    FORMIO_PROJECT_URL: `${mockUrl}/formio-api`,
-                    MOCKS_ADMIN_PORT: String(mockAdminPort),
-                    SEND_INN_HOST: `${mockUrl}/send-inn`,
-                    SEND_INN_FRONTEND: `${mockUrl}/send-inn-frontend`,
-                    TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-                    BASE_URL: `http://127.0.0.1:${frontendPort}`,
-                    FAMILIE_PDF_GENERATOR_URL: mockUrl,
-                  },
-                },
-                null,
-                2,
-              ),
-            );
-          }
-        : undefined,
-      onCleanup: shouldWriteRuntimeConfig ? () => rmSync(fyllutCypressRuntimePath, { force: true }) : undefined,
-    };
+    return createFyllutTestStack({
+      repoRoot,
+      ports: await getFreePorts(4),
+      shouldWriteRuntimeConfig,
+    });
   },
   bygger: async () => {
     const [backendPort, frontendPort] = await getFreePorts(2);
     const backendUrl = `http://127.0.0.1:${backendPort}`;
     const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+    let runtimeWritten = false;
     return {
       commands: [
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--strictPort', '--port', String(backendPort)],
           { NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger-backend'),
         ],
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--strictPort', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger'),
         ],
       ],
-      ports: [backendPort, frontendPort],
+      healthUrls: [backendUrl, frontendUrl],
+      listeningPorts: [[backendPort], [frontendPort]],
       summaryLines: [`BYGGER_BACKEND_URL=${backendUrl}`, `BYGGER_FRONTEND_URL=${frontendUrl}`],
       onReady: shouldWriteRuntimeConfig
         ? () => {
             mkdirSync(resolve(repoRoot, 'packages/bygger/.runtime'), { recursive: true });
+            runtimeWritten = true;
             writeFileSync(
               byggerCypressRuntimePath,
               JSON.stringify(
@@ -210,7 +92,11 @@ const configs = {
             );
           }
         : undefined,
-      onCleanup: shouldWriteRuntimeConfig ? () => rmSync(byggerCypressRuntimePath, { force: true }) : undefined,
+      onCleanup: shouldWriteRuntimeConfig
+        ? () => {
+            if (runtimeWritten) rmSync(byggerCypressRuntimePath, { force: true });
+          }
+        : undefined,
     };
   },
 };
@@ -220,65 +106,36 @@ if (!configs[target] || unknownArgs.length > 0) {
   process.exit(1);
 }
 
-const { commands, ports, summaryLines, onReady, onCleanup } = await configs[target]();
-
-const opts = { stdio: 'inherit', shell: false };
-const procs = commands.map(([cmd, args, env = {}, cwd = repoRoot]) =>
-  spawn(cmd, args, { ...opts, cwd, env: { ...process.env, ...env } }),
-);
-
-const killProcess = (pid, signal) =>
-  new Promise((resolve) => {
-    if (!pid) {
-      resolve();
-      return;
-    }
-
-    if (isWindows) {
-      const killer = spawn('taskkill', ['/pid', String(pid), '/t', '/f'], { stdio: 'ignore', shell: false });
-      killer.once('exit', () => resolve());
-      killer.once('error', () => resolve());
-      return;
-    }
-
+const config = await configs[target]();
+const controller = new AbortController();
+let stack;
+let shutdownPromise;
+const shutdown = (code) => {
+  controller.abort(new Error('STACK_INTERRUPTED'));
+  shutdownPromise ??= (async () => {
     try {
-      process.kill(pid, signal);
-    } catch {
-      /* already gone */
+      await stack?.stop();
+      process.exitCode = code;
+    } catch (error) {
+      console.error(error);
+      process.exitCode = 1;
     }
-    resolve();
-  });
-
-let shuttingDown = false;
-const shutdown = async (signal, code = 0) => {
-  if (shuttingDown) {
-    return;
-  }
-  shuttingDown = true;
-  await Promise.all(procs.map((p) => killProcess(p.pid, signal)));
-  onCleanup?.();
-  process.exit(code);
+  })();
+  return shutdownPromise;
 };
-
-process.on('SIGINT', () => void shutdown('SIGINT', 130));
-process.on('SIGTERM', () => void shutdown('SIGTERM', 143));
-
-// Wait for all ports to accept connections, then signal readiness
-Promise.all(ports.map((p) => waitForPort(p))).then(() => {
-  onReady?.();
-  console.log('');
-  console.log(summaryLines.join('\n'));
-  console.log(`START_PID=${process.pid}`);
-});
-
-let exitCode = 0;
-let exited = 0;
-procs.forEach((p) => {
-  p.on('exit', (code) => {
-    exitCode = exitCode || code || 0;
-    if (++exited === procs.length) {
-      onCleanup?.();
-      process.exit(exitCode);
-    }
+process.on('SIGINT', () => void shutdown(130));
+process.on('SIGTERM', () => void shutdown(143));
+try {
+  stack = await startManagedStack(config, {
+    signal: controller.signal,
+    onFailure: (error) => {
+      console.error(error);
+      void shutdown(1);
+    },
   });
-});
+  console.log(`\n${config.summaryLines.join('\n')}`);
+  console.log(`START_PID=${process.pid}`);
+} catch (error) {
+  console.error(error);
+  await shutdown(1);
+}

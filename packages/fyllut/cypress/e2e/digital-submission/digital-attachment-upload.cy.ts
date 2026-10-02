@@ -34,6 +34,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     });
 
+    // Playwright: F061-T001 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > shows validation errors when files are not uploaded
     it('shows validation errors when files are not uploaded', () => {
       cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
@@ -118,6 +119,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           });
       });
 
+      // Playwright: F061-T004 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > submits attachments with the form
       it('submits attachments with the form', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');

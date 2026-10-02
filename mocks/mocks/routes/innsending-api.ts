@@ -47,6 +47,7 @@ import tc21d from '../data/test-cases/tc21d-innsending-nologin-soknad-body.json'
 import tc21e from '../data/test-cases/tc21e-innsending-soknad-body.json';
 import tc21f from '../data/test-cases/tc21f-innsending-soknad-body.json';
 import tc22 from '../data/test-cases/tc22-innsending-nologin-soknad-body.json';
+import { observeRoute } from '../utils/playwrightEvidence';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
@@ -92,7 +93,7 @@ const okResponseHandlerNologinSubmission = (req, res) => {
   res.send(replySubmittedApplication(body, innsendingsId));
 };
 
-export default [
+const routes = [
   {
     id: 'get-active-tasks',
     url: '/send-inn/frontend/v1/skjema/*',
@@ -909,3 +910,5 @@ export default [
     ],
   },
 ];
+
+export default routes.map(observeRoute);
