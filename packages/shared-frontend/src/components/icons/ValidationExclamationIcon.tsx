@@ -1,4 +1,5 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
+import styles from './ValidationExclamationIcon.module.css';
 
 interface Props {
   title?: string;
@@ -6,16 +7,7 @@ interface Props {
 
 const ValidationExclamationIcon = ({ title }: Props) => {
   return (
-    <ExclamationmarkTriangleFillIcon
-      style={{
-        verticalAlign: 'sub',
-        fontSize: '1.5rem',
-        color: 'var(--ax-warning-700)',
-        margin: '0 var(--ax-space-4)',
-      }}
-      title={title}
-      aria-hidden={!title}
-    />
+    <ExclamationmarkTriangleFillIcon className={styles.icon} fontSize="1.5rem" title={title} aria-hidden={!title} />
   );
 };
 

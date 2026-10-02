@@ -5,11 +5,11 @@ import {
   Recipient,
   ResponseError,
   Submission,
-  SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMethod,
   SubmissionType,
   TranslationLang,
+  attachmentUtils,
   formatUtils,
   navFormUtils,
   yourInformationUtils,
@@ -166,31 +166,14 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
   throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
 };
 
-const getAttachments = (submission: Submission, form: Form) => {
-  return navFormUtils
-    .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => {
-      const submissionData = { ...submission.data };
-      const submissionAttachment =
-        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
-        submissionData[component.key];
-
-      return (
-        submissionAttachment === 'leggerVedNaa' ||
-        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
-      );
-    });
-};
-
 const getAttachmentLabels = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): string[] => {
-  return getAttachments(submission, form).map((component) =>
-    translate ? translate(component.label) : component.label,
-  );
+  return attachmentUtils
+    .getAttachmentsForCoverPage(submission, form)
+    .map((component) => (translate ? translate(component.label) : component.label));
 };
 
 const getRecipient = (

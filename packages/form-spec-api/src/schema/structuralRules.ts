@@ -22,10 +22,7 @@ const hasConditionalLogic = (component: Component) =>
 const shouldSkipComponent = (component: Component) =>
   skippedComponentTypes.has(component.type) || (!component.key && getNestedComponents(component).length === 0);
 
-const isAttachmentPanel = (component: Component) => component.type === 'panel' && component.isAttachmentPanel === true;
-
 const shouldFlattenComponent = (component: Component) =>
-  !isAttachmentPanel(component) &&
   getNestedComponents(component).length > 0 &&
   (!component.key ||
     component.input === false ||
@@ -41,7 +38,6 @@ export {
   createsObjectScope,
   getNestedComponents,
   hasConditionalLogic,
-  isAttachmentPanel,
   shouldFlattenComponent,
   shouldSkipComponent,
 };

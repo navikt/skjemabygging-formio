@@ -3,11 +3,20 @@
  */
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
-  return cy.findByLabelText(label).closest('.form-group').within(fn);
+  return cy.findByLabelText(label).closest('[data-form-component], .form-group').within(fn);
 });
 
 Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {
   cy.findByRole('heading', { level: 3, name: heading }).closest('.aksel-form-summary').within(fn);
+});
+
+Cypress.Commands.add('assertCombobox', (optionLabel) => {
+  return cy.get('.aksel-combobox__selected-options').contains(optionLabel);
+});
+
+Cypress.Commands.add('selectCombobox', (label, value) => {
+  cy.findByRole('combobox', { name: label }).click();
+  cy.findByRole('combobox', { name: label }).type(`${value}{downarrow}{enter}{esc}`);
 });
 
 Cypress.Commands.add('findByLabelOptional', (label) => {

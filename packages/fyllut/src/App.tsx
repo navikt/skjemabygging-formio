@@ -6,7 +6,7 @@ import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
 import { InternalServerErrorPage } from './components/errors/InternalServerErrorPage';
 import { NotFoundPage } from './components/errors/NotFoundPage';
 import SessionExpiredPage from './components/errors/SessionExpiredPage';
-import FormPageWrapper from './components/form/FormPageWrapper';
+import FormPage from './components/form/FormPage';
 import { FormsPage } from './components/forms/FormsPage';
 
 const useStyles = makeStyles({
@@ -28,7 +28,7 @@ const App = () => {
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="/soknad-ikke-funnet" element={<FormNotFoundPage />} />
           <Route path="/sesjon-utlopt" element={<SessionExpiredPage />} />
-          <Route path="/:formPath/*" element={<FormPageWrapper />} />
+          <Route path="/:formPath/*" element={<FormPage />} />
         </Routes>
       </Theme>
     </main>

@@ -8,6 +8,7 @@ export interface BaseComponentType {
   label?: string;
   key?: string;
   description?: string;
+  selectType?: 'auto' | 'select' | 'combobox';
   additionalDescriptionText?: string;
   additionalDescriptionLabel?: string;
   coverPageUser?: boolean;

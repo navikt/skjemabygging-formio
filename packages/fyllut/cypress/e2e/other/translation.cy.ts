@@ -2,6 +2,8 @@
  * Tests translations of the form work from both url params and language switcher
  */
 
+const languageSelect = () => cy.findByRole('combobox', { name: /^(Choose language|Velg språk|Vel språk)$/ });
+
 describe('Translations', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -10,22 +12,22 @@ describe('Translations', () => {
   describe('Change translations based on url params', () => {
     it('get default bokmål', () => {
       cy.visit('/fyllut/translationcypress101/veiledning');
-      cy.findByRole('button', { name: 'Norsk bokmål' }).should('exist');
+      languageSelect().should('have.value', 'nb');
     });
 
     it('get bokmål with lang param', () => {
       cy.visit('/fyllut/translationcypress101/veiledning?lang=nb-NO');
-      cy.findByRole('button', { name: 'Norsk bokmål' }).should('exist');
+      languageSelect().should('have.value', 'nb');
     });
 
     it('get nynorsk with lang param', () => {
       cy.visit('/fyllut/translationcypress101/veiledning?lang=nn-NO');
-      cy.findByRole('button', { name: 'Norsk nynorsk' }).should('exist');
+      languageSelect().should('have.value', 'nn');
     });
 
     it('get english with lang param', () => {
       cy.visit('/fyllut/translationcypress101/skjema?lang=en');
-      cy.findByRole('button', { name: 'English' }).should('exist');
+      languageSelect().should('have.value', 'en');
     });
   });
 
@@ -36,22 +38,19 @@ describe('Translations', () => {
 
     it('change to english and back to norwegian', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
-      cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      languageSelect().select('en');
       cy.findByRole('heading', { name: 'Guidance' }).should('exist');
-      cy.findByRole('button', { name: 'English' }).click();
-      cy.findByRole('link', { name: 'Norsk bokmål' }).click();
+      languageSelect().select('nb');
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
     });
 
     it('retains selected language on navigation', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
-      cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      languageSelect().select('en');
       cy.findByRole('heading', { name: 'Guidance' }).should('exist');
       cy.clickNextStep();
 
-      cy.findByRole('button', { name: 'English' }).should('exist');
+      languageSelect().should('have.value', 'en');
       cy.findByRole('heading', { name: 'Your information' }).should('exist');
       cy.findByRole('combobox', { name: 'Title' }).should('be.visible').click();
       cy.findByText('Mr').should('exist').click();
@@ -68,7 +67,7 @@ describe('Translations', () => {
 
       cy.clickNextStep();
 
-      cy.findByRole('button', { name: 'English' }).should('exist');
+      languageSelect().should('have.value', 'en');
       cy.findByRole('heading', { name: 'Attachments' }).should('exist');
       cy.get('.aksel-radio-group')
         .first()
@@ -78,7 +77,7 @@ describe('Translations', () => {
         );
       cy.clickNextStep();
 
-      cy.findByRole('button', { name: 'English' }).should('exist');
+      languageSelect().should('have.value', 'en');
       cy.findByRole('heading', { name: 'Summary' }).should('exist');
     });
 
@@ -86,13 +85,11 @@ describe('Translations', () => {
       cy.clickShowAllSteps();
 
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
-      cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      languageSelect().select('en');
       cy.findByRole('heading', { name: 'Your information' }).should('exist');
 
       cy.findByRole('link', { name: 'Attachments' }).click();
-      cy.findByRole('button', { name: 'English' }).click();
-      cy.findByRole('link', { name: 'Norsk bokmål' }).click();
+      languageSelect().select('nb');
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
 
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
@@ -106,12 +103,11 @@ describe('Translations', () => {
     });
 
     it('Check that translateHTMLTemplate override work', () => {
-      cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      languageSelect().select('en');
       cy.clickNextStep();
 
       // This example will fail without the override in translateHTMLTemplate
-      cy.get('.formio-component-alertstripe').contains('Example correct translation').should('exist');
+      cy.get('[data-component-key="eksempelOversettelse1"]').contains('Example correct translation').should('exist');
     });
   });
 

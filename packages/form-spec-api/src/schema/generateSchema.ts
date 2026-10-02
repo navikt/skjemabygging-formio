@@ -3,21 +3,17 @@ import { buildObjectSchemaFromComponents } from './buildObjectSchemaFromComponen
 import { JsonSchemaObject } from './types';
 
 const generateSchema = (form: Form): JsonSchemaObject => {
-  const formDataSchema = buildObjectSchemaFromComponents(form.components, {
+  const { dataSchema, submissionAttachmentsSchema } = buildObjectSchemaFromComponents(form.components, {
     formPath: form.path,
     revision: form.revision,
     supportsPersonalIdAttachment: submissionTypesUtils.isDigitalNoLoginSubmission(form.properties?.submissionTypes),
   });
-  const { attachments, ...dataProperties } = formDataSchema.properties;
 
   const submissionPayloadSchema: JsonSchemaObject = {
     type: 'object',
     properties: {
-      data: {
-        ...formDataSchema,
-        properties: dataProperties,
-      },
-      ...(attachments ? { attachments } : {}),
+      data: dataSchema,
+      ...(submissionAttachmentsSchema ? { attachments: submissionAttachmentsSchema } : {}),
       ...(form.introPage?.enabled
         ? {
             selfDeclaration: {
@@ -29,7 +25,10 @@ const generateSchema = (form: Form): JsonSchemaObject => {
     },
     required: [
       'data',
-      ...(attachments ? ['attachments'] : []),
+      ...(submissionAttachmentsSchema &&
+      submissionTypesUtils.isDigitalNoLoginSubmission(form.properties?.submissionTypes)
+        ? ['attachments']
+        : []),
       ...(form.introPage?.enabled ? ['selfDeclaration'] : []),
     ],
     additionalProperties: false,

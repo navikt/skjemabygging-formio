@@ -1,0 +1,7 @@
+.description {
+  color: var(--ax-text-neutral-subtle);
+}
+
+.description p {
+  margin: 0;
+}

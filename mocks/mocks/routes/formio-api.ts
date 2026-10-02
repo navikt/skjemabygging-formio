@@ -63,7 +63,6 @@ import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/comp
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
-import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
 import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import {
@@ -148,6 +147,10 @@ import {
   datagridSkjemagruppeBugTranslations,
 } from '../data/forms-api/datagrid/datagridSkjemagruppeBugForm';
 import {
+  datePickerCrossPageForm,
+  datePickerCrossPageTranslations,
+} from '../data/forms-api/date-picker-cross-page/datePickerCrossPageForm';
+import {
   datePickerDeprecatedForm,
   datePickerDeprecatedTranslations,
 } from '../data/forms-api/date-picker/datePickerDeprecatedForm';
@@ -159,6 +162,7 @@ import {
   digitalnologinDigitalNoLoginForm,
   digitalnologinDigitalNoLoginTranslations,
 } from '../data/forms-api/digitalnologin/digitalnologinDigitalNoLoginForm';
+import { draftSaveRaceForm, draftSaveRaceTranslations } from '../data/forms-api/draft-save-race/draftSaveRaceForm';
 import {
   drivingListDeprecatedForm,
   drivingListDeprecatedTranslations,
@@ -168,6 +172,7 @@ import {
   emailDeprecatedTranslations,
 } from '../data/forms-api/email-deprecated/emailDeprecatedForm';
 import { errorSummaryForm, errorSummaryTranslations } from '../data/forms-api/error-summary/errorSummaryForm';
+import { errorFocusForm, errorFocusTranslations } from '../data/forms-api/focus-handling/errorFocusForm';
 import { focusHandlingForm, focusHandlingTranslations } from '../data/forms-api/focus-handling/focusHandlingForm';
 import {
   formNavigationCypress101Form,
@@ -211,6 +216,10 @@ import {
 } from '../data/forms-api/general/generalCustomCompsForm';
 import { generalDatagridForm, generalDatagridTranslations } from '../data/forms-api/general/generalDatagridForm';
 import {
+  initialSubmissionValuesForm,
+  initialSubmissionValuesTranslations,
+} from '../data/forms-api/initial-submission-values/initialSubmissionValuesForm';
+import {
   introPageDigitalNoLoginDeadlineForm,
   introPageDigitalNoLoginDeadlineTranslations,
 } from '../data/forms-api/intro-page/introPageDigitalNoLoginDeadlineForm';
@@ -249,6 +258,15 @@ import {
   nationalIdentityNumberCypress101Form,
   nationalIdentityNumberCypress101Translations,
 } from '../data/forms-api/national-identity-number/nationalIdentityNumberCypress101Form';
+import {
+  navUnitSelectionForm,
+  navUnitSelectionTranslations,
+} from '../data/forms-api/nav-unit-selection/navUnitSelectionForm';
+import {
+  nestedConditionsForm,
+  nestedConditionsTranslations,
+} from '../data/forms-api/nested-conditions/nestedConditionsForm';
+import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-render/newRenderForm';
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import { numberDeprecatedForm, numberDeprecatedTranslations } from '../data/forms-api/number/numberDeprecatedForm';
@@ -260,6 +278,10 @@ import {
   phoneNumberDeprecatedTranslations,
 } from '../data/forms-api/phone-number/phoneNumberDeprecatedForm';
 import { radioDeprecatedForm, radioDeprecatedTranslations } from '../data/forms-api/radio/radioDeprecatedForm';
+import {
+  rendererReadyForm,
+  rendererReadyTranslations,
+} from '../data/forms-api/renderer-initialization/rendererReadyForm';
 import {
   selectBoxesDeprecatedForm,
   selectBoxesDeprecatedTranslations,
@@ -378,7 +400,6 @@ const allForms = [
   { form: htmlElementForm(), translations: htmlElementTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
   { form: identityTestForm(), translations: identityTranslations() },
-  { form: imageForm(), translations: imageTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
@@ -404,6 +425,9 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: rendererReadyForm(), translations: rendererReadyTranslations() },
+  { form: draftSaveRaceForm(), translations: draftSaveRaceTranslations() },
+  { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
@@ -413,6 +437,7 @@ const allForms = [
   { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
   { form: dataFetcherContainerDeprecatedForm(), translations: dataFetcherContainerDeprecatedTranslations() },
   { form: dataFetcherDeprecatedForm(), translations: dataFetcherDeprecatedTranslations() },
+  { form: datePickerCrossPageForm(), translations: datePickerCrossPageTranslations() },
   { form: datePickerDeprecatedForm(), translations: datePickerDeprecatedTranslations() },
   { form: datagridContainerForm(), translations: datagridContainerTranslations() },
   { form: datagridLogicBugForm(), translations: datagridLogicBugTranslations() },
@@ -425,7 +450,9 @@ const allForms = [
   { form: emailDeprecatedForm(), translations: emailDeprecatedTranslations() },
   { form: errorSummaryForm(), translations: errorSummaryTranslations() },
   { form: focusHandlingForm(), translations: focusHandlingTranslations() },
+  { form: errorFocusForm(), translations: errorFocusTranslations() },
   { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
+  { form: initialSubmissionValuesForm(), translations: initialSubmissionValuesTranslations() },
   { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },
   { form: formNavigationDigitalNoAttachmentsForm(), translations: formNavigationDigitalNoAttachmentsTranslations() },
   { form: formNavigationDigitalNoLoginForm(), translations: formNavigationDigitalNoLoginTranslations() },
@@ -437,6 +464,7 @@ const allForms = [
   { form: introPageDigitalNoLoginDeadlineForm(), translations: introPageDigitalNoLoginDeadlineTranslations() },
   { form: introPagePaperForm(), translations: introPagePaperTranslations() },
   { form: largeForm(), translations: undefined },
+  { form: newRenderForm(), translations: newRenderTranslations() },
   { form: mellomlagringNestedValuesForm(), translations: mellomlagringNestedValuesTranslations() },
   {
     form: mellomlagring2IntroPageDraftForm(),
@@ -484,6 +512,7 @@ const allForms = [
     form: submissionTypesPaperDigitalNoLoginForm(),
     translations: submissionTypesPaperDigitalNoLoginTranslations(),
   },
+  { form: navUnitSelectionForm(), translations: navUnitSelectionTranslations() },
   { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
@@ -594,3 +623,5 @@ export default [
     ],
   },
 ];
+
+export { findTestdata };

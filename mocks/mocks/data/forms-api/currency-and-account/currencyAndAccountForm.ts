@@ -34,10 +34,12 @@ const currencyAndAccountForm = () =>
               currencySelect({
                 key: 'valutavelger',
                 label: 'Velg valuta',
+                widthPercent: 50,
               }),
               number({
                 key: 'belop1',
                 label: 'Beløp',
+                widthPercent: 50,
               }),
             ],
           }),

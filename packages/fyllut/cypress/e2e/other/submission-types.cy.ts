@@ -21,7 +21,7 @@ describe('Submission Type', () => {
       cy.clickStart();
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.findByRole('button', { name: 'Last ned fullmaktsskjema' }).should('exist');
     });
@@ -40,7 +40,10 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
+        cy.clickDownloadInstructions();
+        cy.get('[data-cy=error-summary]').should('exist');
+
         cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
@@ -54,7 +57,7 @@ describe('Submission Type', () => {
         });
         cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+        cy.clickDownloadInstructions();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
@@ -129,7 +132,7 @@ describe('Submission Type', () => {
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.clickSendNav();
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+        cy.get('[data-cy=error-summary]').should('exist');
         cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
@@ -222,7 +225,7 @@ describe('Submission Type', () => {
         });
         cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
@@ -236,7 +239,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
     });
 
@@ -327,10 +330,37 @@ describe('Submission Type', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).click();
 
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.noLogin })
+          .should('be.visible')
+          .then(($pageTitle) => {
+            const pageTitleFontSize = $pageTitle.css('font-size');
+            cy.findByRole('heading', { name: 'Submission types paper digital and digital no login form' })
+              .should('be.visible')
+              .should(($heading) => {
+                expect(parseFloat($heading.css('font-size'))).to.be.lessThan(parseFloat(pageTitleFontSize));
+              });
+          });
         assertDigitalLinksNotExist();
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin })
+          .should('be.visible')
+          .closest('[data-color]')
+          .should('have.attr', 'data-color', 'accent');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper })
+          .should('be.visible')
+          .closest('[data-color]')
+          .should('have.attr', 'data-color', 'accent');
+
+        cy.findByRole('button', { name: TEXTS.grensesnitt.introPage.changeSubmissionMethod }).click();
+
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
+        cy.findByRole('heading', { name: 'Submission types paper digital and digital no login form' }).should(
+          'be.visible',
+        );
+        cy.findByRole('link', { name: digitalLinkLoggedInName }).should('be.visible');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('be.visible');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('not.exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
       });
     });
   });
@@ -349,7 +379,7 @@ describe('Submission Type', () => {
       cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('not.exist');
       cy.clickEditAnswers();
 
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
@@ -369,7 +399,7 @@ describe('Submission Type', () => {
           cy.get('dd').eq(0).should('contain.text', 'asdf');
         });
 
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
     });
@@ -439,7 +469,7 @@ describe('Submission Type', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.url().should('include', `/${paperNoCoverPageStaticPdfFormPath}/ingen-innsending`);
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();

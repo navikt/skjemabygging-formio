@@ -36,16 +36,17 @@ interface AttachmentSettingValue {
 
 // Saved in submission
 interface SubmissionAttachmentValue {
-  key: keyof AttachmentSettingValues;
+  key: string;
   additionalDocumentation?: string;
 }
 
-// new interface for storing attachments in submission outside of data
+// Structured attachment value stored in submission data. Personal ID and legacy form attachments
+// may also be present in the top-level submission attachments array.
 interface SubmissionAttachment {
   attachmentId: string;
   navId: string;
   type: AttachmentType | 'personal-id';
-  value?: keyof AttachmentSettingValues;
+  value?: string;
   title?: string;
   additionalDocumentation?: string;
   files?: UploadedFile[];

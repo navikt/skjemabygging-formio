@@ -575,6 +575,9 @@ importers:
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
         version: link:../shared-domain
+      '@navikt/skjemadigitalisering-shared-frontend':
+        specifier: workspace:*
+        version: link:../shared-frontend
       axe-core:
         specifier: ^4.12.1
         version: 4.12.1
@@ -961,15 +964,18 @@ importers:
       dompurify:
         specifier: ^3.4.11
         version: 3.4.11
+      i18n-iso-countries:
+        specifier: ^7.14.0
+        version: 7.14.0
+      ibantools:
+        specifier: ^4.5.4
+        version: 4.5.4
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-jss:
-        specifier: ^10.10.0
-        version: 10.10.0(react@18.3.1)
       react-router:
         specifier: ^7.12.0
         version: 7.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1810,6 +1816,9 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@navikt/ds-tokens@8.15.0':
+    resolution: {integrity: sha512-i76uLUIONOWc/G7kzPHQwNCR65bKBVulYbua6tyVmtlAhJyEPjC2vNyeeOq1bE4QcccPNQz9rBKydmXOVvJYtw==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.15.0/96c20d8f453f8be770e5e1a9e9ce4888e50e4348}
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -8092,7 +8101,7 @@ snapshots:
   '@navikt/aksel@8.1.0(supports-color@10.2.2)':
     dependencies:
       '@navikt/ds-css': 8.8.0
-      '@navikt/ds-tokens': 8.8.0
+      '@navikt/ds-tokens': 8.15.0
       chalk: 5.6.2
       cli-progress: 3.12.0
       clipboardy: 5.0.1
@@ -8122,6 +8131,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.3.11
+
+  '@navikt/ds-tokens@8.15.0': {}
 
   '@navikt/ds-tokens@8.8.0': {}
 
@@ -8880,6 +8891,15 @@ snapshots:
     optionalDependencies:
       msw: 2.12.14(@types/node@25.7.0)(typescript@6.0.3)
       vite: 7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0)
+
+  '@vitest/mocker@3.2.6(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(vite@7.3.6(@types/node@24.12.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))':
+    dependencies:
+      '@vitest/spy': 3.2.6
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      msw: 2.12.14(@types/node@24.12.0)(typescript@6.0.3)
+      vite: 7.3.6(@types/node@24.12.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0)
 
   '@vitest/mocker@3.2.6(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))':
     dependencies:

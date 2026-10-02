@@ -17,45 +17,33 @@ describe('Select', () => {
         name: 'Nedtrekksmeny',
         description: 'Dette er foretrukket nedtrekkskomponent',
       }).click();
-      cy.findAllByRole('option').should('have.length', 3);
-      cy.findByRole('combobox', { name: 'Nedtrekksmeny' }).type('{downarrow}{enter}');
-      cy.findByText('Appelsin').should('exist');
-      cy.findByText('Eple').should('not.exist');
+      cy.findByRole('listbox').findAllByRole('option').should('have.length', 3);
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny' }).type('App{downarrow}{enter}');
+      cy.withinComponent('Nedtrekksmeny', () => {
+        cy.assertCombobox('Appelsin');
+      });
 
       //Nedtrekksmeny med standard-verdi
-      cy.findByText('Rød').should('exist');
-      cy.findByText('Grå').should('not.exist');
-      cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B{enter}');
-      cy.findByText('Blå').should('exist');
-      cy.findByText('Rød').should('not.exist');
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B{downArrow}{enter}');
+      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
+        cy.assertCombobox('Blå');
+      });
 
       cy.clickNextStep();
 
       // Formio select components - ChoiceJS and HTML5
 
       //Nedtrekksmeny gammel type (ChoiceJS)
-      cy.findAllByRole('combobox').eq(0).click();
-      cy.findAllByRole('combobox')
-        .eq(0)
-        .within(() => {
-          cy.findAllByRole('option').should('have.length', 2);
-          cy.findByRole('option', { name: 'Løve' }).click();
-        });
-      cy.findAllByText('Løve').eq(0).shouldBeVisible();
-      cy.findByText('Ape').should('not.be.visible');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).select('Løve');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).should('have.value', 'løve');
 
       // Hvilket land jobber du i? (ChoiceJS)
-      cy.findAllByRole('combobox').eq(1).click();
-      cy.findAllByRole('combobox')
-        .eq(1)
-        .within(() => {
-          cy.findAllByRole('option').should('have.length', 31);
-          cy.findByRole('option', { name: 'Tyskland' }).click();
-        });
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).select('Tyskland');
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).should('have.value', 'tyskland');
 
       // Sfære (HTML5)
-      cy.findAllByRole('combobox').eq(2).select('-1.00');
-      cy.findAllByRole('combobox').eq(2).should('have.value', '-1.00');
+      cy.findByRole('combobox', { name: /Sfære/ }).select('-1.00');
+      cy.findByRole('combobox', { name: /Sfære/ }).should('have.value', '-1.00');
 
       cy.clickNextStep();
 
@@ -83,12 +71,16 @@ describe('Select', () => {
       cy.clickPreviousStep();
 
       // Verify that values are populated when navigating back to the select page
-      cy.findByText('Appelsin').should('exist');
-      cy.findByText('Blå').should('exist');
+      cy.withinComponent('Nedtrekksmeny', () => {
+        cy.assertCombobox('Appelsin');
+      });
+      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
+        cy.assertCombobox('Blå');
+      });
       cy.clickNextStep();
-      cy.findAllByText('Løve').eq(0).shouldBeVisible();
-      cy.findAllByText('Tyskland').eq(0).shouldBeVisible();
-      cy.findAllByRole('combobox').eq(2).should('have.value', '-1.00');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).should('have.value', 'løve');
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).should('have.value', 'tyskland');
+      cy.findByRole('combobox', { name: /Sfære/ }).should('have.value', '-1.00');
     });
   });
 });

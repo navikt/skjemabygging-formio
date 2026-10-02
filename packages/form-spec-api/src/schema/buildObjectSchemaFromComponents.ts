@@ -1,12 +1,10 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { logger } from '../logger';
+import { Component, getNavId, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { inferValueSchema } from './inferValueSchema';
 import {
   createsArrayScope,
   createsObjectScope,
   getNestedComponents,
   hasConditionalLogic,
-  isAttachmentPanel,
   shouldFlattenComponent,
   shouldSkipComponent,
 } from './structuralRules';
@@ -15,6 +13,11 @@ import { JsonSchema, JsonSchemaObject, SchemaGenerationContext } from './types';
 type SchemaBuildResult = {
   schema: JsonSchemaObject;
   attachmentItemSchemas: JsonSchemaObject[];
+};
+
+type FormSchemaBuildResult = {
+  dataSchema: JsonSchemaObject;
+  submissionAttachmentsSchema?: JsonSchema;
 };
 
 const uploadedFileSchema: JsonSchemaObject = {
@@ -33,30 +36,61 @@ const uploadedFileSchema: JsonSchemaObject = {
 const resolveAttachmentType = (component: Component) =>
   component.attachmentType || (component.otherDocumentation ? 'other' : 'default');
 
-const buildAttachmentItemSchema = (component: Component, context: SchemaGenerationContext): JsonSchemaObject => ({
+const buildAttachmentItemSchema = (component: Component, context: SchemaGenerationContext): JsonSchemaObject => {
+  const navId = getNavId(component) ?? component.key;
+
+  return {
+    type: 'object',
+    title: component.label,
+    properties: {
+      attachmentId: { type: 'string' },
+      navId: {
+        type: 'string',
+        ...(navId ? { enum: [navId] } : {}),
+      },
+      type: {
+        type: 'string',
+        enum: [resolveAttachmentType(component)],
+      },
+      value: inferValueSchema(component, context),
+      title: { type: 'string' },
+      additionalDocumentation: { type: 'string' },
+      files: {
+        type: 'array',
+        items: uploadedFileSchema,
+      },
+    },
+    required: ['attachmentId', 'navId', 'type'],
+    additionalProperties: false,
+  };
+};
+
+const buildAttachmentChoiceSchema = (component: Component, context: SchemaGenerationContext): JsonSchemaObject => ({
   type: 'object',
   title: component.label,
   properties: {
-    attachmentId: { type: 'string' },
-    navId: {
-      type: 'string',
-      ...(component.navId ? { enum: [component.navId] } : {}),
-    },
-    type: {
-      type: 'string',
-      enum: [resolveAttachmentType(component)],
-    },
-    value: inferValueSchema(component, context),
-    title: { type: 'string' },
+    key: inferValueSchema(component, context),
     additionalDocumentation: { type: 'string' },
-    files: {
-      type: 'array',
-      items: uploadedFileSchema,
-    },
   },
-  required: ['attachmentId', 'navId', 'type'],
+  required: ['key'],
   additionalProperties: false,
 });
+
+const buildAttachmentDataSchema = (component: Component, context: SchemaGenerationContext): JsonSchema => {
+  const attachmentItemSchema = buildAttachmentItemSchema(component, context);
+  const choiceSchema = buildAttachmentChoiceSchema(component, context);
+  const primitiveSchema = inferValueSchema(component, context);
+
+  return component.attachmentType === 'other' || component.otherDocumentation
+    ? {
+        title: component.label,
+        anyOf: [{ type: 'array', items: attachmentItemSchema }, attachmentItemSchema, choiceSchema, primitiveSchema],
+      }
+    : {
+        title: component.label,
+        anyOf: [attachmentItemSchema, choiceSchema, primitiveSchema],
+      };
+};
 
 const personalIdAttachmentValues = [
   'norwegianPassport',
@@ -97,42 +131,6 @@ const personalIdAttachmentItemSchema: JsonSchemaObject = {
   additionalProperties: false,
 };
 
-const warnIgnoredAttachmentPanelComponent = (
-  component: Component,
-  attachmentPanel: Component,
-  context: SchemaGenerationContext,
-) => {
-  logger.warn('Ignoring non-attachment component inside attachment panel during schema generation', {
-    attachmentPanelKey: attachmentPanel.key,
-    componentKey: component.key,
-    componentType: component.type,
-    formPath: context.formPath,
-    revision: context.revision,
-  });
-};
-
-const collectAttachmentPanelItemSchemas = (
-  components: Component[],
-  attachmentPanel: Component,
-  context: SchemaGenerationContext,
-): JsonSchemaObject[] => {
-  const attachmentItemSchemas: JsonSchemaObject[] = [];
-
-  for (const component of components) {
-    if (component.type === 'attachment') {
-      attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
-      continue;
-    }
-
-    warnIgnoredAttachmentPanelComponent(component, attachmentPanel, context);
-    attachmentItemSchemas.push(
-      ...collectAttachmentPanelItemSchemas(getNestedComponents(component), attachmentPanel, context),
-    );
-  }
-
-  return attachmentItemSchemas;
-};
-
 const buildAttachmentsSchema = (attachmentItemSchemas: JsonSchemaObject[]): JsonSchema | undefined => {
   if (!attachmentItemSchemas.length) {
     return undefined;
@@ -145,7 +143,7 @@ const buildAttachmentsSchema = (attachmentItemSchemas: JsonSchemaObject[]): Json
       attachmentItemSchemas.length === 1
         ? attachmentItemSchemas[0]
         : {
-            oneOf: attachmentItemSchemas,
+            anyOf: attachmentItemSchemas,
           },
   };
 };
@@ -154,6 +152,7 @@ const buildObjectSchemaFromComponentsInternal = (
   components: Component[] = [],
   context: SchemaGenerationContext,
   ancestorHasConditionalLogic = false,
+  ancestorIsAttachmentPanel = false,
 ): SchemaBuildResult => {
   const properties: JsonSchemaObject['properties'] = {};
   const required = new Set<string>();
@@ -161,11 +160,17 @@ const buildObjectSchemaFromComponentsInternal = (
 
   for (const component of components) {
     const descendantHasConditionalLogic = ancestorHasConditionalLogic || hasConditionalLogic(component);
+    const isInAttachmentPanel = ancestorIsAttachmentPanel || navFormUtils.isVedleggspanel(component);
 
-    if (isAttachmentPanel(component)) {
-      attachmentItemSchemas.push(
-        ...collectAttachmentPanelItemSchemas(getNestedComponents(component), component, context),
-      );
+    if (component.type === 'attachment') {
+      attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
+      if (component.key) {
+        properties[component.key] = buildAttachmentDataSchema(component, context);
+        // Legacy upload panels store their answers only in submission.attachments.
+        if (component.validate?.required && !descendantHasConditionalLogic && !isInAttachmentPanel) {
+          required.add(component.key);
+        }
+      }
       continue;
     }
 
@@ -174,6 +179,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       Object.assign(properties, nestedResult.schema.properties);
       nestedResult.schema.required?.forEach((key) => required.add(key));
@@ -190,6 +196,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       properties[component.key] = {
         title: component.label,
@@ -201,6 +208,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       properties[component.key] = {
         type: 'array',
@@ -231,18 +239,17 @@ const buildObjectSchemaFromComponentsInternal = (
 const buildObjectSchemaFromComponents = (
   components: Component[] = [],
   context: SchemaGenerationContext,
-): JsonSchemaObject => {
+): FormSchemaBuildResult => {
   const result = buildObjectSchemaFromComponentsInternal(components, context);
+  const submissionAttachmentItemSchemas = [...result.attachmentItemSchemas];
   if (context.supportsPersonalIdAttachment) {
-    result.attachmentItemSchemas.unshift(personalIdAttachmentItemSchema);
-  }
-  const attachmentsSchema = buildAttachmentsSchema(result.attachmentItemSchemas);
-
-  if (attachmentsSchema) {
-    result.schema.properties.attachments = attachmentsSchema;
+    submissionAttachmentItemSchemas.unshift(personalIdAttachmentItemSchema);
   }
 
-  return result.schema;
+  return {
+    dataSchema: result.schema,
+    submissionAttachmentsSchema: buildAttachmentsSchema(submissionAttachmentItemSchemas),
+  };
 };
 
 export { buildObjectSchemaFromComponents };

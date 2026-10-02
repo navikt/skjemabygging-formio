@@ -4,9 +4,10 @@ import {
   submissionUtils as formComponentUtils,
   getDrivingListItems,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryDrivingList = (props: FormComponentProps) => {
+const SummaryDrivingList = (props: FormComponentProps<DrivingListDefinition>) => {
   const { component, submissionPath, submission, translate, currentLanguage } = props;
   const { label } = component;
 
@@ -25,7 +26,7 @@ const SummaryDrivingList = (props: FormComponentProps) => {
         {translate(TEXTS.statiske.drivingList.summaryDescription)}
 
         <Box marginBlock="space-16" asChild>
-          <List data-aksel-migrated-v8 as="ul">
+          <List as="ul">
             {drivingListDates.map((drivingListDate) => (
               <List.Item key={drivingListDate}>{drivingListDate}</List.Item>
             ))}

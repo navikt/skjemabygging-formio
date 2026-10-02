@@ -60,4 +60,26 @@ describe('validatorUtils.ts', () => {
       expect(validatorUtils.isValidAttachmentId('personal=id')).toBe(false);
     });
   });
+
+  describe('validatorUtils.isNationalIdentityNumber', () => {
+    it('accepts valid fnr and dnr', () => {
+      expect(validatorUtils.isNationalIdentityNumber('13097248022')).toBe(true);
+      expect(validatorUtils.isNationalIdentityNumber('53097248016')).toBe(true);
+    });
+
+    it('ignores spaces', () => {
+      expect(validatorUtils.isNationalIdentityNumber('130972 48022')).toBe(true);
+    });
+
+    it('rejects invalid numbers', () => {
+      expect(validatorUtils.isNationalIdentityNumber('13097248023')).toBe(false);
+      expect(validatorUtils.isNationalIdentityNumber('12345678911')).toBe(false);
+    });
+
+    it('rejects test-type numbers (hnr/tnr) unless allowTestTypes is set', () => {
+      expect(validatorUtils.isNationalIdentityNumber('13527248013')).toBe(false);
+      expect(validatorUtils.isNationalIdentityNumber('13527248013', { allowTestTypes: true })).toBe(true);
+      expect(validatorUtils.isNationalIdentityNumber('10915596784', { allowTestTypes: true })).toBe(true);
+    });
+  });
 });

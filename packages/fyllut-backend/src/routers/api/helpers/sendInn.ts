@@ -1,7 +1,7 @@
-import { translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   Form,
   FormsApiTranslationMap,
+  formsApiTranslationUtils,
   Submission,
   TranslationLang,
   validatorUtils,
@@ -88,7 +88,7 @@ const assembleSendInnSoknadBody = (
   submissionPdfAsByteArray: number[] | null = null,
 ): SendInnSoknadBody => {
   const { form, submission, language, translations = {}, attachments, otherDocumentation, innsendingsId } = requestBody;
-  const translate = translationUtil.createTranslate(translations, language);
+  const translate = formsApiTranslationUtils.createTranslate(translations, language);
 
   const dokumentMetaData = {
     vedleggsnr: form.properties.skjemanummer,

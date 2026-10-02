@@ -1,0 +1,17 @@
+.legend {
+  font-size: var(--ax-font-size-heading-small);
+  font-weight: normal;
+  line-height: 1.625rem;
+}
+
+.content {
+  display: flow-root;
+}
+
+.inset {
+  padding: var(--ax-space-16);
+}
+
+.content > [data-form-component]:last-child > * {
+  margin-block-end: 0;
+}
