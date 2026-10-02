@@ -1,6 +1,7 @@
 import { Enhet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import Select from '../select/Select';
+import { FormElementBoxProps } from '../shared/FormElementBox';
 
 interface Props {
   statePath: string;
@@ -9,9 +10,11 @@ interface Props {
   value?: string;
   onChange?: (value: string) => void;
   error?: ReactNode;
+  fieldSize?: FormElementBoxProps['fieldSize'];
+  marginBottom?: FormElementBoxProps['marginBottom'];
 }
 
-const NavUnitSelect = ({ statePath, units, description, value, onChange, error }: Props) => (
+const NavUnitSelect = ({ statePath, units, description, value, onChange, error, fieldSize, marginBottom }: Props) => (
   <Select
     statePath={statePath}
     label={TEXTS.statiske.navUnit.choose}
@@ -21,6 +24,8 @@ const NavUnitSelect = ({ statePath, units, description, value, onChange, error }
     value={value}
     onChange={onChange}
     error={error}
+    fieldSize={fieldSize}
+    marginBottom={marginBottom}
   />
 );
 

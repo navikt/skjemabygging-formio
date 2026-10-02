@@ -94,6 +94,8 @@ describe('Digital submission without user login', () => {
       cy.clickSendNav();
       cy.url({ timeout: 20000 }).should('include', '/kvittering');
       assertPageHeader(TEXTS.statiske.receipt.title);
+      cy.findByRole('button', { name: TEXTS.statiske.receipt.printFriendlyVersion }).should('be.visible');
+      cy.findByRole('link', { name: TEXTS.statiske.error.goToMyPage }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
@@ -135,6 +137,9 @@ describe('Digital submission without user login', () => {
         });
       cy.get('.aksel-alert--success').should('not.exist');
       cy.get('.aksel-alert--warning').should('exist').and('be.visible');
+      cy.findByRole('link', { name: 'nav.no/ettersende' })
+        .should('have.attr', 'href', 'https://www.nav.no/ettersende')
+        .should('have.attr', 'target', '_blank');
 
       cy.go('back');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');

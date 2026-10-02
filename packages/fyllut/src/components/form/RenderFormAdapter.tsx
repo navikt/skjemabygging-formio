@@ -1,4 +1,4 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { LetterUXSignals, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
@@ -7,7 +7,7 @@ import {
   RenderFormProps,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
@@ -48,19 +48,24 @@ const RenderFormAdapter = ({ form, initialLanguage, languages, services, transla
     navigate({ pathname, search: `?${nextParams.toString()}` }, { replace: true });
   }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
 
+  const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
+  const renderFeedback = useCallback(
+    (id: string) => <LetterUXSignals id={id} demo={environment !== 'production'} />,
+    [environment],
+  );
   const integration = useMemo<IntegrationContextValue>(
     () => ({
       fyllutBaseUrl,
       isLoggedIn: appConfig.config?.isLoggedIn,
       logEvent: appConfig.logEvent,
+      renderFeedback,
     }),
-    [appConfig.config?.isLoggedIn, appConfig.logEvent, fyllutBaseUrl],
+    [appConfig.config?.isLoggedIn, appConfig.logEvent, fyllutBaseUrl, renderFeedback],
   );
   const language = useMemo(
     () => ({ availableLanguages, currentLanguage, translations }),
     [availableLanguages, currentLanguage, translations],
   );
-  const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
 
   return (
     <ApplicationProvider environment={environment} logger={appConfig.logger}>

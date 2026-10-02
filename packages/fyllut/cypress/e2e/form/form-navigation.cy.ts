@@ -24,6 +24,8 @@ function assertNoCoverPageSubmissionFlow(formPath: string, fieldName?: string | 
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
   cy.url().should('include', `/${formPath}/ingen-innsending`);
   cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+  cy.findByRole('heading', { name: `2. ${TEXTS.statiske.prepareLetterPage.printFormTitle}` }).should('not.exist');
+  cy.findByRole('combobox', { name: TEXTS.statiske.navUnit.choose }).should('not.exist');
 }
 
 function assertPaperSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
@@ -91,6 +93,16 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/send-i-posten?sub=paper');
+      cy.findByRole('heading', { name: `1. ${TEXTS.grensesnitt.downloadApplication}` }).should('be.visible');
+      cy.findByRole('heading', { name: `2. ${TEXTS.statiske.prepareLetterPage.printFormTitle}` }).should('be.visible');
+      cy.findByRole('heading', { name: '3. Legg ved dette vedlegget' }).should('be.visible');
+      cy.findByRole('heading', {
+        name: `4. ${TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitleWithAttachment}`,
+      }).should('be.visible');
+      cy.findByRole('link', { name: 'Nav skjema test' })
+        .should('have.attr', 'href', '/fyllut/nav100754?sub=papernocoverpage')
+        .should('have.attr', 'target', '_blank');
+      cy.findByText(TEXTS.common.opensInNewTab).should('be.visible');
       cy.findByRole('button', { name: 'Last ned skjema' }).click();
       cy.wait('@downloadPdf');
     });
@@ -511,6 +523,9 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
         cy.findByRole('link', { name: 'Gå til Min side' }).should('exist');
+        cy.window().then((window) => cy.stub(window, 'print').as('printReceipt'));
+        cy.findByRole('button', { name: TEXTS.statiske.receipt.printFriendlyVersion }).click();
+        cy.get('@printReceipt').should('have.been.calledOnce');
       });
     });
   });
@@ -661,8 +676,17 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 1, name: 'Submission Type: None' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/ingen-innsending');
-        cy.findByRole('button', { name: 'Last ned skjema' }).click();
-        cy.wait('@downloadPdf');
+        cy.findByText('Her er litt forklaring').should('be.visible');
+        cy.findByRole('heading', { name: `2. ${TEXTS.statiske.prepareLetterPage.printFormTitle}` }).should('not.exist');
+        cy.findByRole('combobox', { name: TEXTS.statiske.navUnit.choose }).should('not.exist');
+        cy.findByRole('button', { name: 'Last ned skjema' })
+          .should(($button) => {
+            expect($button[0].getBoundingClientRect().width).to.be.lessThan(
+              $button.parent()[0].getBoundingClientRect().width,
+            );
+          })
+          .click();
+        cy.wait('@downloadPdf').its('request.body').should('not.have.property', 'enhetNummer');
 
         cy.findByRole('button', { name: 'Forrige steg' }).should('exist');
       });

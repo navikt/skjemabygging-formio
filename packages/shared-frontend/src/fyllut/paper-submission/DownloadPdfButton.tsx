@@ -8,11 +8,21 @@ interface Props {
   onClick?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
+  disabled?: boolean;
   children?: ReactNode;
-  pdfContent: () => Promise<Blob | undefined>;
+  pdfContent: () => Promise<Blob>;
 }
 
-const DownloadPdfButton = ({ fileName, isValid, onClick, onSuccess, onError, children, pdfContent }: Props) => {
+const DownloadPdfButton = ({
+  fileName,
+  isValid,
+  onClick,
+  onSuccess,
+  onError,
+  disabled,
+  children,
+  pdfContent,
+}: Props) => {
   const [downloading, setDownloading] = useState(false);
 
   const download = async () => {
@@ -28,10 +38,8 @@ const DownloadPdfButton = ({ fileName, isValid, onClick, onSuccess, onError, chi
     setDownloading(true);
     try {
       const content = await pdfContent();
-      if (content) {
-        downloadBlob(content, fileName);
-        onSuccess?.();
-      }
+      downloadBlob(content, fileName);
+      onSuccess?.();
     } catch {
       onError?.();
     } finally {
@@ -40,7 +48,7 @@ const DownloadPdfButton = ({ fileName, isValid, onClick, onSuccess, onError, chi
   };
 
   return (
-    <Button onClick={download} loading={downloading} download as="a">
+    <Button onClick={download} loading={downloading} disabled={disabled} type="button">
       {children}
     </Button>
   );
