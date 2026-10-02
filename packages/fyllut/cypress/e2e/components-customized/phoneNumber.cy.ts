@@ -102,6 +102,31 @@ describe('PhoneNumber', () => {
       cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').type('1234');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
+      cy.contains('label', label)
+        .closest('[data-form-component]')
+        .within(() => {
+          cy.findByText(errorMessage).should(($error) => {
+            const selectRect = $error.closest('[data-form-component]').find('select')[0].getBoundingClientRect();
+            const errorRect = $error[0].getBoundingClientRect();
+            const inputRect = $error
+              .closest('[data-form-component]')
+              .find('input[type="tel"]')[0]
+              .getBoundingClientRect();
+
+            expect(errorRect.left).to.be.closeTo(selectRect.left, 1);
+            expect(errorRect.top).to.be.greaterThan(inputRect.bottom);
+            expect(errorRect.right).to.be.greaterThan(inputRect.right);
+          });
+          cy.get('input[type="tel"]')
+            .should('have.attr', 'aria-invalid', 'true')
+            .invoke('attr', 'aria-describedby')
+            .then((describedBy) => {
+              cy.findByText(errorMessage).should(($error) => {
+                const errorId = $error.closest('[aria-live="polite"]').attr('id');
+                expect(describedBy?.split(' ')).to.include(errorId);
+              });
+            });
+        });
       cy.findByRole('link', { name: errorMessage }).click();
       cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').should('have.focus');
       cy.focused().clear();

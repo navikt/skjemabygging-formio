@@ -25,3 +25,7 @@
   flex: 0 1 var(--field-max-inline-size, 100%);
   min-inline-size: 0;
 }
+
+.error {
+  margin-block-start: var(--ax-space-8);
+}

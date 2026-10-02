@@ -31,6 +31,8 @@ interface InternalTextFieldProps extends BaseFieldProps {
   value?: string;
   onChange?: (value: string) => void;
   error?: ReactNode;
+  showInlineError?: boolean;
+  'aria-describedby'?: string;
   maxLength?: number;
   validation?: FieldValidationProp;
 }
@@ -61,6 +63,8 @@ const InternalTextField = ({
   value: controlledValue,
   onChange: controlledOnChange,
   error: controlledError,
+  showInlineError = true,
+  'aria-describedby': ariaDescribedBy,
   maxLength,
   readMore,
   fieldSize,
@@ -82,6 +86,7 @@ const InternalTextField = ({
   const [displayValue, setDisplayValue] = useState(() => formatDisplayValue(controlled ? controlledValue : stateValue));
   const syncedDisplayValue = formatDisplayValue(controlled ? controlledValue : stateValue);
   const resolvedAutoComplete = resolveAutoComplete(autoComplete);
+  const resolvedError = controlledError ?? error;
 
   const updateValue = useCallback(
     (value: string) => {
@@ -142,7 +147,8 @@ const InternalTextField = ({
         }}
         onChange={handleChange}
         onBlur={handleBlur}
-        error={controlledError ?? error}
+        error={showInlineError ? resolvedError : Boolean(resolvedError)}
+        aria-describedby={ariaDescribedBy}
         readOnly={readOnly}
         autoComplete={resolvedAutoComplete}
         inputMode={inputMode}

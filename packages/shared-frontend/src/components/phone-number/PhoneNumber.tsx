@@ -5,9 +5,11 @@ import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
+import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
+import FieldError from '../shared/FieldError';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -40,6 +42,9 @@ const PhoneNumber = ({
   const { translate } = useLanguage();
   const { formData } = useRuntimeServices();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
+  const { error: numberError } = useFieldBinding({ statePath: `${statePath}.number` });
+  const visibleNumberError = readOnly ? undefined : numberError;
+  const numberErrorId = `${inputId(statePath)}-group-error`;
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
   const selectedAreaCode = phoneNumberValue?.areaCode;
@@ -124,6 +129,8 @@ const PhoneNumber = ({
             statePath={`${statePath}.number`}
             label={label}
             hideLabel
+            showInlineError={false}
+            aria-describedby={visibleNumberError ? numberErrorId : undefined}
             marginBottom="space-0"
             required={required}
             readOnly={readOnly}
@@ -137,6 +144,7 @@ const PhoneNumber = ({
           />
         </FormElementBox>
       </div>
+      <FieldError id={numberErrorId} error={visibleNumberError} className={styles.error} />
       {error && (
         <Alert variant="warning" marginBottom="space-0">
           {translate(TEXTS.statiske.phoneNumber.fetchError)}
