@@ -59,19 +59,27 @@ describe('DataGrid', () => {
       cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
     });
 
-    it('should pad row cards without adding padding or a trailing field margin to the grid', () => {
+    it('should use compact blue row cards with the remove action below the fields', () => {
       cy.findByRole('group', { name: groupName })
         .find('[data-cy="fieldset-content"]')
         .should('have.css', 'padding', '0px');
       cy.findByRole('textbox', { name: 'Navn' })
         .closest('[data-component-key]')
         .should(($field) => {
-          const row = $field[0].parentElement!;
+          const content = $field[0].parentElement!;
+          const row = content.parentElement!;
           const fieldBox = $field[0].firstElementChild!;
+          const remove = row.lastElementChild!;
+          const rowStyle = getComputedStyle(row);
 
-          expect(getComputedStyle(row).padding).to.equal('16px');
+          expect(rowStyle.padding).to.equal('16px');
+          expect(rowStyle.backgroundColor).to.equal('rgb(238, 246, 252)');
           expect(getComputedStyle(fieldBox).marginBottom).to.equal('0px');
+          expect(remove.textContent).to.equal('Fjern rad');
+          expect(getComputedStyle(remove).marginTop).to.equal('8px');
+          expect(remove.getBoundingClientRect().top).to.be.at.least(content.getBoundingClientRect().bottom);
         });
+      cy.findByRole('button', { name: 'Legg til rad' }).should('have.css', 'min-height', '32px');
     });
   });
 
