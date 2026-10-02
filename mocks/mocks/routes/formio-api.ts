@@ -63,7 +63,6 @@ import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/comp
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
-import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
 import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import {
@@ -401,7 +400,6 @@ const allForms = [
   { form: htmlElementForm(), translations: htmlElementTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
   { form: identityTestForm(), translations: identityTranslations() },
-  { form: imageForm(), translations: imageTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },

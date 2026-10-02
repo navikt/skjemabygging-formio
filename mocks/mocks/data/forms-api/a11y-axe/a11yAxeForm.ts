@@ -10,7 +10,6 @@ import {
   formGroup,
   htmlElement,
   iban,
-  image,
   nationalIdentityNumber,
   navSelect,
   number,
@@ -316,10 +315,6 @@ const a11yAxeForm = () =>
               },
               { label: 'Jeg har levert denne dokumentasjonen tidligere', value: 'levertTidligere' },
             ],
-          }),
-          image({
-            key: 'image',
-            label: 'Bilde',
           }),
         ],
       }),
