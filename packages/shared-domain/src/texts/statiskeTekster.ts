@@ -363,6 +363,8 @@ export const statiske = {
     formVersion: 'Skjemaversjon',
   },
   staticPdf: {
+    ettersendingCoverPageTitle: 'Ettersending til {{formNumber}} {{title}}',
+    ettersendingTitle: 'Ettersend dokumentasjon',
     languageError: 'Skjemaet er ikke tilgjengelig.',
     selectLanguageMismatch: 'Skjemaet er kun tilgjengelig på {{language}}',
     selectLanguage: 'Velg hvilket språk du ønsker at skjemaet skal ha',
