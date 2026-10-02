@@ -77,6 +77,7 @@ const RenderFormPage = () => {
       initialSubmission={initializedForm.initialSubmission}
       initialInnsendingsId={initializedForm.initialInnsendingsId}
       initialLanguage={initializedForm.initialLanguage}
+      languages={initializedForm.form.languages}
     />
   );
 };

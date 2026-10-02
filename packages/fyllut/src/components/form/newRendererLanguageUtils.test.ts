@@ -1,38 +1,13 @@
-import { Form, FormsApiTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { getAvailableLanguages, getCurrentLanguage, resolveActiveLanguage } from './newRendererLanguageUtils';
 
-const form = {
-  path: 'test',
-  title: 'Test',
-  skjemanummer: 'TEST',
-  components: [],
-  properties: {
-    skjemanummer: 'TEST',
-    tema: 'GEN',
-    submissionTypes: [],
-    subsequentSubmissionTypes: [],
-    publishedLanguages: ['nb', 'nn'],
-  },
-} as Form;
-
 describe('new renderer language utils', () => {
-  it('uses published form languages and always includes bokmål', () => {
-    expect(getAvailableLanguages(form, {})).toEqual(['nb', 'nn']);
+  it('uses the languages provided by the backend and always includes bokmål', () => {
+    expect(getAvailableLanguages(['nn'])).toEqual(['nb', 'nn']);
+    expect(getAvailableLanguages(['nb', 'nn', 'en'])).toEqual(['nb', 'nn', 'en']);
   });
 
-  it('falls back to languages represented in translations when publication metadata is absent', () => {
-    const translations: FormsApiTranslationMap = {
-      title: { nb: 'Tittel', en: 'Title' },
-    };
-    expect(
-      getAvailableLanguages(
-        {
-          ...form,
-          properties: { ...form.properties, publishedLanguages: undefined },
-        },
-        translations,
-      ),
-    ).toEqual(['nb', 'en']);
+  it('falls back to bokmål when the backend provides no languages', () => {
+    expect(getAvailableLanguages(undefined)).toEqual(['nb']);
   });
 
   it('normalizes supported URL languages and rejects unavailable languages', () => {

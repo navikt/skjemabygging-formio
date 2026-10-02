@@ -1,25 +1,13 @@
-import {
-  Form,
-  FormsApiTranslationMap,
-  localizationUtils,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { localizationUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 
 const toLanguage = (languageCode: string): TranslationLang => localizationUtils.getLanguageCodeAsIso639_1(languageCode);
 
-const getAvailableLanguages = (form: Form, translations: FormsApiTranslationMap): TranslationLang[] => {
-  const publishedLanguages = form.publishedLanguages ?? form.properties.publishedLanguages;
-  const languageCodes =
-    publishedLanguages && publishedLanguages.length > 0
-      ? publishedLanguages
-      : Object.values(translations).flatMap((translation) =>
-          Object.entries(translation)
-            .filter(([, value]) => !!value)
-            .map(([language]) => language),
-        );
-
-  return Array.from(new Set<TranslationLang>(['nb', ...languageCodes.map(toLanguage)]));
-};
+/**
+ * The backend decides which languages a form offers (published languages for static forms, every
+ * language for forms read from forms-api). Bokmål is always available.
+ */
+const getAvailableLanguages = (languages: TranslationLang[] = []): TranslationLang[] =>
+  Array.from(new Set<TranslationLang>(['nb', ...languages.map(toLanguage)]));
 
 const getCurrentLanguage = (search: string, availableLanguages: TranslationLang[]): TranslationLang => {
   const requestedLanguage = new URLSearchParams(search).get('lang');

@@ -14,11 +14,12 @@ import resolveSubmissionMethod from './resolveSubmissionMethod';
 
 type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
+  languages?: TranslationLang[];
   services: RuntimeServices;
   translations: FormsApiTranslationMap;
 };
 
-const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...props }: Props) => {
+const RenderFormAdapter = ({ form, initialLanguage, languages, services, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
   const fyllutBaseUrl = appConfig.fyllutBaseURL;
   if (!fyllutBaseUrl) {
@@ -27,7 +28,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
 
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const availableLanguages = useMemo(() => getAvailableLanguages(form, translations), [form, translations]);
+  const availableLanguages = useMemo(() => getAvailableLanguages(languages), [languages]);
   const hasLanguageParam = new URLSearchParams(search).has('lang');
   const seedLanguage = initialLanguage && availableLanguages.includes(initialLanguage) ? initialLanguage : undefined;
   const currentLanguage = resolveActiveLanguage(search, availableLanguages, initialLanguage);

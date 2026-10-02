@@ -1,6 +1,6 @@
 import {
-  Form,
   FormsApiTranslationMap,
+  FormWithLanguages,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -16,7 +16,7 @@ import type { RenderFormBootstrapService } from '../../adapter-services/createRe
 
 interface InitializedForm {
   loadKey: string;
-  form: Form;
+  form: FormWithLanguages;
   translations: FormsApiTranslationMap;
   initialSubmission?: Submission;
   initialInnsendingsId?: string;

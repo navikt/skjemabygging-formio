@@ -1,7 +1,7 @@
 import { formUtils } from '@navikt/skjemadigitalisering-shared-components';
 import {
-  Form,
   FormsApiTranslationMap,
+  FormWithLanguages,
   hasErrorCode,
   SubmissionData,
   validatorUtils,
@@ -9,7 +9,7 @@ import {
 import { IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface RenderFormBootstrap {
-  form: Form;
+  form: FormWithLanguages;
   translations: FormsApiTranslationMap;
 }
 
@@ -23,7 +23,7 @@ interface Props {
   backendBaseUrl: string;
 }
 
-const formSelect = 'title,skjemanummer,path,revision,introPage,components,properties,publishedLanguages,firstPanelSlug';
+const formSelect = 'title,skjemanummer,path,revision,introPage,components,properties,languages,firstPanelSlug';
 
 const createRenderFormBootstrapService = ({ http, backendBaseUrl }: Props): RenderFormBootstrapService => ({
   load: async (formPath) => {
@@ -32,7 +32,7 @@ const createRenderFormBootstrapService = ({ http, backendBaseUrl }: Props): Rend
     }
 
     const form = await http
-      .get<Form>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`)
+      .get<FormWithLanguages>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`)
       .then((form) => {
         if (!form) {
           throw new Error('Form response is missing.');
