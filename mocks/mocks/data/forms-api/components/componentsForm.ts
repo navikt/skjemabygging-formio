@@ -115,8 +115,8 @@ const componentsForm = () => {
             ],
           }),
           alert({ ...defaultProps, content: '<p>Alert info</p>', textDisplay: 'form' }),
-          alert({ ...defaultProps, content: '<p>Alert suksess</p>', textDisplay: 'formPdf' }),
-          alert({ ...defaultProps, content: '<p>Alert error</p>', textDisplay: 'pdf' }),
+          alert({ ...defaultProps, content: '<p>Alert suksess</p>', alerttype: 'success', textDisplay: 'formPdf' }),
+          alert({ ...defaultProps, content: '<p>Alert error</p>', alerttype: 'error', textDisplay: 'pdf' }),
           htmlElement({
             ...defaultProps,
             content: '<p>HTML Blokk</p>',
