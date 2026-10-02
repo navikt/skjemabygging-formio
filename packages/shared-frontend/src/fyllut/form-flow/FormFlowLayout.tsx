@@ -1,7 +1,6 @@
 import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { StepperProvider } from '../../context/stepper/StepperContext';
 import FormHeader from '../layout/FormHeader';
 import FormStepper from '../layout/FormStepper';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
@@ -83,7 +82,7 @@ const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }:
   }, [hash, key, locationState?.focusId, locationState?.redirect, pathname]);
 
   return (
-    <StepperProvider isOpen={isStepperOpen}>
+    <>
       <FormHeader form={form} pageTitle={pageTitle} />
       <FormStepper
         activeIndex={activeIndex}
@@ -94,7 +93,7 @@ const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }:
         onOpenChange={setIsStepperOpen}
       />
       {children}
-    </StepperProvider>
+    </>
   );
 };
 

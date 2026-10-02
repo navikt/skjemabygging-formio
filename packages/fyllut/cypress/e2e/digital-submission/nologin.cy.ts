@@ -389,9 +389,7 @@ describe('Digital submission without user login', () => {
         });
 
         cy.findByRole('link', { name: 'Oppsummering' }).click();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
@@ -404,9 +402,7 @@ describe('Digital submission without user login', () => {
         });
 
         cy.clickNextStep();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('not.exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
       });
 
@@ -427,16 +423,12 @@ describe('Digital submission without user login', () => {
           cy.findByRole('link', { name: 'Du må laste opp fil: Vedlegg med masse greier' }).should('exist');
         });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.uploadFile('small-file.txt', { id: 'eyobqqf' });
         cy.clickNextStep();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('not.exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
       });
 
@@ -457,9 +449,7 @@ describe('Digital submission without user login', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.clickNextStep();
@@ -480,9 +470,7 @@ describe('Digital submission without user login', () => {
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
         cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
         cy.clickNextStep();
-        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
-          .closest('[data-cy=form-summary-panel]')
-          .within(() => cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('not.exist'));
+        cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
       });
     });

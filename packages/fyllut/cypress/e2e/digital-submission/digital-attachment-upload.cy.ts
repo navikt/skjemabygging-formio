@@ -74,7 +74,8 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
 
-      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+      // The heading also contains the missing-information icon title while attachments are unanswered.
+      cy.findByRole('heading', { level: 3, name: /^Vedlegg/ })
         .closest('[data-cy=form-summary-panel]')
         .within(() => {
           cy.findByText('Kommentar til vedlegg').should('exist');

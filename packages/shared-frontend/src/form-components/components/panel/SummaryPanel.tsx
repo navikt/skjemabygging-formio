@@ -2,17 +2,15 @@ import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
-import { useStepperState } from '../../../context/stepper/StepperContext';
 import { PanelDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
 import styles from './SummaryPanel.module.css';
 
 const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
-  const { submissionPath, translate, component, panelValidationList, legacyAttachmentPanelMode } = props;
+  const { submissionPath, translate, component, panelValidationList } = props;
   const { title, components, navId, key } = component;
   const { search, state } = useLocation();
-  const { isOpen: isStepperOpen } = useStepperState();
   const childComponents = components ?? [];
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
@@ -20,10 +18,12 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   return (
     <FormSummary data-cy="form-summary-panel" className={styles.panel}>
       <FormSummary.Header>
-        <FormSummary.Heading level="3">{translate(title)}</FormSummary.Heading>
-        {panelValidation?.hasValidationErrors && (
-          <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
-        )}
+        <FormSummary.Heading level="3">
+          {translate(title)}
+          {panelValidation?.hasValidationErrors && (
+            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
+          )}
+        </FormSummary.Heading>
       </FormSummary.Header>
       <FormSummary.Answers>
         {childComponents.map((component) => {
@@ -40,12 +40,7 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink
-          as={Link}
-          to={{ pathname: `../${key}`, search }}
-          state={state}
-          aria-label={legacyAttachmentPanelMode && !isStepperOpen ? translate(title) : undefined}
-        >
+        <FormSummary.EditLink as={Link} to={{ pathname: `../${key}`, search }} state={state}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>

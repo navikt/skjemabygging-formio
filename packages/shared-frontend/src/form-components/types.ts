@@ -58,7 +58,6 @@ interface FormComponentProps<T extends Component = Component> {
   formProperties: FormPropertiesType;
   rendererConfig: ResolvedSummaryRendererConfig;
   handleDownloadFile?: HandleAttachmentDownloadFile;
-  legacyAttachmentPanelMode?: boolean;
 }
 
 /**
