@@ -101,6 +101,7 @@ const AttachmentOptionSelect = ({
           </div>
         ) : values.length === 1 ? (
           <CheckboxGroup
+            marginBottom={additionalDocumentation?.label || (showDeadline && deadline) ? 'space-16' : 'space-0'}
             statePath={statePath}
             legend={typeof title === 'string' ? title : ''}
             required={required}
@@ -114,6 +115,7 @@ const AttachmentOptionSelect = ({
           />
         ) : (
           <RadioGroup
+            marginBottom={additionalDocumentation?.label || (showDeadline && deadline) ? 'space-16' : 'space-0'}
             statePath={statePath}
             legend={typeof title === 'string' ? title : ''}
             required={required}
@@ -129,6 +131,7 @@ const AttachmentOptionSelect = ({
         {additionalDocumentation?.label &&
           (uploadEnabled ? (
             <TextArea
+              marginBottom={showDeadline && deadline ? 'space-16' : 'space-0'}
               statePath={attachmentFieldPath(submissionPath, attachmentId, 'additionalDocumentation')}
               label={translate(additionalDocumentation.label)}
               value={selectedValueKey === value?.value ? (value?.additionalDocumentation ?? '') : ''}
@@ -147,7 +150,7 @@ const AttachmentOptionSelect = ({
               required={false}
               showOptionalText={false}
               readOnly={readOnly}
-              marginBottom="space-16"
+              marginBottom={showDeadline && deadline ? 'space-16' : 'space-0'}
             />
           ))}
         {showDeadline && deadline && (

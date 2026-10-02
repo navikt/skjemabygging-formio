@@ -1,7 +1,3 @@
-.container {
-  margin-block-start: var(--ax-space-40);
-}
-
 .row {
   display: flex;
   flex-direction: row-reverse;

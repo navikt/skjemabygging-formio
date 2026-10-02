@@ -21,7 +21,7 @@ const FormButtonRow = ({ nextButton, previousButton, saveButton, cancelButton }:
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       {hasFirstRow && (
         <div className={styles.row}>
           {nextButton}
