@@ -5,3 +5,23 @@
 .description {
   margin-block-end: var(--ax-space-8);
 }
+
+.controls {
+  display: flex;
+  gap: var(--ax-space-8);
+  align-items: flex-start;
+}
+
+.areaCode {
+  flex: 0 0 4.75rem;
+  min-inline-size: 0;
+}
+
+.areaCodeLong {
+  flex-basis: 5.5rem;
+}
+
+.number {
+  flex: 0 1 var(--field-max-inline-size, 100%);
+  min-inline-size: 0;
+}

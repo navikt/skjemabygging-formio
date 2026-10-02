@@ -31,6 +31,44 @@ describe('PhoneNumber', () => {
         .within(() => {
           cy.findByRole('combobox', { name: 'Landskode' }).should('exist');
           cy.findByRole('combobox', { name: 'Landskode' }).shouldBeVisible();
+          cy.findByRole('combobox', { name: 'Landskode' })
+            .should('have.prop', 'tagName', 'SELECT')
+            .should('have.value', '+47');
+          cy.findByRole('option', { name: '+47 Norge' }).should('exist');
+          cy.findByRole('combobox', { name: 'Landskode' }).select('+46');
+          cy.findByRole('combobox', { name: 'Landskode' }).should('have.value', '+46');
+        });
+    });
+
+    it('should keep country code and phone number on one line on a narrow screen', () => {
+      cy.viewport(320, 800);
+      cy.contains('label', 'Telefonnummer med landkode')
+        .closest('[data-form-component]')
+        .within(() => {
+          cy.findByRole('combobox', { name: 'Landskode' }).then(($select) => {
+            cy.get('input[type="tel"]').should(($input) => {
+              const selectRect = $select[0].getBoundingClientRect();
+              const inputRect = $input[0].getBoundingClientRect();
+
+              expect(inputRect.top).to.be.closeTo(selectRect.top, 1);
+              expect(inputRect.left).to.be.greaterThan(selectRect.right);
+              expect(inputRect.right).to.be.at.most(320);
+            });
+          });
+
+          it('should keep the phone input width when adding a country code selector', () => {
+            cy.get('input[type="tel"]')
+              .first()
+              .then(($plainInput) => {
+                const plainWidth = $plainInput[0].getBoundingClientRect().width;
+
+                cy.get('input[type="tel"]')
+                  .eq(1)
+                  .should(($input) => {
+                    expect($input[0].getBoundingClientRect().width).to.be.closeTo(plainWidth, 1);
+                  });
+              });
+          });
         });
     });
   });
