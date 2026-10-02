@@ -42,7 +42,6 @@ const FormLanguageSelector = () => {
       <LanguageSelector
         ariaLabel={translate(TEXTS.grensesnitt.languageSelector.ariaLabel)}
         currentLanguage={currentLanguage}
-        label={languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål'}
         options={options}
         onChange={(language) => {
           navigate({ pathname, search: updateSearch(search, { lang: language }) }, { state });
