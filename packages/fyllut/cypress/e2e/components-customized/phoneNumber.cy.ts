@@ -169,6 +169,9 @@ describe('PhoneNumber', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('button', { name: 'Forrige' }).should('have.class', 'aksel-button--secondary');
+      cy.findByRole('button', { name: 'Fortsett utfylling' }).should('not.exist');
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).should('have.class', 'aksel-button--primary');
       cy.withinSummaryGroup('Visning', () => {
         cy.contains('Telefonnummer').should('exist');
         cy.contains('12345678').should('exist');
