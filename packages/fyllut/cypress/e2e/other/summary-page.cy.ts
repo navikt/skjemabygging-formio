@@ -130,11 +130,12 @@ describe('SummaryPage', () => {
     cy.findAllByRole('button', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
       .should('have.length', 2)
       .each(($button) => {
-        cy.wrap($button).should('have.class', 'aksel-button--primary');
+        cy.wrap($button).should('have.attr', 'data-variant', 'primary');
       });
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
-      'have.class',
-      'aksel-button--secondary',
+      'have.attr',
+      'data-variant',
+      'secondary',
     );
 
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).focus();

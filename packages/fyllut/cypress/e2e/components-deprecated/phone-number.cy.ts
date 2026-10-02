@@ -11,10 +11,10 @@ describe('Phone number with area code', () => {
 
     const fillForm = (phoneNumber: string, areaCode?: string | RegExp) => {
       if (areaCode) {
-        const areaCodeSearch = typeof areaCode === 'string' ? areaCode : areaCode.source;
-
         cy.withinComponent('Telefonnummer med landskode', () => {
-          cy.selectCombobox(areaCodeLabel, areaCodeSearch);
+          cy.findByRole('combobox', { name: areaCodeLabel }).select(
+            typeof areaCode === 'string' ? areaCode : areaCode.source,
+          );
           cy.findByRole('textbox').clear();
           cy.findByRole('textbox').type(phoneNumber);
         });
@@ -56,9 +56,7 @@ describe('Phone number with area code', () => {
 
     it('should format phone number when area code is +47 and phone numer length is 8', () => {
       fillForm('12345678', '+47');
-      cy.withinComponent(areaCodeLabel, () => {
-        cy.assertCombobox('+47');
-      });
+      cy.findByRole('combobox', { name: areaCodeLabel }).should('have.value', '+47');
       fillForm('12345678');
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
@@ -69,9 +67,7 @@ describe('Phone number with area code', () => {
 
     it('should not format phone number when area code is +48 and phone number length is 8', () => {
       fillForm('12345678', '+48');
-      cy.withinComponent(areaCodeLabel, () => {
-        cy.assertCombobox('+48');
-      });
+      cy.findByRole('combobox', { name: areaCodeLabel }).should('have.value', '+48');
       fillForm('12345678');
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();

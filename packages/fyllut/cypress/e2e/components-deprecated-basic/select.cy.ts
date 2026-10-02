@@ -17,7 +17,7 @@ describe('Select', () => {
         name: 'Nedtrekksmeny',
         description: 'Dette er foretrukket nedtrekkskomponent',
       }).click();
-      cy.findAllByRole('option').should('have.length', 3);
+      cy.findByRole('listbox').findAllByRole('option').should('have.length', 3);
       cy.findByRole('combobox', { name: 'Nedtrekksmeny' }).type('App{downarrow}{enter}');
       cy.withinComponent('Nedtrekksmeny', () => {
         cy.assertCombobox('Appelsin');
@@ -34,16 +34,16 @@ describe('Select', () => {
       // Formio select components - ChoiceJS and HTML5
 
       //Nedtrekksmeny gammel type (ChoiceJS)
-      cy.findAllByRole('combobox').eq(0).select('Løve');
-      cy.findAllByRole('combobox').eq(0).should('have.value', 'løve');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).select('Løve');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).should('have.value', 'løve');
 
       // Hvilket land jobber du i? (ChoiceJS)
-      cy.findAllByRole('combobox').eq(1).select('Tyskland');
-      cy.findAllByRole('combobox').eq(1).should('have.value', 'tyskland');
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).select('Tyskland');
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).should('have.value', 'tyskland');
 
       // Sfære (HTML5)
-      cy.findAllByRole('combobox').eq(2).select('-1.00');
-      cy.findAllByRole('combobox').eq(2).should('have.value', '-1.00');
+      cy.findByRole('combobox', { name: /Sfære/ }).select('-1.00');
+      cy.findByRole('combobox', { name: /Sfære/ }).should('have.value', '-1.00');
 
       cy.clickNextStep();
 
@@ -78,9 +78,9 @@ describe('Select', () => {
         cy.assertCombobox('Blå');
       });
       cy.clickNextStep();
-      cy.findAllByRole('combobox').eq(0).should('have.value', 'løve');
-      cy.findAllByRole('combobox').eq(1).should('have.value', 'tyskland');
-      cy.findAllByRole('combobox').eq(2).should('have.value', '-1.00');
+      cy.findByRole('combobox', { name: /Nedtrekksmeny gammel type/ }).should('have.value', 'løve');
+      cy.findByRole('combobox', { name: /Hvilket land jobber du i/ }).should('have.value', 'tyskland');
+      cy.findByRole('combobox', { name: /Sfære/ }).should('have.value', '-1.00');
     });
   });
 });

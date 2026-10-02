@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 // Note: PhoneNumber does not render description (form.ts lists it, but renderReact does not pass it to NavPhoneNumber).
 // Note: minLength, maxLength and customValidation from form.ts have no effect — checkComponentValidity is overridden
 //       without calling super, so only built-in validation (required and phone number length) runs.
@@ -169,9 +171,13 @@ describe('PhoneNumber', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.findByRole('button', { name: 'Forrige' }).should('have.class', 'aksel-button--secondary');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.previous }).should(
+        'have.attr',
+        'data-variant',
+        'secondary',
+      );
       cy.findByRole('button', { name: 'Fortsett utfylling' }).should('not.exist');
-      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).should('have.class', 'aksel-button--primary');
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).should('have.attr', 'data-variant', 'primary');
       cy.withinSummaryGroup('Visning', () => {
         cy.contains('Telefonnummer').should('exist');
         cy.contains('12345678').should('exist');
