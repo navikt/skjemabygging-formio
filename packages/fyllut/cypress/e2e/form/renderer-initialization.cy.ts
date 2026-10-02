@@ -1,5 +1,3 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-
 describe('Renderer initialization redirects', () => {
   before(() => {
     cy.configMocksServer();
@@ -8,33 +6,6 @@ describe('Renderer initialization redirects', () => {
   beforeEach(() => {
     cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-  });
-
-  it('resolves an unsupported deep link to a usable legacy form', () => {
-    const createDraft = cy.spy().as('createDraft');
-    const getPrefill = cy.spy().as('getPrefill');
-    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', createDraft);
-    cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*', getPrefill);
-    cy.visit('/fyllut/rendererfallback', {
-      onBeforeLoad: (window) => {
-        // Enter client-side so backend redirects cannot mask the initialization-cache regression.
-        window.history.replaceState(null, '', '/fyllut/rendererfallback/first');
-      },
-    });
-    cy.defaultWaits();
-    cy.location('pathname').should('equal', '/fyllut/rendererfallback');
-    cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('be.visible').click();
-    cy.clickStart();
-
-    cy.findByRole('textbox', { name: 'Legacy answer' }).type('rejected');
-    cy.clickNextStep();
-    cy.contains('Enter accepted').should('be.visible');
-    cy.findByRole('textbox', { name: 'Legacy answer' }).clear();
-    cy.findByRole('textbox', { name: 'Legacy answer' }).type('accepted');
-    cy.clickNextStep();
-    cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
-    cy.get('@createDraft').should('not.have.been.called');
-    cy.get('@getPrefill').should('not.have.been.called');
   });
 
   it('consumes a draft redirect once and retains initialization and edits across page navigation', () => {

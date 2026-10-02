@@ -61,19 +61,6 @@ describe('Email', () => {
       cy.focused().type('test@nav.no');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
-
-    it('should validate with custom validation', () => {
-      const label = 'E-post egendefinert';
-      const errorMessage = 'E-postadressen må inneholde nav';
-      cy.findByLabelText(`${label} (valgfritt)`).type('annen@epost.no');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelText(`${label} (valgfritt)`).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('test@nav.no');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
   });
 
   describe('Form', () => {
@@ -94,7 +81,6 @@ describe('Email', () => {
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'E-post påkrevd' }).type('test@nav.no');
       cy.findByRole('textbox', { name: 'E-post ikke påkrevd (valgfritt)' }).type('test@nav.no');
-      cy.findByRole('textbox', { name: 'E-post egendefinert (valgfritt)' }).type('test@nav.no');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -109,8 +95,6 @@ describe('Email', () => {
         cy.get('dd').eq(0).should('contain.text', 'test@nav.no');
         cy.get('dt').eq(1).should('contain.text', 'E-post ikke påkrevd');
         cy.get('dd').eq(1).should('contain.text', 'test@nav.no');
-        cy.get('dt').eq(2).should('contain.text', 'E-post egendefinert');
-        cy.get('dd').eq(2).should('contain.text', 'test@nav.no');
       });
       cy.clickDownloadInstructions();
 

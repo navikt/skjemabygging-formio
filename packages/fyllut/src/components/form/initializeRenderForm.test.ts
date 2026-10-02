@@ -1,7 +1,6 @@
 import { Form, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefillDataToForm,
-  findUnsupportedCustomValidation,
   getFormPrefillKeys,
   initializeDigitalDraft,
   resolveDefaultSubmissionMethod,
@@ -13,7 +12,6 @@ import { initializeRenderForm } from './initializeRenderForm';
 
 vi.mock('@navikt/skjemadigitalisering-shared-frontend', () => ({
   applyPrefillDataToForm: vi.fn(),
-  findUnsupportedCustomValidation: vi.fn(),
   getFormPrefillKeys: vi.fn(),
   initializeDigitalDraft: vi.fn(),
   resolveDefaultSubmissionMethod: vi.fn(),
@@ -62,7 +60,6 @@ describe('initializeRenderForm', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(applyPrefillDataToForm).mockImplementation((form) => form);
-    vi.mocked(findUnsupportedCustomValidation).mockReturnValue([]);
     vi.mocked(getFormPrefillKeys).mockReturnValue([]);
     vi.mocked(initializeDigitalDraft).mockResolvedValue({ type: 'ready' });
     vi.mocked(resolveDefaultSubmissionMethod).mockReturnValue('digital');
@@ -137,42 +134,5 @@ describe('initializeRenderForm', () => {
     vi.mocked(initializeDigitalDraft).mockResolvedValue(redirect);
 
     await expect(initialize()).resolves.toEqual(redirect);
-  });
-
-  it('preserves legacy fallback before any prefill or draft side effects', async () => {
-    const { bootstrapService, initialize } = setup();
-    const unsupportedCustomValidation = [
-      { componentKey: 'field', componentType: 'textfield', script: 'valid = false;' },
-    ];
-    vi.mocked(findUnsupportedCustomValidation).mockReturnValue(unsupportedCustomValidation);
-
-    await expect(initialize()).resolves.toEqual({ type: 'unsupportedByRenderer', unsupportedCustomValidation });
-    expect(bootstrapService.getPrefillData).not.toHaveBeenCalled();
-    expect(initializeDigitalDraft).not.toHaveBeenCalled();
-  });
-
-  it('redirects an unsupported deep link to the intro, then resolves legacy fallback without side effects', async () => {
-    const { bootstrapService, initialize } = setup();
-    const unsupportedCustomValidation = [
-      { componentKey: 'field', componentType: 'textfield', script: 'valid = false;' },
-    ];
-    vi.mocked(findUnsupportedCustomValidation).mockReturnValue(unsupportedCustomValidation);
-    vi.mocked(bootstrapService.load).mockResolvedValue({
-      form: { ...form, properties: { ...form.properties, submissionTypes: ['PAPER', 'DIGITAL'] } },
-      translations: {},
-    });
-    const options = { search: '?lang=en', submissionMethod: undefined };
-
-    await expect(initialize({ ...options, routePath: 'first-page' })).resolves.toEqual({
-      type: 'redirect',
-      pathname: '/test-form',
-      search: '?lang=en',
-    });
-    await expect(initialize({ ...options, routePath: '' })).resolves.toEqual({
-      type: 'unsupportedByRenderer',
-      unsupportedCustomValidation,
-    });
-    expect(bootstrapService.getPrefillData).not.toHaveBeenCalled();
-    expect(initializeDigitalDraft).not.toHaveBeenCalled();
   });
 });

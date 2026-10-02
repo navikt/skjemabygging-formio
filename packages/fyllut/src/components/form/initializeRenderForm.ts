@@ -3,17 +3,14 @@ import {
   FormsApiTranslationMap,
   Submission,
   SubmissionMethod,
-  submissionTypesUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefillDataToForm,
-  findUnsupportedCustomValidation,
   getFormPrefillKeys,
   initializeDigitalDraft,
   resolveDefaultSubmissionMethod,
   RuntimeServices,
-  UnsupportedCustomValidation,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import type { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
 
@@ -30,7 +27,6 @@ type InitializationResult =
   | { type: 'ready'; initializedForm: InitializedForm }
   | { type: 'notFound' }
   | { type: 'draftNotFound' }
-  | { type: 'unsupportedByRenderer'; unsupportedCustomValidation: UnsupportedCustomValidation[] }
   | { type: 'redirect'; pathname?: string; search: string };
 
 interface InitializeRenderFormProps {
@@ -61,24 +57,6 @@ const initializeRenderForm = async ({
   const bootstrap = await bootstrapService.load(formPath);
   if (!bootstrap) {
     return { type: 'notFound' };
-  }
-
-  // Checked before anything with a side effect (prefill, draft creation): a form the new
-  // renderer cannot validate faithfully must be handed straight back to the old renderer.
-  const unsupportedCustomValidation = findUnsupportedCustomValidation(bootstrap.form);
-  if (unsupportedCustomValidation.length > 0) {
-    // The old renderer relies on the backend sending a deep link without a submission type to
-    // the intro page first, which the backend skips for an allowlisted form. Do it here, so
-    // handing the form back lands the user exactly where it would have without the allowlist.
-    if (
-      !!routePath &&
-      !new URLSearchParams(search).has('sub') &&
-      submissionTypesUtils.containsMultipleStandardSubmissionTypes(bootstrap.form.properties?.submissionTypes)
-    ) {
-      return { type: 'redirect', pathname: `/${formPath}`, search };
-    }
-
-    return { type: 'unsupportedByRenderer', unsupportedCustomValidation };
   }
 
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(bootstrap.form.properties.submissionTypes);

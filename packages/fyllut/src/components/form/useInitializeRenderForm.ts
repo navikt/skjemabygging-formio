@@ -1,9 +1,5 @@
 import { getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import {
-  ApplicationLogger,
-  RuntimeServices,
-  UnsupportedCustomValidation,
-} from '@navikt/skjemadigitalisering-shared-frontend';
+import { ApplicationLogger, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { NavigateFunction } from 'react-router';
 import { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
@@ -35,10 +31,6 @@ const useInitializeRenderForm = ({
   const [initializedForm, setInitializedForm] = useState<InitializedForm>();
   const [notFoundLoadKey, setNotFoundLoadKey] = useState<string>();
   const [failedLoadKey, setFailedLoadKey] = useState<string>();
-  const [unsupported, setUnsupported] = useState<{
-    loadKey: string;
-    customValidation: UnsupportedCustomValidation[];
-  }>();
   const loadRef = useRef<{ key: string; promise: Promise<InitializationResult> }>();
 
   useEffect(() => {
@@ -77,9 +69,6 @@ const useInitializeRenderForm = ({
           case 'notFound':
             setNotFoundLoadKey(loadKey);
             return;
-          case 'unsupportedByRenderer':
-            setUnsupported({ loadKey, customValidation: result.unsupportedCustomValidation });
-            return;
           case 'draftNotFound':
             navigate('/soknad-ikke-funnet', { replace: true });
             return;
@@ -105,15 +94,10 @@ const useInitializeRenderForm = ({
   }, [applications, bootstrapService, formPath, loadKey, logger, navigate, routePath, search, submissionMethod]);
 
   const hasInitializationError = failedLoadKey === loadKey;
-  const isLoading =
-    initializedForm?.loadKey !== loadKey &&
-    notFoundLoadKey !== loadKey &&
-    unsupported?.loadKey !== loadKey &&
-    !hasInitializationError;
+  const isLoading = initializedForm?.loadKey !== loadKey && notFoundLoadKey !== loadKey && !hasInitializationError;
 
   return {
     initializedForm: initializedForm?.loadKey === loadKey ? initializedForm : undefined,
-    unsupportedCustomValidation: unsupported?.loadKey === loadKey ? unsupported.customValidation : undefined,
     isLoading,
     hasInitializationError,
   };

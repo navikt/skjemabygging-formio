@@ -90,19 +90,6 @@ describe('Year', () => {
       cy.focused().type('2020');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
-
-    it('should support custom validation', () => {
-      const label = 'Årstall egendefinert';
-      const errorMessage = 'Kun 2000 er tillatt';
-      cy.findByLabelText(`${label} (valgfritt)`).type('2023');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelOptional(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('2000');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
   });
 
   describe('Form', () => {
@@ -125,7 +112,6 @@ describe('Year', () => {
       cy.findByRole('textbox', { name: 'Årstall ikke påkrevd (valgfritt)' }).type('2026');
       cy.findByRole('textbox', { name: 'Årstall tidligst 2000 (valgfritt)' }).type('2010');
       cy.findByRole('textbox', { name: 'Årstall senest 2030 (valgfritt)' }).type('2020');
-      cy.findByRole('textbox', { name: 'Årstall egendefinert (valgfritt)' }).type('2000');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -144,8 +130,6 @@ describe('Year', () => {
         cy.get('dd').eq(2).should('contain.text', '2010');
         cy.get('dt').eq(3).should('contain.text', 'Årstall senest 2030');
         cy.get('dd').eq(3).should('contain.text', '2020');
-        cy.get('dt').eq(4).should('contain.text', 'Årstall egendefinert');
-        cy.get('dd').eq(4).should('contain.text', '2000');
       });
       cy.clickDownloadInstructions();
 

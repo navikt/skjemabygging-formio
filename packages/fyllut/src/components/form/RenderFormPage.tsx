@@ -1,7 +1,7 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { reportUnsupportedCustomValidation, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useMemo } from 'react';
+import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
 import createRenderFormBootstrapService from '../../adapter-services/createRenderFormBootstrapService';
@@ -10,7 +10,6 @@ import { InternalServerErrorPage } from '../errors/InternalServerErrorPage';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
-import FormPageWrapper from './FormPageWrapper';
 import RenderFormAdapter from './RenderFormAdapter';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
 import useFormDocumentMetadata from './useFormDocumentMetadata';
@@ -36,7 +35,7 @@ const RenderFormPage = () => {
     () => createRenderFormBootstrapService({ http: createIntegrationHttp(http!), backendBaseUrl }),
     [backendBaseUrl, http],
   );
-  const { initializedForm, unsupportedCustomValidation, isLoading, hasInitializationError } = useInitializeRenderForm({
+  const { initializedForm, isLoading, hasInitializationError } = useInitializeRenderForm({
     formPath,
     routePath,
     search,
@@ -50,19 +49,6 @@ const RenderFormPage = () => {
 
   useFormDocumentMetadata(initializedForm?.form);
 
-  // The feature allowlist is configuration and cannot see the form definition, so a form on the
-  // allowlist can still carry a `validate.custom` the new renderer does not reproduce. Ignoring one
-  // would accept input production rejects today, so such a form is served by the old renderer
-  // instead - always logged to the backend, in every environment.
-  useEffect(() => {
-    if (unsupportedCustomValidation?.length) {
-      reportUnsupportedCustomValidation(appConfig.logger, {
-        formPath: formPath ?? '',
-        unsupported: unsupportedCustomValidation,
-      });
-    }
-  }, [appConfig.logger, formPath, unsupportedCustomValidation]);
-
   if (!formPath) {
     return <NotFoundPage />;
   }
@@ -73,10 +59,6 @@ const RenderFormPage = () => {
 
   if (hasInitializationError) {
     return <InternalServerErrorPage />;
-  }
-
-  if (unsupportedCustomValidation?.length) {
-    return <FormPageWrapper />;
   }
 
   if (!initializedForm) {

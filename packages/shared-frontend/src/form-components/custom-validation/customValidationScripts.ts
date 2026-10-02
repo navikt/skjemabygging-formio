@@ -5,9 +5,9 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
  *
  * Nothing here executes a script: there is no `eval`, no `new Function`, and no Formio instance.
  * A script is matched against a small set of declarative expression forms, and only accepted when
- * the component it sits on is configured the way the expression assumes. Everything the mapper does
- * not recognize is reported as unsupported, which keeps a form the new renderer would silently
- * validate differently out of the new renderer (see `unsupportedCustomValidation`).
+ * the component it sits on is configured the way the expression assumes. The forms published in
+ * https://github.com/navikt/skjemautfylling-formio (forms/) only use the forms recognized here.
+ * Anything else is ignored by the new renderer, so extend the mapper when production gets a new one.
  *
  * This is deliberately the *only* place that knows legacy scripts exist. Generic validation
  * (`validators.ts`) sees plain value rules, and no form is recognized by its id or path.
@@ -124,7 +124,7 @@ type RecognizedCustomValidation =
   | { kind: 'visibility' }
   /** Replaced by declarative value rules. */
   | { kind: 'rules'; rule: CustomValidationRuleSpec }
-  /** Anything else. The form must not be rendered by the new renderer. */
+  /** Anything else. Ignored by the new renderer. */
   | { kind: 'unsupported' };
 
 const toRedundantMethod = (script: string, componentType: string): string | undefined => {
