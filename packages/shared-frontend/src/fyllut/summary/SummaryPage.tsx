@@ -106,16 +106,18 @@ const SummaryPage = () => {
           </div>
         </>
       )}
-      <RenderSummaryForm
-        activeComponents={panels}
-        submission={submission}
-        form={form}
-        currentLanguage={currentLanguage}
-        translate={translate}
-        panelValidationList={panelValidationList}
-        rendererConfig={{ submissionMethod, logger, environment }}
-        handleDownloadFile={handleDownloadFile}
-      />
+      <div className={styles.cards}>
+        <RenderSummaryForm
+          activeComponents={panels}
+          submission={submission}
+          form={form}
+          currentLanguage={currentLanguage}
+          translate={translate}
+          panelValidationList={panelValidationList}
+          rendererConfig={{ submissionMethod, logger, environment }}
+          handleDownloadFile={handleDownloadFile}
+        />
+      </div>
       <FormErrorSummary
         pageKeys={validationPageKeys}
         onNavigateToField={(error, id) => {

@@ -1,5 +1,5 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
-import { Button, LinkCard, VStack } from '@navikt/ds-react';
+import { Button, HStack, LinkCard, VStack } from '@navikt/ds-react';
 import { Form, SubmissionMethod, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
@@ -167,13 +167,15 @@ const SubmissionMethodSelection = ({ form }: Props) => {
           </LinkCard>
         )}
         {state === SelectionState.NO_LOGIN && (
-          <Button
-            variant="tertiary"
-            icon={<ArrowUndoIcon aria-hidden />}
-            onClick={() => setState(SelectionState.DEFAULT)}
-          >
-            {translate(TEXTS.grensesnitt.introPage.changeSubmissionMethod)}
-          </Button>
+          <HStack>
+            <Button
+              variant="tertiary"
+              icon={<ArrowUndoIcon aria-hidden />}
+              onClick={() => setState(SelectionState.DEFAULT)}
+            >
+              {translate(TEXTS.grensesnitt.introPage.changeSubmissionMethod)}
+            </Button>
+          </HStack>
         )}
       </VStack>
     </>
