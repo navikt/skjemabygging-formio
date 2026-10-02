@@ -96,9 +96,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
       <FormHeader
         form={form}
         pageTitle={
-          showNoSubmissionContent
-            ? translate(form.properties.innsendingOverskrift ?? TEXTS.statiske.prepareLetterPage.subTitle)
-            : translate(TEXTS.statiske.prepareLetterPage.subTitle)
+          showNoSubmissionContent ? form.properties.innsendingOverskrift : TEXTS.statiske.prepareLetterPage.subTitle
         }
       />
       <VStack gap="space-24">
