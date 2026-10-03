@@ -14,6 +14,7 @@ import { formService } from './services';
 import { QueryParamSub } from './types/custom';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
+import { isUnpublishedLanguage } from './utils/language';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
 
 const redirectToSubmissionType = (req: Request, res: Response, sub: SubmissionMethod) => {
@@ -75,19 +76,30 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     let httpStatusCode = 200;
     if (formPath) {
       logger.debug('Loading form...', { formPath });
-      const form = await formService.getForm({ formPath, select: ['title', 'path', 'properties'] }).catch((err) => {
-        if (err instanceof ResponseError && err.errorCode === 'NOT_FOUND') {
-          return undefined;
-        }
+      const form = await formService
+        .getForm({ formPath, select: ['title', 'path', 'properties', 'publishedLanguages', 'status'] })
+        .catch((err) => {
+          if (err instanceof ResponseError && err.errorCode === 'NOT_FOUND') {
+            return undefined;
+          }
 
-        throw err;
-      });
+          throw err;
+        });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         const staticPdfRoute = isStaticPdfRoute(req);
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
           httpStatusCode = 404;
+        } else if (!staticPdfRoute && isUnpublishedLanguage(req.query.lang, form)) {
+          const logMeta = { formPath, lang: req.query.lang, publishedLanguages: form.publishedLanguages };
+          logger.info('Removing lang query param since the language is not published for this form', logMeta);
+          return res.redirect(
+            url.format({
+              pathname: req.baseUrl,
+              query: excludeQueryParam('lang', req.query),
+            }),
+          );
         } else if (!qpSub) {
           if (staticPdfRoute) {
             if (!submissionTypesUtils.isStaticPdf(submissionTypes)) {
