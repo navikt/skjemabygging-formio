@@ -325,6 +325,10 @@ import {
   translationCypress101Form,
   translationCypress101Translations,
 } from '../data/forms-api/translation/translationCypress101Form';
+import {
+  translationUnpublishedLanguageForm,
+  translationUnpublishedLanguageTranslations,
+} from '../data/forms-api/translation/translationUnpublishedLanguageForm';
 import { umamiNologinForm, umamiNologinTranslations } from '../data/forms-api/umami/umamiNologinForm';
 import { yearDeprecatedForm, yearDeprecatedTranslations } from '../data/forms-api/year-deprecated/yearDeprecatedForm';
 import {
@@ -490,6 +494,7 @@ const allForms = [
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },
   { form: translationCypress101Form(), translations: translationCypress101Translations() },
+  { form: translationUnpublishedLanguageForm(), translations: translationUnpublishedLanguageTranslations() },
   { form: umamiNologinForm(), translations: umamiNologinTranslations() },
   { form: yearDeprecatedForm(), translations: yearDeprecatedTranslations() },
   { form: yourInformationDeprecatedForm(), translations: yourInformationDeprecatedTranslations() },

@@ -115,6 +115,26 @@ describe('Translations', () => {
     });
   });
 
+  describe('Unpublished language in url param (INCLUDE_DIST_TESTS)', () => {
+    beforeEach(() => {
+      cy.skipIfNoIncludeDistTests();
+    });
+
+    it('removes lang when the language is not published', () => {
+      cy.visit('/fyllut/translationunpublishedlanguage/skjema?sub=paper&lang=en');
+      cy.location('pathname').should('eq', '/fyllut/translationunpublishedlanguage/skjema');
+      cy.location('search').should('eq', '?sub=paper');
+      cy.findByRole('button', { name: 'Norsk bokmål' }).should('exist');
+      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+    });
+
+    it('keeps lang when the language is published', () => {
+      cy.visit('/fyllut/translationunpublishedlanguage/skjema?sub=paper&lang=nn-NO');
+      cy.findByRole('button', { name: 'Norsk nynorsk' }).should('exist');
+      cy.location('search').should('eq', '?sub=paper&lang=nn-NO');
+    });
+  });
+
   describe('Invalid url', () => {
     beforeEach(() => {
       cy.visit('/fyllut/&#cypress101/skjema?sub=paper', { failOnStatusCode: false });
