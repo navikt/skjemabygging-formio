@@ -3,19 +3,22 @@ import { localizationUtils } from './localizationUtils';
 
 const DEFAULT_LANGUAGE = 'nb';
 
-const isUnpublishedLanguage = (lang: unknown, form: Pick<NavFormType, 'status' | 'publishedLanguages'>) => {
-  if (typeof lang !== 'string' || !lang || form.status !== 'published' || !form.publishedLanguages) {
-    return false;
+const isLanguageAllowedForForm = (
+  lang: string | undefined,
+  form: Pick<NavFormType, 'status' | 'publishedLanguages'>,
+) => {
+  if (!lang || form.status !== 'published' || !form.publishedLanguages) {
+    return true;
   }
 
   const requestedLanguage = localizationUtils.getSupportedLanguageCode(lang) ?? lang;
   if (requestedLanguage === DEFAULT_LANGUAGE) {
-    return false;
+    return true;
   }
 
-  return !form.publishedLanguages.some(
+  return form.publishedLanguages.some(
     (language) => (localizationUtils.getSupportedLanguageCode(language) ?? language) === requestedLanguage,
   );
 };
 
-export { isUnpublishedLanguage };
+export { isLanguageAllowedForForm };

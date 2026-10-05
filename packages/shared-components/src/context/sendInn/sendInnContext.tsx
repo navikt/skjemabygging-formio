@@ -1,5 +1,5 @@
 import {
-  isUnpublishedLanguage,
+  isLanguageAllowedForForm,
   Language,
   MellomlagringError,
   NologinToken,
@@ -155,7 +155,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       }
       if (response?.hoveddokumentVariant.document) {
         const savedLanguage = toLegacyLanguageCode(response.hoveddokumentVariant.document.language);
-        if (isUnpublishedLanguage(savedLanguage, form)) {
+        if (!isLanguageAllowedForForm(savedLanguage, form)) {
           logger?.info('Ignoring saved language because it is not published for the form');
           removeSearchParamFromUrl('lang');
         } else {

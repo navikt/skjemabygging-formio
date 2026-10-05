@@ -1,5 +1,6 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  isUnpublishedLanguage,
+  isLanguageAllowedForForm,
   navFormUtils,
   ResponseError,
   SubmissionMethod,
@@ -39,6 +40,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const qpForm = req.query.form;
     const qpInnsendingsId = req.query.innsendingsId;
     const qpSub = req.query.sub as QueryParamSub;
+    const qpLang = requestUtil.getStringQuery(req, 'lang', true);
     const formPath = res.locals.formId;
 
     let redirectUrl: string | undefined;
@@ -88,11 +90,11 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         const staticPdfRoute = isStaticPdfRoute(req);
-        const invalidLanguageParam = req.query.lang !== undefined && typeof req.query.lang !== 'string';
+        const invalidLanguageParam = req.query.lang !== undefined && qpLang === undefined;
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
           httpStatusCode = 404;
-        } else if (!staticPdfRoute && (invalidLanguageParam || isUnpublishedLanguage(req.query.lang, form))) {
+        } else if (!staticPdfRoute && (invalidLanguageParam || !isLanguageAllowedForForm(qpLang, form))) {
           const logMeta = { formPath, lang: req.query.lang, publishedLanguages: form.publishedLanguages };
           logger.info('Removing invalid or unpublished lang query param', logMeta);
           return res.redirect(
