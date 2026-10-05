@@ -1,269 +1,210 @@
-import { correlator, errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import express, { Request, Response } from 'express';
-import { AddressInfo, createConnection, Socket } from 'node:net';
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { tmpdir } from 'node:os';
 import { Readable } from 'node:stream';
-import request from 'supertest';
-import { logger as errorLogger } from '../../../../../shared-backend/src/shared/logger/logger';
 import { logger } from '../../../logger';
-import legacyErrorToResponseError from '../../../middleware/legacyErrorToResponseError';
-import { removeUploadedTempFile, uploadSingleFile } from './upload';
+import { mockRequest, mockResponse } from '../../../test/testHelpers';
+import { MAX_UPLOAD_FILE_SIZE_BYTES, uploadSingleFile } from './upload';
 
-const createUploadApp = (maxFileSizeBytes?: number, onRequest?: (req: Request) => void, path = '/upload') => {
-  const app = express();
-  app.use(correlator());
-  app.post(
-    path,
-    (req, _res, next) => {
-      onRequest?.(req);
-      next();
-    },
-    uploadSingleFile('filinnhold', { maxFileSizeBytes }),
-    async (req, res) => {
-      const file = req.file;
-      try {
-        if (!file) {
-          return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
-        }
+const { upload, single, configureMulter } = vi.hoisted(() => ({
+  upload: vi.fn<(req: Request, res: Response, next: NextFunction) => void>(),
+  single: vi.fn<(fieldName: string) => ReturnType<multer.Multer['single']>>(),
+  configureMulter: vi.fn<(options: multer.Options) => Pick<multer.Multer, 'single'>>(),
+}));
 
-        return res.status(201).json({
-          fileName: file.originalname,
-          size: file.size,
-        });
-      } finally {
-        await removeUploadedTempFile(file);
-      }
-    },
-  );
-  app.use(legacyErrorToResponseError);
-  app.use(errorHandler);
+vi.mock('multer', async (importOriginal) => {
+  const actual = await importOriginal<{ default: typeof multer }>();
+  return {
+    ...actual,
+    default: Object.assign(configureMulter, { MulterError: actual.default.MulterError }),
+  };
+});
 
-  return app;
-};
+const createRequest = (overrides: Partial<Request> = {}) =>
+  Object.assign(mockRequest({}), {
+    originalUrl: '/upload?access=hidden',
+    aborted: false,
+    destroyed: false,
+    complete: true,
+    ...overrides,
+  });
+
+const createFile = (): Express.Multer.File => ({
+  fieldname: 'filinnhold',
+  originalname: 'small.txt',
+  encoding: '7bit',
+  mimetype: 'text/plain',
+  size: 5,
+  destination: tmpdir(),
+  filename: 'temporary-upload',
+  path: `${tmpdir()}/temporary-upload`,
+  buffer: Buffer.from('hello'),
+  stream: Readable.from('hello'),
+});
+
+beforeEach(() => {
+  upload.mockReset().mockImplementation((_req, _res, next) => next());
+  single.mockReset().mockReturnValue(upload);
+  configureMulter.mockReset().mockReturnValue({ single });
+});
+
+afterEach(() => vi.restoreAllMocks());
 
 describe('uploadSingleFile', () => {
-  it('allows files under configured size limit', async () => {
-    const app = createUploadApp(10);
-    const uploadInfo = vi.spyOn(logger, 'info');
+  it.each([undefined, 10])('configures the field and file-size limit: %s', (maxFileSizeBytes) => {
+    const req = createRequest();
+    const res = mockResponse();
+    const next = vi.fn();
 
-    const response = await request(app)
-      .post('/upload?source=test')
-      .attach('filinnhold', Buffer.from('12345'), 'small.txt')
-      .expect(201);
+    uploadSingleFile('filinnhold', { maxFileSizeBytes })(req, res, next);
 
-    expect(response.body).toEqual({ fileName: 'small.txt', size: 5 });
-    expect(uploadInfo).toHaveBeenCalledWith(
-      'Upload stored in temporary file',
-      expect.objectContaining({ route: '/upload', fieldName: 'filinnhold', fileSize: 5, fileType: 'text/plain' }),
-    );
-    uploadInfo.mockRestore();
+    expect(configureMulter).toHaveBeenCalledExactlyOnceWith({
+      dest: tmpdir(),
+      limits: { fileSize: maxFileSizeBytes ?? MAX_UPLOAD_FILE_SIZE_BYTES },
+    });
+    expect(single).toHaveBeenCalledExactlyOnceWith('filinnhold');
+    expect(upload).toHaveBeenCalledExactlyOnceWith(req, res, expect.any(Function));
+    expect(next).toHaveBeenCalledExactlyOnceWith();
   });
 
-  it('logs submission and attachment IDs for a successful digital upload without query parameters', async () => {
-    const app = createUploadApp(undefined, undefined, '/digital/:innsendingsId/attachments/:attachmentId');
-    const uploadInfo = vi.spyOn(logger, 'info');
+  it('logs successful digital uploads with identifiers and without query parameters', () => {
+    const info = vi.spyOn(logger, 'info');
+    const next = vi.fn();
+    const req = createRequest({
+      originalUrl: '/digital/submission-1/attachments/attachment-1?access=hidden',
+      params: { innsendingsId: 'submission-1', attachmentId: 'attachment-1' },
+      file: createFile(),
+    });
 
-    await request(app)
-      .post('/digital/submission-1/attachments/attachment-1?access=hidden')
-      .attach('filinnhold', Buffer.from('hello'), 'small.txt')
-      .expect(201);
+    uploadSingleFile('filinnhold')(req, mockResponse(), next);
 
-    expect(uploadInfo).toHaveBeenCalledWith(
-      'Upload stored in temporary file',
-      expect.objectContaining({
-        route: '/digital/submission-1/attachments/attachment-1',
-        fieldName: 'filinnhold',
-        innsendingsId: 'submission-1',
-        attachmentId: 'attachment-1',
-      }),
-    );
-    uploadInfo.mockRestore();
+    expect(info).toHaveBeenCalledExactlyOnceWith('Upload stored in temporary file', {
+      route: '/digital/submission-1/attachments/attachment-1',
+      fieldName: 'filinnhold',
+      innsendingsId: 'submission-1',
+      attachmentId: 'attachment-1',
+      fileSize: 5,
+      fileType: 'text/plain',
+    });
+    expect(next).toHaveBeenCalledExactlyOnceWith();
   });
 
-  it('returns bad request when file exceeds configured size limit', async () => {
-    const app = createUploadApp(5);
-    const uploadWarning = vi.spyOn(logger, 'warn');
-    const handlerWarning = vi.spyOn(errorLogger, 'warn');
+  it('does not log a stored file when Multer supplies no file', () => {
+    const info = vi.spyOn(logger, 'info');
+    const next = vi.fn();
 
-    const response = await request(app)
-      .post('/upload')
-      .attach('filinnhold', Buffer.from('123456'), 'large.txt')
-      .expect(400);
+    uploadSingleFile('filinnhold')(createRequest(), mockResponse(), next);
 
-    expect(response.body).toMatchObject({
+    expect(info).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it('maps the Multer size-limit error without logging a duplicate warning', () => {
+    const warn = vi.spyOn(logger, 'warn');
+    const next = vi.fn();
+    upload.mockImplementation((_req, _res, callback) => callback(new multer.MulterError('LIMIT_FILE_SIZE')));
+
+    uploadSingleFile('filinnhold', { maxFileSizeBytes: 5 })(createRequest(), mockResponse(), next);
+
+    expect(next).toHaveBeenCalledOnce();
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ResponseError);
+    expect(next.mock.calls[0][0]).toMatchObject({
       message: 'Uploaded file exceeds maximum size.',
       errorCode: 'BAD_REQUEST',
       userMessage: TEXTS.statiske.uploadFile.fileTooLargeError,
     });
-    expect(uploadWarning).not.toHaveBeenCalled();
-    expect(handlerWarning).toHaveBeenCalledOnce();
-    uploadWarning.mockRestore();
-    handlerWarning.mockRestore();
+    expect(warn).not.toHaveBeenCalled();
   });
 
-  it('maps an aborted multipart upload to one non-error log', async () => {
-    const uploadInfo = vi.spyOn(logger, 'info');
-    const uploadWarning = vi.spyOn(logger, 'warn');
-    const handlerWarning = vi.spyOn(errorLogger, 'warn');
-    const handlerError = vi.spyOn(errorLogger, 'error');
-    const req = new Readable({ read() {} }) as Readable & Request;
-    req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
-    req.aborted = true;
-    req.originalUrl = '/fyllut/api/send-inn/nologin-application/attachments/attachment-1?access=hidden';
-    req.params = { attachmentId: 'attachment-1' };
-    req.getNologinContext = vi.fn().mockReturnValue({ innsendingsId: 'submission-1' });
+  it('logs an aborted no-login upload once without responding or continuing', () => {
+    const info = vi.spyOn(logger, 'info');
+    const warn = vi.spyOn(logger, 'warn');
+    const res = mockResponse();
     const next = vi.fn();
+    const req = createRequest({
+      aborted: true,
+      complete: false,
+      originalUrl: '/nologin-application/attachments/attachment-1?access=hidden',
+      params: { attachmentId: 'attachment-1' },
+      getNologinContext: () => ({ innsendingsId: 'submission-1' }),
+    });
+    upload.mockImplementation((_req, _res, callback) => callback(new Error('Request aborted')));
 
-    uploadSingleFile('filinnhold')(req, {} as Response, next);
-    req.emit('aborted');
-    req.destroy();
-    await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
+    uploadSingleFile('filinnhold')(req, res, next);
 
-    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', {
-      route: '/fyllut/api/send-inn/nologin-application/attachments/attachment-1',
+    expect(info).toHaveBeenCalledExactlyOnceWith('Upload request aborted', {
+      route: '/nologin-application/attachments/attachment-1',
       fieldName: 'filinnhold',
       innsendingsId: 'submission-1',
       attachmentId: 'attachment-1',
     });
+    expect(warn).not.toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
-    expect(uploadWarning).not.toHaveBeenCalled();
-    expect(handlerError).not.toHaveBeenCalled();
-    expect(handlerWarning).not.toHaveBeenCalled();
-
-    uploadInfo.mockRestore();
-    uploadWarning.mockRestore();
-    handlerWarning.mockRestore();
-    handlerError.mockRestore();
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.send).not.toHaveBeenCalled();
   });
 
-  it('logs a premature upload stream close without forwarding it', async () => {
-    const uploadInfo = vi.spyOn(logger, 'info');
-    const req = new Readable({ read() {} }) as Readable & Request;
-    req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
-    req.originalUrl = '/fyllut/api/send-inn/digital-application/submission-2/attachments/attachment-2?access=hidden';
-    req.params = { innsendingsId: 'submission-2', attachmentId: 'attachment-2' };
+  it('logs a premature stream close once without responding or continuing', () => {
+    const info = vi.spyOn(logger, 'info');
+    const res = mockResponse();
     const next = vi.fn();
+    const req = createRequest({
+      destroyed: true,
+      complete: false,
+      originalUrl: '/digital/submission-2/attachments/attachment-2?access=hidden',
+      params: { innsendingsId: 'submission-2', attachmentId: 'attachment-2' },
+    });
+    upload.mockImplementation((_req, _res, callback) => callback(new Error('Request closed')));
 
-    uploadSingleFile('filinnhold')(req, {} as Response, next);
-    req.destroy();
-    await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
+    uploadSingleFile('filinnhold')(req, res, next);
 
-    expect(uploadInfo).toHaveBeenCalledWith('Upload request aborted', {
-      route: '/fyllut/api/send-inn/digital-application/submission-2/attachments/attachment-2',
+    expect(info).toHaveBeenCalledExactlyOnceWith('Upload request aborted', {
+      route: '/digital/submission-2/attachments/attachment-2',
       fieldName: 'filinnhold',
       innsendingsId: 'submission-2',
       attachmentId: 'attachment-2',
     });
     expect(next).not.toHaveBeenCalled();
-    uploadInfo.mockRestore();
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.send).not.toHaveBeenCalled();
   });
 
-  it('keeps the correlation id when the client aborts a multipart upload', async () => {
-    const handlerWarning = vi.spyOn(errorLogger, 'warn');
-    const handlerError = vi.spyOn(errorLogger, 'error');
-    const uploadWarning = vi.spyOn(logger, 'warn');
-    let loggedCorrelationId: string | undefined;
-    const uploadInfo = vi.spyOn(logger, 'info').mockImplementation(() => {
-      loggedCorrelationId = correlator.getId();
-      return logger;
-    });
-    let socket: Socket | undefined;
-    let initialCorrelationId: string | undefined;
-    const app = createUploadApp(undefined, (req) => {
-      initialCorrelationId = correlator.getId();
-      req.once('data', () => socket?.destroy());
-    });
-    const server = app.listen(0, '127.0.0.1');
-    await new Promise<void>((resolve) => server.on('listening', resolve));
-
-    try {
-      const address = server.address() as AddressInfo;
-      const clientSocket = createConnection({ host: '127.0.0.1', port: address.port });
-      socket = clientSocket;
-      await new Promise<void>((resolve) => {
-        clientSocket.on('connect', () => {
-          clientSocket.write(
-            'POST /upload HTTP/1.1\r\nHost: localhost\r\nContent-Type: multipart/form-data; boundary=test\r\nContent-Length: 1000\r\nConnection: close\r\n\r\n--test\r\nContent-Disposition: form-data; name="filinnhold"; filename="small.txt"\r\nContent-Type: text/plain\r\n\r\npartial',
-          );
-          resolve();
-        });
-      });
-      await vi.waitFor(() => expect(uploadInfo).toHaveBeenCalledOnce());
-
-      expect(initialCorrelationId).toEqual(expect.any(String));
-      expect(loggedCorrelationId).toBe(initialCorrelationId);
-      expect(uploadInfo).toHaveBeenCalledWith(
-        'Upload request aborted',
-        expect.objectContaining({ route: '/upload', fieldName: 'filinnhold' }),
-      );
-      expect(handlerWarning).not.toHaveBeenCalled();
-      expect(handlerError).not.toHaveBeenCalled();
-      expect(uploadWarning).not.toHaveBeenCalled();
-    } finally {
-      socket?.destroy();
-      server.closeAllConnections();
-      await new Promise<void>((resolve) => server.close(() => resolve()));
-      handlerWarning.mockRestore();
-      handlerError.mockRestore();
-      uploadWarning.mockRestore();
-      uploadInfo.mockRestore();
-    }
-  });
-
-  it('keeps the correlation id on an unexpected upload stream failure', async () => {
-    const handlerError = vi.spyOn(errorLogger, 'error');
-    const uploadWarning = vi.spyOn(logger, 'warn');
-    let initialCorrelationId: string | undefined;
-    const app = createUploadApp(undefined, (req) => {
-      initialCorrelationId = correlator.getId();
-      req.once('data', () => req.emit('error', new Error('stream failed')));
-    });
-
-    const response = await request(app)
-      .post('/upload')
-      .attach('filinnhold', Buffer.from('hello'), 'small.txt')
-      .expect(500);
-
-    expect(initialCorrelationId).toEqual(expect.any(String));
-    expect(response.body).toMatchObject({
-      errorCode: 'INTERNAL_SERVER_ERROR',
-      correlationId: initialCorrelationId,
-    });
-    expect(response.headers['x-correlation-id']).toBe(initialCorrelationId);
-    expect(handlerError).toHaveBeenCalledOnce();
-    expect(handlerError.mock.calls[0][0]).toMatchObject({ correlationId: initialCorrelationId });
-    expect(uploadWarning).not.toHaveBeenCalled();
-    handlerError.mockRestore();
-    uploadWarning.mockRestore();
-  });
-
-  it('keeps unexpected upload stream failures alertable without a second upload warning', async () => {
-    const uploadWarning = vi.spyOn(logger, 'warn');
-    const handlerError = vi.spyOn(errorLogger, 'error');
-    const req = new Readable({ read() {} }) as Readable & Request;
-    req.headers = { 'content-type': 'multipart/form-data; boundary=test', 'content-length': '100' };
+  it.each([
+    [new Error('Request aborted'), {}],
+    [new Error('Request closed'), { destroyed: true, complete: true }],
+    [new Error('stream failed'), { aborted: true, destroyed: true, complete: false }],
+    [new multer.MulterError('LIMIT_UNEXPECTED_FILE'), {}],
+  ])('forwards non-disconnect failures unchanged: %s', (error, state) => {
+    const warn = vi.spyOn(logger, 'warn');
+    const info = vi.spyOn(logger, 'info');
     const next = vi.fn();
+    upload.mockImplementation((_req, _res, callback) => callback(error));
 
-    uploadSingleFile('filinnhold')(req, {} as Response, next);
-    const storageError = new Error('stream failed');
-    req.emit('error', storageError);
-    req.destroy();
-    await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
+    uploadSingleFile('filinnhold')(createRequest(state), mockResponse(), next);
 
-    expect(next.mock.calls[0][0]).toBe(storageError);
-    const res = {
-      locals: {},
-      header: vi.fn().mockReturnThis(),
-      contentType: vi.fn().mockReturnThis(),
-      status: vi.fn().mockReturnThis(),
-      send: vi.fn().mockReturnThis(),
-    } as unknown as Response;
-    errorHandler(next.mock.calls[0][0], req, res, vi.fn());
+    expect(next).toHaveBeenCalledExactlyOnceWith(error);
+    expect(warn).not.toHaveBeenCalled();
+    expect(info).not.toHaveBeenCalled();
+  });
 
-    expect(uploadWarning).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(handlerError).toHaveBeenCalledOnce();
-    uploadWarning.mockRestore();
-    handlerError.mockRestore();
+  it('restores request context when forwarding an error from another async context', () => {
+    const error = new Error('stream failed');
+    const context = new AsyncLocalStorage<string>();
+    let forwardedContext: string | undefined;
+    const next = vi.fn(() => {
+      forwardedContext = context.getStore();
+    });
+    upload.mockImplementation(() => {});
+    context.run('upload-context', () => {
+      uploadSingleFile('filinnhold')(createRequest(), mockResponse(), next);
+    });
+    const callback = upload.mock.calls[0][2];
+
+    context.run('unrelated-context', () => callback(error));
+
+    expect(next).toHaveBeenCalledExactlyOnceWith(error);
+    expect(forwardedContext).toBe('upload-context');
   });
 });
