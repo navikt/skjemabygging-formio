@@ -87,6 +87,6 @@ inspect after upload, what to record, and mark that transition exploratory.
 Keep the chosen identities distinct when checking the summary.
 
 Do not treat a receipt as evidence of the identities sent downstream; follow
-[integration-evidence.md](integration-evidence.md). If no approved method can
-inspect the matching submission, limit the case to observable FyllUt behavior
-and state that the downstream payload remains unverified.
+the integration-evidence rules (loaded in workflow step 7). If no approved
+method can inspect the matching submission, limit the case to observable
+FyllUt behavior and state that the downstream payload remains unverified.

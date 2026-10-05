@@ -140,11 +140,12 @@ For each changed behavior:
    type, function, or field names.
 
 Reconstruct the full ordered route for each case, not once per form. Follow
-[route-source-mapping.md](route-source-mapping.md) for how to map routes, mark
-them `source-mapped`, and handle transitions the sources leave unknown. For a
-generated form, inspect its exact JSON in the session artifact directory and
-follow [forms-api-import.md](forms-api-import.md) to dry-run and create it (or
-explicitly approve an update), then read it back before sharing the plan.
+the route-mapping rules (loaded in workflow step 10) for how to map routes,
+mark them `source-mapped`, and handle transitions the sources leave unknown.
+For a generated form, inspect its exact JSON in the session artifact directory
+and follow the Forms API import rules (loaded in workflow step 9) to dry-run
+and create it (or explicitly approve an update), then read it back before
+sharing the plan.
 If the imported form differs, report the discrepancy rather than editing
 repository sources.
 
@@ -178,8 +179,8 @@ upload session, or another downstream system, verify the request through an
 approved integration method. A receipt proves only the receipt and observable
 UI state, not the downstream request body.
 
-Read [integration-evidence.md](integration-evidence.md) for every outbound
-integration. Require a concrete approved evidence method for each one. If none
+Use the integration-evidence rules (loaded in workflow step 7) for every
+outbound integration. Require a concrete approved evidence method for each one. If none
 is documented, ask the caller to choose or provide the method and inspection
 owner before writing verification cases. Do not replace a missing method with
 vague instructions such as "check locally" or "verify in logs".
@@ -253,4 +254,5 @@ Write tester-facing behavior at a functional level. Include a technical detail
 only when the tester needs it to perform the action, recognize the result, or
 collect useful evidence.
 
-For collaboration output, follow [collaborative-output.md](collaborative-output.md).
+For collaboration output, follow the delivery rules for the chosen path
+(workflow steps 14-15 and their path sections).

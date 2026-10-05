@@ -1,17 +1,18 @@
 # Preprod Forms API access and test-form imports
 
 `preprod` and `preprod-alt` share one Forms API instance. Treat production
-forms as read-only sources; the caller imports them into preprod through
-Bygger as described in [form-selection.md](form-selection.md). The skill may create a new `MANUALTEST-` form in preprod
+forms as read-only sources; the user imports them into preprod through
+Bygger as described in the form-selection rules (loaded in workflow step 9).
+The skill may create a new `MANUALTEST-` form in preprod
 after checking for an existing form and validating its local definition.
 Updating a test form requires explicit user approval for the specific form
 and change. Never delete a form or silently replace an existing one. Keep
 generated JSON and any generator in the session artifact directory; do not
 edit repository code, tests, the issue, PR, or specification.
 
-The scripts and their flags are described in
-[`bin/forms-api/README.md`](../../../../bin/forms-api/README.md). This file
-covers the workflow around them.
+The commands below run `bin/forms-api/inspect-preprod-forms.mjs` and
+`bin/forms-api/import-form.mjs` directly; see `bin/forms-api/README.md` only
+if you need the scripts' full flag reference outside this workflow.
 
 ## Token and access
 

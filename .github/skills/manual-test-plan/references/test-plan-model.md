@@ -213,8 +213,8 @@ holds the example and the rules a schema cannot express.
   the stored form path.
 - `environment.revisionCheck` must identify the config endpoint and response
   field that expose the deployed application revision. For Bygger changes,
-  resolve the missing revision method as described in
-  [analysis-workflow.md](analysis-workflow.md) before generating a plan.
+  resolve the missing revision method as described in the analysis workflow
+  (loaded in workflow step 1) before generating a plan.
 - `behaviorAnalysis` must contain the behavior matrix used to derive the test
   plan. Behavior IDs must be unique.
 - Aligned and suspected-defect behaviors require high confidence because their
@@ -226,8 +226,8 @@ holds the example and the rules a schema cannot express.
   lowercase `id`, `audience`, `method`, `owner`, `instructions` (ordered
   steps), and `expected` (the specific observable result).
   `repositoryReferences` and a URL are optional. For a submission,
-  provide separate `team-logs` and `joark` options as described in
-  [integration-evidence.md](integration-evidence.md). For collaboration with
+  provide separate `team-logs` and `joark` options as described in the
+  integration-evidence rules (loaded in workflow step 7). For collaboration with
   non-developers, also provide `handoff`. The renderer omits handoff from a
   non-collaborative GitHub issue even if it is present in the plan. A handoff
   must say the downstream check is pending, not passed.
@@ -296,8 +296,8 @@ holds the example and the rules a schema cannot express.
   where the case tests an outcome. A verification case needs at least one.
   Navigation alone does not need a separate assessment. Keep sentences short.
   The plan states the synthetic-data reminder once at the top, not per case.
-- For submissions, handle the receipt PDF as described in
-  [analysis-workflow.md](analysis-workflow.md).
+- For submissions, handle the receipt PDF as described in the analysis
+  workflow (loaded in workflow step 1).
 - Put a shell command in the optional `steps[].command` field, not in prose
   or `evidence`. The renderer uses a code block in the HTML or issue.
   Put necessary deletion of local files or state in `cleanup`, not `evidence`.

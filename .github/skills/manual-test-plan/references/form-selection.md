@@ -24,8 +24,8 @@ or write a route from the preprod variant when it differs from production.
     ```
 
     If an inspection fails to access Forms API, follow the proxy and token
-    troubleshooting in [forms-api-import.md](forms-api-import.md). Do not choose
-    a replacement form based on a failed lookup.
+    troubleshooting in the Forms API import rules (loaded in workflow step 9).
+    Do not choose a replacement form based on a failed lookup.
 
 3. For a form that exists in production, compare the preprod definition with it (title, components,
    conditionals, properties, submission methods, introduction page).
@@ -40,7 +40,7 @@ or write a route from the preprod variant when it differs from production.
       form or another test form there can be suitable. Inspect its current
       definition and revision, reuse it when it covers the case, and record the
       revision. If it almost fits, change it only through the approved UPDATE
-      workflow in [forms-api-import.md](forms-api-import.md); otherwise generate
+      workflow (loaded in workflow step 9); otherwise generate
       a new one. Note that anyone can edit a preprod form, so read it back
       again before each test session.
 
@@ -82,8 +82,8 @@ test form makes the changed behavior substantially easier to isolate.
 - Keep fields and pages to the minimum needed.
 - Use a unique form number starting with `MANUALTEST-`, followed by uppercase
   letters, numbers, or hyphens, up to 20 characters total. Bygger limits form
-  numbers to 20 characters. Import with
-  [forms-api-import.md](forms-api-import.md) after validating the definition.
+  numbers to 20 characters. Import following the Forms API import rules
+  (loaded in workflow step 9) after validating the definition.
   Never replace an existing form without explicit user approval.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
@@ -125,8 +125,8 @@ local renderer before importing. Then read back the stored path, revision,
 components, submission methods, and conditional choices in preprod before
 sharing the plan. Check conditional visibility, required fields, relevant
 identity or party mapping, and submission settings; schema validity alone does
-not establish behavior. Map each case's route with
-[route-source-mapping.md](route-source-mapping.md), including the
+not establish behavior. Map each case's route with the route-mapping rules
+(loaded in workflow step 10), including the
 `DIGITAL_NO_LOGIN` section, and record it per case in
 `testCases[].journeyCheck`, so branches of one form can have different
 statuses. An HTTP 200 on the form URL or Forms API metadata does not prove a
