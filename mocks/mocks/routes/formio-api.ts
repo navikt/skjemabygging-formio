@@ -326,6 +326,10 @@ import {
   translationCypress101Translations,
 } from '../data/forms-api/translation/translationCypress101Form';
 import {
+  translationSavedLanguageForm,
+  translationSavedLanguageTranslations,
+} from '../data/forms-api/translation/translationSavedLanguageForm';
+import {
   translationUnpublishedLanguageForm,
   translationUnpublishedLanguageTranslations,
 } from '../data/forms-api/translation/translationUnpublishedLanguageForm';
@@ -494,6 +498,7 @@ const allForms = [
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },
   { form: translationCypress101Form(), translations: translationCypress101Translations() },
+  { form: translationSavedLanguageForm(), translations: translationSavedLanguageTranslations() },
   { form: translationUnpublishedLanguageForm(), translations: translationUnpublishedLanguageTranslations() },
   { form: umamiNologinForm(), translations: umamiNologinTranslations() },
   { form: yearDeprecatedForm(), translations: yearDeprecatedTranslations() },

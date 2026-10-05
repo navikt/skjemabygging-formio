@@ -1,4 +1,5 @@
 import {
+  isUnpublishedLanguage,
   Language,
   MellomlagringError,
   NologinToken,
@@ -123,13 +124,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setSearchParams(
           (prev) => {
             prev.delete(key);
-            return searchParams;
+            return prev;
           },
           { replace: true },
         );
       }
     },
-    [searchParams, setSearchParams],
+    [setSearchParams],
   );
 
   useEffect(() => {
@@ -153,12 +154,18 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setAttachmentPageEnabled(false);
       }
       if (response?.hoveddokumentVariant.document) {
-        addSearchParamToUrl('lang', toLegacyLanguageCode(response.hoveddokumentVariant.document.language));
+        const savedLanguage = toLegacyLanguageCode(response.hoveddokumentVariant.document.language);
+        if (isUnpublishedLanguage(savedLanguage, form)) {
+          logger?.info('Ignoring saved language because it is not published for the form');
+          removeSearchParamFromUrl('lang');
+        } else {
+          addSearchParamToUrl('lang', savedLanguage);
+        }
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },
-    [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
+    [addSearchParamToUrl, removeSearchParamFromUrl, appConfig, form, logger, setSubmission, setAttachmentPageEnabled],
   );
 
   const nbNO: Language = 'nb-NO';

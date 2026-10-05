@@ -59,6 +59,19 @@ describe('Fyllut backend :: query param lang', () => {
   });
 
   describe('when the requested language is not published', () => {
+    it.each(['lang=en&lang=en', 'lang=en&lang=nb-NO', 'lang=nb-NO&lang=en'])(
+      'removes repeated language parameters: %s',
+      async (languageParams) => {
+        mockForm('testformlangrepeated', { publishedLanguages: ['nb', 'nn'] });
+
+        const res = await request(createApp())
+          .get(`/fyllut/testformlangrepeated?sub=paper&${languageParams}`)
+          .expect(302);
+
+        expect(res.get('location')).toBe('/fyllut/testformlangrepeated?sub=paper');
+      },
+    );
+
     it('removes lang and keeps other query params', async () => {
       mockForm('testformlang001', { publishedLanguages: ['nn', 'nb'] });
 

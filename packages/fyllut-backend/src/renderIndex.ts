@@ -1,4 +1,5 @@
 import {
+  isUnpublishedLanguage,
   navFormUtils,
   ResponseError,
   SubmissionMethod,
@@ -14,7 +15,6 @@ import { formService } from './services';
 import { QueryParamSub } from './types/custom';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
-import { isUnpublishedLanguage } from './utils/language';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
 
 const redirectToSubmissionType = (req: Request, res: Response, sub: SubmissionMethod) => {
@@ -88,12 +88,13 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         const staticPdfRoute = isStaticPdfRoute(req);
+        const invalidLanguageParam = req.query.lang !== undefined && typeof req.query.lang !== 'string';
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
           httpStatusCode = 404;
-        } else if (!staticPdfRoute && isUnpublishedLanguage(req.query.lang, form)) {
+        } else if (!staticPdfRoute && (invalidLanguageParam || isUnpublishedLanguage(req.query.lang, form))) {
           const logMeta = { formPath, lang: req.query.lang, publishedLanguages: form.publishedLanguages };
-          logger.info('Removing lang query param since the language is not published for this form', logMeta);
+          logger.info('Removing invalid or unpublished lang query param', logMeta);
           return res.redirect(
             url.format({
               pathname: req.baseUrl,
