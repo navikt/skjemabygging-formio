@@ -37,6 +37,26 @@ target solely from the current branch.
 
 ## Required workflow
 
+Copy this checklist and check off steps as you complete them:
+
+```
+Test plan progress:
+- [ ] 1. Read analysis-workflow.md
+- [ ] 2. Resolve the target and analyze the committed PR diff
+- [ ] 3. Invoke frontend-development / backend-development if affected
+- [ ] 4. Build the intent and behavior matrix
+- [ ] 5. Present scope and confirm it with the user
+- [ ] 6. Ask the collaboration question (branch point)
+- [ ] 7. Identify behavior, risk, integrations, evidence
+- [ ] 8. Record the head commit and target environment
+- [ ] 9. Select or create forms
+- [ ] 10. Map case routes
+- [ ] 11. Write the plan
+- [ ] 12. Render the plan artifacts
+- [ ] 13. Read back any imported/created form before finalizing cases
+- [ ] 14. Follow the chosen path's delivery steps below
+```
+
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
 2. For an issue target, fetch the issue and its linked specification, and find
    its implementation pull request using the open-first search in
@@ -63,7 +83,9 @@ target solely from the current branch.
    intent. If the PR description and committed code disagree, ask for a
    decision. Follow [analysis-workflow.md](references/analysis-workflow.md).
 6. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
-   Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
+   Use the choices "Yes" and "No". Do not infer the answer from case count or
+   risk. This choice selects the path you follow below: "Yes" is the
+   **non-developer path**, "No" is the **developer path**.
 7. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
@@ -71,9 +93,9 @@ target solely from the current branch.
    approved evidence method is known. Treat claims about downstream identity
    and upload sessions as integration claims, not UI receipt checks. For
    submissions, show the team-log and Joark options separately. Add a
-   no-access handoff option when non-developers collaborate; omit it from a
-   non-collaborative GitHub issue. Do not mark a handoff or a success log as
-   payload verification.
+   no-access handoff option on the non-developer path; omit it on the
+   developer path. Do not mark a handoff or a success log as payload
+   verification.
 8. Record the exact head commit. Determine whether the PR is deployed to
    `preprod` or `preprod-alt` from deployment evidence and the live revision
    check in [analysis-workflow.md](references/analysis-workflow.md). Use the
@@ -84,10 +106,10 @@ target solely from the current branch.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Prefer a suitable production form and treat
    its production definition as the reference: when the preprod copy differs,
-   ask the caller to import the production form through Bygger rather than
+   ask the user to import the production form through Bygger rather than
    testing the outdated copy. When no production form suits, design the
    smallest useful generated form set in the session artifact directory,
-   preferring one selector-driven form for related cases. Tell the caller
+   preferring one selector-driven form for related cases. Tell the user
    which forms will be reused, imported, created, or need updating. Create
    `MANUALTEST-` forms only as described in
    [forms-api-import.md](references/forms-api-import.md): dry-run, apply only
@@ -108,55 +130,77 @@ target solely from the current branch.
       --out <artifact-directory>
     ```
 
-    For collaboration, the renderer writes local `index.html`, not a PDF.
-    Give the user its `file://` URL with `?print=1` appended, and ask them to
-    open it in a browser and choose Print > Save as PDF. Keep the HTML and
-    canonical JSON local; share only the reviewed PDF alongside the Trello task.
-
-13. Read [collaborative-output.md](references/collaborative-output.md) and
-    produce the output for the caller's collaboration choice. Then review it:
-    - **Sensitive content:** redact or omit it before printing or asking to
-      create the issue. Keep `internal` setup and evidence only in the local
-      internal-instructions file; never substitute vague placeholders in
-      public output.
+    This writes `github-issue.md` on the developer path, or `index.html` on
+    the non-developer path, plus `internal-instructions.md` and
+    `manifest.json` in both cases. See the delivery steps for your path below
+    for how to turn this output into a shared artifact.
+13. After a confirmed import or the user importing a required production
+    form, read back its stored path, revision, components,
+    submission methods, and conditional choices before finalizing cases.
+    Update only the local plan and rendered artifacts if they differ.
+    If the form or PR disagrees with the approved intent, report the
+    inconsistency; do not edit the source to make it match the plan.
+14. Review the rendered output before delivery, on either path:
+    - **Sensitive content:** redact or omit it before sharing. Keep `internal`
+      setup and evidence only in `internal-instructions.md`; never substitute
+      vague placeholders in public output.
     - **Routes:** compare every rendered step, including required actions and
       intermediate pages, with that case's source map or recorded browser
-      observation. Label source-mapped routes as untested in preprod. Give the
-      tester an exact observation task for an unsupported transition, mark that
-      part exploratory, and keep independently supported cases as verification
-      cases. Reject conditional wording for mandatory actions and unsupported
-      downstream claims.
+      observation. Label source-mapped routes as untested in preprod. Give
+      the tester an exact observation task for an unsupported transition,
+      mark that part exploratory, and keep independently supported cases as
+      verification cases. Reject conditional wording for mandatory actions
+      and unsupported downstream claims.
     - **Wording:** write short tester-facing sentences and limit expected
       results to the case's actual checks. Link the related "Bakgrunn for
       testene" points in each case where testers can see them without
       expanding "Om testløpet".
     - **Submissions:** handle the receipt PDF as described in
       [analysis-workflow.md](references/analysis-workflow.md).
-    - **Approval:** on the GitHub issue path, show the entire rendered issue
-      body before requesting approval. On the collaborative path, ask the user
-      to review every page of the printed PDF, including links, steps, and
-      coverage gaps, before requesting approval to share it. Do not claim a PDF
-      exists merely because the HTML was rendered.
-14. After a confirmed import or the caller importing a required production
-    form, read back its stored path, revision, components,
-    submission methods, and conditional choices before finalizing cases.
-    Update only the local plan and rendered artifacts if they differ.
-    If the form or PR disagrees with the approved intent, report the
-    inconsistency; do not edit the source to make it match the plan.
-15. Deliver the plan for the chosen collaboration path:
-    - **Without non-developers:** create the test-plan issue only after
-      explicit confirmation of the full rendered body. Never publish anything
-      to GitHub Pages.
-    - **With non-developers:** never create a test-plan issue or publish to
-      GitHub Pages. Wait for the user to print and review the PDF, then get
-      explicit confirmation before sharing it alongside a Trello task for
-      ownership and progress tracking. Only attach it to Trello if Trello
-      access is actually available and the user approves the attachment;
-      otherwise hand the reviewed PDF to the user for distribution. Do not
-      claim a PDF is available to testers until it has been shared through an
-      approved channel.
-16. Give the caller local links to generated files. Share an issue URL only
-    after the issue has been created.
+    - **Coverage:** check the coverage section against the behavior matrix,
+      edge cases, failure paths, and regression candidates.
+15. Follow the delivery steps for the path chosen in step 6.
+
+### Developer path: GitHub issue
+
+Read [collaborative-output.md](references/collaborative-output.md) ("Without
+non-developers" and "Review before sharing").
+
+1. Show the user the entire rendered issue title and body and request
+   approval before creating anything.
+2. Run a dry run first, then create the issue only after explicit
+   confirmation:
+
+   ```bash
+   node .github/skills/manual-test-plan/scripts/create-issue.mjs \
+     --repo navikt/skjemabygging-formio \
+     --title '<issue-title>' \
+     --body <artifact-directory>/github-issue.md
+   ```
+3. Give the user local links to the generated files and the canonical plan.
+   Share the issue URL only after the issue has been created.
+
+### Non-developer path: printed PDF
+
+Read [collaborative-output.md](references/collaborative-output.md) ("With
+non-developers" and "Review before sharing").
+
+1. The renderer writes local `index.html`, not a PDF. Give the user its
+   `file://` URL with `?print=1` appended, and ask them to open it in a
+   browser and choose Print > Save as PDF. The print URL expands all
+   sections, including alternative integration checks.
+2. Ask the user to review every page of the printed PDF, including long
+   cases, links, and page breaks. Do not claim a PDF exists merely because
+   the HTML was rendered.
+3. Request explicit approval before sharing. Share only the reviewed PDF
+   alongside a Trello task for ownership and progress tracking, through an
+   approved channel. Only attach it to Trello if Trello access is actually
+   available and the user approves the attachment; otherwise hand the
+   reviewed PDF to the user for distribution.
+4. Never create a GitHub issue or publish anything to GitHub Pages for this
+   path. Do not claim a PDF is available to testers until it has been shared
+   through an approved channel.
+5. Give the user local links to `index.html` and the canonical plan.
 
 ## Output requirements
 
