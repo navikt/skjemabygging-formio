@@ -1,4 +1,4 @@
-import { createTemporaryFileStorage, setRequestAbortLogContext } from '@navikt/skjemadigitalisering-shared-backend';
+import { createTemporaryFileStorage } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
@@ -27,11 +27,8 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
       innsendingsId: req.params?.innsendingsId ?? req.getNologinContext?.()?.innsendingsId,
       attachmentId: req.params?.attachmentId,
     };
-    setRequestAbortLogContext(req, {
-      fieldName,
-      submissionId: logMeta.innsendingsId,
-      attachmentId: logMeta.attachmentId,
-    });
+    // Express restores route parameters before application-level error handling.
+    res.locals.requestLogMeta = logMeta;
     const handleUpload: NextFunction = (error) => {
       if (
         error instanceof Error &&

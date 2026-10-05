@@ -2,20 +2,16 @@ import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import { logger } from '../../shared/logger/logger';
 
-type RequestAbortLogContext = {
-  fieldName?: string;
-  submissionId?: Request['params'][string];
-  attachmentId?: Request['params'][string];
+type RequestLogLocals = {
+  requestLogMeta?: {
+    route?: string;
+    fieldName?: string;
+    innsendingsId?: Request['params'][string];
+    attachmentId?: Request['params'][string];
+  };
 };
 
-const requestAbortLogContexts = new WeakMap<Request, RequestAbortLogContext>();
-
-// Express restores route parameters before application-level error middleware runs.
-const setRequestAbortLogContext = (req: Request, context: RequestAbortLogContext): void => {
-  requestAbortLogContexts.set(req, { ...context });
-};
-
-const handleAbortedRequest = (error: unknown, req: Request): boolean => {
+const handleAbortedRequest = (error: unknown, req: Request, res: Response<unknown, RequestLogLocals>): boolean => {
   if (
     typeof error !== 'object' ||
     error === null ||
@@ -40,15 +36,8 @@ const handleAbortedRequest = (error: unknown, req: Request): boolean => {
     return false;
   }
 
-  const logContext = requestAbortLogContexts.get(req);
   logger.info({
-    ...(logContext
-      ? {
-          fieldName: logContext.fieldName,
-          innsendingsId: logContext.submissionId,
-          attachmentId: logContext.attachmentId,
-        }
-      : {}),
+    ...res.locals.requestLogMeta,
     message: 'Request body was aborted.',
     correlationId: correlator.getId(),
     route: req.originalUrl?.split('?')[0],
@@ -57,11 +46,15 @@ const handleAbortedRequest = (error: unknown, req: Request): boolean => {
 };
 
 // Install before application error adapters that replace the original parser or upload error.
-const requestAbortHandler = (error: unknown, req: Request, _res: Response, next: NextFunction) => {
-  if (!handleAbortedRequest(error, req)) {
+const requestAbortHandler = (
+  error: unknown,
+  req: Request,
+  res: Response<unknown, RequestLogLocals>,
+  next: NextFunction,
+) => {
+  if (!handleAbortedRequest(error, req, res)) {
     next(error);
   }
 };
 
-export { handleAbortedRequest, requestAbortHandler, setRequestAbortLogContext };
-export type { RequestAbortLogContext };
+export { handleAbortedRequest, requestAbortHandler };

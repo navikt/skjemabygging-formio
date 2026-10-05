@@ -17,7 +17,7 @@ const getHttpStatusFromErrorCode = (errorCode: ErrorCode): number =>
   errorCode === 'FILE_TOO_MANY_PAGES' ? 400 : getStatusFromErrorCode(errorCode);
 
 const errorHandler = (error: any, req: Request, res: Response, _next: NextFunction) => {
-  if (handleAbortedRequest(error, req)) {
+  if (handleAbortedRequest(error, req, res)) {
     return;
   }
 

@@ -66,6 +66,12 @@ describe('uploadSingleFile', () => {
     });
     expect(single).toHaveBeenCalledExactlyOnceWith('filinnhold');
     expect(upload).toHaveBeenCalledExactlyOnceWith(req, res, expect.any(Function));
+    expect(res.locals.requestLogMeta).toEqual({
+      route: '/upload',
+      fieldName: 'filinnhold',
+      innsendingsId: undefined,
+      attachmentId: undefined,
+    });
     expect(next).toHaveBeenCalledExactlyOnceWith();
   });
 
