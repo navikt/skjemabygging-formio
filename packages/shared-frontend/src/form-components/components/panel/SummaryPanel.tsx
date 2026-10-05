@@ -5,7 +5,6 @@ import ValidationExclamationIcon from '../../../components/icons/ValidationExcla
 import { PanelDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
-import styles from './SummaryPanel.module.css';
 
 const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   const { submissionPath, translate, component, panelValidationList } = props;
@@ -16,7 +15,7 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
   return (
-    <FormSummary data-cy="form-summary-panel" className={styles.panel}>
+    <FormSummary data-cy="form-summary-panel">
       <FormSummary.Header>
         <FormSummary.Heading level="3">
           {translate(title)}

@@ -6,9 +6,7 @@ interface Props {
 }
 
 const ValidationExclamationIcon = ({ title }: Props) => {
-  return (
-    <ExclamationmarkTriangleFillIcon className={styles.icon} fontSize="1.5rem" title={title} aria-hidden={!title} />
-  );
+  return <ExclamationmarkTriangleFillIcon className={styles.icon} title={title} aria-hidden={!title} />;
 };
 
 export default ValidationExclamationIcon;
