@@ -143,14 +143,18 @@ target solely from the current branch.
     Update only the local plan and rendered artifacts if they differ.
     If the form or PR disagrees with the approved intent, report the
     inconsistency; do not edit the source to make it match the plan.
-15. Create the issue only after explicit confirmation. With non-developers,
-    wait for the user to print and review the PDF before approving its
-    distribution alongside a Trello task for ownership and progress tracking.
-    Do not create a GitHub issue or publish anything to GitHub Pages. Confirm
-    before sharing a PDF. Only attach it to Trello if Trello access is actually
-    available and the user approves the attachment; otherwise hand the
-    reviewed PDF to the user for distribution. Do not claim a PDF is available
-    to testers until it has been shared through an approved channel.
+15. Deliver the plan for the chosen collaboration path:
+    - **Without non-developers:** create the test-plan issue only after
+      explicit confirmation of the full rendered body. Never publish anything
+      to GitHub Pages.
+    - **With non-developers:** never create a test-plan issue or publish to
+      GitHub Pages. Wait for the user to print and review the PDF, then get
+      explicit confirmation before sharing it alongside a Trello task for
+      ownership and progress tracking. Only attach it to Trello if Trello
+      access is actually available and the user approves the attachment;
+      otherwise hand the reviewed PDF to the user for distribution. Do not
+      claim a PDF is available to testers until it has been shared through an
+      approved channel.
 16. Give the caller local links to generated files. Share an issue URL only
     after the issue has been created.
 
