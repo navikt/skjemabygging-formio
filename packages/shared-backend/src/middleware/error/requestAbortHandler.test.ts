@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import { logger } from '../../shared/logger/logger';
 import errorHandler from './errorHandler';
-import { requestAbortHandler, setRequestAbortLogContext } from './requestAbortHandler';
+import { requestAbortHandler } from './requestAbortHandler';
 
 const createRequest = (overrides: Partial<Request> = {}) =>
   ({
@@ -78,11 +78,11 @@ describe.each([
     const req = createRequest({ ...state, is: () => 'multipart/form-data', params: { innsendingsId: 'submission-1' } });
     const { res, spies } = createResponse();
     const next = vi.fn();
-    setRequestAbortLogContext(req, {
+    res.locals.requestLogMeta = {
       fieldName: 'filinnhold',
-      submissionId: 'submission-1',
+      innsendingsId: 'submission-1',
       attachmentId: 'attachment-1',
-    });
+    };
     req.params = {};
 
     handler(error, req, res, next);
