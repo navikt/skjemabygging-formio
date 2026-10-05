@@ -1,5 +1,10 @@
 # Selecting and creating forms
 
+## Contents
+
+- [Production forms](#production-forms) — preferring and importing a production form
+- [Generated forms](#generated-forms) — `MANUALTEST-` forms and validation
+
 ## Production forms
 
 Prefer a production form when it already contains the relevant components,

@@ -1,5 +1,10 @@
 # Canonical test plan model
 
+## Contents
+
+- Example plan JSON (schema version 4, full structure)
+- [Field rules](#field-rules) — cross-field rules the schema cannot express
+
 Use schema version `4`. Store the canonical JSON in the session artifact
 directory. [plan.schema.json](plan.schema.json) defines the structure: required
 fields, types, enums and ID patterns. The renderer validates against it, then

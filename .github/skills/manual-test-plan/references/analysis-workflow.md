@@ -1,5 +1,14 @@
 # Analysis workflow
 
+## Contents
+
+- [Inputs](#inputs) — resolving the target, finding the implementation PR
+- [Establish intent before expected results](#establish-intent-before-expected-results)
+- [Build a behavior matrix](#build-a-behavior-matrix)
+- [Trace behavior](#trace-behavior) — routes, evidence, integrations, regressions
+- [Environment preflight](#environment-preflight) — preprod vs preprod-alt revision check
+- [Coverage](#coverage) — case selection and the coverage section
+
 ## Inputs
 
 First read the skill invocation's `ARGUMENTS` and any target in the caller's

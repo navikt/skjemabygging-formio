@@ -1,5 +1,13 @@
 # Evidence for outbound integrations
 
+## Contents
+
+- Required parts of an evidence method
+- [Team logs in GCP](#team-logs-in-gcp)
+- [Joark](#joark)
+- [No access](#no-access) — handoff path for non-developers
+- [Repository-supported request verification](#repository-supported-request-verification) — local mock fixtures
+
 Every outbound integration affected by the change needs a concrete evidence
 method before the skill writes verification cases. Name:
 

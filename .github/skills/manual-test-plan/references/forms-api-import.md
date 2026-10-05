@@ -1,5 +1,11 @@
 # Preprod Forms API access and test-form imports
 
+## Contents
+
+- [Token and access](#token-and-access) — obtaining and troubleshooting the token
+- [Dry run, create, and update](#dry-run-create-and-update) — the import-form.mjs workflow
+- [Failed writes and readback](#failed-writes-and-readback)
+
 `preprod` and `preprod-alt` share one Forms API instance. Treat production
 forms as read-only sources; the user imports them into preprod through
 Bygger as described in the form-selection rules (loaded in workflow step 9).
