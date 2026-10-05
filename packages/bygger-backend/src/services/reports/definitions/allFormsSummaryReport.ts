@@ -190,7 +190,7 @@ const allFormsSummaryReport = ({
         noLoginSubmissionUrl: submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes)
           ? `${submissionUrl}?sub=digitalnologin`
           : '',
-        hasUploadedPdfs: yesNo(pdfs.length),
+        hasUploadedPdfs: pdfs.length ? 'ja' : '',
         staticPdfEnabled: yesNo(submissionTypesUtils.isStaticPdf(submissionTypes)),
       };
     }
