@@ -213,6 +213,27 @@ non-developers" and "Review before sharing").
    through an approved channel.
 5. Give the user local links to `index.html` and the canonical plan.
 
+## Scripts
+
+These scripts are executed, not read for logic:
+
+- `scripts/render-artifacts.mjs --plan <plan.json> --out <dir>`: validates the
+  canonical plan against `plan.schema.json`, then writes `github-issue.md` or
+  `index.html` (see step 12), plus `internal-instructions.md` and
+  `manifest.json`.
+- `scripts/create-issue.mjs --repo <owner/name> --title <title> --body <path>`:
+  dry run by default; add `--apply --confirm '<token from the dry run>'` to
+  create the test-plan issue. Developer path only.
+- `bin/forms-api/inspect-preprod-forms.mjs --query '<title-or-number>'` or
+  `--path '<form-path>'`: reads a form from preprod Forms API without exposing
+  the token or full definition. See [form-selection.md](references/form-selection.md).
+- `bin/forms-api/import-form.mjs --form <form.json>`: dry run by default; add
+  `--apply --confirm '<operation>'` to create, or `--replace-existing` first
+  to update. See [forms-api-import.md](references/forms-api-import.md).
+- `pnpm test:skills`: runs this skill's and the Forms API tools' own tests.
+  Run it after changing any script in this skill; CI runs it in
+  `build-and-test.yaml`.
+
 ## Output requirements
 
 Every test case must include:
@@ -264,6 +285,3 @@ for outbound payloads.
   Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the user
   explicitly requests repository files.
-
-Run the script tests with `pnpm test:skills`. CI runs them in
-`build-and-test.yaml`.
