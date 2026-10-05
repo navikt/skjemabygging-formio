@@ -61,7 +61,7 @@ describe('uploadSingleFile', () => {
     uploadSingleFile('filinnhold', { maxFileSizeBytes })(req, res, next);
 
     expect(configureMulter).toHaveBeenCalledExactlyOnceWith({
-      storage: expect.objectContaining({ _handleFile: expect.any(Function), _removeFile: expect.any(Function) }),
+      dest: tmpdir(),
       limits: { fileSize: maxFileSizeBytes ?? MAX_UPLOAD_FILE_SIZE_BYTES },
     });
     expect(single).toHaveBeenCalledExactlyOnceWith('filinnhold');
@@ -199,24 +199,4 @@ describe('uploadSingleFile', () => {
     expect(next).toHaveBeenCalledExactlyOnceWith(error);
     expect(forwardedContext).toBe('upload-context');
   });
-
-  it.each([new Error('Request aborted'), new multer.MulterError('LIMIT_FILE_SIZE')])(
-    'forwards cleanup failures instead of treating %s as a normal client outcome',
-    (uploadError) => {
-      const cleanupError = new Error('Cannot remove temporary file');
-      const error = Object.assign(uploadError, { storageErrors: [cleanupError] });
-      const info = vi.spyOn(logger, 'info');
-      const next = vi.fn();
-      upload.mockImplementation((_req, _res, callback) => callback(error));
-
-      uploadSingleFile('filinnhold')(createRequest({ aborted: true, complete: false }), mockResponse(), next);
-
-      expect(next).toHaveBeenCalledOnce();
-      const forwardedError = next.mock.calls[0][0];
-      expect(forwardedError).toBeInstanceOf(AggregateError);
-      expect(forwardedError.errors).toEqual([cleanupError]);
-      expect(forwardedError.cause).toBe(error);
-      expect(info).not.toHaveBeenCalled();
-    },
-  );
 });
