@@ -50,14 +50,14 @@ or write a route from the preprod variant when it differs from production.
       again before each test session.
 
 Importing a production form is simple but the skill cannot run it: it needs the
-user's Bygger session. Ask the caller to open Bygger in the selected
+user's Bygger session. Ask the user to open Bygger in the selected
 environment, choose Admin > "Importer skjema fra produksjon"
 (`/import/skjema`), select the form paths, and press "Importer". The import
 overwrites the shared preprod draft with the production title, components,
 properties, introduction page, and form translations, and removes preprod form
 translations that production lacks. `preprod` and `preprod-alt` share one Forms
 API, so the overwrite affects both and discards any unpublished preprod edits.
-Name the forms and this effect, and wait for the caller's confirmation that the
+Name the forms and this effect, and wait for the user's confirmation that the
 import ran. Then read the form back with the helper and check that it matches
 production before mapping routes. The test-form import script accepts only
 `MANUALTEST-` numbers; do not use it to modify production forms.
@@ -137,13 +137,13 @@ not establish behavior. Map each case's route with the route-mapping rules
 statuses. An HTTP 200 on the form URL or Forms API metadata does not prove a
 complete journey.
 
-Before creating a form or asking the caller to import one, tell them:
+Before creating a form or asking the user to import one, tell them:
 
 - which existing forms will be used unchanged
-- which production forms the caller must import into preprod
+- which production forms the user must import into preprod
 - which test forms will be created or updated
 - which test cases each form covers
 
 For test forms, use the guarded CREATE or explicitly approved UPDATE workflow.
-Wait for the caller to confirm a requested production import. In both cases
+Wait for the user to confirm a requested production import. In both cases
 read the form back before claiming that its route is verified.

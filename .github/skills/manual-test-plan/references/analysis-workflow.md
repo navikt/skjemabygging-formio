@@ -11,7 +11,7 @@
 
 ## Inputs
 
-First read the skill invocation's `ARGUMENTS` and any target in the caller's
+First read the skill invocation's `ARGUMENTS` and any target in the user's
 message. Ask only if neither contains a target:
 
 > Provide the issue or pull request for the change.
@@ -19,15 +19,15 @@ message. Ask only if neither contains a target:
 Issues and pull requests share one number sequence. Resolve a bare number with
 `gh api repos/navikt/skjemabygging-formio/issues/<number> --jq 'has("pull_request")'`:
 `true` is a pull request, `false` an issue. Accept an issue or pull request
-URL directly. If the lookup fails, ask the caller what the number refers to
+URL directly. If the lookup fails, ask the user what the number refers to
 rather than guessing.
 
-When the caller supplies an issue, inspect its linked pull requests and search
+When the user supplies an issue, inspect its linked pull requests and search
 the repository's **open** pull requests for the issue number, URL, and related
 terms before searching merged pull requests. Check the PR body and diff to
 confirm that it implements the issue; a mention alone does not establish that
 link. Search merged pull requests only if no matching open implementation PR
-exists. If several plausible PRs remain, ask the caller which one to test.
+exists. If several plausible PRs remain, ask the user which one to test.
 Ask for the PR when no implementation can be identified. Do not produce an
 implementation test plan from the issue alone.
 
@@ -49,10 +49,10 @@ A mention alone does not establish that the PR implements the issue; compare
 the issue's criteria with the PR description and diff. If a confirmed issue is
 found, use it and its specification as the primary intent source and record it
 as `source.issue`. If several issues are plausible, or a candidate is only
-weakly related, ask the caller which one describes the intent to test. Tell the
-caller which sources you checked. Only when none is found, continue from the PR
+weakly related, ask the user which one describes the intent to test. Tell the
+user which sources you checked. Only when none is found, continue from the PR
 alone: treat the PR description as unconfirmed intent and confirm the inferred
-intent with the caller before writing verification cases.
+intent with the user before writing verification cases.
 
 Do not accept a local branch, working-tree diff, patch file, or commit range as
 the only input. Read the committed PR diff and any affected file content at
@@ -190,12 +190,12 @@ UI state, not the downstream request body.
 
 Use the integration-evidence rules (loaded in workflow step 7) for every
 outbound integration. Require a concrete approved evidence method for each one. If none
-is documented, ask the caller to choose or provide the method and inspection
+is documented, ask the user to choose or provide the method and inspection
 owner before writing verification cases. Do not replace a missing method with
 vague instructions such as "check locally" or "verify in logs".
 
 Trace changed shared functions, types, configuration, and integration contracts
-to their callers and consumers. Add regression candidates for unchanged flows
+to their users and consumers. Add regression candidates for unchanged flows
 that use the affected path. Prioritize cases where the same code handles
 different form types, submission modes, identities, environments, or failure
 conditions.

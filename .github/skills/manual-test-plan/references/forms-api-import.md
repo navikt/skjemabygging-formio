@@ -14,7 +14,7 @@ after checking for an existing form and validating its local definition.
 Updating a test form requires explicit user approval for the specific form
 and change. Never delete a form or silently replace an existing one. Keep
 generated JSON and any generator in the session artifact directory; do not
-edit repository code, tests, the issue, PR, or specification.
+edit repository code, tests, the target issue, PR, or specification.
 
 The commands below run `bin/forms-api/inspect-preprod-forms.mjs` and
 `bin/forms-api/import-form.mjs` directly; see `bin/forms-api/README.md` only
@@ -22,7 +22,7 @@ if you need the scripts' full flag reference outside this workflow.
 
 ## Token and access
 
-If Forms API access fails after the proxy check below, ask the caller to run
+If Forms API access fails after the proxy check below, ask the user to run
 the repository token helper separately:
 
 ```bash
@@ -32,7 +32,7 @@ pnpm get-tokens forms-api
 It directs them to the approved OBO token generator and stores
 `FORMS_API_ACCESS_TOKEN` in `packages/bygger-backend/.env`. Never read,
 decode, print, or request the token in chat. The required audience is
-`dev-gcp:fyllut-sendinn:forms-api`, and the caller needs the
+`dev-gcp:fyllut-sendinn:forms-api`, and the user needs the
 `SkjemabyggingPreprod` group. An exported `FORMS_API_ACCESS_TOKEN` takes
 precedence over the env file.
 
@@ -48,10 +48,10 @@ env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY \
 ```
 
 Do not change repository proxy settings. If the read still fails, tell the
-caller what failed and use `ask_user` to request a token refresh without
+user what failed and use `ask_user` to request a token refresh without
 claiming expiry unless Forms API returned `401`. Wait for confirmation and
 retry the read once; if it still fails, stop and report the error. For
-persistent `401` or authorization `403`, ask the caller to check group and
+persistent `401` or authorization `403`, ask the user to check group and
 audience. Never treat a failed lookup as proof that a form is absent.
 
 ## Dry run, create, and update
@@ -105,7 +105,7 @@ write, inspect Forms API before retrying: the response does not prove the
 write did not happen. Dry-run again to check whether the operation is still
 CREATE or is now UPDATE; never reuse an old confirmation or automatically
 replace a newly created form. If the refreshed token still cannot write,
-report the blocker and ask the caller to have someone with access make the form available.
+report the blocker and ask the user to have someone with access make the form available.
 
 After every import, fetch the form from Forms API by its **stored** path.
 Check its revision and actual components (including required fields and

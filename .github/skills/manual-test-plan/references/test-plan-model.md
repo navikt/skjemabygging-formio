@@ -197,7 +197,7 @@ holds the example and the rules a schema cannot express.
 
 ## Field rules
 
-- `collaboration.withNonDevelopers` records the caller's answer. `true` produces
+- `collaboration.withNonDevelopers` records the user's answer. `true` produces
   local HTML for manual PDF printing. `false` produces a GitHub issue document.
 - Use `scope.included` and `scope.excluded` to separate implemented PR behavior
   from criteria that remain for later work. The renderer shows both to testers.
@@ -243,7 +243,7 @@ holds the example and the rules a schema cannot express.
   expected result, verification, and cleanup.
 - A `forms-api-import` setup action must reference a form and include a
   shared-state warning and cleanup. For `MANUALTEST-` forms, the skill
-  performs confirmed CREATE or explicitly approved UPDATE; the caller
+  performs confirmed CREATE or explicitly approved UPDATE; the user
   imports production forms through Bygger. The skill never deletes forms, so cleanup states
   a retention or approved restore decision.
 - Case IDs must be unique.

@@ -32,8 +32,8 @@ HTML to GitHub Pages or create a GitHub issue for this path.
 
 `github-issue.md` contains the full Norwegian plan, including the coverage
 section and cleanup checklist. Keep behavior analysis and setup in collapsed
-`<details>` sections. Show the caller the entire rendered title and body
-before asking to create the issue:
+`<details>` sections. Show the user the entire rendered title and body
+before asking to create the test-plan issue:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/create-issue.mjs \
@@ -42,8 +42,8 @@ node .github/skills/manual-test-plan/scripts/create-issue.mjs \
   --body <artifact-directory>/github-issue.md
 ```
 
-Run the dry run first. It prints the issue body and the exact confirmation
-needed for creation. Do not replace that preview with a summary.
+Run the dry run first. It prints the test-plan issue body and the exact
+confirmation needed for creation. Do not replace that preview with a summary.
 
 ## Review before sharing
 
@@ -56,5 +56,5 @@ Check every case's form link, route, actions, expected results, evidence, and
 cleanup. Check the coverage section against the behavior matrix, edge cases,
 failure paths, and regression candidates. An excluded PR criterion is not
 automatically a test coverage gap; explain separately why an in-scope behavior
-has no case. Give the caller absolute local file links for the HTML or issue
+has no case. Give the user absolute local file links for the HTML or issue
 text and canonical plan. Link a PDF only after the user has printed and reviewed it.

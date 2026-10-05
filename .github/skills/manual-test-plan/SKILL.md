@@ -22,10 +22,22 @@ The target can be an issue or a pull request, given as a number or URL. GitHub
 numbers issues and pull requests in one sequence, so resolve a bare number
 through GitHub as described in
 [analysis-workflow.md](references/analysis-workflow.md) instead of assuming
-its type. Only if `ARGUMENTS` and the caller's message contain no target, ask
+its type. Only if `ARGUMENTS` and the user's message contain no target, ask
 for an issue or pull request. A pull request needs no issue, but the skill
 checks for one. Do not infer the
 target solely from the current branch.
+
+## Terms
+
+- **User**: the person running this skill.
+- **Target issue** / **target pull request**: the issue or pull request given
+  as `ARGUMENTS`, under analysis. **Test-plan issue**: the GitHub issue this
+  skill creates to deliver the plan on the developer path. Where context
+  already makes the distinction obvious, this file says "the issue" for
+  brevity.
+- **Test case**: any case in the plan. **Verification case**: a case that
+  asserts a specific expected result. **Exploratory case**: a case where the
+  tester records what they observe instead of asserting a fixed result.
 
 ## Language
 
@@ -165,9 +177,9 @@ Test plan progress:
 Read [collaborative-output.md](references/collaborative-output.md) ("Without
 non-developers" and "Review before sharing").
 
-1. Show the user the entire rendered issue title and body and request
-   approval before creating anything.
-2. Run a dry run first, then create the issue only after explicit
+1. Show the user the entire rendered test-plan issue title and body and
+   request approval before creating anything.
+2. Run a dry run first, then create the test-plan issue only after explicit
    confirmation:
 
    ```bash
@@ -177,7 +189,7 @@ non-developers" and "Review before sharing").
      --body <artifact-directory>/github-issue.md
    ```
 3. Give the user local links to the generated files and the canonical plan.
-   Share the issue URL only after the issue has been created.
+   Share the test-plan issue URL only after it has been created.
 
 ### Non-developer path: printed PDF
 
@@ -226,13 +238,14 @@ for outbound payloads.
 
 ## Safety
 
-- Treat the issue, PR, specifications, repository code and tests as read-only
-  sources. Report inconsistencies and proposed fixes; never edit those sources
-  to make the plan match. Existing Forms API definitions are read-only during
-  analysis, but the skill may create `MANUALTEST-` test forms in shared preprod
-  after a dry run and confirmed CREATE. An UPDATE requires explicit user
-  approval and a fresh confirmed dry run. Never delete a form or silently
-  replace one. Write generated definitions only to session artifacts.
+- Treat the target issue, PR, specifications, repository code and tests as
+  read-only sources. Report inconsistencies and proposed fixes; never edit
+  those sources to make the plan match. Existing Forms API definitions are
+  read-only during analysis, but the skill may create `MANUALTEST-` test
+  forms in shared preprod after a dry run and confirmed CREATE. An UPDATE
+  requires explicit user approval and a fresh confirmed dry run. Never delete
+  a form or silently replace one. Write generated definitions only to
+  session artifacts.
 - Use synthetic identities, organizations, and data for uploads, PDFs, and
   submissions in preprod; none of these needs an extra approval step.
 - The team may share approved synthetic identity numbers to correlate test

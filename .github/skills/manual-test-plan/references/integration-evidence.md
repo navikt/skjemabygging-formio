@@ -27,7 +27,7 @@ Omit handoff from a non-collaborative GitHub issue.
 Use the short titles "Teamlogger i GCP", "Journalpost i Joark", and
 "Overlevering" for the three choices. Give each option its own owner,
 ordered actions, and observable expected result. This is a
-choice about who tests the case, not a prerequisite that the caller can use
+choice about who tests the case, not a prerequisite that the user can use
 every method.
 
 ### Team logs in GCP
