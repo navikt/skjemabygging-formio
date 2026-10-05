@@ -113,7 +113,7 @@ describe('ReportService', () => {
 
     describe('generateFormsPublishedLanguage', () => {
       describe('PDF forms', () => {
-        it('reports uploaded PDFs as yes or blank independently of STATIC_PDF', async () => {
+        it('reports uploaded PDFs and STATIC_PDF independently as yes or blank', async () => {
           const createForm = (path: string, submissionTypes: FormPropertiesType['submissionTypes'] = []): Form => ({
             title: path,
             components: [],
@@ -144,10 +144,10 @@ describe('ReportService', () => {
           expect(
             report.forms.map((row) => [row[pathIndex], row[uploadedPdfIndex], row[staticPdfEnabledIndex]]),
           ).toEqual([
-            ['uploaded-only', 'ja', 'nei'],
+            ['uploaded-only', 'ja', ''],
             ['enabled-only', '', 'ja'],
             ['both', 'ja', 'ja'],
-            ['neither', '', 'nei'],
+            ['neither', '', ''],
           ]);
           expect(report.forms[1][staticPdfSubsequentSubmissionUrlIndex]).toBe('');
         });

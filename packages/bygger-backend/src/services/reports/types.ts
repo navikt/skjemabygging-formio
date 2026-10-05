@@ -12,7 +12,6 @@ type ReportDependencies = {
 };
 
 const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
-const yesNo = (value: unknown) => (value ? 'ja' : 'nei');
 
-export { isNotTestForm, yesNo };
+export { isNotTestForm };
 export type { ReportDependencies };

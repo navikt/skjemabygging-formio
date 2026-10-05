@@ -10,7 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import config from '../../../config';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { isNotTestForm, ReportDependencies, yesNo } from '../types';
+import { isNotTestForm, ReportDependencies } from '../types';
 
 type SummaryRow = {
   formNumber: string;
@@ -191,7 +191,7 @@ const allFormsSummaryReport = ({
           ? `${submissionUrl}?sub=digitalnologin`
           : '',
         hasUploadedPdfs: pdfs.length ? 'ja' : '',
-        staticPdfEnabled: yesNo(submissionTypesUtils.isStaticPdf(submissionTypes)),
+        staticPdfEnabled: submissionTypesUtils.isStaticPdf(submissionTypes) ? 'ja' : '',
       };
     }
   },
