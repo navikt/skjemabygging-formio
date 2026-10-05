@@ -1,4 +1,4 @@
-import { createTemporaryFileStorage } from '@navikt/skjemadigitalisering-shared-backend';
+import { createTemporaryFileStorage, setRequestAbortLogContext } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
@@ -27,6 +27,11 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
       innsendingsId: req.params?.innsendingsId ?? req.getNologinContext?.()?.innsendingsId,
       attachmentId: req.params?.attachmentId,
     };
+    setRequestAbortLogContext(req, {
+      fieldName,
+      submissionId: logMeta.innsendingsId,
+      attachmentId: logMeta.attachmentId,
+    });
     const handleUpload: NextFunction = (error) => {
       if (
         error instanceof Error &&
@@ -51,13 +56,6 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
       }
 
       if (error) {
-        if (
-          (req.aborted && error.message === 'Request aborted') ||
-          (req.destroyed && !req.complete && error.message === 'Request closed')
-        ) {
-          logger.info('Upload request aborted', logMeta);
-          return;
-        }
         return next(error);
       }
 

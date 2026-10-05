@@ -118,7 +118,7 @@ describe('uploadSingleFile', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it('logs an aborted no-login upload once without responding or continuing', () => {
+  it('forwards an aborted no-login upload without logging or responding', () => {
     const info = vi.spyOn(logger, 'info');
     const warn = vi.spyOn(logger, 'warn');
     const res = mockResponse();
@@ -130,23 +130,19 @@ describe('uploadSingleFile', () => {
       params: { attachmentId: 'attachment-1' },
       getNologinContext: () => ({ innsendingsId: 'submission-1' }),
     });
-    upload.mockImplementation((_req, _res, callback) => callback(new Error('Request aborted')));
+    const error = new Error('Request aborted');
+    upload.mockImplementation((_req, _res, callback) => callback(error));
 
     uploadSingleFile('filinnhold')(req, res, next);
 
-    expect(info).toHaveBeenCalledExactlyOnceWith('Upload request aborted', {
-      route: '/nologin-application/attachments/attachment-1',
-      fieldName: 'filinnhold',
-      innsendingsId: 'submission-1',
-      attachmentId: 'attachment-1',
-    });
+    expect(info).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();
-    expect(next).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledExactlyOnceWith(error);
     expect(res.status).not.toHaveBeenCalled();
     expect(res.send).not.toHaveBeenCalled();
   });
 
-  it('logs a premature stream close once without responding or continuing', () => {
+  it('forwards a premature stream close without logging or responding', () => {
     const info = vi.spyOn(logger, 'info');
     const res = mockResponse();
     const next = vi.fn();
@@ -156,17 +152,13 @@ describe('uploadSingleFile', () => {
       originalUrl: '/digital/submission-2/attachments/attachment-2?access=hidden',
       params: { innsendingsId: 'submission-2', attachmentId: 'attachment-2' },
     });
-    upload.mockImplementation((_req, _res, callback) => callback(new Error('Request closed')));
+    const error = new Error('Request closed');
+    upload.mockImplementation((_req, _res, callback) => callback(error));
 
     uploadSingleFile('filinnhold')(req, res, next);
 
-    expect(info).toHaveBeenCalledExactlyOnceWith('Upload request aborted', {
-      route: '/digital/submission-2/attachments/attachment-2',
-      fieldName: 'filinnhold',
-      innsendingsId: 'submission-2',
-      attachmentId: 'attachment-2',
-    });
-    expect(next).not.toHaveBeenCalled();
+    expect(info).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledExactlyOnceWith(error);
     expect(res.status).not.toHaveBeenCalled();
     expect(res.send).not.toHaveBeenCalled();
   });
