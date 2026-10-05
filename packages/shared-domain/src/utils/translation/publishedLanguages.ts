@@ -3,7 +3,6 @@ import { localizationUtils } from './localizationUtils';
 
 const DEFAULT_LANGUAGE = 'nb';
 
-// publishedLanguages describes the latest publication, so it is only reliable for a published revision
 const isUnpublishedLanguage = (lang: unknown, form: Pick<NavFormType, 'status' | 'publishedLanguages'>) => {
   if (typeof lang !== 'string' || !lang || form.status !== 'published' || !form.publishedLanguages) {
     return false;
