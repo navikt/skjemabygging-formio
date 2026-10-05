@@ -156,7 +156,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       if (response?.hoveddokumentVariant.document) {
         const savedLanguage = toLegacyLanguageCode(response.hoveddokumentVariant.document.language);
         if (!isLanguageAllowedForForm(savedLanguage, form)) {
-          logger?.info('Ignoring saved language because it is not published for the form');
           removeSearchParamFromUrl('lang');
         } else {
           addSearchParamToUrl('lang', savedLanguage);
@@ -165,7 +164,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },
-    [addSearchParamToUrl, removeSearchParamFromUrl, appConfig, form, logger, setSubmission, setAttachmentPageEnabled],
+    [addSearchParamToUrl, removeSearchParamFromUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
 
   const nbNO: Language = 'nb-NO';
