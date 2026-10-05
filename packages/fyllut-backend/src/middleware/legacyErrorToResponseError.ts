@@ -23,10 +23,6 @@ const normalizeLegacyError = (error: any) => {
     );
   }
 
-  if (error?.type === 'request.aborted' && error?.status === 400) {
-    return new ResponseError('BAD_REQUEST', 'Request body was aborted.', getCorrelationId(error));
-  }
-
   if (error instanceof CorsError) {
     return cloneAsResponseError(
       error,

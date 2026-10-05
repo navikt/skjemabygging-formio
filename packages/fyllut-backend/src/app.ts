@@ -1,4 +1,4 @@
-import { correlator, errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator, errorHandler, requestAbortHandler } from '@navikt/skjemadigitalisering-shared-backend';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import mustacheExpress from 'mustache-express';
@@ -63,6 +63,7 @@ export const createApp = (setupDev: boolean = false) => {
 
   app.use(config.fyllutPath, fyllutRouter);
 
+  app.use(requestAbortHandler);
   app.use(legacyErrorToResponseError);
   app.use(errorHandler);
 
