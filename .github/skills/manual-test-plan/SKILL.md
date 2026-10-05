@@ -112,9 +112,8 @@ Test plan progress:
    preferring one selector-driven form for related cases. Tell the user
    which forms will be reused, imported, created, or need updating. Create
    `MANUALTEST-` forms only as described in
-   [forms-api-import.md](references/forms-api-import.md): dry-run, apply only
-   the confirmed CREATE, and obtain explicit approval for the exact change
-   before any UPDATE. Never silently replace a form. A failed lookup is not
+   [forms-api-import.md](references/forms-api-import.md), following the
+   create/update rules in Safety below. A failed lookup is not
    proof that a form is absent.
 10. Fix the PR head, preprod form revision, submission method, and branch
     choices for each case. Derive its steps with
@@ -244,13 +243,13 @@ for outbound payloads.
 - Never put access tokens, cookies, secrets, real personal data, private
   source content, or security-sensitive details in generated artifacts.
 - This repository is public. Follow the review gate in
-  [collaborative-output.md](references/collaborative-output.md).
-- `preprod` and `preprod-alt` share the same Forms API instance. Form creates,
-  imports, updates, and deletions affect both.
-- Do not create an issue or upload a PDF without explicit confirmation.
+  [collaborative-output.md](references/collaborative-output.md). Create the
+  test-plan issue, or share the PDF, only as described in the delivery path
+  sections above; never do either without the explicit confirmation they
+  require.
 - Never put full generated form definitions in HTML, a PDF, or GitHub issue.
   Keep them in the session artifact directory.
-- Keep generated plans in the session artifact directory unless the caller
+- Keep generated plans in the session artifact directory unless the user
   explicitly requests repository files.
 
 Run the script tests with `pnpm test:skills`. CI runs them in
