@@ -1,4 +1,4 @@
-import { correlator, errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator, errorHandler, requestAbortHandler } from '@navikt/skjemadigitalisering-shared-backend';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import mustacheExpress from 'mustache-express';
@@ -29,9 +29,9 @@ export const createApp = (setupDev: boolean = false) => {
   app.set('trust proxy', 1);
   app.use(httpRequestLogger);
 
+  app.use(correlator() as any);
   app.use(expressJsonMetricHandler(express.json({ limit: '50mb' })));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(correlator() as any);
   app.use(cors());
   app.set('views', buildDirectory);
   app.set('view engine', 'mustache');
@@ -63,6 +63,7 @@ export const createApp = (setupDev: boolean = false) => {
 
   app.use(config.fyllutPath, fyllutRouter);
 
+  app.use(requestAbortHandler);
   app.use(legacyErrorToResponseError);
   app.use(errorHandler);
 
