@@ -118,6 +118,69 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           });
       });
 
+      ['upload', 'delete'].forEach((operation) => {
+        ['success', 'failure'].forEach((outcome) => {
+          it(`blocks submission during a pending ${operation} and recovers after ${outcome}`, () => {
+            let submitRequests = 0;
+            cy.intercept('POST', '**/api/send-inn/digital-application/*', () => {
+              submitRequests += 1;
+            });
+            let releaseResponse = () => {
+              throw new Error('Attachment request has not been intercepted');
+            };
+            cy.intercept(
+              operation === 'upload' ? 'POST' : 'DELETE',
+              operation === 'upload'
+                ? '**/api/send-inn/digital-application/*/attachments/*'
+                : '**/api/send-inn/digital-application/*/attachments/*/*',
+              (request) =>
+                new Cypress.Promise<void>((resolve) => {
+                  releaseResponse = () => {
+                    if (outcome === 'failure') {
+                      request.reply({ statusCode: 503, body: { errorCode: 'SERVICE_UNAVAILABLE' } });
+                    } else {
+                      request.continue();
+                    }
+                    resolve();
+                  };
+                }),
+            ).as('pendingAttachment');
+
+            cy.clickPreviousStep();
+            cy.contains('[data-cy=attachment-upload]', 'Vedlegg 1').within(() => {
+              if (operation === 'upload') {
+                cy.uploadFile('another-small-file.txt');
+              } else {
+                cy.findByRole('button', { name: 'Slett filen' }).click();
+              }
+            });
+            cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Edited while pending');
+            cy.clickSaveAndContinue();
+            cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav })
+              .should('be.enabled')
+              .and('have.attr', 'data-variant', 'secondary');
+            cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+            cy.findByRole('alert').should('contain.text', TEXTS.statiske.attachment.pendingOperations);
+            cy.then(() => submitRequests).should('eq', 0);
+            cy.findByText('Edited while pending').should('exist');
+
+            cy.then(() => releaseResponse());
+            cy.wait('@pendingAttachment');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('be.enabled');
+            cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
+            if (operation === 'upload' || outcome === 'failure') {
+              cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
+                'have.attr',
+                'data-variant',
+                'primary',
+              );
+            }
+          });
+        });
+      });
+
       it('submits attachments with the form', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');

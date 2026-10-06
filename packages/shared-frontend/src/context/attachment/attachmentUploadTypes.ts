@@ -60,7 +60,9 @@ interface AttachmentUploadContextType {
   uploadsInProgress: Record<string, Record<string, FileObject>>;
 }
 
-type AttachmentUploadActions = Omit<AttachmentUploadContextType, 'uploadsInProgress'>;
+type AttachmentUploadActions = Omit<AttachmentUploadContextType, 'uploadsInProgress'> & {
+  hasPendingOperations: () => boolean;
+};
 
 export type {
   AttachmentActionStatus,

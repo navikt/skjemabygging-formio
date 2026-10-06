@@ -53,12 +53,12 @@ const FyllutFormFlow = ({
       <FormDefinitionProvider form={form} submissionMethod={submissionMethod}>
         <NologinTokenProvider form={form}>
           <FyllutValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
-            <FyllutFormActionsProvider
-              form={form}
-              initialInnsendingsId={initialInnsendingsId}
-              setReceiptPdf={setReceiptPdf}
-            >
-              <FyllutAttachmentProvider>
+            <FyllutAttachmentProvider>
+              <FyllutFormActionsProvider
+                form={form}
+                initialInnsendingsId={initialInnsendingsId}
+                setReceiptPdf={setReceiptPdf}
+              >
                 <FormLayout>
                   <FormLanguageSelector />
                   {shouldRenderFormFlow ? (
@@ -67,8 +67,8 @@ const FyllutFormFlow = ({
                     <SubmissionMethodSelection form={form} />
                   )}
                 </FormLayout>
-              </FyllutAttachmentProvider>
-            </FyllutFormActionsProvider>
+              </FyllutFormActionsProvider>
+            </FyllutAttachmentProvider>
           </FyllutValidationProvider>
         </NologinTokenProvider>
       </FormDefinitionProvider>
