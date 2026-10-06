@@ -71,6 +71,8 @@ describe('activeComponents', () => {
       },
     ] as Component[]);
 
+    const originalForm = structuredClone(form);
+
     expect(getActivePanels(form, { data: { showPanel: false, showSecond: false } })).toEqual([
       {
         key: 'visiblePanel',
@@ -79,6 +81,7 @@ describe('activeComponents', () => {
         components: [{ key: 'first', type: 'textfield', input: true, id: 'first-id', navId: 'first-id' }],
       },
     ]);
+    expect(form).toEqual(originalForm);
   });
 
   it('evaluates container descendants against the container row', () => {
