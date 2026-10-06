@@ -6,6 +6,7 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../../config/config';
+import { getIdportenPid, getIsLoggedIn } from '../../../../security/tokenHelper';
 import { applicationPdfService, applicationService, formService, translationService } from '../../../../services';
 import { mapToReceiptSummary } from '../../../../services/nologin/receiptMapper';
 import { LogMetadata } from '../../../../types/log';
@@ -65,6 +66,11 @@ export const generatePdfAndSubmit = async (
   const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
 
   const translate = translationUtil.createTranslate(translations, language);
+  // Only digital submissions are authenticated, i.e. channel NAV_NO in the
+  // archive, which requires the sender to be identified by id. In development
+  // the idporten handler mocks a pid for every request, so the submission type
+  // is checked explicitly rather than relying on the pid being present.
+  const authenticatedSenderId = applicationType === 'digital' && getIsLoggedIn(req) ? getIdportenPid(req) : undefined;
   const submitRequest = assembleSubmitApplicationRequest(
     innsendingsId,
     form,
@@ -72,6 +78,7 @@ export const generatePdfAndSubmit = async (
     language,
     Array.from(applicationPdf),
     translate,
+    authenticatedSenderId,
   );
   const submitResponse = await applicationService.submitApplication({
     accessToken,
