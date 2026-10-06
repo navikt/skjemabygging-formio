@@ -12,6 +12,8 @@
 **/cypress/videos
 **/cypress/screenshots
 **/.cypress-home
+**/playwright-report
+**/test-results
 
 # production
 **/build

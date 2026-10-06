@@ -1,6 +1,7 @@
 import { createServer } from '@mocks-server/main';
+import { activeEvidence } from './utils/playwrightEvidence';
 
-const server = createServer({
+const core = createServer({
   config: {
     readArguments: true,
     readEnvironment: true,
@@ -11,6 +12,13 @@ const server = createServer({
   },
 });
 
-server.start().then(async () => {
+const start = async () => {
+  await core.init();
+  if (activeEvidence) core.server.addRouter('/__playwright', activeEvidence.control);
+  await core.start();
   console.log('\nMocks server started');
+};
+start().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
 });

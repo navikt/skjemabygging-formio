@@ -21,6 +21,7 @@ describe('Static PDF', () => {
     cy.wait('@getStaticPdf');
   });
 
+  // Playwright: F086-T001 | packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > should be possible to download pdf with social security number
   it('should be possible to download pdf with social security number', () => {
     visitStaticPdfPage();
 
@@ -42,6 +43,7 @@ describe('Static PDF', () => {
     });
   });
 
+  // Playwright: F086-T002 | packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > returns 404 for normal fill-in routes when the form only supports static pdf
   it('returns 404 for normal fill-in routes when the form only supports static pdf', () => {
     cy.skipIfNoIncludeDistTests();
 
