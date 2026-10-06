@@ -1,13 +1,11 @@
-import { FileObject, VStack } from '@navikt/ds-react';
+import { FileObject } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../context/attachment/fileUploadConfig';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
 import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
-import Alert from '../alert/Alert';
 import FileUploadButton from './FileUploadButton';
 import styles from './UploadButton.module.css';
 
@@ -18,8 +16,6 @@ interface Props {
   multipleAttachments?: boolean;
   variant: 'primary' | 'secondary';
   allowUpload?: boolean;
-  readMore?: ReactNode;
-  translationParams?: Record<string, string>;
   accept?: string;
   maxFileSizeInBytes?: number;
   onSuccess?: () => void;
@@ -32,8 +28,6 @@ const UploadButton = ({
   multipleAttachments = false,
   variant,
   allowUpload,
-  readMore,
-  translationParams,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
   onSuccess,
@@ -42,9 +36,6 @@ const UploadButton = ({
   const { handleUploadFile, addError } = useAttachmentUpload();
   const scope = useOptionalValidationScope();
   const [loading, setLoading] = useState(false);
-  const validationError = useValidationFieldError(statePath, scope?.pageKey);
-  const externalError = useValidationExternalError(statePath);
-  const uploadErrorMessage = validationError ?? externalError;
 
   const onSelect = async (files: FileObject[]) => {
     setLoading(true);
@@ -65,7 +56,7 @@ const UploadButton = ({
   );
 
   return (
-    <VStack gap="space-8" className={styles.container}>
+    <div className={styles.container}>
       <FileUploadButton
         id={inputId(statePath)}
         label={label}
@@ -87,13 +78,7 @@ const UploadButton = ({
                 )
         }
       />
-      {uploadErrorMessage && (
-        <Alert variant="error" inline>
-          {translate(uploadErrorMessage, translationParams)}
-        </Alert>
-      )}
-      {readMore}
-    </VStack>
+    </div>
   );
 };
 

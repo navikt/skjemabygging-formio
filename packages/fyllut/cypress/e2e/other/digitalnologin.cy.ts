@@ -137,6 +137,22 @@ describe('Digital no login', () => {
           expect(errorRect.width).to.equal(width);
           expect(errorRect.height).to.equal(height);
         });
+        cy.get('[data-cy="upload-button-personal-id"]').within(() => {
+          cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($currentButton) => {
+            const buttonWidth = $currentButton[0].getBoundingClientRect().width;
+            cy.findByRole('alert').should(($alert) => {
+              const alertWidth = $alert[0].getBoundingClientRect().width;
+              expect(alertWidth).to.be.greaterThan(buttonWidth);
+            });
+            cy.findByRole('alert').then(($alert) => {
+              const alertBottom = $alert[0].getBoundingClientRect().bottom;
+              cy.findByText(TEXTS.statiske.uploadId.readMoreHeader).should(($readMore) => {
+                const readMoreTop = $readMore[0].getBoundingClientRect().top;
+                expect(readMoreTop - alertBottom).to.be.within(0, 24);
+              });
+            });
+          });
+        });
       });
     });
 
