@@ -3,7 +3,7 @@
  *
  * Canonical format: find a `solution` such that SHA-256(nonce + ":" + solution)
  * has at least `difficulty` leading zero bits. The same format is implemented in
- * the backend verifier (fyllut-backend: src/routers/api/captcha/challengeService.ts).
+ * the backend verifier (shared-backend: src/services/captcha/captchaService.ts).
  *
  * SHA-256 is implemented inline instead of using crypto.subtle.digest, which is
  * asynchronous and adds ~85µs of overhead per call. That would make a 16 bit
