@@ -1,6 +1,7 @@
 import tc08a from '../data/test-cases/tc08a-cover-page-body.json';
 import tc08b from '../data/test-cases/tc08b-cover-page-body.json';
-import tc08c from '../data/test-cases/tc08c-cover-page-body.json';
+import tc08c from '../data/test-cases/tc08c-static-pdf-ettersending-cover-page-body.json';
+import tc08d from '../data/test-cases/tc08d-cover-page-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const defaultResponseBody = {
@@ -55,10 +56,17 @@ export default [
         },
       },
       {
-        id: 'success-tc08c',
+        id: 'success-tc08c-static-pdf-ettersending',
         type: 'middleware',
         options: {
           middleware: compareBodyMiddleware(tc08c, [], onSuccess),
+        },
+      },
+      {
+        id: 'success-tc08d',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(tc08d, [], onSuccess),
         },
       },
     ],

@@ -65,7 +65,7 @@ describe('Cover page', () => {
   });
 
   it('should create cover page with name and address for an unknown user', () => {
-    cy.mocksUseRouteVariant('foersteside:success-tc08c');
+    cy.mocksUseRouteVariant('foersteside:success-tc08d');
 
     cy.visit('/fyllut/coverpageunknownperson?sub=paper');
     cy.defaultWaits();
