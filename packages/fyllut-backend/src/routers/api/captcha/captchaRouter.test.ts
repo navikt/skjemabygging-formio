@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { CaptchaChallenge, SolvedCaptchaChallenge, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import { Express } from 'express';
 import request from 'supertest';
@@ -6,7 +6,7 @@ import { createApp } from '../../../app';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
-import { CAPTCHA_FAILURE_REASON, CaptchaChallenge, CaptchaSolution } from './types';
+import { CAPTCHA_FAILURE_REASON } from './types';
 
 const solutionIsValid = (challenge: CaptchaChallenge, solution: string): boolean => {
   const digest = crypto.createHash('sha256').update(`${challenge.nonce}:${solution}`).digest();
@@ -23,7 +23,7 @@ const solutionIsValid = (challenge: CaptchaChallenge, solution: string): boolean
   return bits >= challenge.difficulty;
 };
 
-const solveChallenge = (challenge: CaptchaChallenge): CaptchaSolution => {
+const solveChallenge = (challenge: CaptchaChallenge): SolvedCaptchaChallenge => {
   for (let i = 0; i < 10_000_000; i++) {
     const solution = i.toString(36);
     if (solutionIsValid(challenge, solution)) {
@@ -42,15 +42,10 @@ const findInvalidSolution = (challenge: CaptchaChallenge): string => {
   }
 };
 
-const signChallenge = ({ nonce, difficulty, expiresAt }: Omit<CaptchaChallenge, 'signature'>): string =>
-  crypto.createHmac('sha256', config.captcha.hmacSecret).update(`${nonce}.${difficulty}.${expiresAt}`).digest('hex');
-
 describe('Captcha Handler Tests', () => {
   let app: Express;
-  const defaultPowDifficulty = config.captcha.powDifficulty;
 
   afterEach(() => {
-    config.captcha.powDifficulty = defaultPowDifficulty;
     vi.restoreAllMocks();
   });
 
@@ -67,8 +62,6 @@ describe('Captcha Handler Tests', () => {
     };
 
     beforeEach(async () => {
-      // Keeps solving fast and deterministic in tests
-      config.captcha.powDifficulty = 8;
       challenge = await fetchChallenge();
     });
 
@@ -122,43 +115,17 @@ describe('Captcha Handler Tests', () => {
       expect(JSON.stringify(logInfo.mock.calls)).not.toContain(tampered.solution);
     });
 
-    it('fails when the challenge has expired', async () => {
-      const captchaFailuresCounterInc = vi.spyOn(appMetrics.nologinCaptchaFailuresCounter, 'inc');
-      const expiresAt = Date.now() - 1000;
-      const signature = signChallenge({ ...challenge, expiresAt });
-      const expired = solveChallenge({ ...challenge, expiresAt, signature });
+    it('fails if only the legacy answer is provided', async () => {
       await request(app)
         .post('/fyllut/api/captcha')
         .set('Origin', 'https://www.nav.no')
-        .send({ firstName: '', ...expired })
+        .send({ firstName: '', data_33: 'ja' })
         .expect('Content-Type', /json/)
-        .expect(400);
-
-      expect(captchaFailuresCounterInc).toHaveBeenCalledWith({
-        reason: CAPTCHA_FAILURE_REASON.CHALLENGE_EXPIRED,
-      });
-    });
-
-    it('accepts a challenge with a valid signature', async () => {
-      const expiresAt = Date.now() + 60_000;
-      const nonce = crypto.randomBytes(16).toString('hex');
-      const selfSigned = { nonce, difficulty: challenge.difficulty, expiresAt };
-
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ firstName: '', ...solveChallenge({ ...selfSigned, signature: signChallenge(selfSigned) }) })
-        .expect('Content-Type', /json/)
-        .expect(200);
-    });
-
-    it('fails if body is empty', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({})
-        .expect('Content-Type', /json/)
-        .expect(400);
+        .expect(400)
+        .expect((res) => {
+          expect(res.body.errorCode).toBe('BAD_REQUEST');
+          expect(res.body.userMessage).toBe(TEXTS.statiske.uploadFile.uploadFileError);
+        });
     });
 
     it('fails if firstName is present', async () => {
@@ -185,7 +152,6 @@ describe('Captcha Handler Tests', () => {
 
   describe('Client address changes', () => {
     it('accepts a solution submitted from a different address than the challenge request', async () => {
-      config.captcha.powDifficulty = 8;
       const challengeResponse = await request(app)
         .get('/fyllut/api/captcha/challenge')
         .set('X-Forwarded-For', '203.0.113.5')
@@ -197,53 +163,6 @@ describe('Captcha Handler Tests', () => {
         .set('X-Forwarded-For', '198.51.100.7')
         .send({ firstName: '', ...solveChallenge(challengeResponse.body) })
         .expect(200);
-    });
-  });
-
-  // TODO: remove after already-loaded frontends using data_33 have aged out.
-  describe('Legacy flow', () => {
-    const validCaptchaData = { firstName: '', data_33: 'ja' };
-
-    it('returns 200 with access_token if valid data is provided', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send(validCaptchaData)
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.access_token).toBeDefined();
-        });
-    });
-
-    it('fails if challenge answer is incorrect', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, data_33: 'Test' })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-
-    it('does not use the legacy answer to bypass an invalid proof of work solution', async () => {
-      config.captcha.powDifficulty = 8;
-      const challenge = (await request(app).get('/fyllut/api/captcha/challenge').expect(200)).body;
-
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, ...challenge, solution: findInvalidSolution(challenge) })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-
-    it('fails if firstName is present', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, firstName: 'Roar' })
-        .expect('Content-Type', /json/)
-        .expect(400);
     });
   });
 });

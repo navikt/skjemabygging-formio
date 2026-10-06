@@ -1,20 +1,10 @@
+import type { CaptchaChallenge, SolvedCaptchaChallenge } from '@navikt/skjemadigitalisering-shared-domain';
 import { solvePow } from '@navikt/skjemadigitalisering-shared-frontend';
 import baseHttp from '../util/http/http';
 
 interface CaptchaResponse {
   success: boolean;
   access_token?: string;
-}
-
-interface CaptchaChallenge {
-  nonce: string;
-  difficulty: number;
-  expiresAt: number;
-  signature: string;
-}
-
-interface SolvedCaptchaChallenge extends CaptchaChallenge {
-  solution: string;
 }
 
 interface CaptchaValue {

@@ -1,20 +1,31 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
+import correlator from 'express-correlation-id';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { FyllutBackendConfig } from '../../config/types';
-import { logger } from '../../logger';
+import { logger } from '../../shared/logger/logger';
 
 const TOKEN_PURPOSE = 'nologin';
 
-const NologinTokenService = (config: FyllutBackendConfig) => ({
+interface CreateNologinTokenServiceProps {
+  jwtSecret: string;
+  tokenLifetimeHours: number;
+}
+
+type NologinTokenService = {
+  generateToken: () => string;
+  verifyToken: (token: string) => JwtPayload | null;
+};
+
+const createNologinTokenService = ({
+  jwtSecret,
+  tokenLifetimeHours,
+}: CreateNologinTokenServiceProps): NologinTokenService => ({
   generateToken: (): string => {
     const innsendingsId = crypto.randomUUID();
     logger.info(`${innsendingsId}: Generating nologin token`, { correlationId: correlator.getId() });
-    const { jwtSecret, tokenLifetimeHours } = config.nologin;
     return jwt.sign({ purpose: TOKEN_PURPOSE, innsendingsId }, jwtSecret, { expiresIn: `${tokenLifetimeHours}h` });
   },
   verifyToken: (token: string): JwtPayload | null => {
     try {
-      const payload = jwt.verify(token as string, config.nologin.jwtSecret) as jwt.JwtPayload | string;
+      const payload = jwt.verify(token, jwtSecret);
       if (typeof payload !== 'object' || payload === null || (payload as jwt.JwtPayload).purpose !== TOKEN_PURPOSE) {
         return null;
       }
@@ -33,4 +44,5 @@ const NologinTokenService = (config: FyllutBackendConfig) => ({
   },
 });
 
-export default NologinTokenService;
+export { createNologinTokenService };
+export type { CreateNologinTokenServiceProps, NologinTokenService };
