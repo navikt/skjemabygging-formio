@@ -41,8 +41,13 @@ const prepareAttachmentSubmission = async (page: Page) => {
     await attachment
       .locator('input[type="file"]')
       .setInputFiles(resolve(import.meta.dirname, '../../cypress/fixtures/files', file));
-    expect((await uploaded).status()).toBe(201);
-    await expect(attachment.getByText(file, { exact: true })).toBeVisible();
+    const response = await uploaded;
+    expect(response.status()).toBe(201);
+    const error = await response.finished();
+    if (error) throw new Error('ATTACHMENT_UPLOAD_RESPONSE_INCOMPLETE', { cause: error });
+    const uploadedFile = attachment.getByRole('listitem').filter({ has: page.getByText(file, { exact: true }) });
+    await expect(uploadedFile.getByText(file, { exact: true })).toBeVisible();
+    await expect(uploadedFile.getByRole('button', { name: 'Slett filen', exact: true })).toBeVisible();
   }
   await saveAndContinue(page);
   await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering' })).toBeVisible();

@@ -61,6 +61,7 @@ const cases = [
   ['teardown-valid', undefined, true],
   ['download-response', undefined, true],
   ['missing-static-form', 'STATIC_PDF_PAGE_REQUIRED', true],
+  ['upload-completion', undefined, true],
 ];
 const summary = [
   { id: 'exclusive-declaration', innerExit: exclusive.status, verified: true },
@@ -116,6 +117,17 @@ for (const [id, expectedError, actionExpected] of cases) {
     }
     if (id === 'download-response') {
       assert(result.attachments.some((attachment) => attachment.name === 'held-download-rejected'));
+    }
+    if (id === 'upload-completion') {
+      const proof = result.attachments.find((attachment) => attachment.name === 'upload-completion-verified');
+      assert(proof, 'Missing delayed-upload completion proof');
+      assert.deepEqual(JSON.parse(Buffer.from(proof.body, 'base64').toString('utf8')), {
+        requests: 4,
+        held: true,
+        consumed: true,
+        continuedBeforeConsumption: false,
+        continuedAfterConsumption: 1,
+      });
     }
     const action = result.attachments?.some((attachment) => attachment.name === 'action-started') ?? false;
     assert.equal(action, index === 0 && actionExpected, `${id}: incorrect user-action ordering`);

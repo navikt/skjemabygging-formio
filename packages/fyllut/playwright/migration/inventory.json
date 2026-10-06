@@ -10213,6 +10213,7 @@
           "coverageReview": "pending",
           "coverageChecklist": [
             "Upload all four files and reach Oppsummering as in F061-T003.",
+            "Before continuing, await each HTTP 201 response completion and its matching uploaded-file delete button; a visible in-progress filename is insufficient.",
             "Select post-familie-pdf:success-tc07 and post-digital-soknad:success-tc07; prove both selected handlers received expected validated requests.",
             "Submit and verify Kvittering and all four attachment titles; fail on selection, request mismatch, missing call or reset failure."
           ],

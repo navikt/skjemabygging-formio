@@ -31,6 +31,10 @@ node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.te
 
 The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes. The fixed test ports are 3440 through 3443; occupied ports fail rather than selecting alternatives or stopping foreign services.
 
+Main and technical runs use the same 1280x1000 viewport as FyllUt Cypress.
+This aligns rendering dimensions, not browser engines or manual accessibility
+coverage.
+
 The launcher requires successful bind notifications from its own children and HTTP readiness. Cancellation during readiness or its callback rejects startup and awaits cleanup. The ordinary launcher also waits for in-progress startup before finishing shutdown.
 
 Teardown closes browser contexts, stops the owned backend/frontend processes and awaits their exit while mocks remain available. It then restores variants, checks and releases final mock evidence, and stops the remaining mock process. The final snapshot therefore includes observed calls during application shutdown and restore. Only owned process groups are signalled, with bounded SIGTERM-to-SIGKILL escalation. A dedicated epoch-owner process handles worker loss through IPC disconnect, including SIGKILL of the worker. Failed reset, application shutdown, evidence finalization, cleanup or unexpected owner loss poisons the run and prevents another epoch. Cypress runtime configuration is not written or deleted.
@@ -46,6 +50,11 @@ F061-T004 uploads all four source-fixture files, checks the receipt and requires
 completed, body-validated tc07 calls on both observed routes. The backend receives
 the deterministic fixture metadata `dev-local/mr-sha/forms@git-sha`; this is not
 the tested Git commit.
+
+The upload helper waits for the HTTP 201 response to finish and for the matching
+file item's delete button. That button appears only after the application has
+registered the uploaded file. A filename is visible during an in-progress upload
+and is not a completion signal.
 
 F004-T006 retains the source's PDF payload assertions and waits for the matching
 response to finish; sending a request is not a completed download. F086-T002
@@ -119,6 +128,12 @@ original and teardown request, the exact mismatch field, confirmed application
 shutdown and the specific positive-prerequisite failure. The missing-form fault
 is opt-in per test epoch and does not alter ordinary mock startup.
 
+The delayed-upload control holds application consumption of the fourth real
+HTTP 201 response. It observes forbidden continuation attempts during a bounded
+hold, then releases the JSON and requires successful summary navigation. The
+outer verifier checks that continuation happened only after consumption. This
+control does not replace the backend upload or change ordinary form behavior.
+
 Reports are under `.runtime/playwright/verify-<run-id>/`; `summary.json` records
 the checked outcomes. The hold-PDF hook is enabled only by technical-test
 configuration. Ordinary mock startup has neither that hook nor its control
@@ -143,6 +158,12 @@ One green source/counterpart pair does not establish equivalent failure coverage
 All commands are local. There is no new CI workflow, sharding, existing-server
 mode or Cypress removal. Final Cypress/Playwright comparisons and human review
 remain separate acceptance gates.
+
+Fresh process epochs have a startup cost. Record `startupMs` from epoch
+manifests separately from test actions, teardown and total runner time. Compare
+the same cases, viewport, build and retry policy before claiming a speedup.
+Changing to shared processes or sharding requires preserving delayed-request,
+mock-evidence and cleanup guarantees; it is not part of this bounded pilot.
 
 In CPLT, the documented `sandbox.allow_cache_exec = ["ms-playwright"]` setting permits running Playwright's Chromium. Localhost access must also be active for the app and mock server. All eight browser journeys passed in an AI-run CPLT session. The mock-server log confirmed that `success-empty` handled the activities request. A negative-control run using `success` instead failed on the empty-array assertion, receiving three activities. Developer coverage and Playwright-practice review is still pending.
 
