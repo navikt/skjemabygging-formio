@@ -2,6 +2,8 @@
  * Tests translations of the form work from both url params and language switcher
  */
 
+import { expect } from 'chai';
+
 const languageSelect = () => cy.findByRole('combobox', { name: /^(Choose language|Velg språk|Vel språk)$/ });
 
 describe('Translations', () => {
@@ -108,6 +110,77 @@ describe('Translations', () => {
 
       // This example will fail without the override in translateHTMLTemplate
       cy.get('[data-component-key="eksempelOversettelse1"]').contains('Example correct translation').should('exist');
+    });
+  });
+
+  describe('Unpublished language in url param (INCLUDE_DIST_TESTS)', () => {
+    beforeEach(() => {
+      cy.skipIfNoIncludeDistTests();
+    });
+
+    it('removes lang when the language is not published', () => {
+      cy.visit('/fyllut/translationunpublishedlanguage/skjema?sub=paper&lang=en');
+      cy.location('pathname').should('eq', '/fyllut/translationunpublishedlanguage/skjema');
+      cy.location('search').should('eq', '?sub=paper');
+      languageSelect().should('have.value', 'nb');
+      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+    });
+
+    it('keeps lang when the language is published', () => {
+      cy.visit('/fyllut/translationunpublishedlanguage/skjema?sub=paper&lang=nn-NO');
+      languageSelect().should('have.value', 'nn');
+      cy.location('search').should('eq', '?sub=paper&lang=nn-NO');
+    });
+
+    it('removes repeated lang parameters', () => {
+      cy.visit('/fyllut/translationunpublishedlanguage/skjema?sub=paper&lang=en&lang=en');
+      cy.location('search').should('eq', '?sub=paper');
+      languageSelect().should('have.value', 'nb');
+      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+    });
+  });
+
+  describe('Resuming the saved language', () => {
+    const submissionId = '8e3c3621-76d7-4ebd-90d4-34448ebcccc3';
+
+    [
+      { formPath: 'translationsavedlanguage', savedLanguage: 'en', expectedLanguage: 'nb', status: 'published' },
+      { formPath: 'translationsavedlanguage', savedLanguage: 'nn', expectedLanguage: 'nn', status: 'published' },
+      { formPath: 'translationsavedlanguagepending', savedLanguage: 'en', expectedLanguage: 'en', status: 'pending' },
+    ].forEach(({ formPath, savedLanguage, expectedLanguage, status }) => {
+      it(`resumes ${savedLanguage} as ${expectedLanguage} for a ${status} form without losing answers`, () => {
+        const savedApplication = {
+          innsendingsId: submissionId,
+          hoveddokumentVariant: {
+            document: {
+              language: savedLanguage,
+              data: { data: { explanation: 'Saved answer' } },
+            },
+          },
+          shouldUploadAttachmentsInFyllut: true,
+          endretDato: '2026-10-01T10:00:00Z',
+          skalSlettesDato: '2026-11-01T10:00:00Z',
+        };
+        cy.intercept('GET', `/fyllut/api/send-inn/soknad/${submissionId}`, savedApplication).as('getSavedApplication');
+        cy.intercept('PUT', '/fyllut/api/send-inn/soknad', savedApplication).as('saveApplication');
+
+        cy.visit(`/fyllut/${formPath}/skjema?sub=digital&innsendingsId=${submissionId}`);
+        cy.wait('@getSavedApplication');
+        languageSelect().should('have.value', expectedLanguage);
+        cy.findByRole('textbox', { name: /Din forklaring|Your explanation/ }).should('have.value', 'Saved answer');
+        cy.location('search').should((search) => {
+          const params = new URLSearchParams(search);
+          expect(params.get('sub')).to.equal('digital');
+          expect(params.get('innsendingsId')).to.equal(submissionId);
+          expect(params.get('lang')).to.equal(expectedLanguage === 'nb' ? null : expectedLanguage);
+        });
+
+        cy.clickSaveAndContinue();
+        cy.wait('@saveApplication').then(({ request }) => {
+          expect(request.body.language).to.equal(expectedLanguage);
+          expect(request.body.submission.data.explanation).to.equal('Saved answer');
+        });
+      });
     });
   });
 

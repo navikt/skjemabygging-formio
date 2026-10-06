@@ -177,7 +177,16 @@ describe('createFormService', () => {
       await expect(service.getForm({ formPath: 'nav123456', select: ['title', 'languages'] })).resolves.toMatchObject({
         languages: ['nb', 'nn', 'en'],
       });
-      expectGetRequest(fetchSpy, `${baseUrl}/v1/forms/nav123456?select=title%2CpublishedLanguages`);
+      expectGetRequest(fetchSpy, `${baseUrl}/v1/forms/nav123456?select=title%2CpublishedLanguages%2Cstatus`);
+    });
+
+    it('offers only published languages for published forms-api forms', async () => {
+      mockFetchResponse(JSON.stringify({ ...apiForm, status: 'published' }), 200, 'application/json');
+      const service = createService({ formsApiStaging: true });
+
+      await expect(service.getForm({ formPath: 'nav123456', select: ['title', 'languages'] })).resolves.toMatchObject({
+        languages: ['nb'],
+      });
     });
 
     it('offers only published languages for forms from disk', async () => {
