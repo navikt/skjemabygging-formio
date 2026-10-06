@@ -25,6 +25,7 @@ interface PageFieldsCache {
   submissionMethod?: SubmissionMethod;
   currentLanguage: string;
   form: Form;
+  panels?: Panel[];
   fieldsByPage: Map<string, ValidationField[]>;
 }
 
@@ -58,8 +59,11 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
         cache?.submissionMethod === submissionMethod &&
         cache?.currentLanguage === currentLanguage &&
         cache?.form === form;
-      const fieldsByPage = isCacheValid ? cache.fieldsByPage : new Map<string, ValidationField[]>();
-      cacheRef.current = { submission, submissionMethod, currentLanguage, form, fieldsByPage };
+      const currentCache: PageFieldsCache = isCacheValid
+        ? cache
+        : { submission, submissionMethod, currentLanguage, form, fieldsByPage: new Map<string, ValidationField[]>() };
+      cacheRef.current = currentCache;
+      const { fieldsByPage } = currentCache;
 
       const cachedFields = fieldsByPage.get(pageKey);
       if (cachedFields) {
@@ -78,8 +82,8 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
         };
         fields = [...toAttachmentValueValidationFields(input), ...toAttachmentFilesValidationFields(input)];
       } else {
-        const panels: Panel[] = getActivePanels(form, submission, { submissionMethod });
-        const panel = panels.find((currentPanel) => currentPanel.key === pageKey);
+        currentCache.panels ??= getActivePanels(form, submission, { submissionMethod });
+        const panel = currentCache.panels.find((currentPanel) => currentPanel.key === pageKey);
         fields = panel
           ? collectPageValidationFields({
               components: toComponentDefinitions(panel.components ?? []),
