@@ -33,6 +33,29 @@ const waitForStop = (directory) =>
     check();
   });
 
+test('quiesce awaits application exit but leaves mocks available for final evidence', async () => {
+  const output = resolve('packages/fyllut/.runtime/playwright', `quiesce-${randomUUID()}`);
+  const epoch = await startTestEpoch({ mode: 'built', testId: 'quiesce', attempt: 0, output });
+  try {
+    await epoch.quiesce();
+    await epoch.quiesce();
+    epoch.assertHealthy();
+    const manifest = JSON.parse(readFileSync(resolve(epoch.directory, 'manifest.json'), 'utf8'));
+    assert(manifest.quiescedAt);
+    assert(!manifest.stoppedAt);
+    for (const pid of epoch.pids.slice(1)) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+    assert.equal((await fetch(`${epoch.adminURL}/api/about`)).status, 200);
+    assert(await isPortFree(3442));
+    await assert.rejects(
+      startTestEpoch({ mode: 'built', testId: 'next', attempt: 0, output }),
+      /PREVIOUS_EPOCH_ACTIVE/,
+    );
+  } finally {
+    await epoch.stop();
+  }
+  for (const pid of epoch.pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+});
+
 for (const signal of ['SIGTERM', 'SIGKILL']) {
   test(`worker ${signal} cannot leave its application processes or permit another epoch`, async () => {
     const output = resolve('packages/fyllut/.runtime/playwright', `owner-${randomUUID()}`);

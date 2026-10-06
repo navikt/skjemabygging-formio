@@ -63,20 +63,37 @@ const startManagedStack = async (
     onSpawn = () => {},
   } = {},
 ) => {
+  signal?.throwIfAborted();
   const ports = listeningPorts.flat();
   if (!(await Promise.all(ports.map(isPortFree))).every(Boolean)) {
     throw new Error(`STACK_PORT_COLLISION: ${ports.join(', ')}`);
   }
+  signal?.throwIfAborted();
   const children = [];
+  const childStops = new Map();
   const bound = listeningPorts.map(() => new Set());
   let failure;
   let ready = false;
   let stopping = false;
   let stopPromise;
+  const stopOwnedChild = (child) => {
+    if (!childStops.has(child)) childStops.set(child, stopChild(child));
+    return childStops.get(child);
+  };
+  const stopChildren = async (pids) => {
+    const selected = pids.map((pid) => {
+      const child = children.find((candidate) => candidate.pid === pid);
+      if (!child) throw new Error(`STACK_UNKNOWN_CHILD: ${pid}`);
+      return child;
+    });
+    const results = await Promise.allSettled(selected.map(stopOwnedChild));
+    const errors = results.filter((result) => result.status === 'rejected').map((result) => result.reason);
+    if (errors.length) throw new AggregateError(errors, 'STACK_CLEANUP_FAILED');
+  };
   const stop = () => {
     stopPromise ??= (async () => {
       stopping = true;
-      const results = await Promise.allSettled(children.map((child) => stopChild(child)));
+      const results = await Promise.allSettled(children.map(stopOwnedChild));
       const errors = results.filter((result) => result.status === 'rejected').map((result) => result.reason);
       try {
         await onCleanup?.();
@@ -94,6 +111,7 @@ const startManagedStack = async (
   };
   try {
     for (const [index, [command, args, env, cwd]] of commands.entries()) {
+      signal?.throwIfAborted();
       const child = spawn(
         command,
         ['--require', fileURLToPath(new URL('./report-listening.mjs', import.meta.url)), ...args],
@@ -113,10 +131,12 @@ const startManagedStack = async (
           if (listeningPorts[index].includes(message.port)) bound[index].add(message.port);
         }
       });
-      child.once('error', fail);
-      child.once('exit', (code, exitSignal) =>
-        fail(new Error(`STACK_CHILD_EXIT: ${child.pid}: ${code ?? exitSignal}`)),
-      );
+      child.once('error', (error) => {
+        if (!childStops.has(child)) fail(error);
+      });
+      child.once('exit', (code, exitSignal) => {
+        if (!childStops.has(child)) fail(new Error(`STACK_CHILD_EXIT: ${child.pid}: ${code ?? exitSignal}`));
+      });
     }
     const deadline = Date.now() + timeoutMs;
     const healthy = new Set();
@@ -137,13 +157,17 @@ const startManagedStack = async (
               }
             }),
         );
+        signal?.throwIfAborted();
         if (failure) throw failure;
         if (healthy.size === new Set(healthUrls).size) {
           await onReady?.();
+          signal?.throwIfAborted();
+          if (failure) throw failure;
           ready = true;
           return {
             pids: children.map((child) => child.pid),
             stop,
+            stopChildren,
             assertHealthy: () => {
               if (failure) throw failure;
             },

@@ -8,6 +8,7 @@ const controller = new AbortController();
 let stack;
 let starting;
 let stopping;
+let quiescing;
 let manifest;
 let directory;
 let fatalFile;
@@ -23,11 +24,28 @@ const notify = (message) => {
       if (error && !stopping) void stop(new Error('EPOCH_OWNER_DISCONNECTED', { cause: error }));
     });
 };
+const quiesce = () => {
+  quiescing ??= (async () => {
+    await starting;
+    if (!stack || stopping) throw new Error('EPOCH_NOT_READY');
+    await stack.stopChildren(stack.pids.slice(1));
+    manifest = { ...manifest, quiescedAt: new Date().toISOString() };
+    save();
+  })();
+  return quiescing;
+};
 const stop = (error) => {
   if (error) fatal(error);
   stopping ??= (async () => {
     controller.abort(new Error('EPOCH_STOP_REQUESTED'));
     await starting;
+    if (quiescing) {
+      try {
+        await quiescing;
+      } catch (quiesceError) {
+        fatal(quiesceError);
+      }
+    }
     try {
       await stack?.stop();
       if (manifest) {
@@ -50,6 +68,16 @@ process.once('disconnect', () => {
 process.once('SIGTERM', () => void stop(new Error('EPOCH_OWNER_INTERRUPTED')));
 process.once('SIGINT', () => void stop(new Error('EPOCH_OWNER_INTERRUPTED')));
 process.on('message', (message) => {
+  if (message?.type === 'quiesce') {
+    void quiesce().then(
+      () => notify({ type: 'quiesced' }),
+      (error) => {
+        fatal(error);
+        notify({ type: 'error', message: error.message });
+      },
+    );
+    return;
+  }
   if (message?.type === 'stop') {
     void stop();
     return;

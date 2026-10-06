@@ -11,6 +11,7 @@ type Epoch = {
     directory: string;
     fatal: (error: Error) => void;
     assertHealthy: () => void;
+    quiesce: () => Promise<void>;
     stop: () => Promise<void>;
 };
 
@@ -22,7 +23,7 @@ declare const startTestEpoch: (options: {
     output: string;
     signal?: AbortSignal;
     observeMocks?: boolean;
-    mockFault?: 'hold-pdf';
+    mockFault?: 'hold-pdf' | 'missing-static-form';
 }) => Promise<Epoch>;
 
 export { checkBuild, startTestEpoch, type Epoch };

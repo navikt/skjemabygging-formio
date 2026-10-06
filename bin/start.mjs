@@ -109,11 +109,13 @@ if (!configs[target] || unknownArgs.length > 0) {
 const config = await configs[target]();
 const controller = new AbortController();
 let stack;
+let starting;
 let shutdownPromise;
 const shutdown = (code) => {
   controller.abort(new Error('STACK_INTERRUPTED'));
   shutdownPromise ??= (async () => {
     try {
+      await starting;
       await stack?.stop();
       process.exitCode = code;
     } catch (error) {
@@ -125,17 +127,26 @@ const shutdown = (code) => {
 };
 process.on('SIGINT', () => void shutdown(130));
 process.on('SIGTERM', () => void shutdown(143));
-try {
-  stack = await startManagedStack(config, {
-    signal: controller.signal,
-    onFailure: (error) => {
-      console.error(error);
-      void shutdown(1);
-    },
-  });
+starting = (async () => {
+  try {
+    stack = await startManagedStack(config, {
+      signal: controller.signal,
+      onFailure: (error) => {
+        console.error(error);
+        void shutdown(1);
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+  }
+})();
+await starting;
+if (shutdownPromise) {
+  await shutdownPromise;
+} else if (!stack) {
+  await shutdown(1);
+} else {
   console.log(`\n${config.summaryLines.join('\n')}`);
   console.log(`START_PID=${process.pid}`);
-} catch (error) {
-  console.error(error);
-  await shutdown(1);
 }

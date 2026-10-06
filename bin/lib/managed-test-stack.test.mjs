@@ -75,3 +75,94 @@ test('a child ignoring TERM is killed and its exit awaited', async () => {
   assert.equal(await isPortFree(port), true);
   assert.throws(() => process.kill(stack.pids[0], 0), { code: 'ESRCH' });
 });
+
+test('abort during a successful readiness response rejects and awaits child exit', async () => {
+  const controller = new AbortController();
+  const pids = [];
+  let release;
+  let interrupted = false;
+  const script = `
+    import {createServer} from 'node:http';
+    let pending;
+    createServer((req, res) => {
+      if (req.url === '/health') {
+        pending = res;
+        console.log('health-pending');
+      } else {
+        res.end('released');
+        pending.end('healthy');
+      }
+    }).listen(${port}, '127.0.0.1');
+  `;
+  await assert.rejects(
+    startManagedStack(config(script, { healthUrls: [`${url}/health`] }), {
+      signal: controller.signal,
+      onSpawn: (pid) => pids.push(pid),
+      log: (chunk) => {
+        if (chunk.toString().includes('health-pending') && !interrupted) {
+          interrupted = true;
+          controller.abort(new Error('readiness-aborted'));
+          release = fetch(`${url}/release`);
+        }
+      },
+    }),
+    /readiness-aborted/,
+  );
+  assert.equal((await release).status, 200);
+  assert(interrupted);
+  assert.equal(await isPortFree(port), true);
+  for (const pid of pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+});
+
+test('abort during onReady cleans up the runtime state before rejecting', async () => {
+  const controller = new AbortController();
+  const pids = [];
+  let runtimeWritten = false;
+  let cleaned = false;
+  await assert.rejects(
+    startManagedStack(
+      config(server, {
+        onReady: () => {
+          runtimeWritten = true;
+          controller.abort(new Error('ready-callback-aborted'));
+        },
+        onCleanup: () => {
+          runtimeWritten = false;
+          cleaned = true;
+        },
+      }),
+      { log, signal: controller.signal, onSpawn: (pid) => pids.push(pid) },
+    ),
+    /ready-callback-aborted/,
+  );
+  assert(cleaned);
+  assert.equal(runtimeWritten, false);
+  assert.equal(await isPortFree(port), true);
+  for (const pid of pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+});
+
+test('selected owned children stop while remaining services stay healthy', async () => {
+  const stack = await startManagedStack(
+    {
+      commands: [
+        [process.execPath, ['--input-type=module', '-e', server], {}, process.cwd()],
+        [process.execPath, ['--input-type=module', '-e', server.replaceAll('3440', '3441')], {}, process.cwd()],
+      ],
+      listeningPorts: [[3440], [3441]],
+      healthUrls: [url, 'http://127.0.0.1:3441'],
+    },
+    { log },
+  );
+  try {
+    await assert.rejects(stack.stopChildren([process.pid]), /STACK_UNKNOWN_CHILD/);
+    await stack.stopChildren([stack.pids[1]]);
+    await stack.stopChildren([stack.pids[1]]);
+    assert.throws(() => process.kill(stack.pids[1], 0), { code: 'ESRCH' });
+    assert.equal(await (await fetch(url)).text(), 'owned');
+    stack.assertHealthy();
+    assert(await isPortFree(3441));
+  } finally {
+    await stack.stop();
+  }
+  assert(await isPortFree(port));
+});

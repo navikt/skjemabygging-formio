@@ -57,6 +57,7 @@ const startTestEpoch = async ({ mode, testId, attempt, output, signal, observeMo
   }
   let failure;
   let stopping;
+  let quiescing;
   const fatal = (error) => {
     failure ??= error;
     writeFileSync(fatalFile, `${failure.message}\n`);
@@ -108,6 +109,32 @@ const startTestEpoch = async ({ mode, testId, attempt, output, signal, observeMo
       ...ready,
       directory,
       fatal,
+      quiesce: () => {
+        quiescing ??= new Promise((done, fail) => {
+          const onMessage = (message) => {
+            if (message?.type === 'quiesced') {
+              owner.off('message', onMessage);
+              done();
+            } else if (message?.type === 'error') {
+              owner.off('message', onMessage);
+              fail(new Error(message.message));
+            }
+          };
+          owner.on('message', onMessage);
+          void exited.then(() => {
+            owner.off('message', onMessage);
+            fail(failure ?? new Error('EPOCH_OWNER_EXIT'));
+          });
+          owner.send({ type: 'quiesce' }, (error) => {
+            if (error) {
+              owner.off('message', onMessage);
+              fatal(error);
+              fail(error);
+            }
+          });
+        });
+        return quiescing;
+      },
       assertHealthy: () => {
         if (failure) throw failure;
         if (existsSync(fatalFile)) throw new Error(readFileSync(fatalFile, 'utf8').trim());

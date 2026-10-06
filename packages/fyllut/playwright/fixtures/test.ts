@@ -12,7 +12,7 @@ type Fixtures = {
   useRouteVariant: (id: string) => Promise<void>;
   mockEvidence: Evidence;
   observeMocks: boolean;
-  mockFault: 'hold-pdf' | undefined;
+  mockFault: 'hold-pdf' | 'missing-static-form' | undefined;
   resetVariants: (url: string, phase: 'before' | 'after') => Promise<void>;
   stopEpoch: (epoch: Epoch) => Promise<void>;
 };
@@ -67,17 +67,27 @@ const test = base.extend<Fixtures>({
             epoch.fatal(new Error('BROWSER_CLEANUP_FAILED'));
           }
         }
+        let quiesced = false;
         try {
-          await evidence.finish();
+          await epoch.quiesce();
+          quiesced = true;
         } catch (error) {
           errors.push(error);
-          epoch.fatal(new Error('MOCK_EVIDENCE_CLEANUP_FAILED'));
+          epoch.fatal(new Error('EPOCH_QUIESCE_FAILED'));
         }
         try {
           await resetVariants(epoch.adminURL, 'after');
         } catch (error) {
           errors.push(error);
           epoch.fatal(new Error('MOCK_RESTORE_FAILED'));
+        }
+        if (quiesced) {
+          try {
+            await evidence.finish();
+          } catch (error) {
+            errors.push(error);
+            epoch.fatal(new Error('MOCK_EVIDENCE_CLEANUP_FAILED'));
+          }
         }
         try {
           await stopEpoch(epoch);
