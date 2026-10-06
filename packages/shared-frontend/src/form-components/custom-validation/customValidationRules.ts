@@ -113,5 +113,20 @@ const resolveCustomValidationRules = (component: Component, context: CustomValid
   return toDatePeriodRules(component, rule, context);
 };
 
-export { resolveCustomValidationRules, withStricterDateBounds };
+/**
+ * The only submission path `resolveCustomValidationRules` reads for this component, so a rendered
+ * input can follow that single value instead of the whole submission. Keep the two in sync.
+ */
+const getCustomValidationDependencyPath = (component: Component, formComponents: Component[]): string | undefined => {
+  const recognized = recognizeCustomValidation(component);
+  if (recognized.kind !== 'rules') {
+    return undefined;
+  }
+
+  return recognized.rule.type === 'notEqual'
+    ? recognized.rule.referencePath
+    : getBeforeDateInputSubmissionPath(component, formComponents);
+};
+
+export { getCustomValidationDependencyPath, resolveCustomValidationRules, withStricterDateBounds };
 export type { CustomValidationContext };
