@@ -3,168 +3,15 @@ import {
   Form,
   I18nTranslationReplacements,
   Recipient,
-  ResponseError,
   Submission,
   SubmissionAttachmentValue,
-  SubmissionData,
   SubmissionMethod,
   SubmissionType,
   TranslationLang,
-  formatUtils,
   navFormUtils,
-  yourInformationUtils,
+  resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
-
-type CoverPageUser = CoverPageDownloadType['user'];
-type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
-
-const getOrganizationNumberUser = (form: Form, submission: SubmissionData): OrganizationNumberUser | undefined => {
-  const organizationNumberComponent = navFormUtils
-    .flattenComponents(form.components)
-    .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
-
-  if (!organizationNumberComponent) {
-    return undefined;
-  }
-
-  const organizationNumber = submission[organizationNumberComponent.key];
-  if (!organizationNumber) {
-    return undefined;
-  }
-
-  const organizationNumberValue = formatUtils.removeAllSpaces(`${organizationNumber}`);
-  if (!organizationNumberValue) {
-    return undefined;
-  }
-
-  return {
-    organizationNumber: organizationNumberValue,
-  };
-};
-
-type LegacySubmission = {
-  fornavnSoker?: string;
-  etternavnSoker?: string;
-  coSoker?: string;
-  postnummerSoker?: string;
-  postnrSoker?: string;
-  utenlandskPostkodeSoker?: string;
-  poststedSoker?: string;
-  landSoker?: string;
-  gateadresseSoker?: string;
-  norskVegadresse?: {
-    coSoker?: string;
-    vegadresseSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  norskPostboksadresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  utenlandskAdresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    bygningSoker?: string;
-    postkodeSoker?: string;
-    poststedSoker?: string;
-    landSoker?: string;
-    regionSoker?: string;
-  };
-  fodselsnummerDNummerSoker?: string;
-};
-
-const getLegacyAddress = (submission: LegacySubmission) => {
-  const {
-    coSoker,
-    gateadresseSoker,
-    poststedSoker,
-    postnummerSoker,
-    postnrSoker,
-    landSoker,
-    utenlandskPostkodeSoker,
-    norskVegadresse,
-    norskPostboksadresse,
-    utenlandskAdresse,
-  } = submission;
-
-  return {
-    co: norskVegadresse?.coSoker || utenlandskAdresse?.coSoker || coSoker,
-    postOfficeBox:
-      (norskPostboksadresse?.postboksNrSoker && `Postboks ${norskPostboksadresse.postboksNrSoker}`) ||
-      utenlandskAdresse?.postboksNrSoker,
-    streetAddress: norskVegadresse?.vegadresseSoker || gateadresseSoker,
-    building: utenlandskAdresse?.bygningSoker,
-    postalCode:
-      norskVegadresse?.postnrSoker ||
-      norskPostboksadresse?.postnrSoker ||
-      utenlandskAdresse?.postkodeSoker ||
-      postnrSoker ||
-      utenlandskPostkodeSoker ||
-      postnummerSoker,
-    postalName:
-      norskVegadresse?.poststedSoker ||
-      norskPostboksadresse?.poststedSoker ||
-      utenlandskAdresse?.poststedSoker ||
-      poststedSoker,
-    region: utenlandskAdresse?.regionSoker,
-    country: {
-      value: landSoker || utenlandskAdresse?.landSoker || (norskVegadresse || norskPostboksadresse ? 'Norge' : ''),
-      label: landSoker || utenlandskAdresse?.landSoker || (norskVegadresse || norskPostboksadresse ? 'Norge' : ''),
-    },
-  };
-};
-
-const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPageUser => {
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission);
-
-  if (!yourInformation) {
-    const organizationNumberUser = getOrganizationNumberUser(form, submission);
-    if (organizationNumberUser) {
-      return organizationNumberUser;
-    }
-
-    const legacySubmission = submission as LegacySubmission;
-    if (legacySubmission.fodselsnummerDNummerSoker) {
-      return {
-        nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker,
-      };
-    }
-
-    return {
-      firstName: legacySubmission.fornavnSoker ?? '',
-      surname: legacySubmission.etternavnSoker ?? '',
-      address: getLegacyAddress(legacySubmission),
-    };
-  }
-
-  if (yourInformation.identitet?.identitetsnummer) {
-    return {
-      nationalIdentityNumber: yourInformation.identitet.identitetsnummer,
-    };
-  }
-
-  if (yourInformation.adresse) {
-    return {
-      firstName: yourInformation.fornavn ?? '',
-      surname: yourInformation.etternavn ?? '',
-      address: {
-        co: yourInformation.adresse.co,
-        postOfficeBox: yourInformation.adresse.postboks,
-        streetAddress: yourInformation.adresse.adresse,
-        building: yourInformation.adresse.bygning,
-        postalCode: yourInformation.adresse.postnummer,
-        postalName: yourInformation.adresse.bySted,
-        region: yourInformation.adresse.region,
-        country: yourInformation.adresse.land,
-      },
-    };
-  }
-
-  throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
-};
+import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
 
 const getAttachments = (submission: Submission, form: Form) => {
   return navFormUtils
@@ -251,6 +98,10 @@ const createDownloadDataFromSubmission = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   submissionMethod: SubmissionMethod = 'paper',
 ): CoverPageDownloadType => {
+  const party = resolveParty(form, submission, { navUnit: unitNumber });
+  const coverPageOrganizationUser = getCoverPageOrganizationUser(form, submission.data);
+  const partyData = party ? mapPartyToCoverPage(party) : {};
+
   return {
     type: 'SKJEMA',
     submissionType: asSubmissionType(submissionMethod),
@@ -260,8 +111,8 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: getSubmissionUserData(form, submission.data),
-    recipient: getRecipient(form.properties.mottaksadresseId, recipient, unitNumber),
+    user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
+    recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
     attachments: getAttachmentLabels(form, submission, translate),
   };
 };
