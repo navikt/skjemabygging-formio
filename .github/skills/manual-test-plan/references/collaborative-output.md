@@ -45,6 +45,13 @@ node .github/skills/manual-test-plan/scripts/create-issue.mjs \
 Run the dry run first. It prints the test-plan issue body and the exact
 confirmation needed for creation. Do not replace that preview with a summary.
 
+Just before creating the issue, ask whether the user wants a GitHub issue,
+HTML for printing to PDF, or both (see the developer path in SKILL.md). For
+HTML, rerender with `--format html` or `--format both` and follow the print
+and review rules in "With non-developers". The HTML omits the no-access
+handoff, like the issue. Hand the reviewed PDF to the user for distribution
+instead of publishing it.
+
 ## Review before sharing
 
 Review the HTML, printed PDF, or issue for internal-only details, private

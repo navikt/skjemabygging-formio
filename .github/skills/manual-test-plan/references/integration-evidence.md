@@ -23,7 +23,7 @@ Local mock verification can support a separate automated request-body check,
 but it never verifies what a manual preprod submission sent. For a submission
 case, offer team logs and Joark in `integrations[].evidence.options`. When
 non-developers collaborate, also show the no-access handoff path in the PDF.
-Omit handoff from a non-collaborative GitHub issue.
+Omit handoff from developer-only output, whether GitHub issue or HTML.
 Use the short titles "Teamlogger i GCP", "Journalpost i Joark", and
 "Overlevering" for the three choices. Give each option its own owner,
 ordered actions, and observable expected result. This is a

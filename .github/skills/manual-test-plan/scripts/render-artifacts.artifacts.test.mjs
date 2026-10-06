@@ -64,3 +64,50 @@ test('refuses to remove a PDF tracked by an older manifest', () => {
     run.cleanup();
   }
 });
+
+test('renders HTML, the issue, or both for a developer plan on request', () => {
+  const run = render(makePlan(false));
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    assert.ok(run.exists('github-issue.md'));
+    assert.ok(!run.exists('index.html'));
+
+    const html = run.invoke('--format', 'html');
+    assert.equal(html.status, 0, html.stderr);
+    assert.ok(run.exists('index.html'));
+    assert.ok(!run.exists('github-issue.md'));
+    assert.match(html.stdout, /index\.html\?print=1/);
+
+    const both = run.invoke('--format', 'both');
+    assert.equal(both.status, 0, both.stderr);
+    assert.ok(run.exists('index.html'));
+    assert.ok(run.exists('github-issue.md'));
+    const manifestPaths = JSON.parse(run.read('manifest.json')).files.map(({ path }) => path);
+    assert.ok(manifestPaths.includes('index.html') && manifestPaths.includes('github-issue.md'));
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each(['issue', 'both'])('rejects --format %s for a plan with non-developers', (format) => {
+  const run = render(makePlan(true));
+  try {
+    const result = run.invoke('--format', format);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /only support --format html/);
+    assert.ok(!run.exists('github-issue.md'));
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects an unknown --format', () => {
+  const run = render(makePlan(false));
+  try {
+    const result = run.invoke('--format', 'pdf');
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /--format must be issue, html, or both/);
+  } finally {
+    run.cleanup();
+  }
+});

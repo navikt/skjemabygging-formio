@@ -5,8 +5,9 @@ description: >-
     directly (with or without a linked issue), and create a manual test plan
     for skjemabygging-formio,
     including suitable production or generated forms, environment revision
-    verification, a GitHub issue for developer-only testing, or local HTML
-    for a PDF printed by the user when testing with non-developers.
+    verification, and a GitHub issue, local HTML for a PDF printed by the
+    user, or both for developer-only testing, or local HTML for a printed PDF
+    when testing with non-developers.
     Accept an issue or pull request number or URL after /manual-test-plan. Use only when
     the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
@@ -97,7 +98,8 @@ Test plan progress:
 6. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
    Use the choices "Yes" and "No". Do not infer the answer from case count or
    risk. This choice selects the path you follow below: "Yes" is the
-   **non-developer path**, "No" is the **developer path**.
+   **non-developer path**, "No" is the **developer path**. On the developer
+   path, do not ask about the output format here; ask at delivery.
 7. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
@@ -143,8 +145,11 @@ Test plan progress:
 
     This writes `github-issue.md` on the developer path, or `index.html` on
     the non-developer path, plus `internal-instructions.md` and
-    `manifest.json` in both cases. See the delivery steps for your path below
-    for how to turn this output into a shared artifact.
+    `manifest.json` in both cases. On the developer path, `--format html` or
+    `--format both` renders `index.html` instead of or alongside the issue;
+    use it only after the delivery choice below. See the delivery steps for
+    your path below for how to turn this output into a shared artifact.
+
 13. After a confirmed import or the user importing a required production
     form, read back its stored path, revision, components,
     submission methods, and conditional choices before finalizing cases.
@@ -172,24 +177,37 @@ Test plan progress:
       edge cases, failure paths, and regression candidates.
 15. Follow the delivery steps for the path chosen in step 6.
 
-### Developer path: GitHub issue
+### Developer path: GitHub issue, HTML, or both
 
 Read [collaborative-output.md](references/collaborative-output.md) ("Without
 non-developers" and "Review before sharing").
 
-1. Show the user the entire rendered test-plan issue title and body and
-   request approval before creating anything.
-2. Run a dry run first, then create the test-plan issue only after explicit
-   confirmation:
+1. After the step 14 review, and before showing or creating any issue, use
+   `ask_user` to ask: "How should the test plan be delivered?" Use the
+   choices "GitHub issue", "HTML for printing to PDF", and "Both". Do not
+   ask this earlier in the workflow.
+2. For "HTML for printing to PDF" or "Both", rerender into the same artifact
+   directory with `--format html` or `--format both`. The manifest removes a
+   `github-issue.md` that is no longer requested.
+3. For a GitHub issue ("GitHub issue" or "Both"):
+    1. Show the user the entire rendered test-plan issue title and body and
+       request approval before creating anything.
+    2. Run a dry run first, then create the test-plan issue only after
+       explicit confirmation:
 
-   ```bash
-   node .github/skills/manual-test-plan/scripts/create-issue.mjs \
-     --repo navikt/skjemabygging-formio \
-     --title '<issue-title>' \
-     --body <artifact-directory>/github-issue.md
-   ```
-3. Give the user local links to the generated files and the canonical plan.
-   Share the test-plan issue URL only after it has been created.
+        ```bash
+        node .github/skills/manual-test-plan/scripts/create-issue.mjs \
+          --repo navikt/skjemabygging-formio \
+          --title '<issue-title>' \
+          --body <artifact-directory>/github-issue.md
+        ```
+
+    3. Share the test-plan issue URL only after it has been created.
+4. For HTML ("HTML for printing to PDF" or "Both"), follow steps 1 and 2 of
+   the non-developer path: give the `file://` URL with `?print=1` and ask the
+   user to review every page of the printed PDF. Hand the reviewed PDF to the
+   user for distribution. Do not publish it to GitHub Pages.
+5. Give the user local links to the generated files and the canonical plan.
 
 ### Non-developer path: printed PDF
 
@@ -217,10 +235,12 @@ non-developers" and "Review before sharing").
 
 These scripts are executed, not read for logic:
 
-- `scripts/render-artifacts.mjs --plan <plan.json> --out <dir>`: validates the
-  canonical plan against `plan.schema.json`, then writes `github-issue.md` or
-  `index.html` (see step 12), plus `internal-instructions.md` and
-  `manifest.json`.
+- `scripts/render-artifacts.mjs --plan <plan.json> --out <dir> [--format <issue|html|both>]`:
+  validates the canonical plan against `plan.schema.json`, then writes
+  `github-issue.md`, `index.html`, or both (see step 12), plus
+  `internal-instructions.md` and `manifest.json`. The format defaults to
+  `html` with non-developers and `issue` otherwise; plans with non-developers
+  accept only `html`.
 - `scripts/create-issue.mjs --repo <owner/name> --title <title> --body <path>`:
   dry run by default; add `--apply --confirm '<token from the dry run>'` to
   create the test-plan issue. Developer path only.

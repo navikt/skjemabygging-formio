@@ -198,7 +198,9 @@ holds the example and the rules a schema cannot express.
 ## Field rules
 
 - `collaboration.withNonDevelopers` records the user's answer. `true` produces
-  local HTML for manual PDF printing. `false` produces a GitHub issue document.
+  local HTML for manual PDF printing. `false` produces a GitHub issue document
+  by default; the renderer's `--format html` or `--format both` produces local
+  HTML instead of or alongside it.
 - Use `scope.included` and `scope.excluded` to separate implemented PR behavior
   from criteria that remain for later work. The renderer shows both to testers.
 - `scope.notCoveredByTests` lists in-scope behavior or edge cases without a
@@ -234,7 +236,7 @@ holds the example and the rules a schema cannot express.
   provide separate `team-logs` and `joark` options as described in the
   integration-evidence rules (loaded in workflow step 7). For collaboration with
   non-developers, also provide `handoff`. The renderer omits handoff from a
-  non-collaborative GitHub issue even if it is present in the plan. A handoff
+  non-collaborative GitHub issue or HTML even if it is present in the plan. A handoff
   must say the downstream check is pending, not passed.
 - Every integration must be linked from at least one test case. If no approved
   evidence method exists, resolve that question before creating verification

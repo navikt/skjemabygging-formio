@@ -13,11 +13,20 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const skillDirectory = resolve(scriptDirectory, '..');
 
 const helpText = `Usage:
-  node render-artifacts.mjs --plan <plan.json> --out <directory>
+  node render-artifacts.mjs --plan <plan.json> --out <directory> [--format <issue|html|both>]
 
-Generates either local index.html for manual printing, or github-issue.md,
+Generates local index.html for manual printing, github-issue.md, or both,
 plus manifest.json and any generated form files. No PDF is generated.
+
+--format defaults to html when the plan collaborates with non-developers and
+to issue otherwise. Plans that collaborate with non-developers only support html.
 `;
+
+const formats = {
+  issue: ['github-issue.md'],
+  html: ['index.html'],
+  both: ['github-issue.md', 'index.html'],
+};
 
 const getArgument = (name) => {
   const index = process.argv.indexOf(name);
@@ -41,7 +50,7 @@ const main = () => {
   const planArgument = getArgument('--plan');
   const outputArgument = getArgument('--out');
   if (process.argv.includes('--page-url')) {
-    fail('--page-url is not supported; collaborative plans are local HTML');
+    fail('--page-url is not supported; HTML plans are local');
   }
 
   if (!planArgument || !outputArgument) {
@@ -54,22 +63,32 @@ const main = () => {
 
   const ctx = validatePlan(readPlan(planPath));
   const { plan } = ctx;
+  const { withNonDevelopers } = plan.collaboration;
+
+  const format = getArgument('--format') ?? (withNonDevelopers ? 'html' : 'issue');
+  if (!Object.hasOwn(formats, format)) {
+    fail('--format must be issue, html, or both');
+  }
+  if (withNonDevelopers && format !== 'html') {
+    fail('plans that collaborate with non-developers only support --format html');
+  }
 
   const generatedAt = new Date().toISOString();
-  const html = renderHtml(ctx, { generatedAt, templatePath: join(skillDirectory, 'templates', 'plan-page.html') });
-  const issue = renderIssue(ctx);
+  const renderers = {
+    'github-issue.md': () => renderIssue(ctx),
+    'index.html': () =>
+      renderHtml(ctx, { generatedAt, templatePath: join(skillDirectory, 'templates', 'plan-page.html') }),
+  };
   const internalInstructions = renderInternalInstructions(ctx);
 
-  const artifactFiles = plan.collaboration.withNonDevelopers
-    ? new Map([['index.html', html]])
-    : new Map([['github-issue.md', issue]]);
+  const artifactFiles = new Map(formats[format].map((name) => [name, renderers[name]()]));
   if (internalInstructions) {
     artifactFiles.set('internal-instructions.md', internalInstructions);
   }
   const generatedArtifacts = collectGeneratedArtifacts({ plan, planDirectory, outputDirectory });
   writeArtifacts({ plan, outputDirectory, artifactFiles, generatedArtifacts, generatedAt });
 
-  if (plan.collaboration.withNonDevelopers) {
+  if (artifactFiles.has('index.html')) {
     process.stdout.write(
       `No PDF generated. Open ${join(outputDirectory, 'index.html')}?print=1 in a browser and print to PDF.\n`,
     );
