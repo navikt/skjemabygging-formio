@@ -62,13 +62,31 @@ const configs = {
       commands: [
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--strictPort', '--port', String(backendPort)],
+          [
+            rootViteCliPath,
+            '--clearScreen',
+            'false',
+            '--strictPort',
+            '--host',
+            '127.0.0.1',
+            '--port',
+            String(backendPort),
+          ],
           { NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger-backend'),
         ],
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--strictPort', '--port', String(frontendPort)],
+          [
+            rootViteCliPath,
+            '--clearScreen',
+            'false',
+            '--strictPort',
+            '--host',
+            '127.0.0.1',
+            '--port',
+            String(frontendPort),
+          ],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger'),
         ],

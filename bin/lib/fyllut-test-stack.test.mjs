@@ -42,8 +42,12 @@ test('fyllut stack exposes its URLs and commands without writing shared runtime 
     'http://127.0.0.1:4104/fyllut/',
   ]);
   assert.equal(stack.commands.length, 3);
-  assert.ok(stack.commands[1][1].includes('--strictPort'));
-  assert.ok(stack.commands[2][1].includes('--strictPort'));
+  for (const [, args] of stack.commands.slice(1)) {
+    assert.ok(args.includes('--strictPort'));
+    const hostIndex = args.indexOf('--host');
+    assert.notEqual(hostIndex, -1);
+    assert.equal(args[hostIndex + 1], '127.0.0.1');
+  }
   assert.equal(stack.commands[1][2].SKJEMABYGGING_PROXY_URL, 'http://127.0.0.1:4101/skjemabygging-proxy');
   assert.equal(stack.commands[2][2].BACKEND_PORT, '4103');
   assert.equal(stack.onReady, undefined);

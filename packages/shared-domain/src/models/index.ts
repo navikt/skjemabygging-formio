@@ -1,6 +1,7 @@
 export * from './accordion';
 export * from './address';
 export * from './attachment';
+export * from './captcha';
 export * from './config';
 export * from './cover-page';
 export * from './data-fetcher';
@@ -14,6 +15,7 @@ export * from './http';
 export * from './logging';
 export * from './migration';
 export * from './mottaksadresse';
+export * from './party';
 export * from './pdf';
 export * from './prefill';
 export * from './recipient';

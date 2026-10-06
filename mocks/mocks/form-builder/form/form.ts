@@ -9,10 +9,12 @@ export interface FormType {
   components: any[];
   properties?: any;
   introPage?: FormIntroPageType;
+  status?: 'draft' | 'published' | 'pending' | 'unpublished';
+  publishedLanguages?: string[];
 }
 
 const form = (props: FormType) => {
-  const { title, formNumber, components, path, properties, introPage } = props ?? {};
+  const { title, formNumber, components, path, properties, introPage, status, publishedLanguages } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -24,6 +26,8 @@ const form = (props: FormType) => {
     components,
     properties: properties ?? formProperties({ formNumber }),
     introPage: introPage ?? formIntroPage(),
+    ...(status && { status }),
+    ...(publishedLanguages && { publishedLanguages }),
   };
 };
 

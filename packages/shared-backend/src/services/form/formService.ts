@@ -86,7 +86,10 @@ const createFormService = ({
     const formSelect = select.filter((field): field is FormSelectType => field !== 'languages');
     const form = await fetchForm({
       formPath,
-      select: formSelect.length > 0 ? Array.from(new Set([...formSelect, 'publishedLanguages' as const])) : undefined,
+      select:
+        formSelect.length > 0
+          ? Array.from(new Set([...formSelect, 'publishedLanguages' as const, 'status' as const]))
+          : undefined,
     });
 
     return { ...form, languages: resolveFormLanguages(form, includeUnpublishedLanguages) };

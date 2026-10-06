@@ -119,6 +119,10 @@ import {
 } from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import {
+  unknownPersonCoverPageForm,
+  unknownPersonCoverPageTranslations,
+} from '../data/forms-api/cover-page/unknownPersonCoverPageForm';
+import {
   currencyAndAccountForm,
   currencyAndAccountTranslations,
 } from '../data/forms-api/currency-and-account/currencyAndAccountForm';
@@ -270,6 +274,14 @@ import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-rend
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import { numberDeprecatedForm, numberDeprecatedTranslations } from '../data/forms-api/number/numberDeprecatedForm';
+import {
+  organizationSenderPartyForm,
+  organizationSenderPartyTranslations,
+} from '../data/forms-api/party-mapping-regression/organizationSenderPartyForm';
+import {
+  personSenderPartyForm,
+  personSenderPartyTranslations,
+} from '../data/forms-api/party-mapping-regression/personSenderPartyForm';
 import { pdfConditionalPageForm, pdfConditionalPageTranslations } from '../data/forms-api/pdf/pdfConditionalPageForm';
 import { pdfPaperDigitalForm, pdfPaperDigitalTranslations } from '../data/forms-api/pdf/pdfPaperDigitalForm';
 import { pdfPaperForm, pdfPaperTranslations } from '../data/forms-api/pdf/pdfPaperForm';
@@ -347,6 +359,18 @@ import {
   translationCypress101Form,
   translationCypress101Translations,
 } from '../data/forms-api/translation/translationCypress101Form';
+import {
+  translationSavedLanguageForm,
+  translationSavedLanguageTranslations,
+} from '../data/forms-api/translation/translationSavedLanguageForm';
+import {
+  translationSavedLanguagePendingForm,
+  translationSavedLanguagePendingTranslations,
+} from '../data/forms-api/translation/translationSavedLanguagePendingForm';
+import {
+  translationUnpublishedLanguageForm,
+  translationUnpublishedLanguageTranslations,
+} from '../data/forms-api/translation/translationUnpublishedLanguageForm';
 import { umamiNologinForm, umamiNologinTranslations } from '../data/forms-api/umami/umamiNologinForm';
 import { yearDeprecatedForm, yearDeprecatedTranslations } from '../data/forms-api/year-deprecated/yearDeprecatedForm';
 import {
@@ -432,6 +456,9 @@ const allForms = [
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
+  { form: unknownPersonCoverPageForm(), translations: unknownPersonCoverPageTranslations() },
+  { form: organizationSenderPartyForm(), translations: organizationSenderPartyTranslations() },
+  { form: personSenderPartyForm(), translations: personSenderPartyTranslations() },
   { form: currencyAndAccountForm(), translations: currencyAndAccountTranslations() },
   { form: dataFetcherAnnetDeprecatedForm(), translations: dataFetcherAnnetDeprecatedTranslations() },
   { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
@@ -519,6 +546,9 @@ const allForms = [
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },
   { form: translationCypress101Form(), translations: translationCypress101Translations() },
+  { form: translationSavedLanguageForm(), translations: translationSavedLanguageTranslations() },
+  { form: translationSavedLanguagePendingForm(), translations: translationSavedLanguagePendingTranslations() },
+  { form: translationUnpublishedLanguageForm(), translations: translationUnpublishedLanguageTranslations() },
   { form: umamiNologinForm(), translations: umamiNologinTranslations() },
   { form: yearDeprecatedForm(), translations: yearDeprecatedTranslations() },
   { form: yourInformationDeprecatedForm(), translations: yourInformationDeprecatedTranslations() },
