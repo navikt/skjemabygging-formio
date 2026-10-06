@@ -1,5 +1,5 @@
 import { expect, test } from '../../fixtures/test';
-import { visitForm } from '../../helpers/form';
+import { visitStaticPdfForm } from '../../helpers/form';
 
 test.describe('Static PDF', () => {
   (process.env.FYLLUT_PLAYWRIGHT_MODE === 'built' ? test : test.skip)(
@@ -11,7 +11,8 @@ test.describe('Static PDF', () => {
         { type: 'build-only', description: 'Requires compiled backend routing; Vite dev serves an SPA fallback.' },
       ],
     },
-    async ({ request }) => {
+    async ({ readyPage: page, request }) => {
+      await visitStaticPdfForm(page);
       const response = await request.get('/fyllut/pdfstatic');
       expect(response.status()).toBe(404);
     },
@@ -25,12 +26,7 @@ test.describe('Static PDF', () => {
       ],
     },
     async ({ readyPage: page }) => {
-      const staticPdf = page.waitForResponse(
-        (response) =>
-          response.url().includes('/fyllut/api/forms/pdfstatic/static-pdfs') && response.request().method() === 'GET',
-      );
-      await visitForm(page, '/fyllut/pdfstatic/pdf');
-      expect((await staticPdf).ok()).toBeTruthy();
+      await visitStaticPdfForm(page);
 
       await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).pressSequentially('22015614475');
       await page.getByRole('checkbox', { name: /Vedlegg 1/ }).check();

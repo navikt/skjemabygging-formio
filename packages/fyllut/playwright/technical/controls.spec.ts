@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import submission from '../../../../mocks/mocks/data/test-cases/tc07-innsending-soknad-body.json' with { type: 'json' };
 import pdf from '../../../../mocks/mocks/data/test-cases/tc07-pdf-body.json' with { type: 'json' };
-import { restoreRouteVariants } from '../fixtures/mock-client';
+import { restoreRouteVariants, useRouteVariant as selectRouteVariant } from '../fixtures/mock-client';
 import { expect, test } from '../fixtures/test';
 
 const scenarios = [
@@ -19,6 +19,8 @@ const scenarios = [
   'startup-collision',
   'cleanup-first',
   'cleanup-next',
+  'teardown-mismatch',
+  'teardown-valid',
 ];
 for (const id of scenarios) {
   test.describe(id, () => {
@@ -33,6 +35,22 @@ for (const id of scenarios) {
             if (phase === 'before' && id === 'reset-before') throw new Error('CONTROLLED_RESET_FAILURE');
             if (phase === 'after' && ['restore-after', 'test-and-restore', 'poison-first'].includes(id)) {
               throw new Error('CONTROLLED_RESTORE_FAILURE');
+            }
+            if (phase === 'after' && ['teardown-mismatch', 'teardown-valid'].includes(id)) {
+              await selectRouteVariant(url, 'post-familie-pdf:success-tc07');
+              const payload = structuredClone(pdf);
+              if (id === 'teardown-mismatch') payload.bunntekst.lowerMiddle = 'controlled-late-mismatch';
+              const response = await fetch('http://127.0.0.1:3440/api/pdf/v3/opprett-pdf', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: AbortSignal.timeout(10000),
+              });
+              expect(response.status).toBe(id === 'teardown-mismatch' ? 400 : 200);
+              await info.attach('teardown-request', {
+                body: Buffer.from(JSON.stringify({ status: response.status })),
+                contentType: 'application/json',
+              });
             }
             await restoreRouteVariants(url);
           });
@@ -95,7 +113,7 @@ for (const id of scenarios) {
         await mockEvidence.expectRoutes({ [route]: 'success-tc07' });
         if (id !== 'missing-route') {
           const mismatch = id === 'body-mismatch';
-          await useRouteVariant(`${route}:${mismatch ? 'success-tc07' : 'success'}`);
+          await useRouteVariant(`${route}:${mismatch || id.startsWith('teardown-') ? 'success-tc07' : 'success'}`);
           const payload = structuredClone(pdf);
           if (mismatch) payload.bunntekst.lowerMiddle = 'controlled-wrong-version';
           const response = await request.post(

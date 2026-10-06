@@ -16,7 +16,9 @@ node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.te
 
 The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes. The fixed test ports are 3440 through 3443; occupied ports fail rather than selecting alternatives or stopping foreign services.
 
-The launcher requires successful bind notifications from its own children and HTTP readiness. Teardown closes browser contexts, checks final mock evidence, restores variants, signals only owned process groups, escalates bounded shutdown to SIGKILL if needed, and awaits actual exit before another epoch. A dedicated epoch-owner process handles worker loss through IPC disconnect, including SIGKILL of the worker. Failed reset, cleanup or unexpected owner loss poisons the run and prevents another epoch. Cypress runtime configuration is not written or deleted.
+The launcher requires successful bind notifications from its own children and HTTP readiness. Cancellation during readiness or its callback rejects startup and awaits cleanup. The ordinary launcher also waits for in-progress startup before finishing shutdown.
+
+Teardown closes browser contexts, stops the owned backend/frontend processes and awaits their exit while mocks remain available. It then restores variants, checks and releases final mock evidence, and stops the remaining mock process. The final snapshot therefore includes observed calls during application shutdown and restore. Only owned process groups are signalled, with bounded SIGTERM-to-SIGKILL escalation. A dedicated epoch-owner process handles worker loss through IPC disconnect, including SIGKILL of the worker. Failed reset, application shutdown, evidence finalization, cleanup or unexpected owner loss poisons the run and prevents another epoch. Cypress runtime configuration is not written or deleted.
 
 Reports are under `packages/fyllut/.runtime/playwright/<run-id>/`. `run.json` records mode, selected IDs, commit and built-entrypoint timestamps/hashes. `source.diff` records tracked worktree changes, including staged new files; untracked paths are listed separately and must be staged or captured for final review evidence. Each epoch records its immutable test ID, attempt, URLs, owner/child PIDs, startup duration and stop time. JSON results are checked against the exact selected IDs; discovery is not runtime evidence. F029-T002 confirms `get-register-data-activities:success-empty` and checks the backend response and empty-state UI.
 
@@ -29,6 +31,11 @@ F061-T004 uploads all four source-fixture files, checks the receipt and requires
 completed, body-validated tc07 calls on both observed routes. The backend receives
 the deterministic fixture metadata `dev-local/mr-sha/forms@git-sha`; this is not
 the tested Git commit.
+
+F004-T006 retains the source's PDF payload assertions and waits for the matching
+response to finish; sending a request is not a completed download. F086-T002
+first loads the valid static-PDF page and its API data in its own epoch before
+checking the normal route's 404. A missing form cannot satisfy that prerequisite.
 
 To verify Playwright's collected test list against the register without starting servers, run:
 
@@ -88,12 +95,33 @@ real backend PDF call tests teardown across two epochs without a fixed sleep.
 Worker SIGTERM/SIGKILL tests verify that owned servers exit and that a new epoch
 is refused after ownership loss.
 
+Review regressions cover a valid and a mismatching tc07 call during fixture
+teardown, rejected downloads with a held real backend PDF call, and a controlled
+missing static form. The outer verifier checks the final snapshot for both the
+original and teardown request, the exact mismatch field, confirmed application
+shutdown and the specific positive-prerequisite failure. The missing-form fault
+is opt-in per test epoch and does not alter ordinary mock startup.
+
 Reports are under `.runtime/playwright/verify-<run-id>/`; `summary.json` records
 the checked outcomes. The hold-PDF hook is enabled only by technical-test
 configuration. Ordinary mock startup has neither that hook nor its control
 endpoint. If a run fails, inspect its epoch `stack.log`, mock metadata and
 Playwright trace. A `fatal-cleanup.txt` marker means the run cannot continue
 with another stack. Do not delete it to make the same run proceed.
+
+## Checks before expanding the migration
+
+Compare each source test together with its inherited hooks and the helpers it
+calls. Record prerequisites, action order, response completion, negative
+assertions, focus and outbound comparator expectations separately. A shared hook
+or a response wait is part of the source contract, not disposable setup.
+
+For each claim, include a control that would catch its loss. A 404 must not pass
+because its form is missing; a PDF request must not pass without a response.
+Exercise cancellation and late requests at asynchronous lifecycle boundaries,
+not only before startup or during the test body. Keep the producer alive when
+testing the old race, and require confirmed producer exit before final evidence.
+One green source/counterpart pair does not establish equivalent failure coverage.
 
 All commands are local. There is no new CI workflow, sharding, existing-server
 mode or Cypress removal. Final Cypress/Playwright comparisons and human review

@@ -44,7 +44,8 @@ const downloadApplication = async (page: Page) => {
       request.method() === 'POST' && request.url().includes('/fyllut/api/documents/cover-page-and-application'),
   );
   await page.getByRole('button', { name: /^(Last ned skjema|Download form)$/ }).click();
-  const payload: unknown = (await request).postDataJSON();
+  const sent = await request;
+  const payload: unknown = sent.postDataJSON();
   expect(payload && typeof payload === 'object' && !Array.isArray(payload)).toBeTruthy();
   const body = payload as { submission?: string; formPath?: string };
   expect(body.submission).toBeTruthy();
@@ -53,6 +54,24 @@ const downloadApplication = async (page: Page) => {
   expect(submission && typeof submission === 'object' && 'data' in submission).toBeTruthy();
   const data = (submission as { data: unknown }).data;
   expect(data && typeof data === 'object' && Object.keys(data).length).toBeTruthy();
+  const response = await sent.response();
+  if (!response) throw new Error('PDF_DOWNLOAD_RESPONSE_MISSING');
+  const error = await response.finished();
+  if (error) throw new Error('PDF_DOWNLOAD_RESPONSE_INCOMPLETE', { cause: error });
 };
 
-export { downloadApplication, nextStep, saveAndContinue, showAllSteps, visitForm };
+const visitStaticPdfForm = async (page: Page) => {
+  const available = await page.request.get('/fyllut/pdfstatic/pdf');
+  expect(available.status(), 'STATIC_PDF_PAGE_REQUIRED').toBe(200);
+  const staticPdf = page.waitForResponse(
+    (response) =>
+      response.url().includes('/fyllut/api/forms/pdfstatic/static-pdfs') && response.request().method() === 'GET',
+  );
+  await Promise.all([
+    visitForm(page, '/fyllut/pdfstatic/pdf'),
+    staticPdf.then((response) => expect(response.ok(), 'STATIC_PDF_LIST_REQUIRED').toBeTruthy()),
+  ]);
+  await expect(page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })).toBeVisible();
+};
+
+export { downloadApplication, nextStep, saveAndContinue, showAllSteps, visitForm, visitStaticPdfForm };

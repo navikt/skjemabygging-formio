@@ -57,6 +57,10 @@ const cases = [
   ['startup-collision', 'STACK_PORT_COLLISION', false],
   ['concurrent-owner', undefined, true],
   ['late-request', undefined, false],
+  ['teardown-mismatch', 'EVIDENCE_BODY_MISMATCH', true],
+  ['teardown-valid', undefined, true],
+  ['download-response', undefined, true],
+  ['missing-static-form', 'STATIC_PDF_PAGE_REQUIRED', true],
 ];
 const summary = [
   { id: 'exclusive-declaration', innerExit: exclusive.status, verified: true },
@@ -105,7 +109,14 @@ for (const [id, expectedError, actionExpected] of cases) {
     const errors = (result.errors ?? []).map((error) => error.message).join('\n');
     if (code) assert(errors.includes(code), `${id}: missing structured reason ${code}`);
     if (id === 'test-and-restore') assert(errors.includes('CONTROLLED_RESTORE_FAILURE'), 'Lost teardown error');
-    if (id === 'body-mismatch') assert(errors.includes('bunntekst.lowerMiddle'), 'Lost exact mismatch path');
+    if (['body-mismatch', 'teardown-mismatch'].includes(id))
+      assert(errors.includes('bunntekst.lowerMiddle'), 'Lost exact mismatch path');
+    if (id.startsWith('teardown-')) {
+      assert(result.attachments.some((attachment) => attachment.name === 'teardown-request'));
+    }
+    if (id === 'download-response') {
+      assert(result.attachments.some((attachment) => attachment.name === 'held-download-rejected'));
+    }
     const action = result.attachments?.some((attachment) => attachment.name === 'action-started') ?? false;
     assert.equal(action, index === 0 && actionExpected, `${id}: incorrect user-action ordering`);
     if (id === 'startup-collision') {
@@ -120,6 +131,12 @@ for (const [id, expectedError, actionExpected] of cases) {
   for (const epoch of epochs) {
     const manifest = JSON.parse(readFileSync(resolve(directory, 'epochs', epoch, 'manifest.json'), 'utf8'));
     assert(manifest.stoppedAt, `${id}: no confirmed stop for ${epoch}`);
+    if (['teardown-mismatch', 'teardown-valid'].includes(id)) {
+      assert(manifest.quiescedAt, `${id}: application was not stopped before final evidence`);
+      const snapshot = JSON.parse(readFileSync(resolve(directory, 'epochs', epoch, 'mock-evidence.json'), 'utf8'));
+      assert.equal(snapshot.records.length, 2, `${id}: late request missing from final snapshot`);
+      assert.equal(snapshot.records[1].validation, id === 'teardown-mismatch' ? 'failed' : 'passed');
+    }
     for (const pid of manifest.pids) {
       assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' }, `${id}: child ${pid} survived`);
     }
