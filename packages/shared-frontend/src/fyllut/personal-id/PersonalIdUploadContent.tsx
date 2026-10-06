@@ -23,6 +23,7 @@ import ValidationRegistration from '../../context/validation/ValidationRegistrat
 import { FormButtonRow, FormNextButton } from '../layout/FormButtonRow';
 import FormHeader from '../layout/FormHeader';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
+import styles from './PersonalIdUploadContent.module.css';
 import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
 const PERSONAL_ID_ATTACHMENT_ID = 'personal-id';
@@ -84,7 +85,7 @@ const PersonalIdUploadContent = () => {
           rules={field.rules}
         />
       ))}
-      <VStack gap="space-32">
+      <VStack gap="space-32" className={styles.content}>
         <BodyShort>{translate(TEXTS.statiske.uploadId.description)}</BodyShort>
         <VStack gap="space-24">
           {!attachment?.files?.length && (
