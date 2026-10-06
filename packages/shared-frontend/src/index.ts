@@ -20,14 +20,9 @@ import { solvePow } from './context/runtime-services/powWorker';
 import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { ValidationProvider } from './context/validation/ValidationContext';
-import {
-  findUnsupportedCustomValidation,
-  RenderSummaryForm,
-  reportUnsupportedCustomValidation,
-} from './form-components';
+import { RenderSummaryForm } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
-import './styles/tokens.css';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
@@ -65,7 +60,6 @@ export type {
   RenderSummaryFormProps,
   SummaryRendererAppConfig,
   SummaryRendererConfig,
-  UnsupportedCustomValidation,
 } from './form-components';
 export type {
   DigitalDraftInitialization,
@@ -81,7 +75,6 @@ export {
   applyPrefillDataToForm,
   CountrySelect,
   CurrencySelect,
-  findUnsupportedCustomValidation,
   FormDefinitionProvider,
   FormErrorSummary,
   getFormPrefillKeys,
@@ -90,7 +83,6 @@ export {
   NavUnitSelect,
   RenderForm,
   RenderSummaryForm,
-  reportUnsupportedCustomValidation,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
   sharedFrontendPackageName,

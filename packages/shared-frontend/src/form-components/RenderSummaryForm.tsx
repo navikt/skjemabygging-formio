@@ -179,7 +179,6 @@ const RenderSummaryForm = ({
           panelValidationList={panelValidationList}
           rendererConfig={resolvedRendererConfig}
           handleDownloadFile={handleDownloadFile}
-          legacyAttachmentPanelMode
         />
       )}
     </>

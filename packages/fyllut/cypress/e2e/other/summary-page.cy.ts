@@ -127,6 +127,17 @@ describe('SummaryPage', () => {
         cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
       });
 
+    cy.findAllByRole('button', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
+      .should('have.length', 2)
+      .each(($button) => {
+        cy.wrap($button).should('have.attr', 'data-variant', 'primary');
+      });
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
+      'have.attr',
+      'data-variant',
+      'secondary',
+    );
+
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).focus();
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
     cy.get('[data-cy=error-summary]').within(() => {

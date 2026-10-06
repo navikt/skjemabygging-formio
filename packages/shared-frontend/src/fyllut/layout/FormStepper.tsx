@@ -2,6 +2,7 @@ import { Box, FormProgress } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import styles from './FormStepper.module.css';
 
 interface Step {
   key: string;
@@ -35,7 +36,7 @@ const FormStepper = ({
   ];
 
   return (
-    <Box marginBlock="space-0 space-24">
+    <Box marginBlock="space-0 space-24" className={styles.container}>
       <FormProgress
         totalSteps={steps.length}
         activeStep={activeIndex + 1}

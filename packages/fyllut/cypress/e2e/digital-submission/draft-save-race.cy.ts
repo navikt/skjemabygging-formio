@@ -141,6 +141,7 @@ describe('Edits during draft saving', () => {
   });
 
   it('requires the self-declaration if it is unchecked while the introduction is saving', () => {
+    const declarationError = 'Du må bekrefte at du vil svare så riktig som du kan.';
     const first = deferred();
     const requests = interceptSaves(first);
     cy.visit(`/fyllut/draftsaverace?sub=digital&innsendingsId=${draftId}`);
@@ -154,11 +155,16 @@ describe('Edits during draft saving', () => {
     cy.then(() => first.resolve());
     cy.wait('@saveDraft');
     cy.wait('@saveDraft').its('request.body.submission.selfDeclaration').should('equal', false);
-    cy.findByRole('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ })
-      .should('not.be.checked')
-      .and('have.attr', 'aria-invalid', 'true');
+    cy.findByText(declarationError).should('be.visible');
+    cy.findByRole('checkbox', {
+      name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/,
+      description: declarationError,
+    }).should('not.be.checked');
+    cy.location('pathname').should('equal', '/fyllut/draftsaverace');
+    cy.findByRole('heading', { name: 'Introduksjon', level: 2 }).should('be.visible');
 
     cy.clickIntroPageConfirmation();
+    cy.findByText(declarationError).should('not.exist');
     cy.clickStart();
     cy.wait('@saveDraft').its('request.body.submission.selfDeclaration').should('equal', true);
     cy.findByRole('heading', { name: 'Answers', level: 2 }).should('be.visible');

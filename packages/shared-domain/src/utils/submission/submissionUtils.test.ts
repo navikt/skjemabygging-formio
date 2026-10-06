@@ -47,6 +47,12 @@ describe('submissionUtils', () => {
       expect(submissionUtils.getSubmissionValue('doesNotExist', submission)).toBeUndefined();
     });
 
+    it('returns undefined for null values and for paths through null', () => {
+      const submissionWithNull = { data: { nullField: null, nullParent: null } } as unknown as Submission;
+      expect(submissionUtils.getSubmissionValue('nullField', submissionWithNull)).toBeUndefined();
+      expect(submissionUtils.getSubmissionValue('nullParent.child', submissionWithNull)).toBeUndefined();
+    });
+
     it('returns undefined if submission or path is missing', () => {
       expect(submissionUtils.getSubmissionValue('field1')).toBeUndefined();
       expect(submissionUtils.getSubmissionValue('', submission)).toBeUndefined();

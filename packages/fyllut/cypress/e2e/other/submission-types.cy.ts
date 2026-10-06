@@ -330,10 +330,37 @@ describe('Submission Type', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).click();
 
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.noLogin })
+          .should('be.visible')
+          .then(($pageTitle) => {
+            const pageTitleFontSize = $pageTitle.css('font-size');
+            cy.findByRole('heading', { name: 'Submission types paper digital and digital no login form' })
+              .should('be.visible')
+              .should(($heading) => {
+                expect(parseFloat($heading.css('font-size'))).to.be.lessThan(parseFloat(pageTitleFontSize));
+              });
+          });
         assertDigitalLinksNotExist();
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin })
+          .should('be.visible')
+          .closest('[data-color]')
+          .should('have.attr', 'data-color', 'accent');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper })
+          .should('be.visible')
+          .closest('[data-color]')
+          .should('have.attr', 'data-color', 'accent');
+
+        cy.findByRole('button', { name: TEXTS.grensesnitt.introPage.changeSubmissionMethod }).click();
+
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
+        cy.findByRole('heading', { name: 'Submission types paper digital and digital no login form' }).should(
+          'be.visible',
+        );
+        cy.findByRole('link', { name: digitalLinkLoggedInName }).should('be.visible');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('be.visible');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('not.exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
       });
     });
   });

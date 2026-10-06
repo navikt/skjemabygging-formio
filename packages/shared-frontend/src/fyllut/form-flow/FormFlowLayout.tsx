@@ -1,7 +1,6 @@
 import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { StepperProvider } from '../../context/stepper/StepperContext';
 import FormHeader from '../layout/FormHeader';
 import FormStepper from '../layout/FormStepper';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
@@ -22,28 +21,38 @@ const EDITABLE_FIELD_SELECTOR = 'input, select, textarea';
  * which can replace the heading element and drop the focus. Reapply focus for a few frames, without
  * stealing focus from a field the user is editing or from another element that got focus meanwhile.
  */
-const focusPageTitleAfterNavigation = (remainingAttempts = 10, isFirstAttempt = true) => {
-  const pageTitle = document.getElementById(PAGE_TITLE_ID);
-  const activeElement = document.activeElement;
+const focusPageTitleAfterNavigation = () => {
+  let animationFrame: number | undefined;
+  const focusPageTitle = (remainingAttempts = 10, isFirstAttempt = true) => {
+    const pageTitle = document.getElementById(PAGE_TITLE_ID);
+    const activeElement = document.activeElement;
 
-  if (activeElement?.matches(EDITABLE_FIELD_SELECTOR)) {
-    return;
-  }
+    if (activeElement?.matches(EDITABLE_FIELD_SELECTOR)) {
+      return;
+    }
 
-  const canTakeFocus = isFirstAttempt || !activeElement || activeElement === document.body;
-  if (canTakeFocus) {
-    pageTitle?.focus();
-  } else if (activeElement !== pageTitle) {
-    return;
-  }
+    const canTakeFocus = isFirstAttempt || !activeElement || activeElement === document.body;
+    if (canTakeFocus) {
+      pageTitle?.focus();
+    } else if (activeElement !== pageTitle) {
+      return;
+    }
 
-  if (remainingAttempts > 1) {
-    requestAnimationFrame(() => focusPageTitleAfterNavigation(remainingAttempts - 1, false));
-  }
+    if (remainingAttempts > 1) {
+      animationFrame = requestAnimationFrame(() => focusPageTitle(remainingAttempts - 1, false));
+    }
+  };
+
+  focusPageTitle();
+  return () => {
+    if (animationFrame !== undefined) {
+      cancelAnimationFrame(animationFrame);
+    }
+  };
 };
 
 const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => {
-  const { pathname, hash, state } = useLocation();
+  const { key, pathname, hash, state } = useLocation();
   const previousPathname = useRef<string | undefined>(undefined);
   const locationState = typeof state === 'object' && state ? (state as Record<string, unknown>) : undefined;
   const trailingSteps = [{ key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title }];
@@ -69,11 +78,11 @@ const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }:
       return;
     }
 
-    focusPageTitleAfterNavigation();
-  }, [hash, pathname, state]);
+    return focusPageTitleAfterNavigation();
+  }, [hash, key, locationState?.focusId, locationState?.redirect, pathname]);
 
   return (
-    <StepperProvider isOpen={isStepperOpen}>
+    <>
       <FormHeader form={form} pageTitle={pageTitle} />
       <FormStepper
         activeIndex={activeIndex}
@@ -84,7 +93,7 @@ const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }:
         onOpenChange={setIsStepperOpen}
       />
       {children}
-    </StepperProvider>
+    </>
   );
 };
 

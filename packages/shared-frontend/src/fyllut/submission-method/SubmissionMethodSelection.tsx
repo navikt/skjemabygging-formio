@@ -1,11 +1,12 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
-import { Button, LinkCard, VStack } from '@navikt/ds-react';
+import { Button, HStack, LinkCard, VStack } from '@navikt/ds-react';
 import { Form, SubmissionMethod, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { updateSearch } from '../../utils/searchParams';
 import { useIntegration } from '../context/integration/IntegrationContext';
+import FormHeader from '../layout/FormHeader';
 
 enum SelectionState {
   DEFAULT = 'default',
@@ -89,85 +90,95 @@ const SubmissionMethodSelection = ({ form }: Props) => {
           !submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes))));
 
   return (
-    <VStack gap="space-4">
-      {showDigital && (
-        <LinkCard>
-          <LinkCard.Title>
-            <LinkCard.Anchor
-              href={`${fyllutBaseUrl}/${form.path}${searchWithSub('digital')}`}
-              onClick={(event) => {
-                preventDefault(event);
-                startFlow('digital');
-              }}
+    <>
+      <FormHeader
+        form={form}
+        pageTitle={state === SelectionState.NO_LOGIN ? TEXTS.grensesnitt.introPage.noLogin : undefined}
+      />
+      <VStack gap="space-16">
+        {showDigital && (
+          <LinkCard data-color="accent">
+            <LinkCard.Title>
+              <LinkCard.Anchor
+                href={`${fyllutBaseUrl}/${form.path}${searchWithSub('digital')}`}
+                onClick={(event) => {
+                  preventDefault(event);
+                  startFlow('digital');
+                }}
+              >
+                {translate(
+                  isLoggedIn
+                    ? TEXTS.grensesnitt.introPage.sendDigitalLoggedIn
+                    : TEXTS.grensesnitt.introPage.sendDigital,
+                )}
+              </LinkCard.Anchor>
+            </LinkCard.Title>
+            <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.sendDigitalDescription)}</LinkCard.Description>
+          </LinkCard>
+        )}
+        {showNoLogin && (
+          <LinkCard data-color="accent">
+            <LinkCard.Title>
+              <LinkCard.Anchor
+                href={`${fyllutBaseUrl}/${form.path}`}
+                onClick={(event) => {
+                  preventDefault(event);
+                  setState(SelectionState.NO_LOGIN);
+                }}
+              >
+                {translate(TEXTS.grensesnitt.introPage.noLogin)}
+              </LinkCard.Anchor>
+            </LinkCard.Title>
+            <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.noLoginDescription)}</LinkCard.Description>
+          </LinkCard>
+        )}
+        {showDigitalNoLogin && (
+          <LinkCard data-color="accent">
+            <LinkCard.Title>
+              <LinkCard.Anchor
+                href={`${fyllutBaseUrl}/${form.path}/legitimasjon${searchWithSub('digitalnologin')}`}
+                onClick={(event) => {
+                  preventDefault(event);
+                  startFlow('digitalnologin');
+                }}
+              >
+                {translate(TEXTS.grensesnitt.introPage.sendDigitalNoLogin)}
+              </LinkCard.Anchor>
+            </LinkCard.Title>
+            <LinkCard.Description>
+              {translate(TEXTS.grensesnitt.introPage.sendDigitalNoLoginDescription)}
+            </LinkCard.Description>
+          </LinkCard>
+        )}
+        {showPaper && (
+          <LinkCard data-color="accent">
+            <LinkCard.Title>
+              <LinkCard.Anchor
+                href={`${fyllutBaseUrl}/${form.path}${searchWithSub('paper')}`}
+                onClick={(event) => {
+                  preventDefault(event);
+                  startFlow('paper');
+                }}
+              >
+                {translate(TEXTS.grensesnitt.introPage.sendOnPaper)}
+              </LinkCard.Anchor>
+            </LinkCard.Title>
+            <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.sendOnPaperDescription)}</LinkCard.Description>
+          </LinkCard>
+        )}
+        {state === SelectionState.NO_LOGIN && (
+          <HStack>
+            <Button
+              variant="tertiary"
+              icon={<ArrowUndoIcon aria-hidden />}
+              onClick={() => setState(SelectionState.DEFAULT)}
             >
-              {translate(
-                isLoggedIn ? TEXTS.grensesnitt.introPage.sendDigitalLoggedIn : TEXTS.grensesnitt.introPage.sendDigital,
-              )}
-            </LinkCard.Anchor>
-          </LinkCard.Title>
-          <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.sendDigitalDescription)}</LinkCard.Description>
-        </LinkCard>
-      )}
-      {showNoLogin && (
-        <LinkCard>
-          <LinkCard.Title>
-            <LinkCard.Anchor
-              href={`${fyllutBaseUrl}/${form.path}`}
-              onClick={(event) => {
-                preventDefault(event);
-                setState(SelectionState.NO_LOGIN);
-              }}
-            >
-              {translate(TEXTS.grensesnitt.introPage.noLogin)}
-            </LinkCard.Anchor>
-          </LinkCard.Title>
-          <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.noLoginDescription)}</LinkCard.Description>
-        </LinkCard>
-      )}
-      {showDigitalNoLogin && (
-        <LinkCard>
-          <LinkCard.Title>
-            <LinkCard.Anchor
-              href={`${fyllutBaseUrl}/${form.path}/legitimasjon${searchWithSub('digitalnologin')}`}
-              onClick={(event) => {
-                preventDefault(event);
-                startFlow('digitalnologin');
-              }}
-            >
-              {translate(TEXTS.grensesnitt.introPage.sendDigitalNoLogin)}
-            </LinkCard.Anchor>
-          </LinkCard.Title>
-          <LinkCard.Description>
-            {translate(TEXTS.grensesnitt.introPage.sendDigitalNoLoginDescription)}
-          </LinkCard.Description>
-        </LinkCard>
-      )}
-      {showPaper && (
-        <LinkCard>
-          <LinkCard.Title>
-            <LinkCard.Anchor
-              href={`${fyllutBaseUrl}/${form.path}${searchWithSub('paper')}`}
-              onClick={(event) => {
-                preventDefault(event);
-                startFlow('paper');
-              }}
-            >
-              {translate(TEXTS.grensesnitt.introPage.sendOnPaper)}
-            </LinkCard.Anchor>
-          </LinkCard.Title>
-          <LinkCard.Description>{translate(TEXTS.grensesnitt.introPage.sendOnPaperDescription)}</LinkCard.Description>
-        </LinkCard>
-      )}
-      {state === SelectionState.NO_LOGIN && (
-        <Button
-          variant="tertiary"
-          icon={<ArrowUndoIcon aria-hidden />}
-          onClick={() => setState(SelectionState.DEFAULT)}
-        >
-          {translate(TEXTS.grensesnitt.introPage.changeSubmissionMethod)}
-        </Button>
-      )}
-    </VStack>
+              {translate(TEXTS.grensesnitt.introPage.changeSubmissionMethod)}
+            </Button>
+          </HStack>
+        )}
+      </VStack>
+    </>
   );
 };
 

@@ -1,21 +1,15 @@
-import { attachmentUtils, navFormUtils, PdfData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate, submissionMethod } = props;
-  const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
-  const navId = navFormUtils.getNavId(component) ?? component.key;
-  if (attachmentUploadEnabled && !navId) {
-    throw new ResponseError('INTERNAL_SERVER_ERROR', 'PdfAttachment: navId is required on digital attachment');
-  }
-
   const { attachments } = attachmentUtils.resolveAttachmentsAtPath(
     component,
     submissionPath || component.key,
     submission,
   );
 
-  if (attachmentUploadEnabled && (component.attachmentType === 'other' || component.otherDocumentation)) {
+  if (component.attachmentType === 'other' || component.otherDocumentation) {
     const attachmentsWithValue = attachments.filter((attachment) => attachment.value);
     if (attachmentsWithValue.length === 0) {
       return null;

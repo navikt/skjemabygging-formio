@@ -1,21 +1,19 @@
 import { Box } from '@navikt/ds-react';
 import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import TranslatedDescription from '../../../components/shared/TranslatedDescription';
+import Fieldset from '../../../components/fieldset/Fieldset';
 import { getRenderedDataGridRows } from '../../../context/form-definition/dataGridRows';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
   toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
-import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import { addDataGridRowId, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
-import styles from './InputDataGrid.module.css';
 import InputDataGridRows from './InputDataGridRows';
 
 interface InputDataGridProps {
@@ -24,7 +22,6 @@ interface InputDataGridProps {
 }
 
 const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => {
-  const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
   const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
@@ -76,17 +73,15 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   return (
     <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
       {label || description ? (
-        <fieldset className={styles.fieldset}>
-          {!hideLabel && label && (
-            <legend className="aksel-fieldset__legend-formio-template">{translate(label)}</legend>
-          )}
-          {description && (
-            <div className={`description ${styles.description}`}>
-              <TranslatedDescription translationKey={description} />
-            </div>
-          )}
-          <div className={`aksel-fieldset__content ${styles.content}`}>{content}</div>
-        </fieldset>
+        <Fieldset
+          legend={label || component.key}
+          hideLegend={hideLabel || !label}
+          description={description}
+          inset={false}
+          marginBottom="space-0"
+        >
+          {content}
+        </Fieldset>
       ) : (
         content
       )}

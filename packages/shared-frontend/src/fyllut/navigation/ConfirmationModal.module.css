@@ -1,0 +1,7 @@
+.small {
+  max-inline-size: 30rem;
+}
+
+.large {
+  max-inline-size: 50rem;
+}

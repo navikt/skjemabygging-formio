@@ -13,7 +13,7 @@ const draftSaveRaceForm = () =>
         title: 'Answers',
         components: [
           textField({ key: 'answer', label: 'Answer', validate: { required: true } }),
-          checkbox({ key: 'extraPage', label: 'Show extra page' }),
+          checkbox({ key: 'extraPage', label: 'Show extra page', validate: { required: false } }),
         ],
       }),
       panel({

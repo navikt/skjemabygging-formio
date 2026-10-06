@@ -1,5 +1,6 @@
-import { Box } from '@navikt/ds-react';
 import ReadMore from '../../../components/read-more/ReadMore';
+import FormElementBox from '../../../components/shared/FormElementBox';
+import styles from '../../../components/shared/FormHtml.module.css';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 import { HtmlElementDefinition } from '../../component-types';
@@ -16,12 +17,15 @@ const InputHtmlElement = ({ component }: InputHtmlElementProps) => {
   }
 
   return (
-    <Box marginBlock="space-0 space-32">
-      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
+    <FormElementBox>
+      <div
+        className={styles.content}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }}
+      />
       {component.additionalDescriptionLabel && component.additionalDescriptionText && (
         <ReadMore label={component.additionalDescriptionLabel} text={component.additionalDescriptionText} />
       )}
-    </Box>
+    </FormElementBox>
   );
 };
 

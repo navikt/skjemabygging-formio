@@ -40,6 +40,7 @@ const staticPdf = {
     }
 
     try {
+      const isSubsequentSubmission = coverPageData.type === 'ETTERSENDELSE';
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
@@ -51,6 +52,10 @@ const staticPdf = {
       const attachmentComponents = navFormUtils
         .flattenComponents(form.components)
         .filter((component) => component.type === 'attachment' && selectedAttachmentKeys.includes(component.key));
+      if (isSubsequentSubmission && attachmentComponents.length === 0) {
+        throw new ResponseError('BAD_REQUEST', 'At least one valid attachment must be selected for ettersending');
+      }
+
       const attachmentLabels = selectedAttachmentKeys.map((attachmentKey) => {
         const attachmentComponent = attachmentComponents.find((component) => component.key === attachmentKey);
         if (!attachmentComponent?.label) {
@@ -65,16 +70,12 @@ const staticPdf = {
         accessToken: coverPageToken,
         data: {
           ...coverPageData,
+          type: isSubsequentSubmission ? 'ETTERSENDELSE' : undefined,
           attachments: attachmentLabels,
           form,
         },
         translate,
-        formNumber: form.skjemanummer.replace(/^(\S+)/, '$1p'),
-      });
-
-      const staticPdf = await staticPdfService.downloadPdf({
-        formPath,
-        languageCode,
+        formNumber: isSubsequentSubmission ? form.skjemanummer : form.skjemanummer.replace(/^(\S+)/, '$1p'),
       });
 
       const attachmentStaticPdfs: string[] = [];
@@ -83,25 +84,38 @@ const staticPdf = {
         if (component.properties?.vedleggskjema) {
           try {
             const attachmentStaticPdf = await staticPdfService.downloadPdf({
-              formPath: component.properties?.vedleggskjema,
+              formPath: component.properties.vedleggskjema,
               languageCode,
             });
             attachmentStaticPdfs.push(attachmentStaticPdf);
-            logger.debug(`Add attachments ${component.properties?.vedleggskjema} for static pdf ${formPath}.`);
+            logger.debug(`Add attachments ${component.properties.vedleggskjema} for static pdf ${formPath}.`);
           } catch (error) {
             logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
           }
         }
       }
 
-      const pdf = await mergeFileService.mergeFiles({
-        accessToken: mergePdfToken,
-        body: {
-          title: form.title,
-          language: languageCode,
-          files: [coverPagePdf, staticPdf, ...attachmentStaticPdfs],
-        },
-      });
+      const pdfFiles = [coverPagePdf];
+      if (!isSubsequentSubmission) {
+        const staticPdf = await staticPdfService.downloadPdf({
+          formPath,
+          languageCode,
+        });
+        pdfFiles.push(staticPdf);
+      }
+      pdfFiles.push(...attachmentStaticPdfs);
+
+      let pdf = coverPagePdf;
+      if (pdfFiles.length > 1) {
+        pdf = await mergeFileService.mergeFiles({
+          accessToken: mergePdfToken,
+          body: {
+            title: form.title,
+            language: languageCode,
+            files: pdfFiles,
+          },
+        });
+      }
 
       res.json({ pdfBase64: pdf });
     } catch (error: any) {

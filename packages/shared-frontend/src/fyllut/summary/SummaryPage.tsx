@@ -22,6 +22,7 @@ import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
+import styles from './SummaryPage.module.css';
 
 const SummaryPage = () => {
   const { logger, environment } = useApplication();
@@ -96,19 +97,27 @@ const SummaryPage = () => {
             </Heading>
             {translate(TEXTS.statiske.summaryPage.validationMessage)}
           </Alert>
-          <FormPrevButton label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)} onClick={navigateToFirstError} />
+          <div className={styles.continueEditing}>
+            <FormPrevButton
+              variant="primary"
+              label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+              onClick={navigateToFirstError}
+            />
+          </div>
         </>
       )}
-      <RenderSummaryForm
-        activeComponents={panels}
-        submission={submission}
-        form={form}
-        currentLanguage={currentLanguage}
-        translate={translate}
-        panelValidationList={panelValidationList}
-        rendererConfig={{ submissionMethod, logger, environment }}
-        handleDownloadFile={handleDownloadFile}
-      />
+      <div className={styles.cards}>
+        <RenderSummaryForm
+          activeComponents={panels}
+          submission={submission}
+          form={form}
+          currentLanguage={currentLanguage}
+          translate={translate}
+          panelValidationList={panelValidationList}
+          rendererConfig={{ submissionMethod, logger, environment }}
+          handleDownloadFile={handleDownloadFile}
+        />
+      </div>
       <FormErrorSummary
         pageKeys={validationPageKeys}
         onNavigateToField={(error, id) => {
@@ -120,6 +129,7 @@ const SummaryPage = () => {
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
           <FormPrevButton
+            variant={hasValidationErrors ? 'primary' : 'secondary'}
             label={translate(
               hasValidationErrors ? TEXTS.grensesnitt.summaryPage.editAnswers : TEXTS.grensesnitt.navigation.previous,
             )}
@@ -128,6 +138,7 @@ const SummaryPage = () => {
         }
         nextButton={
           <FormNextButton
+            variant={hasValidationErrors ? 'secondary' : 'primary'}
             label={translate(primaryActionLabel)}
             onClick={handleSubmit}
             loading={status === 'submitting'}

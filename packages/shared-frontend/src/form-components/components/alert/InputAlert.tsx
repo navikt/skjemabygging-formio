@@ -1,4 +1,5 @@
 import Alert, { AlertVariant } from '../../../components/alert/Alert';
+import styles from '../../../components/shared/FormHtml.module.css';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 import { AlertDefinition } from '../../component-types';
@@ -32,7 +33,10 @@ const InputAlert = ({ component }: InputAlertProps) => {
 
   return (
     <Alert variant={getVariant(component.alerttype)} inline={component.isInline}>
-      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
+      <div
+        className={styles.content}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }}
+      />
     </Alert>
   );
 };

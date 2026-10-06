@@ -16,6 +16,8 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
   const canDownloadAttachment = enableAttachmentDownload(submissionMethod) && !!handleDownloadFile;
   const { attachments, source } = attachmentUtils.resolveAttachmentsAtPath(component, submissionPath, submission);
+  // Legacy answers (top-level attachments) have always shown the deadline as a warning, also on paper.
+  const showDeadlineAsWarning = attachmentUploadEnabled || source === 'top-level';
 
   const showDeadline = (attachment: SubmissionAttachment) =>
     attachment.value && !!component.attachmentValues?.[attachment.value]?.showDeadline;
@@ -63,7 +65,7 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
                 {attachment.additionalDocumentation && <div>{translate(attachment.additionalDocumentation)}</div>}
                 {showDeadline(attachment) &&
                   formProperties?.ettersendelsesfrist &&
-                  (attachmentUploadEnabled ? (
+                  (showDeadlineAsWarning ? (
                     <Alert variant="warning">
                       {translate(TEXTS.statiske.attachment.deadline, {
                         deadline: formProperties.ettersendelsesfrist,

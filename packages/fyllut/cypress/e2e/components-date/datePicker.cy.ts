@@ -8,6 +8,20 @@ describe('DatePicker', () => {
     cy.defaultIntercepts();
   });
 
+  it('should preserve the natural date width despite legacy input--xxl sizing', () => {
+    cy.visit('/fyllut/components/datoogtid?sub=paper');
+    cy.defaultWaits();
+
+    cy.findByRole('textbox', { name: /Klokkeslett/ }).should(($time) => {
+      expect($time[0].getBoundingClientRect().width).to.be.closeTo(420, 1);
+    });
+    cy.findByRole('textbox', { name: /Dato \(dd\.mm/ }).should(($date) => {
+      const width = $date[0].getBoundingClientRect().width;
+      expect(width).to.be.greaterThan(0);
+      expect(width).to.be.lessThan(420);
+    });
+  });
+
   describe('Display', () => {
     beforeEach(() => {
       cy.visit('/fyllut/datepicker/visning?sub=paper');

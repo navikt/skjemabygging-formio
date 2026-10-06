@@ -28,7 +28,12 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
 
   const onStepClick = (key: string) => {
     hideErrorSummary();
-    const { redirect: _inheritedRedirect, stepperOpen: _stepperOpen, ...inheritedState } = state ?? {};
+    const {
+      redirect: _inheritedRedirect,
+      focusId: _inheritedFocusId,
+      stepperOpen: _stepperOpen,
+      ...inheritedState
+    } = state ?? {};
     navigate(
       {
         pathname: key === INTRO_KEY ? `/${form.path}` : `/${form.path}/${key}`,

@@ -4,6 +4,7 @@ import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import styles from '../shared/FieldControl.module.css';
 import { toFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
@@ -30,6 +31,8 @@ interface InternalTextFieldProps extends BaseFieldProps {
   value?: string;
   onChange?: (value: string) => void;
   error?: ReactNode;
+  showInlineError?: boolean;
+  'aria-describedby'?: string;
   maxLength?: number;
   validation?: FieldValidationProp;
 }
@@ -60,6 +63,8 @@ const InternalTextField = ({
   value: controlledValue,
   onChange: controlledOnChange,
   error: controlledError,
+  showInlineError = true,
+  'aria-describedby': ariaDescribedBy,
   maxLength,
   readMore,
   fieldSize,
@@ -81,6 +86,7 @@ const InternalTextField = ({
   const [displayValue, setDisplayValue] = useState(() => formatDisplayValue(controlled ? controlledValue : stateValue));
   const syncedDisplayValue = formatDisplayValue(controlled ? controlledValue : stateValue);
   const resolvedAutoComplete = resolveAutoComplete(autoComplete);
+  const resolvedError = controlledError ?? error;
 
   const updateValue = useCallback(
     (value: string) => {
@@ -123,6 +129,7 @@ const InternalTextField = ({
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselTextField
+        className={styles.text}
         id={inputId(statePath)}
         label={
           <TranslatedLabel
@@ -132,7 +139,7 @@ const InternalTextField = ({
             translationKey={label}
           />
         }
-        description={<TranslatedDescription translationKey={description} />}
+        description={description ? <TranslatedDescription translationKey={description} /> : undefined}
         hideLabel={hideLabel}
         value={readOnly ? formatDisplayValue(stateValue) : displayValue}
         onFocus={() => {
@@ -140,7 +147,8 @@ const InternalTextField = ({
         }}
         onChange={handleChange}
         onBlur={handleBlur}
-        error={controlledError ?? error}
+        error={showInlineError ? resolvedError : Boolean(resolvedError)}
+        aria-describedby={ariaDescribedBy}
         readOnly={readOnly}
         autoComplete={resolvedAutoComplete}
         inputMode={inputMode}

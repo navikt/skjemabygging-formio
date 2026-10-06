@@ -39,10 +39,6 @@ const organizationNumberForm = () => {
             label: 'Organisasjonsnummer ugyldig format',
             validate: { required: false, custom: 'valid = instance.validateOrganizationNumber(input)' },
           }),
-          organizationNumber({
-            label: 'Organisasjonsnummer egendefinert',
-            validate: { required: false, custom: 'valid = input === "889640782" ? true : "Kun 889640782 er tillatt"' },
-          }),
         ],
       }),
     ],

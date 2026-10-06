@@ -26,7 +26,7 @@ const SummaryDrivingList = (props: FormComponentProps<DrivingListDefinition>) =>
         {translate(TEXTS.statiske.drivingList.summaryDescription)}
 
         <Box marginBlock="space-16" asChild>
-          <List data-aksel-migrated-v8 as="ul">
+          <List as="ul">
             {drivingListDates.map((drivingListDate) => (
               <List.Item key={drivingListDate}>{drivingListDate}</List.Item>
             ))}

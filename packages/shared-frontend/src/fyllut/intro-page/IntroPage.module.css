@@ -6,10 +6,6 @@
   margin-block-end: var(--ax-space-40);
 }
 
-.staticPanel :global(.navds-guide-panel__content) {
-  padding: var(--ax-space-20);
-}
-
 .listItem {
   margin-block-end: var(--ax-space-16);
 }

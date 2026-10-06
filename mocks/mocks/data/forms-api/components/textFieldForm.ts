@@ -75,13 +75,6 @@ const textFieldForm = () => {
               maxLength: 6,
             },
           }),
-          textField({
-            label: 'Tekstfelt må være abc',
-            validate: {
-              required: false,
-              custom: 'valid = !input || input === "abc" ? true : "abc er eneste lovlige verdien"',
-            },
-          }),
         ],
       }),
     ],

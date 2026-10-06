@@ -1,5 +1,4 @@
-import { Button, Heading } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import DataGridRow from '../../../components/data-grid/DataGridRow';
 import { getActiveRowComponents } from '../../../context/form-definition/dataGridRows';
 import {
   useFormDefinitionForm,
@@ -10,7 +9,6 @@ import { useSubmissionState } from '../../../context/state/SubmissionStateContex
 import { ComponentDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import styles from './InputDataGrid.module.css';
 
 interface InputDataGridRowProps {
   componentRegistry?: InputComponentRegistry;
@@ -40,19 +38,13 @@ const InputDataGridRow = ({
   const rowComponents = getActiveRowComponents(components, row, submission?.data, form, submissionMethod, submission);
 
   return (
-    <div className={styles.row}>
-      <div className={styles.rowHeader}>
-        <Heading level="3" size="small" className="aksel-fieldset__legend-formio-template">
-          {translate(label)} {index + 1}
-        </Heading>
-        {removable && (
-          <Button type="button" variant="secondary" size="small" onClick={onRemove}>
-            {translate(removeLabel || TEXTS.common.remove)}
-          </Button>
-        )}
-      </div>
+    <DataGridRow
+      title={`${translate(label)} ${index + 1}`}
+      onRemove={removable ? onRemove : undefined}
+      removeLabel={removeLabel}
+    >
       <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
-    </div>
+    </DataGridRow>
   );
 };
 

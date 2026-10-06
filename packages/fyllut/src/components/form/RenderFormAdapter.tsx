@@ -1,4 +1,4 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { LetterUXSignals, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
@@ -7,18 +7,19 @@ import {
   RenderFormProps,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
 
 type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
+  languages?: TranslationLang[];
   services: RuntimeServices;
   translations: FormsApiTranslationMap;
 };
 
-const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...props }: Props) => {
+const RenderFormAdapter = ({ form, initialLanguage, languages, services, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
   const fyllutBaseUrl = appConfig.fyllutBaseURL;
   if (!fyllutBaseUrl) {
@@ -27,7 +28,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
 
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const availableLanguages = useMemo(() => getAvailableLanguages(form, translations), [form, translations]);
+  const availableLanguages = useMemo(() => getAvailableLanguages(languages), [languages]);
   const hasLanguageParam = new URLSearchParams(search).has('lang');
   const seedLanguage = initialLanguage && availableLanguages.includes(initialLanguage) ? initialLanguage : undefined;
   const currentLanguage = resolveActiveLanguage(search, availableLanguages, initialLanguage);
@@ -47,19 +48,24 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
     navigate({ pathname, search: `?${nextParams.toString()}` }, { replace: true });
   }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
 
+  const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
+  const renderFeedback = useCallback(
+    (id: string) => <LetterUXSignals id={id} demo={environment !== 'production'} />,
+    [environment],
+  );
   const integration = useMemo<IntegrationContextValue>(
     () => ({
       fyllutBaseUrl,
       isLoggedIn: appConfig.config?.isLoggedIn,
       logEvent: appConfig.logEvent,
+      renderFeedback,
     }),
-    [appConfig.config?.isLoggedIn, appConfig.logEvent, fyllutBaseUrl],
+    [appConfig.config?.isLoggedIn, appConfig.logEvent, fyllutBaseUrl, renderFeedback],
   );
   const language = useMemo(
     () => ({ availableLanguages, currentLanguage, translations }),
     [availableLanguages, currentLanguage, translations],
   );
-  const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
 
   return (
     <ApplicationProvider environment={environment} logger={appConfig.logger}>

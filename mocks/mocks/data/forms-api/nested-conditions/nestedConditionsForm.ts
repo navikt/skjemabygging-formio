@@ -14,7 +14,7 @@ const nestedConditionsForm = () =>
         key: 'expenses',
         title: 'Expenses',
         components: [
-          checkbox({ key: 'includeDetails', label: 'Root toggle' }),
+          checkbox({ key: 'includeDetails', label: 'Root toggle', validate: { required: false } }),
           container({
             key: 'journey',
             label: 'Journey',
@@ -27,7 +27,11 @@ const nestedConditionsForm = () =>
                     key: 'expenses',
                     label: 'Expenses',
                     components: [
-                      checkbox({ key: 'includeDetails', label: 'Include expense details' }),
+                      checkbox({
+                        key: 'includeDetails',
+                        label: 'Include expense details',
+                        validate: { required: false },
+                      }),
                       formGroup({
                         key: 'documentation',
                         label: 'Documentation',

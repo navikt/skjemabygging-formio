@@ -20,7 +20,7 @@ const useFormNavigation = (from: StepKind) => {
 
   const buildState = useCallback(
     (extra?: FormNavigationState): FormNavigationState => {
-      const { redirect: _inheritedRedirect, ...inheritedState } = state ?? {};
+      const { redirect: _inheritedRedirect, focusId: _inheritedFocusId, ...inheritedState } = state ?? {};
 
       return {
         ...inheritedState,

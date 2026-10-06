@@ -2,16 +2,20 @@ import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
+import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
+import FieldError from '../shared/FieldError';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import InternalTextField from '../text-field/InternalTextField';
 import { BaseFieldProps, PhoneNumberValidation } from '../types';
+import styles from './PhoneNumber.module.css';
 import { DEFAULT_AREA_CODE, PhoneNumberValue, toPhoneNumberRules } from './phoneNumberValidation';
 
 const fallbackAreaCodeOptions: ComponentValue[] = [{ value: DEFAULT_AREA_CODE, label: DEFAULT_AREA_CODE }];
@@ -35,8 +39,12 @@ const PhoneNumber = ({
   validation,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
+  const { translate } = useLanguage();
   const { formData } = useRuntimeServices();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
+  const { error: numberError } = useFieldBinding({ statePath: `${statePath}.number` });
+  const visibleNumberError = readOnly ? undefined : numberError;
+  const numberErrorId = `${inputId(statePath)}-group-error`;
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
   const selectedAreaCode = phoneNumberValue?.areaCode;
@@ -87,36 +95,61 @@ const PhoneNumber = ({
   const areaCodeOptions = loadedAreaCodes ?? fallbackAreaCodeOptions;
 
   return (
-    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      <Label as="p" aria-hidden>
+    <FormElementBox marginBottom={marginBottom}>
+      <Label as="div" className={styles.label} aria-hidden>
         <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
       </Label>
-      <TranslatedDescription translationKey={description} />
-      <Select
-        statePath={`${statePath}.areaCode`}
-        label={TEXTS.statiske.phoneNumber.areaCodeLabel}
-        hideLabel
-        values={areaCodeOptions}
-        required={false}
-        readOnly={readOnly}
-        selectType="combobox"
-      />
-      <InternalTextField
-        key={selectedAreaCode}
-        statePath={`${statePath}.number`}
-        label={label}
-        hideLabel
-        required={required}
-        readOnly={readOnly}
-        readMore={readMore}
-        type="tel"
-        inputMode="tel"
-        formatKey={
-          (selectedAreaCode ?? DEFAULT_AREA_CODE) === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'
-        }
-        validation={toPhoneNumberRules(true, selectedAreaCode, validation)}
-      />
-      {error && <Alert variant="warning">{TEXTS.statiske.phoneNumber.fetchError}</Alert>}
+      {description && (
+        <div className={styles.description}>
+          <TranslatedDescription translationKey={description} />
+        </div>
+      )}
+      <div className={styles.controls}>
+        <div
+          className={
+            (selectedAreaCode ?? DEFAULT_AREA_CODE).length > 3
+              ? `${styles.areaCode} ${styles.areaCodeLong}`
+              : styles.areaCode
+          }
+        >
+          <Select
+            statePath={`${statePath}.areaCode`}
+            label={TEXTS.statiske.phoneNumber.areaCodeLabel}
+            hideLabel
+            values={areaCodeOptions}
+            required={false}
+            readOnly={readOnly}
+            selectType="select"
+            marginBottom="space-0"
+          />
+        </div>
+        <FormElementBox fieldSize={fieldSize} marginBottom="space-0" className={styles.number}>
+          <InternalTextField
+            key={selectedAreaCode}
+            statePath={`${statePath}.number`}
+            label={label}
+            hideLabel
+            showInlineError={false}
+            aria-describedby={visibleNumberError ? numberErrorId : undefined}
+            marginBottom="space-0"
+            required={required}
+            readOnly={readOnly}
+            readMore={readMore}
+            type="tel"
+            inputMode="tel"
+            formatKey={
+              (selectedAreaCode ?? DEFAULT_AREA_CODE) === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'
+            }
+            validation={toPhoneNumberRules(true, selectedAreaCode, validation)}
+          />
+        </FormElementBox>
+      </div>
+      <FieldError id={numberErrorId} error={visibleNumberError} className={styles.error} />
+      {error && (
+        <Alert variant="warning" marginBottom="space-0">
+          {translate(TEXTS.statiske.phoneNumber.fetchError)}
+        </Alert>
+      )}
     </FormElementBox>
   );
 };

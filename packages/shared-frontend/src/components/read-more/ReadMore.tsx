@@ -1,6 +1,8 @@
 import { ReadMore as AkselReadMore } from '@navikt/ds-react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
+import htmlStyles from '../shared/FormHtml.module.css';
+import styles from './ReadMore.module.css';
 
 interface ReadMoreProps {
   label: string;
@@ -11,8 +13,8 @@ const ReadMore = ({ label, text }: ReadMoreProps) => {
   const { translate } = useLanguage();
 
   return (
-    <AkselReadMore header={translate(label)}>
-      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(text)) }} />
+    <AkselReadMore header={translate(label)} className={styles.readMore}>
+      <div className={htmlStyles.content} dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(text)) }} />
     </AkselReadMore>
   );
 };

@@ -1,21 +1,17 @@
-.fieldset {
-  border: 0;
-  margin: 0;
-  min-inline-size: 0;
-  padding: 0;
+.legend {
+  font-size: var(--ax-font-size-heading-small);
+  font-weight: normal;
+  line-height: 1.625rem;
 }
 
-.description {
-  margin-top: var(--ax-space-8);
+.content {
+  display: flow-root;
 }
 
-.hiddenLegend {
-  block-size: 1px;
-  clip: rect(0 0 0 0);
-  inline-size: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  white-space: nowrap;
+.inset {
+  padding: var(--ax-space-16);
+}
+
+.content > [data-form-component]:last-child > * {
+  margin-block-end: 0;
 }

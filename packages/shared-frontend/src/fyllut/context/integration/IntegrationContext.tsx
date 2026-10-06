@@ -55,6 +55,7 @@ interface IntegrationContextValue {
   fyllutBaseUrl: string;
   isLoggedIn?: boolean;
   logEvent?: (event: IntegrationEvent) => Promise<void>;
+  renderFeedback?: (id: string) => ReactNode;
 }
 
 interface Props {
@@ -70,8 +71,9 @@ const IntegrationProvider = ({ children, value }: Props) => {
       fyllutBaseUrl: value.fyllutBaseUrl,
       isLoggedIn: value.isLoggedIn,
       logEvent: value.logEvent,
+      renderFeedback: value.renderFeedback,
     }),
-    [value.fyllutBaseUrl, value.isLoggedIn, value.logEvent],
+    [value.fyllutBaseUrl, value.isLoggedIn, value.logEvent, value.renderFeedback],
   );
   return <IntegrationContext.Provider value={stableValue}>{children}</IntegrationContext.Provider>;
 };

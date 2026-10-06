@@ -172,8 +172,8 @@ Only the headless rebuild knows about form definitions. Generic components,
   executed: `form-components/custom-validation/` recognizes the published
   scripts declaratively and either drops them (the component already validates
   the same thing) or replaces them with plain value rules. Anything it does not
-  recognize keeps the whole form on the old renderer, so never add a rule that
-  interprets a script anywhere else.
+  recognize is ignored, so never add a rule that interprets a script anywhere
+  else.
 - A value the form calculates is not something the user can fix, so
   `RenderInputComponent` renders it inside `UnvalidatedFields` and the headless
   rebuild skips it.
@@ -328,14 +328,11 @@ that knows the scripts exist:
   (`notEqual`, and stricter `fromDate`/`toDate` bounds with `dateMessages`).
   Rendered inputs get them through `useResolvedValidation`, the headless rebuild
   through `toFieldValidationInput` - the same two functions, so the two agree.
-- `productionCustomValidationScripts.ts` is a checked-in snapshot of every
-  distinct script in the published production forms, and the tests assert the
-  mapper still covers all of them.
-- `unsupportedCustomValidation.ts` finds anything unrecognized. `fyllut`'s
-  `useInitializeRenderForm` calls it right after the form is loaded and, before
-  any prefill or draft is created, hands the form back to the old renderer and
-  logs it. The feature allowlist is configuration and cannot see the form
-  definition, so this is the boundary that decides.
+- Every script in the published production forms
+  (https://github.com/navikt/skjemautfylling-formio, `forms/`) is recognized.
+  Anything else is ignored at runtime, and the renderer is never switched: the
+  feature allowlist (`FEATURE_NEW_RENDER_FORMS`) alone decides. When production
+  forms get a new script, extend the mapper.
 
 Do not put script recognition anywhere else, and never key it on a form id or
 path.

@@ -20,7 +20,7 @@ describe('Alert', () => {
   });
 
   it('should not show any labels', () => {
-    cy.get('.aksel-theme').should('not.have.descendants', 'label');
+    cy.get('.aksel-alert').should('not.have.descendants', 'label');
   });
 
   it('should display html content - h1 and a link to nav.no', () => {

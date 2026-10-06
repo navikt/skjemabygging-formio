@@ -63,7 +63,6 @@ import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/comp
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
-import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
 import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import {
@@ -173,6 +172,7 @@ import {
   emailDeprecatedTranslations,
 } from '../data/forms-api/email-deprecated/emailDeprecatedForm';
 import { errorSummaryForm, errorSummaryTranslations } from '../data/forms-api/error-summary/errorSummaryForm';
+import { errorFocusForm, errorFocusTranslations } from '../data/forms-api/focus-handling/errorFocusForm';
 import { focusHandlingForm, focusHandlingTranslations } from '../data/forms-api/focus-handling/focusHandlingForm';
 import {
   formNavigationCypress101Form,
@@ -278,6 +278,10 @@ import {
   phoneNumberDeprecatedTranslations,
 } from '../data/forms-api/phone-number/phoneNumberDeprecatedForm';
 import { radioDeprecatedForm, radioDeprecatedTranslations } from '../data/forms-api/radio/radioDeprecatedForm';
+import {
+  rendererReadyForm,
+  rendererReadyTranslations,
+} from '../data/forms-api/renderer-initialization/rendererReadyForm';
 import {
   selectBoxesDeprecatedForm,
   selectBoxesDeprecatedTranslations,
@@ -396,7 +400,6 @@ const allForms = [
   { form: htmlElementForm(), translations: htmlElementTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
   { form: identityTestForm(), translations: identityTranslations() },
-  { form: imageForm(), translations: imageTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
@@ -422,6 +425,7 @@ const allForms = [
     translations: undefined,
   },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: rendererReadyForm(), translations: rendererReadyTranslations() },
   { form: draftSaveRaceForm(), translations: draftSaveRaceTranslations() },
   { form: nestedConditionsForm(), translations: nestedConditionsTranslations() },
   { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
@@ -446,6 +450,7 @@ const allForms = [
   { form: emailDeprecatedForm(), translations: emailDeprecatedTranslations() },
   { form: errorSummaryForm(), translations: errorSummaryTranslations() },
   { form: focusHandlingForm(), translations: focusHandlingTranslations() },
+  { form: errorFocusForm(), translations: errorFocusTranslations() },
   { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
   { form: initialSubmissionValuesForm(), translations: initialSubmissionValuesTranslations() },
   { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },

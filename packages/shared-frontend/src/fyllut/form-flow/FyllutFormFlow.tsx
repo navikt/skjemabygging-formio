@@ -6,7 +6,6 @@ import { SubmissionStateProvider } from '../../context/state/SubmissionStateCont
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
 import FormLanguageSelector from '../language/FormLanguageSelector';
-import FormHeader from '../layout/FormHeader';
 import FormLayout from '../layout/FormLayout';
 import { resolveDefaultSubmissionMethod } from '../submission-method/submissionMethodResolution';
 import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
@@ -65,10 +64,7 @@ const FyllutFormFlow = ({
                   {shouldRenderFormFlow ? (
                     <FormRouter form={form} receiptPdf={receiptPdf} />
                   ) : (
-                    <>
-                      <FormHeader form={form} />
-                      <SubmissionMethodSelection form={form} />
-                    </>
+                    <SubmissionMethodSelection form={form} />
                   )}
                 </FormLayout>
               </FyllutAttachmentProvider>

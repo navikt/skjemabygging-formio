@@ -284,6 +284,20 @@ describe('PdfAttachment', () => {
     ]);
   });
 
+  it('should handle legacy paper "other" attachment without title', () => {
+    const navId = attachmentOther.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      { attachmentId: navId, navId, type: 'other', value: 'leggerVedNaa', files: [] },
+    ];
+    const pdfFormData = PdfAttachment(createProps(attachmentOther, { attachments: submissionAttachments }, 'paper'));
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Annen dokumentasjon - Ukjent vedlegg',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
+  });
+
   it('should handle old "other" attachment', () => {
     const testComponent = attachmentOtherOld;
     const navId = testComponent.navId!;

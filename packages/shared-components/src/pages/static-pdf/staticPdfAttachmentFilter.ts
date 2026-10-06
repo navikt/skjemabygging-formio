@@ -1,4 +1,4 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 const normalizeStaticPdfAttachmentCodeFilter = (filterValue: string | null | undefined) => {
   if (!filterValue) {
@@ -24,4 +24,9 @@ const filterStaticPdfAttachments = (attachments: Component[], attachmentCodeFilt
   });
 };
 
-export { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter };
+const getFilteredStaticPdfAttachments = (components: Component[], filterValue: string | null | undefined) => {
+  const attachments = navFormUtils.flattenComponents(components).filter((component) => component.type === 'attachment');
+  return filterStaticPdfAttachments(attachments, normalizeStaticPdfAttachmentCodeFilter(filterValue));
+};
+
+export { filterStaticPdfAttachments, getFilteredStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter };

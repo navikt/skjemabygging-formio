@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
@@ -23,6 +24,7 @@ const CurrencySelect = ({
   validation,
 }: CurrencySelectProps) => {
   const { logger } = useApplication();
+  const { translate } = useLanguage();
   const { formData } = useRuntimeServices();
   const loadCurrencies = useCallback(() => formData.getCodeList('currencies'), [formData]);
   const { values: loadedValues, error } = useRemoteOptions(loadCurrencies);
@@ -47,7 +49,7 @@ const CurrencySelect = ({
       selectType="combobox"
       valueType="option"
       validation={validation}
-      error={error ? TEXTS.statiske.generic.fetchError : undefined}
+      error={error ? translate(TEXTS.statiske.generic.fetchError) : undefined}
     />
   );
 };

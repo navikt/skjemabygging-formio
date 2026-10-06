@@ -1,5 +1,4 @@
 import { ApplicationLogger } from '../context/application/ApplicationContext';
-import { UnsupportedCustomValidation } from './custom-validation/unsupportedCustomValidation';
 
 type RendererSurface = 'input' | 'summary';
 
@@ -35,30 +34,5 @@ const reportUnsupportedComponent = (
   );
 };
 
-/**
- * A form the new renderer must not render, because it carries a `validate.custom` the renderer
- * neither reproduces nor can prove redundant. Reported the same way an unsupported component type
- * is: always logged to the backend, once per form and component.
- */
-const reportUnsupportedCustomValidation = (
-  logger: ApplicationLogger | undefined,
-  { formPath, unsupported }: { formPath: string; unsupported: UnsupportedCustomValidation[] },
-) => {
-  if (!logger?.error) {
-    return;
-  }
-
-  unsupported.forEach(({ componentKey, componentType, script }) =>
-    reportOnce(logger, `${formPath}\0custom-validation\0${componentKey}`, () =>
-      logger.error?.('Unsupported custom validation in renderer', {
-        componentKey,
-        componentType,
-        formPath,
-        script,
-      }),
-    ),
-  );
-};
-
-export { reportUnsupportedComponent, reportUnsupportedCustomValidation };
+export { reportUnsupportedComponent };
 export type { RendererSurface, UnsupportedComponentContext };

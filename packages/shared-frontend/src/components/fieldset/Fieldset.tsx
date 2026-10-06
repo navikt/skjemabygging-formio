@@ -1,6 +1,7 @@
+import { Fieldset as AkselFieldset } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import FormElementBox from '../shared/FormElementBox';
+import FormElementBox, { Spacing } from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import styles from './Fieldset.module.css';
 
@@ -9,29 +10,37 @@ interface FieldsetProps {
   description?: string;
   hideLegend?: boolean;
   contentClassName?: string;
+  inset?: boolean;
+  marginBottom?: Spacing;
   children: ReactNode;
 }
 
-const Fieldset = ({ legend, description, hideLegend, contentClassName, children }: FieldsetProps) => {
+const Fieldset = ({
+  legend,
+  description,
+  hideLegend,
+  contentClassName,
+  inset = true,
+  marginBottom = 'space-40',
+  children,
+}: FieldsetProps) => {
   const { translate } = useLanguage();
 
   return (
-    <FormElementBox marginBottom="space-40">
-      <fieldset className={`aksel-fieldset ${styles.fieldset}`}>
-        <legend
-          className={['aksel-fieldset__legend-formio-template', hideLegend ? styles.hiddenLegend : undefined]
-            .filter(Boolean)
-            .join(' ')}
+    <FormElementBox marginBottom={marginBottom}>
+      <AkselFieldset
+        legend={<span className={styles.legend}>{translate(legend)}</span>}
+        hideLegend={hideLegend}
+        description={!hideLegend && description ? <TranslatedDescription translationKey={description} /> : undefined}
+      >
+        {hideLegend && description && <TranslatedDescription translationKey={description} />}
+        <div
+          className={[styles.content, inset ? styles.inset : undefined, contentClassName].filter(Boolean).join(' ')}
+          data-cy="fieldset-content"
         >
-          {translate(legend)}
-        </legend>
-        {description && (
-          <div className={`description ${styles.description}`}>
-            <TranslatedDescription translationKey={description} />
-          </div>
-        )}
-        <div className={['aksel-fieldset__content', contentClassName].filter(Boolean).join(' ')}>{children}</div>
-      </fieldset>
+          {children}
+        </div>
+      </AkselFieldset>
     </FormElementBox>
   );
 };
