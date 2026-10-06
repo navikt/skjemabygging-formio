@@ -17,7 +17,7 @@ describe('[endpoint] documents', () => {
     skjemanummer: 'NAV 12.34-56',
     title: formTitle,
     path: 'testskjema',
-    components: [],
+    components: [{ type: 'container', key: 'yourInformation', yourInformation: true }],
     properties: { mottaksadresseId: 'mottaksadresseId', skjemanummer: 'NAV 12.34-56' },
   };
 
@@ -60,7 +60,15 @@ describe('[endpoint] documents', () => {
         formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'nb',
-        submission: JSON.stringify({ data: {} }),
+        submission: JSON.stringify({
+          data: {
+            yourInformation: {
+              fornavn: 'Test',
+              etternavn: 'Testesen',
+              adresse: { adresse: 'Testveien 1', postnummer: '0101', bySted: 'Oslo' },
+            },
+          },
+        }),
       },
     });
 
@@ -114,7 +122,15 @@ describe('[endpoint] documents', () => {
         formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'en',
-        submission: JSON.stringify({ data: {} }),
+        submission: JSON.stringify({
+          data: {
+            yourInformation: {
+              fornavn: 'Test',
+              etternavn: 'Testesen',
+              adresse: { adresse: 'Testveien 1', postnummer: '0101', bySted: 'Oslo' },
+            },
+          },
+        }),
       },
     });
 
