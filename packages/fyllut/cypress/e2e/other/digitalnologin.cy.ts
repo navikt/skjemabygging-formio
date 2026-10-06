@@ -125,6 +125,21 @@ describe('Digital no login', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
     });
 
+    it('keeps the file selection button the same size when an upload error appears', () => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      return cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($button) => {
+        const { width, height } = $button[0].getBoundingClientRect();
+
+        cy.clickNextStep();
+        cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).should('be.visible');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should(($buttonWithError) => {
+          const errorRect = $buttonWithError[0].getBoundingClientRect();
+          expect(errorRect.width).to.equal(width);
+          expect(errorRect.height).to.equal(height);
+        });
+      });
+    });
+
     it('redirect user if we get 403 from ID upload', () => {
       cy.mocksUseRouteVariant('upload-file:forbidden');
 
