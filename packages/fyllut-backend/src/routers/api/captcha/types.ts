@@ -1,12 +1,14 @@
+import {
+  CAPTCHA_FAILURE_REASON as CAPTCHA_SERVICE_FAILURE_REASON,
+  CaptchaFailureReason as CaptchaServiceFailureReason,
+} from '@navikt/skjemadigitalisering-shared-backend';
+
 const CAPTCHA_FAILURE_REASON = {
   HONEYPOT_FILLED: 'honeypot_filled',
-  INVALID_CHALLENGE_FIELDS: 'invalid_challenge_fields',
-  INVALID_CHALLENGE_SIGNATURE: 'invalid_challenge_signature',
-  CHALLENGE_EXPIRED: 'challenge_expired',
-  INVALID_PROOF_OF_WORK: 'invalid_proof_of_work',
+  ...CAPTCHA_SERVICE_FAILURE_REASON,
 } as const;
 
-type CaptchaFailureReason = (typeof CAPTCHA_FAILURE_REASON)[keyof typeof CAPTCHA_FAILURE_REASON];
+type CaptchaFailureReason = CaptchaServiceFailureReason | typeof CAPTCHA_FAILURE_REASON.HONEYPOT_FILLED;
 
 const CAPTCHA_FAILURE_REASON_TEXT: Record<CaptchaFailureReason, string> = {
   [CAPTCHA_FAILURE_REASON.HONEYPOT_FILLED]: 'Honeypot was filled in',
@@ -22,22 +24,9 @@ class CaptchaError extends Error {
   }
 }
 
-interface CaptchaChallenge {
-  nonce: string;
-  difficulty: number;
-  expiresAt: number;
-  signature: string;
-}
-
-interface CaptchaSolution extends CaptchaChallenge {
-  solution: string;
-}
-
 export {
   CAPTCHA_FAILURE_REASON,
   CAPTCHA_FAILURE_REASON_TEXT,
   CaptchaError,
-  type CaptchaChallenge,
   type CaptchaFailureReason,
-  type CaptchaSolution,
 };

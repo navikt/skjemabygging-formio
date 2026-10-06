@@ -1,0 +1,141 @@
+import { Party } from '@navikt/skjemadigitalisering-shared-domain';
+import { mapPartyToApplication } from './applicationPartyMapper';
+
+describe('mapPartyToApplication', () => {
+  it.each([
+    {
+      name: 'own behalf, identified',
+      party: {
+        onBehalfOf: 'self',
+        user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      },
+      expected: { bruker: '12345678911' },
+    },
+    {
+      name: 'own behalf, unidentified',
+      party: {
+        onBehalfOf: 'self',
+        user: {
+          kind: 'unidentified-person',
+          firstName: 'Test',
+          surname: 'Testesen',
+          address: { postalCode: '0101' },
+        },
+      },
+      expected: { avsender: { navn: 'Test Testesen' } },
+    },
+    {
+      name: 'own behalf, unidentified without names',
+      party: {
+        onBehalfOf: 'self',
+        user: {
+          kind: 'unidentified-person',
+        },
+      },
+      expected: undefined,
+    },
+    {
+      name: 'another person, identified user with spaced identifiers',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '109 876 543 21' },
+        user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
+      },
+      expected: {
+        bruker: '12345678911',
+        avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
+      },
+    },
+    {
+      name: 'another person, unidentified user',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
+        user: {
+          kind: 'unidentified-person',
+          firstName: 'User',
+          surname: 'Usersen',
+          address: { postalCode: '0101' },
+        },
+      },
+      expected: {
+        avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
+      },
+    },
+    {
+      name: 'organization, identified user',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { name: 'Organization', number: '889640782' },
+        user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      },
+      expected: {
+        bruker: '12345678911',
+        avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'organization, unidentified user',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { name: 'Organization', number: '889640782' },
+        user: {
+          kind: 'unidentified-person',
+          firstName: 'User',
+          surname: 'Usersen',
+          address: { postalCode: '0101' },
+        },
+      },
+      expected: {
+        avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'organization, several people',
+      party: {
+        onBehalfOf: 'multiple-people',
+        sender: { name: 'Organization', number: '889640782' },
+      },
+      expected: {
+        avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'organization, own behalf',
+      party: {
+        onBehalfOf: 'self',
+        sender: { name: 'Organization', number: '889640782' },
+      },
+      expected: {
+        avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'person sender, own behalf',
+      party: {
+        onBehalfOf: 'self',
+        sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
+      },
+      expected: {
+        avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
+      },
+    },
+    {
+      name: 'legacy sender',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { firstName: 'Legacy', surname: 'Sender' },
+        user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      },
+      expected: {
+        bruker: '12345678911',
+        avsender: { navn: 'Legacy Sender' },
+      },
+    },
+  ] satisfies { name: string; party: Party; expected: ReturnType<typeof mapPartyToApplication> }[])(
+    'maps $name',
+    ({ party, expected }) => {
+      expect(mapPartyToApplication(party)).toEqual(expected);
+    },
+  );
+});
