@@ -90,7 +90,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-    expect(error.message).toBe('Internal Server Error');
+    expect(error.message).toBe('Draft request failed');
     expect(error.userMessage).toBeUndefined();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
@@ -117,7 +117,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.errorCode).toBe('NOT_FOUND');
-    expect(error.message).toBe('Not Found');
+    expect(error.message).toBe('Draft request failed');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);
