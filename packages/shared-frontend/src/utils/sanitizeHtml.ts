@@ -1,6 +1,9 @@
 import DOMPurify from 'dompurify';
 
 const sanitizeOptions = { ADD_ATTR: ['target'] };
+const maxCachedEntries = 1000;
+// Sanitizing parses the HTML twice, and the same form texts are sanitized on every render.
+const sanitizedHtmlCache = new Map<string, string>();
 let relHookInitialized = false;
 
 const ensureNoopenerHook = () => {
@@ -28,8 +31,19 @@ const ensureNoopenerHook = () => {
 
 // Two passes of DOMPurify with `target` allowed; inlined so shared-frontend stays independent.
 const sanitizeHtml = (content: string): string => {
+  const cachedHtml = sanitizedHtmlCache.get(content);
+  if (cachedHtml !== undefined) {
+    return cachedHtml;
+  }
+
   ensureNoopenerHook();
-  return DOMPurify.sanitize(DOMPurify.sanitize(content, sanitizeOptions), sanitizeOptions);
+  const sanitizedHtml = DOMPurify.sanitize(DOMPurify.sanitize(content, sanitizeOptions), sanitizeOptions);
+  if (sanitizedHtmlCache.size >= maxCachedEntries) {
+    const [oldestContent] = sanitizedHtmlCache.keys();
+    sanitizedHtmlCache.delete(oldestContent);
+  }
+  sanitizedHtmlCache.set(content, sanitizedHtml);
+  return sanitizedHtml;
 };
 
 export { sanitizeHtml };
