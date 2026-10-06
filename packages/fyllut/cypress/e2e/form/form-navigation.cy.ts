@@ -19,6 +19,14 @@ function fillPaperNoCoverPageToSummary(fieldName: string | RegExp = 'Tekstfelt',
   cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 }
 
+const fillNoLoginPersonalInformationPage = () => {
+  cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByLabelText('Ja').check(),
+  );
+  cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+  cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
+};
+
 function assertNoCoverPageSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
   fillPaperNoCoverPageToSummary(fieldName, value);
   cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
@@ -539,7 +547,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
+      fillNoLoginPersonalInformationPage();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
@@ -550,7 +558,9 @@ describe('Form navigation', () => {
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
       cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.wait('@nologinSubmit');
+      cy.wait('@nologinSubmit').its('response.statusCode').should('eq', 200);
+      cy.url().should('include', '/fyllut/formnavigationdigitalnologin/kvittering');
+      cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
     });
 
     it('Invalid data on summary page', () => {
@@ -569,7 +579,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
+      fillNoLoginPersonalInformationPage();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
@@ -582,7 +592,9 @@ describe('Form navigation', () => {
       cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
       cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
       cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.wait('@nologinSubmit');
+      cy.wait('@nologinSubmit').its('response.statusCode').should('eq', 200);
+      cy.url().should('include', '/fyllut/formnavigationdigitalnologin/kvittering');
+      cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
     });
 
     it('Back buttons', () => {
@@ -592,7 +604,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
+      fillNoLoginPersonalInformationPage();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
