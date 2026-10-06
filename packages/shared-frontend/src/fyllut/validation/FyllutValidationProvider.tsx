@@ -10,7 +10,7 @@ import {
 } from '../../context/form-definition/FormDefinitionContext';
 import { getActivePanels, toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useSubmissionState } from '../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../context/state/SubmissionStateContext';
 import { ValidationProvider } from '../../context/validation/ValidationContext';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
@@ -43,7 +43,7 @@ interface PageFieldsCache {
  */
 const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const form = useFormDefinitionForm();
-  const { getLatestSubmission } = useSubmissionState();
+  const { getLatestSubmission } = useSubmissionActions();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage } = useLanguage();
   const cacheRef = useRef<PageFieldsCache>();

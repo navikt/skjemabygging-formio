@@ -14,12 +14,15 @@ import {
 import { StateStoreProvider } from './StateContext';
 import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
 
-interface SubmissionStateContextType {
-  submission?: Submission;
+interface SubmissionActionsContextType {
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   getLatestSubmission: () => Submission | undefined;
   updateSubmission: (submissionPath: string, value: unknown) => void;
   clearSubmissionPaths: (submissionPaths: string[]) => void;
+}
+
+interface SubmissionStateContextType extends SubmissionActionsContextType {
+  submission?: Submission;
 }
 
 interface Props {
@@ -52,6 +55,9 @@ const clearSubmissionPathsFromSubmission = (
 };
 
 const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
+// Holds only the stable actions, so consumers that never read the submission do not rerender on
+// every change.
+const SubmissionActionsContext = createContext<SubmissionActionsContextType>({} as SubmissionActionsContextType);
 
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmissionState] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
@@ -94,10 +100,12 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     [setSubmission],
   );
 
-  const value = useMemo(
-    () => ({ submission, setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths }),
-    [submission, setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths],
+  const actions = useMemo(
+    () => ({ setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths }),
+    [setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths],
   );
+
+  const value = useMemo(() => ({ submission, ...actions }), [submission, actions]);
 
   // Fyllut's implementation of the generic field state store. setValue updates the submission and
   // returns the next submission snapshot so scope-aware validation can revalidate synchronously.
@@ -120,13 +128,22 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   );
 
   return (
-    <SubmissionStateContext.Provider value={value}>
-      <StateStoreProvider store={store}>{children}</StateStoreProvider>
-    </SubmissionStateContext.Provider>
+    <SubmissionActionsContext.Provider value={actions}>
+      <SubmissionStateContext.Provider value={value}>
+        <StateStoreProvider store={store}>{children}</StateStoreProvider>
+      </SubmissionStateContext.Provider>
+    </SubmissionActionsContext.Provider>
   );
 };
 
 const useSubmissionState = () => useContext(SubmissionStateContext);
+const useSubmissionActions = () => useContext(SubmissionActionsContext);
 
-export { clearSubmissionPathsFromSubmission, createUpdatedSubmission, SubmissionStateProvider, useSubmissionState };
-export type { SubmissionStateContextType };
+export {
+  clearSubmissionPathsFromSubmission,
+  createUpdatedSubmission,
+  SubmissionStateProvider,
+  useSubmissionActions,
+  useSubmissionState,
+};
+export type { SubmissionActionsContextType, SubmissionStateContextType };

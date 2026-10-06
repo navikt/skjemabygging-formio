@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../../context/state/SubmissionStateContext';
 import { updateSearch } from '../../../utils/searchParams';
 import { withDraftMetadata } from '../../draft/withDraftMetadata';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
@@ -24,7 +24,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
   const { search } = useLocation();
   const searchRef = useRef(search);
   const navigate = useNavigate();
-  const { setSubmission, getLatestSubmission } = useSubmissionState();
+  const { setSubmission, getLatestSubmission } = useSubmissionActions();
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const persist = useRef(
     createDraftPersistence(new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId),

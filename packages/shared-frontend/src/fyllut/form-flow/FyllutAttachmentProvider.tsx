@@ -11,13 +11,13 @@ import {
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { StateStoreProvider, useOptionalFieldStateStore } from '../../context/state/StateContext';
-import { useSubmissionState } from '../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../context/state/SubmissionStateContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import { useNologinToken } from '../context/nologin-token/NologinTokenContext';
 
 const FyllutAttachmentProvider = ({ children }: { children: ReactNode }) => {
   const store = useOptionalFieldStateStore();
-  const { getLatestSubmission, setSubmission } = useSubmissionState();
+  const { getLatestSubmission, setSubmission } = useSubmissionActions();
   const { attachments, sessions } = useRuntimeServices();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const form = useFormDefinitionForm();

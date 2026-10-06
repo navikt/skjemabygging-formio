@@ -1,6 +1,6 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../../context/state/SubmissionStateContext';
 import { saveLatestSubmission } from './saveLatestSubmission';
 
 type FormActionStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
@@ -27,7 +27,7 @@ interface Props extends FormActionHandlers {
 const FormActionsContext = createContext<FormActionsContextValue>({} as FormActionsContextValue);
 
 const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandler }: Props) => {
-  const { getLatestSubmission } = useSubmissionState();
+  const { getLatestSubmission } = useSubmissionActions();
   const [status, setStatus] = useState<FormActionStatus>('idle');
   const [error, setError] = useState<unknown>();
   const saveLoopRef = useRef<Promise<boolean> | null>(null);
