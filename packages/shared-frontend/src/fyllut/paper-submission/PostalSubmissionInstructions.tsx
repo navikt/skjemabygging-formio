@@ -26,7 +26,7 @@ const PostalSubmissionInstructions = ({ attachments, children }: Props) => {
   );
 
   return (
-    <VStack gap="space-16">
+    <VStack gap="space-16" className={styles.instructions}>
       <section aria-labelledby="postal-download-title">
         <BodyShort className={styles.introduction}>
           {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
