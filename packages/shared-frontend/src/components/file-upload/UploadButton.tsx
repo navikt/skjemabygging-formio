@@ -9,6 +9,7 @@ import { useOptionalValidationScope } from '../../context/validation/ValidationS
 import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import FileUploadButton from './FileUploadButton';
+import styles from './UploadButton.module.css';
 
 interface Props {
   attachmentId: string;
@@ -64,7 +65,7 @@ const UploadButton = ({
   );
 
   return (
-    <VStack gap="space-8">
+    <VStack gap="space-8" className={styles.container}>
       <FileUploadButton
         id={inputId(statePath)}
         label={label}

@@ -1,4 +1,3 @@
 .button {
-  inline-size: fit-content;
-  max-inline-size: min(100%, 18.75rem);
+  inline-size: 100%;
 }
