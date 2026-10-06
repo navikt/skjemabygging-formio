@@ -8,6 +8,17 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const inventoryPath = 'packages/fyllut/playwright/migration/inventory.json';
 const pilotIds = new Set(['F004', 'F017', 'F061', 'F073', 'F086']);
 const migrationId = (fileId, index) => `${fileId}-T${String(index + 1).padStart(3, '0')}`;
+const reservedRemovals = [
+  'F006-T009',
+  'F008-T006',
+  'F013-T006',
+  'F019-T008',
+  'F049-T005',
+  'F051-T011',
+  'F055-T008',
+  'F056-T010',
+  'F056-T011',
+];
 const listSources = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -25,15 +36,55 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
     'Inventory total is inconsistent',
   );
   const ids = new Set();
+  assert(Array.isArray(inventory.historicalTests), 'Missing historical test register');
+  const historicalIds = new Set();
+  for (const historical of inventory.historicalTests) {
+    const file = inventory.files.find((entry) => entry.id === historical.fileId);
+    assert(file && file.source === historical.source, 'Unknown historical source');
+    assert.match(historical.fromRevision, /^[a-f0-9]{40}$/, 'Invalid historical source revision');
+    assert.match(historical.removedAtRevision, /^[a-f0-9]{40}$/, 'Invalid removal revision');
+    assert.equal(historical.decision, 'pending', 'Historical removal requires separate human approval');
+    assert(typeof historical.reason === 'string' && historical.reason.trim().length >= 12, 'Missing removal reason');
+    assert.match(historical.test.id, new RegExp(`^${file.id}-T\\d{3}$`), 'Invalid historical test ID');
+    assert.match(historical.test.sourceHash, /^[a-f0-9]{64}$/, 'Missing historical source hash');
+    assert(
+      historical.test.sourceUrl.startsWith(
+        `https://github.com/navikt/skjemabygging-formio/blob/${historical.fromRevision}/${file.source}#L`,
+      ),
+      'Missing historical source reference',
+    );
+    assert(!ids.has(historical.test.id), `Duplicate historical ID: ${historical.test.id}`);
+    ids.add(historical.test.id);
+    historicalIds.add(historical.test.id);
+  }
+  for (const id of reservedRemovals) assert(historicalIds.has(id), `Missing reserved historical ID: ${id}`);
   const sources = new Set();
   const targets = new Set();
   const sourceOrderOverrides = inventory.sourceOrderOverrides ?? {};
   const stableOrders = {
+    F014: [
+      migrationId('F014', 0),
+      migrationId('F014', 1),
+      'F014-T008',
+      ...Array.from({ length: 5 }, (_, index) => migrationId('F014', index + 2)),
+    ],
+    F017: ['F017-T011', ...Array.from({ length: 10 }, (_, index) => migrationId('F017', index))],
+    F044: [
+      ...Array.from({ length: 7 }, (_, index) => migrationId('F044', index)),
+      'F044-T013',
+      ...Array.from({ length: 5 }, (_, index) => migrationId('F044', index + 7)),
+    ],
+    F048: ['F048-T008', ...Array.from({ length: 7 }, (_, index) => migrationId('F048', index))],
     F063: [...Array.from({ length: 25 }, (_, index) => migrationId('F063', index)), 'F063-T027', 'F063-T026'],
     F074: [
       ...Array.from({ length: 8 }, (_, index) => migrationId('F074', index)),
       'F074-T015',
       ...Array.from({ length: 6 }, (_, index) => migrationId('F074', index + 8)),
+    ],
+    F082: [
+      ...Array.from({ length: 8 }, (_, index) => migrationId('F082', index)),
+      ...Array.from({ length: 4 }, (_, index) => migrationId('F082', index + 9)),
+      'F082-T009',
     ],
   };
   for (const [fileId, order] of Object.entries(stableOrders)) {
@@ -68,14 +119,16 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       file.hooks.map(({ type, scopes, sourceHash }) => ({ type, scopes, sourceHash })),
       `Hooks changed: ${file.source}`,
     );
+    const historical = inventory.historicalTests.filter((entry) => entry.fileId === file.id);
+    const allFileIds = [...file.tests.map((test) => test.id), ...historical.map((entry) => entry.test.id)].sort();
     assert.deepEqual(
-      file.tests.map((test) => test.id).sort(),
-      file.tests.map((_, index) => migrationId(file.id, index)).sort(),
+      allFileIds,
+      allFileIds.map((_, index) => migrationId(file.id, index)),
       `Invalid test IDs: ${file.id}`,
     );
     assert.deepEqual(
       file.tests.map((test) => test.id),
-      sourceOrderOverrides[file.id] ?? file.tests.map((_, index) => migrationId(file.id, index)),
+      sourceOrderOverrides[file.id] ?? allFileIds.filter((id) => !historicalIds.has(id)),
       `Moved migration ID: ${file.id}`,
     );
     file.tests.forEach((test, index) => {
@@ -130,10 +183,18 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       }
     });
   }
-  assert.equal(ids.size, inventory.staticTestDeclarations, 'Duplicate or missing migration ID');
+  assert.equal(
+    ids.size,
+    inventory.staticTestDeclarations + inventory.historicalTests.length,
+    'Duplicate or missing migration ID',
+  );
+  assert(
+    Number.isInteger(inventory.pilotTestDeclarations) && inventory.pilotTestDeclarations > 0,
+    'Invalid pilot total',
+  );
   assert.equal(
     [...pilotIds].reduce((count, id) => count + inventory.files.find((file) => file.id === id).tests.length, 0),
-    38,
+    inventory.pilotTestDeclarations,
     'Pilot total changed',
   );
   for (const shared of inventory.sharedSources) {

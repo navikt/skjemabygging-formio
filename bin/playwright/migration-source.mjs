@@ -8,10 +8,16 @@ const titleOf = (node) => {
   return ts.isStringLiteralLike(node) ? node.text : node.getText();
 };
 
+const containsBuildSkip = (node) => {
+  if (ts.isCallExpression(node) && node.expression.getText() === 'cy.skipIfNoIncludeDistTests') return true;
+  return ts.forEachChild(node, containsBuildSkip) ?? false;
+};
+
 const parseSource = (path, text) => {
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true);
   const tests = [];
   const hooks = [];
+  const buildOnlyHooks = new Set();
   const canonical = (node) => printer.printNode(ts.EmitHint.Unspecified, node, source);
   const line = (node) => source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
   const visit = (node, scopes = [], inheritedModifiers = []) => {
@@ -36,19 +42,21 @@ const parseSource = (path, text) => {
           line: source.getLineAndCharacterOfPosition(start).line + 1,
           endLine: source.getLineAndCharacterOfPosition(end).line + 1,
           sourceHash: hash(canonical(node)),
-          buildOnly: node.getText(source).includes('cy.skipIfNoIncludeDistTests('),
+          buildOnly: containsBuildSkip(node),
           modifiers: [...inheritedModifiers, ...name.split('.').slice(1)],
           referenceComments: comments.map(({ pos, end }) => text.slice(pos, end)),
         });
         return;
       }
       if (/^(before|beforeEach|after|afterEach)$/.test(name)) {
-        hooks.push({
+        const hook = {
           type: name,
           scopes,
           line: line(node),
           sourceHash: hash(canonical(node)),
-        });
+        };
+        hooks.push(hook);
+        if (containsBuildSkip(node)) buildOnlyHooks.add(hook);
       }
     }
     ts.forEachChild(node, (child) => visit(child, scopes, inheritedModifiers));
@@ -60,6 +68,7 @@ const parseSource = (path, text) => {
         hook.scopes.length <= test.scopes.length && hook.scopes.every((scope, index) => scope === test.scopes[index]),
     );
     test.sourceHash = hash(JSON.stringify([test.sourceHash, ...applicableHooks.map((hook) => hook.sourceHash)]));
+    test.buildOnly ||= applicableHooks.some((hook) => buildOnlyHooks.has(hook));
   }
   return { sourceHash: hash(printer.printFile(source)), tests, hooks };
 };

@@ -88,14 +88,15 @@ test('per-test hashes include applicable hooks, exclude sibling hooks, and detec
   );
 });
 
-test('current 89-file register passes with 795 planned tests and 38 reviewed pilot checklists', () => {
+test('current 92-file register has 809 active declarations and 41 pending pilot checklists', () => {
   assert.equal(checkMigration(inventory, read).length, 0);
-  assert.equal(inventory.files.length, 89);
-  assert.equal(inventory.staticTestDeclarations, 795);
+  assert.equal(inventory.files.length, 92);
+  assert.equal(inventory.staticTestDeclarations, 809);
+  assert.equal(inventory.historicalTests.length, 9);
   const pilots = inventory.files.filter((file) => ['F004', 'F017', 'F061', 'F073', 'F086'].includes(file.id));
   assert.equal(
     pilots.reduce((count, file) => count + file.tests.length, 0),
-    38,
+    41,
   );
   assert.equal(inventory.files.find((file) => file.id === 'F063').tests.at(-1).id, 'F063-T026');
   assert.deepEqual(
@@ -108,9 +109,9 @@ test('current 89-file register passes with 795 planned tests and 38 reviewed pil
   assert.deepEqual(
     inventory.files.slice(-3).map(({ id, tests }) => [id, tests.length]),
     [
-      ['F087', 1],
-      ['F088', 5],
-      ['F089', 1],
+      ['F090', 2],
+      ['F091', 3],
+      ['F092', 1],
     ],
   );
   assert.equal(
@@ -120,6 +121,126 @@ test('current 89-file register passes with 795 planned tests and 38 reviewed pil
   assert.equal(
     inventory.files.find((file) => file.id === 'F085').tests.find((entry) => entry.id === 'F085-T005').title,
     'sends all values and the versioned footer',
+  );
+});
+
+test('merged insertions and renamed cases retain their earlier identities', () => {
+  const date = inventory.files.find((file) => file.id === 'F017');
+  assert.equal(date.tests[0].id, 'F017-T011');
+  assert.equal(date.tests[7].id, 'F017-T007');
+  const group = inventory.files.find((file) => file.id === 'F045');
+  assert.deepEqual(
+    group.tests
+      .filter((entry) => ['F045-T001', 'F045-T003', 'F045-T004'].includes(entry.id))
+      .map(({ id, title }) => [id, title]),
+    [
+      ['F045-T001', 'should render a native legend and children with group spacing'],
+      ['F045-T003', 'should show a background color when backgroundColor is true'],
+      ['F045-T004', 'should have a transparent background when backgroundColor is false'],
+    ],
+  );
+  const shifted = structuredClone(inventory);
+  const rewritten = shifted.files.find((file) => file.id === 'F017');
+  rewritten.tests.forEach((entry, index) => {
+    entry.id = `F017-T${String(index + 1).padStart(3, '0')}`;
+  });
+  shifted.sourceOrderOverrides.F017 = rewritten.tests.map((entry) => entry.id);
+  assert.throws(() => checkMigration(shifted, read), /Stable source order changed/);
+  const translation = inventory.files.find((file) => file.id === 'F082');
+  assert.equal(translation.tests.at(-1).id, 'F082-T009');
+  assert.equal(translation.tests.find((entry) => entry.id === 'F082-T013').runtimeCases.length, 3);
+  assert(
+    translation.tests
+      .filter((entry) => ['F082-T010', 'F082-T011', 'F082-T012'].includes(entry.id))
+      .every((entry) => entry.buildOnly),
+  );
+});
+
+test('historical removals reserve IDs and keep requirement decisions pending', () => {
+  assert(inventory.historicalTests.every((entry) => entry.decision === 'pending'));
+  assert.deepEqual(
+    inventory.files.find((file) => file.id === 'F008').tests.map((entry) => entry.id),
+    ['F008-T001', 'F008-T002', 'F008-T003', 'F008-T004', 'F008-T005', 'F008-T007', 'F008-T008'],
+  );
+  const forgotten = structuredClone(inventory);
+  forgotten.historicalTests.splice(0, 1);
+  assert.throws(() => checkMigration(forgotten, read), /Missing reserved historical ID/);
+  const reused = structuredClone(inventory);
+  reused.files.find((file) => file.id === 'F008').tests[5].id = 'F008-T006';
+  assert.throws(() => checkMigration(reused, read), /Invalid test IDs|Duplicate migration ID/);
+  const duplicate = structuredClone(inventory);
+  duplicate.historicalTests.push(structuredClone(duplicate.historicalTests[0]));
+  assert.throws(() => checkMigration(duplicate, read), /Duplicate historical ID/);
+  const approved = structuredClone(inventory);
+  approved.historicalTests[0].decision = 'approved';
+  assert.throws(() => checkMigration(approved, read), /separate human approval/);
+});
+
+test('a further middle deletion preserves active IDs and accepts a historical reservation', () => {
+  const copy = structuredClone(inventory);
+  const file = copy.files.find((entry) => entry.id === bank.id);
+  const [removed] = file.tests.splice(1, 1);
+  const parsed = parseSource(bank.source, original);
+  const lines = original.split('\n');
+  lines.splice(parsed.tests[1].line - 1, parsed.tests[1].endLine - parsed.tests[1].line + 1);
+  const source = lines.join('\n');
+  const current = parseSource(bank.source, source);
+  file.sourceHash = current.sourceHash;
+  file.hooks = current.hooks;
+  copy.staticTestDeclarations--;
+  copy.pilotTestDeclarations--;
+  copy.historicalTests.push({
+    fileId: file.id,
+    source: file.source,
+    fromRevision: copy.revision,
+    removedAtRevision: copy.revision,
+    decision: 'pending',
+    reason: 'Synthetic deletion exercises stable identities without approving retirement.',
+    test: removed,
+  });
+  assert.equal(file.tests[1].id, 'F004-T003');
+  assert.equal(checkMigration(copy, (path) => (path === bank.source ? source : read(path))).length, 0);
+});
+
+test('an inserted middle case appends a new ID instead of shifting existing cases', () => {
+  const copy = structuredClone(inventory);
+  const file = copy.files.find((entry) => entry.id === bank.id);
+  const source = original.replace(
+    "    it('should be visible and interactable'",
+    "    it('new synthetic case', () => expect(true));\n    it('should be visible and interactable'",
+  );
+  const parsed = parseSource(bank.source, source);
+  const { referenceComments: _comments, ...metadata } = parsed.tests[0];
+  file.tests.unshift({
+    ...metadata,
+    id: 'F004-T008',
+    status: 'planned',
+    coverageReview: 'pending',
+    playwrightReview: 'pending',
+    coverageChecklist: ['Synthetic insertion preserves the original identities of later cases.'],
+  });
+  file.sourceHash = parsed.sourceHash;
+  file.hooks = parsed.hooks;
+  copy.sourceOrderOverrides.F004 = file.tests.map((entry) => entry.id);
+  copy.staticTestDeclarations++;
+  copy.pilotTestDeclarations++;
+  assert.equal(file.tests[1].id, 'F004-T001');
+  assert.equal(checkMigration(copy, (path) => (path === bank.source ? source : read(path))).length, 0);
+});
+
+test('built-only classification inherits real skip calls and ignores comments or strings', () => {
+  const source = `describe('outer', () => {
+    describe('built', () => {
+      beforeEach(() => { cy.skipIfNoIncludeDistTests(); });
+      it('inherited', () => expect(true));
+    });
+    it('comment', () => { /* cy.skipIfNoIncludeDistTests(); */ expect(true); });
+    it('string', () => expect('cy.skipIfNoIncludeDistTests('));
+    it('direct', () => { cy.skipIfNoIncludeDistTests(); expect(true); });
+  });`;
+  assert.deepEqual(
+    parseSource('example.cy.ts', source).tests.map((entry) => entry.buildOnly),
+    [true, false, false, true],
   );
 });
 

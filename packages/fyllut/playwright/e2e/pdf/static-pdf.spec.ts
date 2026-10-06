@@ -44,6 +44,7 @@ test.describe('Static PDF', () => {
         attachments: ['vedlegg1'],
         user: { nationalIdentityNumber: '22015614475' },
       });
+      expect(request).not.toHaveProperty('type');
       expect(response.status()).toBe(200);
       const body: unknown = await response.json();
       expect(body).toMatchObject({ pdfBase64: expect.any(String) });

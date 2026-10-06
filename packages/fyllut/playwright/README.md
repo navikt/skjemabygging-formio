@@ -1,6 +1,21 @@
 # FyllUt Playwright pilot
 
-This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 795 declarations in 89 Cypress files at `b637d46d1d84e27ee3229215af5fa54a4589600b`. The earlier 86-file, 787-declaration baseline remains in its reconciliation history. Existing IDs were preserved when new source tests were added. The 38 tests in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. Ten tests have Playwright counterparts. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 809 active declarations in 92 Cypress files at `616692eaa50239c42b16c5485b7953b73ea8af65`. The earlier 89-file/795-declaration and 86-file/787-declaration baselines remain in its reconciliation history. The 41 declarations in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. Ten tests have Playwright counterparts. Coverage and Playwright-practice review fields remain pending until developers review them.
+
+New files and tests append IDs rather than renumbering earlier cases. Explicit
+source-order mappings preserve inserted cases and existing title changes.
+`historicalTests` reserves nine upstream removals, with their original titles,
+hashes and source references. Their requirement decisions remain pending.
+Eight involve unsupported arbitrary scripts; F056-T011's empty-optional-field
+guarantee still needs supported replacement coverage. Recording a removal does
+not approve retiring its requirement or prove coverage equivalence.
+
+These are static declaration counts, not runtime case counts. F082-T013's
+saved-language declaration generates three cases, recorded in `runtimeCases`.
+All require future coverage. Build-only classification includes inherited
+hooks and excludes commented-out calls; thirteen current declarations require
+built routing. A later migration must preserve parameterized cases and their
+distinct outcomes, rather than translating one declaration into one test.
 
 After installing workspace dependencies and the Chromium browser (`pnpm --dir packages/fyllut exec playwright install chromium`), run from the repository root:
 
@@ -36,6 +51,8 @@ F004-T006 retains the source's PDF payload assertions and waits for the matching
 response to finish; sending a request is not a completed download. F086-T002
 first loads the valid static-PDF page and its API data in its own epoch before
 checking the normal route's 404. A missing form cannot satisfy that prerequisite.
+F086-T001 also requires the normal static-PDF request to omit `type`, preserving
+the source's distinction from an `ETTERSENDELSE` request.
 
 To verify Playwright's collected test list against the register without starting servers, run:
 
