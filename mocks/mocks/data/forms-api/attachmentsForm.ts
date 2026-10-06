@@ -1,6 +1,7 @@
 import { attachment, panel, radio } from '../../form-builder/components';
 import yourInformation from '../../form-builder/components/cutomized/yourInformation';
 import form from '../../form-builder/form/form';
+import formProperties from '../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../form-builder/shared/utils';
 
 const defaultProps = { validate: { required: true } };
@@ -13,6 +14,10 @@ const attachmentsForm = () => {
     title: 'Form with attachments',
     formNumber: formNumber,
     path: formPath,
+    properties: {
+      ...formProperties({ formNumber }),
+      grantUserDigitalAccess: true,
+    },
     components: [
       panel({
         title: 'Dine opplysninger',
