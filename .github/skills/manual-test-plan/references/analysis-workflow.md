@@ -6,7 +6,7 @@
 - [Establish intent before expected results](#establish-intent-before-expected-results)
 - [Build a behavior matrix](#build-a-behavior-matrix)
 - [Trace behavior](#trace-behavior) — routes, evidence, integrations, regressions
-- [Environment preflight](#environment-preflight) — preprod vs preprod-alt revision check
+- [Environment preflight](#environment-preflight) — preprod vs preprod-alt branch check
 - [Coverage](#coverage) — case selection and the coverage section
 
 ## Inputs
@@ -71,8 +71,10 @@ For the implementation pull request, read:
 Do not assume any single source is complete or current. The issue, PR body,
 review comments, commit messages, tests, and implementation can disagree.
 
-Resolve the exact head commit to test. Plans are not valid with only a branch
-name because the branch can move after the plan is written.
+Resolve the exact head commit to analyze, and record it in the plan. The
+branch can move after the plan is written; the tester-facing preflight checks
+the branch, while the recorded commit shows which code the cases were derived
+from.
 
 ## Establish intent before expected results
 
@@ -205,31 +207,33 @@ conditions.
 The developer owns deployment. Do not put deployment workflow steps in the
 test plan.
 
-Give the tester one short preflight check instead:
+Give the tester one short preflight check instead. The renderer writes it from
+`source.ref` and `environment.internBaseUrl`:
 
-1. Open or query the environment's config endpoint.
-2. Read the field that identifies the application revision.
-3. Compare it with the exact pull request head commit recorded in the plan.
-4. Stop and contact the developer when it differs.
+1. Open the application in the selected environment and view the page source.
+2. Check that the `git-branch` meta tag equals the PR head branch.
+3. Record the `git-version` meta tag with the test results.
+4. Stop and contact the developer when the branch differs.
 
-The manual deploy workflow `.github/workflows/manual-deploy.yaml` has separate
-`preprod` and `preprod-alt` targets; its default is not evidence of where the
-PR is deployed. Find the successful run that deployed the PR head and its
-selected environment. Cross-check the live `/fyllut/api/config` `gitVersion`
-on that environment against the exact PR head. Use its matching intern and
-ansatt ingresses in the plan. If runs are unavailable, ambiguous, or neither
-environment reports the head, ask the user which environment to target and
-whether deployment is still pending. Do not silently choose an environment
-or describe an earlier revision as the PR. Recheck the revision before each
-test session; if the environment changed, stop and confirm deployment again.
-In these environments `gitVersion` identifies the monorepo application
-commit. Bygger's `/api/config` does not expose a revision field
-(`packages/bygger-backend/src/routers/api/config.ts`). Its backend reads
-`GIT_SHA`, but that value is not available from the config response. For
-Bygger-specific testing, ask the developer for an approved, observable method
-to identify the deployed application commit. Do not use FyllUt's version as
-evidence of a Bygger deployment or generate a Bygger plan without a reliable
-preflight method.
+`.github/workflows/manual-deploy.yaml` builds FyllUt and Bygger with
+`VITE_GIT_BRANCH` and `VITE_GIT_VERSION`, which `packages/fyllut/index.html`
+and `packages/bygger/index.html` render as the `git-branch` and `git-version`
+meta tags. Checking the branch instead of the commit keeps the plan valid when
+the developer deploys later fixes from the same branch. Deploying the latest
+fix is the developer's responsibility. Update the plan only when a fix changes
+the behavior under test.
+
+The manual deploy workflow has separate `preprod` and `preprod-alt` targets;
+its default is not evidence of where the PR is deployed. Find the successful
+run that deployed the PR branch and its selected environment. Cross-check the
+live `git-branch` meta tag on that environment against the PR head branch. For
+FyllUt, `/fyllut/api/config` `gitVersion` also shows the deployed commit. Use
+the environment's matching intern and ansatt ingresses in the plan. If runs
+are unavailable, ambiguous, or neither environment reports the branch, ask the
+user which environment to target and whether deployment is still pending. Do
+not silently choose an environment. Bygger requires login before its page
+source is available; if you cannot read it, rely on the deploy run and ask the
+user to confirm. Do not use FyllUt's branch as evidence of a Bygger deployment.
 
 ## Coverage
 

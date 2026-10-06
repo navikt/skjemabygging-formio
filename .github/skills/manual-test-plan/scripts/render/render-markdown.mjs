@@ -31,16 +31,7 @@ ${includeCleanup && item.cleanup.length ? `**${labels.cleanup}:**\n${item.cleanu
 };
 
 const renderIssue = (ctx) => {
-  const {
-    plan,
-    behaviors,
-    integrations,
-    internBaseUrl,
-    ansattBaseUrl,
-    revisionEndpoint,
-    revisionField,
-    expectedCommit,
-  } = ctx;
+  const { plan, behaviors, integrations, internBaseUrl, ansattBaseUrl, expectedBranch } = ctx;
   const publicCleanup = getPublicCleanup(plan);
   const scopeMarkdown = `## Dekning
 
@@ -136,11 +127,12 @@ ${scopeMarkdown}
 
 ## Kontroller versjonen hver gang du starter testingen
 
-1. Åpne [miljøinformasjonen](${revisionEndpoint}).
-2. Finn \`${escapeMarkdown(revisionField)}\`.
-3. Kontroller at verdien er \`${expectedCommit}\`.
+1. Åpne [applikasjonen i miljøet](${internBaseUrl}/).
+2. Vis sidekilden med Ctrl+U, eller Cmd+Option+U på Mac.
+3. Søk etter \`git-branch\`. Kontroller at verdien er \`${expectedBranch}\`.
+4. Noter verdien av \`git-version\` sammen med testresultatene.
 
-**Stopp hvis verdien er annerledes.** Be utvikleren legge ut riktig versjon, og kontroller på nytt.
+**Stopp hvis \`git-branch\` har en annen verdi.** Da er en annen endring lagt ut i miljøet. Kontakt utvikleren, og kontroller på nytt.
 
 ## Testoppgaver
 

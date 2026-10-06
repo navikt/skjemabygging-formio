@@ -26,17 +26,15 @@ const validatePlan = (plan) => {
     }
   }
   const expectedCommit = plan.source.commitSha.trim();
+  const expectedBranch = plan.source.ref.trim();
 
   const environmentName = plan.environment.name.trim();
   const internBaseUrl = asHttpUrl(plan.environment.internBaseUrl, 'environment.internBaseUrl').replace(/\/$/, '');
   const ansattBaseUrl = asHttpUrl(plan.environment.ansattBaseUrl, 'environment.ansattBaseUrl').replace(/\/$/, '');
-  const revisionEndpoint = asHttpUrl(plan.environment.revisionCheck.endpoint, 'environment.revisionCheck.endpoint');
-  const revisionField = plan.environment.revisionCheck.field.trim();
   const matchesEnvironment = ['fyllut', 'skjemabygging'].some(
     (application) =>
       new URL(internBaseUrl).hostname === `${application}-${environmentName}.intern.dev.nav.no` &&
-      new URL(ansattBaseUrl).hostname === `${application}-${environmentName}.ansatt.dev.nav.no` &&
-      new URL(revisionEndpoint).hostname === `${application}-${environmentName}.intern.dev.nav.no`,
+      new URL(ansattBaseUrl).hostname === `${application}-${environmentName}.ansatt.dev.nav.no`,
   );
   if (!matchesEnvironment) {
     fail('environment URLs must all point to the selected preprod environment and ingresses');
@@ -168,8 +166,7 @@ const validatePlan = (plan) => {
     integrations,
     internBaseUrl,
     ansattBaseUrl,
-    revisionEndpoint,
-    revisionField,
+    expectedBranch,
     expectedCommit,
   };
 };

@@ -12,7 +12,7 @@
     "Asks the collaboration question with exactly the choices 'Yes' and 'No', and does not infer the answer from case count or risk",
     "On 'No', follows the developer path: writes github-issue.md through render-artifacts.mjs and does not ask about the output format until delivery",
     "After reviewing the rendered output and before showing or creating the issue, asks whether to deliver a GitHub issue, HTML for printing to PDF, or both, and rerenders with --format html or --format both when HTML is chosen",
-    "Determines whether the PR is deployed to preprod or preprod-alt from deployment evidence and a live revision check, not the deploy workflow's default",
+    "Determines whether the PR is deployed to preprod or preprod-alt from deployment evidence and a live git-branch check, not the deploy workflow's default",
     "Checks Forms API in preprod before choosing a form, and prefers a suitable production form over an outdated preprod copy",
     "Shows the user the entire rendered test-plan issue title and body and waits for explicit confirmation before running create-issue.mjs with --apply",
     "Does not create the test-plan issue, or claim one was created, before that confirmation",

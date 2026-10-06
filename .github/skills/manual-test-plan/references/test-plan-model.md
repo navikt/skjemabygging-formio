@@ -48,11 +48,7 @@ holds the example and the rules a schema cannot express.
     "environment": {
         "name": "preprod-alt",
         "internBaseUrl": "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut",
-        "ansattBaseUrl": "https://fyllut-preprod-alt.ansatt.dev.nav.no/fyllut",
-        "revisionCheck": {
-            "endpoint": "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut/api/config",
-            "field": "gitVersion"
-        }
+        "ansattBaseUrl": "https://fyllut-preprod-alt.ansatt.dev.nav.no/fyllut"
     },
     "risks": ["Feil person kan bli registrert som bruker i søknaden."],
     "behaviorAnalysis": [
@@ -206,22 +202,23 @@ holds the example and the rules a schema cannot express.
 - `scope.notCoveredByTests` lists in-scope behavior or edge cases without a
   manual case, each with a concrete `area` and `reason`. Use an empty array
   when nothing is omitted. Do not use `scope.excluded` for test coverage gaps.
-- `source.commitSha` must be the exact 40-character commit under test.
+- `source.commitSha` must be the exact 40-character commit the plan was
+  analyzed against. It is shown as background, not used as the tester's
+  preflight.
+- `source.ref` must be the PR head branch name (`headRefName`), without a
+  `refs/` prefix. The tester preflight compares it with the deployed
+  `git-branch` meta tag.
 - `source.type` must be `pull-request`. `source.number` and `source.url` must
   identify the implementation pull request, even when the skill started from an
   issue.
 - Include `source.issue` when the pull request implements an issue, whichever
   one the skill started from. Omit it when no issue is linked.
 - `environment.name` is `preprod` or `preprod-alt`, selected from the PR's
-  deployment and live revision check, not the workflow default. If uncertain,
+  deployment and live `git-branch` check, not the workflow default. If uncertain,
   ask the user before finalizing the plan. `environment.internBaseUrl` and
   `environment.ansattBaseUrl` must identify the matching FyllUt ingresses
   (or Bygger ingresses for a Bygger-specific plan). The renderer appends
   the stored form path.
-- `environment.revisionCheck` must identify the config endpoint and response
-  field that expose the deployed application revision. For Bygger changes,
-  resolve the missing revision method as described in the analysis workflow
-  (loaded in workflow step 1) before generating a plan.
 - `behaviorAnalysis` must contain the behavior matrix used to derive the test
   plan. Behavior IDs must be unique.
 - Aligned and suspected-defect behaviors require high confidence because their

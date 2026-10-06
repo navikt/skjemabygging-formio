@@ -97,7 +97,6 @@ test.each(['preprod', 'preprod-alt'])('uses matching FyllUt ingresses for %s', (
   plan.environment.name = name;
   plan.environment.internBaseUrl = `https://fyllut-${name}.intern.dev.nav.no/fyllut`;
   plan.environment.ansattBaseUrl = `https://fyllut-${name}.ansatt.dev.nav.no/fyllut`;
-  plan.environment.revisionCheck.endpoint = `${plan.environment.internBaseUrl}/api/config`;
   const run = render(plan);
   try {
     assert.equal(run.result.status, 0, run.result.stderr);
@@ -442,6 +441,25 @@ test('renders a plan for a pull request without a linked issue', () => {
   try {
     assert.equal(run.result.status, 0, run.result.stderr);
     assert.doesNotMatch(run.read('index.html'), /<strong>Sak:<\/strong>/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each([false, true])('checks the deployed branch instead of the commit (collaboration: %s)', (collaboration) => {
+  const run = render(makePlan(collaboration));
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const output = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    const preflight = collaboration
+      ? output.match(/<section class="card preflight" id="versjon">([\s\S]*?)<\/section>/)?.[1]
+      : output.match(/## Kontroller versjonen[\s\S]*?(?=\n## )/)?.[0];
+    assert.ok(preflight);
+    assert.match(preflight, /https:\/\/fyllut-preprod\.intern\.dev\.nav\.no\/fyllut\//);
+    assert.match(preflight, /git-branch/);
+    assert.match(preflight, /feature\/test/);
+    assert.match(preflight, /Noter verdien av .{0,7}git-version/);
+    assert.doesNotMatch(preflight, /a{40}|api\/config|gitVersion/);
   } finally {
     run.cleanup();
   }

@@ -2,11 +2,10 @@ import assert from 'node:assert/strict';
 import { test } from 'vitest';
 import { makePlan, render } from './test-helpers.mjs';
 
-test('accepts matching Bygger ingresses with a supplied revision check', () => {
+test('accepts matching Bygger ingresses', () => {
   const plan = makePlan(false);
   plan.environment.internBaseUrl = 'https://skjemabygging-preprod.intern.dev.nav.no';
   plan.environment.ansattBaseUrl = 'https://skjemabygging-preprod.ansatt.dev.nav.no';
-  plan.environment.revisionCheck.endpoint = 'https://skjemabygging-preprod.intern.dev.nav.no/approved-check';
   const run = render(plan);
   try {
     assert.equal(run.result.status, 0, run.result.stderr);
@@ -27,13 +26,27 @@ test('rejects mixed deployment URLs rather than linking to the wrong preprod', (
   }
 });
 
-test('rejects a revision check pointed at the other preprod environment', () => {
+test.each(['refs/heads/feature/test', 'feature test', ''])('rejects source.ref %j that is not a branch name', (ref) => {
   const plan = makePlan(false);
-  plan.environment.revisionCheck.endpoint = 'https://fyllut-preprod-alt.intern.dev.nav.no/fyllut/api/config';
+  plan.source.ref = ref;
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /environment URLs must all point to the selected preprod environment/);
+    assert.match(run.result.stderr, /source\.ref must be the pull request head branch name/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('still accepts a plan with the obsolete revisionCheck field', () => {
+  const plan = makePlan(false);
+  plan.environment.revisionCheck = {
+    endpoint: 'https://fyllut-preprod.intern.dev.nav.no/fyllut/api/config',
+    field: 'gitVersion',
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
   } finally {
     run.cleanup();
   }

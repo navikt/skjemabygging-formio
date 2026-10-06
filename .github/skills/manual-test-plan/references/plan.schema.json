@@ -65,7 +65,11 @@
         "type": { "const": "pull-request", "x-message": "must be pull-request" },
         "number": { "type": "integer", "minimum": 1, "x-message": "must be a positive pull request number" },
         "url": { "$ref": "#/definitions/httpUrl" },
-        "ref": { "$ref": "#/definitions/text" },
+        "ref": {
+          "type": "string",
+          "pattern": "^(?!refs/)[^\\s]+$",
+          "x-message": "must be the pull request head branch name, without refs/ prefix or whitespace"
+        },
         "commitSha": {
           "type": "string",
           "pattern": "^[0-9a-fA-F]{40}$",
@@ -83,19 +87,11 @@
     },
     "environment": {
       "type": "object",
-      "required": ["name", "internBaseUrl", "ansattBaseUrl", "revisionCheck"],
+      "required": ["name", "internBaseUrl", "ansattBaseUrl"],
       "properties": {
         "name": { "enum": ["preprod", "preprod-alt"], "x-message": "must be preprod or preprod-alt" },
         "internBaseUrl": { "$ref": "#/definitions/httpUrl" },
-        "ansattBaseUrl": { "$ref": "#/definitions/httpUrl" },
-        "revisionCheck": {
-          "type": "object",
-          "required": ["endpoint", "field"],
-          "properties": {
-            "endpoint": { "$ref": "#/definitions/httpUrl" },
-            "field": { "$ref": "#/definitions/text" }
-          }
-        }
+        "ansattBaseUrl": { "$ref": "#/definitions/httpUrl" }
       }
     },
     "risks": { "$ref": "#/definitions/strings" },

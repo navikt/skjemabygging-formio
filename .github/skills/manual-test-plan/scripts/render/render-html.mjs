@@ -11,16 +11,7 @@ import {
 } from './format.mjs';
 
 const renderHtml = (ctx, { generatedAt, templatePath }) => {
-  const {
-    plan,
-    behaviors,
-    integrations,
-    internBaseUrl,
-    ansattBaseUrl,
-    revisionEndpoint,
-    revisionField,
-    expectedCommit,
-  } = ctx;
+  const { plan, behaviors, integrations, internBaseUrl, ansattBaseUrl, expectedBranch, expectedCommit } = ctx;
   const publicCleanup = getPublicCleanup(plan);
   const coverageGapsHtml = plan.scope.notCoveredByTests.length
     ? `<ul>${plan.scope.notCoveredByTests.map((gap) => `<li>${escapeHtml(gap.area)}: ${escapeHtml(gap.reason)}</li>`).join('')}</ul>`
@@ -206,7 +197,7 @@ const renderHtml = (ctx, { generatedAt, templatePath }) => {
       }
       <p><strong>Miljø:</strong> ${escapeHtml(plan.environment.name)}</p>
       <p><strong>Gren:</strong> <code>${escapeHtml(plan.source.ref)}</code></p>
-      <p><strong>Commit:</strong> <code>${escapeHtml(expectedCommit)}</code></p>
+      <p><strong>Analysert commit:</strong> <code>${escapeHtml(expectedCommit)}</code></p>
     </div>
   </details>`;
 
@@ -237,7 +228,13 @@ const renderHtml = (ctx, { generatedAt, templatePath }) => {
   ${scopeHtml}
   <section class="card preflight" id="versjon">
     <h2>Sjekk versjonen før du tester</h2>
-    <p>Åpne <a href="${escapeHtml(revisionEndpoint)}">miljøinformasjonen</a>. Sjekk at <code>${escapeHtml(revisionField)}</code> er <code>${escapeHtml(expectedCommit)}</code>. Hvis ikke, be utvikleren legge ut riktig versjon.</p>
+    <ol>
+      <li>Åpne <a href="${escapeHtml(internBaseUrl)}/">applikasjonen i miljøet</a>.</li>
+      <li>Vis sidekilden med Ctrl+U, eller Cmd+Option+U på Mac.</li>
+      <li>Søk etter <code>git-branch</code>. Sjekk at verdien er <code>${escapeHtml(expectedBranch)}</code>.</li>
+      <li>Noter verdien av <code>git-version</code> sammen med testresultatene.</li>
+    </ol>
+    <p><strong>Stopp hvis <code>git-branch</code> har en annen verdi.</strong> Da er en annen endring lagt ut i miljøet. Kontakt utvikleren.</p>
   </section>
   ${setupSection}
   <section id="testoppgaver">

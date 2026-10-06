@@ -27,7 +27,6 @@ const makePlan = (withNonDevelopers) => ({
     name: 'preprod',
     internBaseUrl: 'https://fyllut-preprod.intern.dev.nav.no/fyllut',
     ansattBaseUrl: 'https://fyllut-preprod.ansatt.dev.nav.no/fyllut',
-    revisionCheck: { endpoint: 'https://fyllut-preprod.intern.dev.nav.no/fyllut/api/config', field: 'gitVersion' },
   },
   integrations: [
     {

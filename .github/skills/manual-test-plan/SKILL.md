@@ -110,13 +110,15 @@ Test plan progress:
    no-access handoff option on the non-developer path; omit it on the
    developer path. Do not mark a handoff or a success log as payload
    verification.
-8. Record the exact head commit. Determine whether the PR is deployed to
-   `preprod` or `preprod-alt` from deployment evidence and the live revision
-   check in [analysis-workflow.md](references/analysis-workflow.md). Use the
+8. Record the exact head commit and head branch. Determine whether the PR is
+   deployed to `preprod` or `preprod-alt` from deployment evidence and the
+   live `git-branch` check in
+   [analysis-workflow.md](references/analysis-workflow.md). Use the
    environment carrying the PR. If this is unclear, ask the user which
    environment to target before choosing forms or writing cases. Never default
-   to `preprod` just because the deploy workflow does. Establish the
-   application revision check for the selected environment.
+   to `preprod` just because the deploy workflow does. Testers check the
+   deployed branch, not the commit, so later fixes on the same branch do not
+   require a new plan.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Prefer a suitable production form and treat
    its production definition as the reference: when the preprod copy differs,
