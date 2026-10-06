@@ -47,6 +47,13 @@ const AdminMenu = ({ showImport = false }) => {
                 </AdminMenuLink>
               </Dropdown.Menu.GroupedList.Item>
             )}
+            {showImport && (
+              <Dropdown.Menu.GroupedList.Item>
+                <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/form-clear">
+                  Tøm preprod-skjemaer
+                </AdminMenuLink>
+              </Dropdown.Menu.GroupedList.Item>
+            )}
           </Dropdown.Menu.GroupedList>
         </Dropdown.Menu>
       </Dropdown>

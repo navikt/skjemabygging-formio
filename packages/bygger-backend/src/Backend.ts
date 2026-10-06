@@ -93,6 +93,11 @@ export class Backend {
     );
   }
 
+  async listPublishedFormPaths(): Promise<string[]> {
+    const repo = await this.createGitHubRepo();
+    return repo.listFormPaths(this.config.publishRepo.base);
+  }
+
   async publishResource(resourceName: string, resourceContent: ResourceContent) {
     const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `publish-${resourceName}--${uuidv4()}`;
