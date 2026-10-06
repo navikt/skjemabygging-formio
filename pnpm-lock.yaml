@@ -435,6 +435,9 @@ importers:
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1(@noble/hashes@1.8.0)
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
@@ -490,9 +493,6 @@ importers:
       '@types/node-jose':
         specifier: ^1.1.13
         version: 1.1.13
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
       memorystream:
         specifier: ^0.3.1
         version: 0.3.1
