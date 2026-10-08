@@ -1,0 +1,73 @@
+name: Deploy sendinn
+run-name: Sendinn [${{ inputs.environment }}]
+on:
+  workflow_call:
+    inputs:
+      git_sha:
+        required: true
+        type: string
+      environment:
+        description: 'Target environment (preprod)'
+        required: true
+        type: string
+
+env:
+  NODE_AUTH_TOKEN: ${{ github.token }}
+
+jobs:
+  package-and-push:
+    name: 'Package'
+    runs-on: ubuntu-latest-8-cores
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+
+      - name: 'Build application: sendinn'
+        env:
+          VITE_GIT_VERSION: ${{ inputs.git_sha }}
+        run: pnpm install --frozen-lockfile && pnpm build:sendinn && pnpm run deploy:sendinn-backend
+
+      - name: 'Build and push Docker image for sendinn'
+        uses: nais/docker-build-push@v0
+        id: docker-build-push-sendinn
+        with:
+          team: skjemadigitalisering
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          image_suffix: ${{ inputs.environment == 'prod' && 'sendinn' || format('sendinn-{0}', inputs.environment) }}
+          build_args: |
+            git_sha=${{ inputs.git_sha }}
+          dockerfile: ./docker/Dockerfile.sendinn
+          docker_context: ./packages
+    outputs:
+      image: ${{ steps.docker-build-push-sendinn.outputs.image }}
+
+  deploy-gcp:
+    name: 'Deploy'
+    needs: [package-and-push]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
+    steps:
+      - uses: 'actions/checkout@v7'
+      - name: 'Deploy sendinn'
+        uses: 'nais/deploy/actions/deploy@v2'
+        env:
+          CLUSTER: ${{ inputs.environment == 'prod' && 'prod-gcp' || 'dev-gcp' }}
+          RESOURCE: './.nais/sendinn/config.yaml'
+          VARS: './.nais/sendinn/${{ inputs.environment }}.yaml'
+          VAR: 'image=${{ needs.package-and-push.outputs.image }}'

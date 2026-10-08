@@ -1,0 +1,14 @@
+FROM node:24.14.0-alpine
+ENV NODE_ENV=production
+ARG git_sha
+
+WORKDIR /app
+COPY .deploy/sendinn-backend server
+COPY sendinn/dist server/build
+
+ENV GIT_SHA=${git_sha}
+
+WORKDIR server
+CMD ["node", "dist/server.mjs"]
+
+EXPOSE 8080

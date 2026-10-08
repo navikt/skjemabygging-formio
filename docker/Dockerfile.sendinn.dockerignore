@@ -1,0 +1,5 @@
+*
+!sendinn/dist
+!.deploy
+!.deploy/sendinn-backend
+!.deploy/sendinn-backend/**
