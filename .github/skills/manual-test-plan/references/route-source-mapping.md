@@ -17,14 +17,52 @@ Build an ordered route map **for each case**:
 | In the form       | Exact preprod form revision, active panels, conditionals, required components, their labels, and renderer behavior | Choices, active fields, page order, and source for each transition           |
 | After the form    | Summary, attachments, PDF, submit action, receipt, and relevant Cypress flow or implementation                     | Ordered actions, visible results, and source file/lines                      |
 
-Check the chosen values against form conditionals and `clearOnHide`; do not
-assume a branch is active because its components exist in Forms API. Match
+Check the chosen values against form conditionals and `clearOnHide` with the
+fill-order check below; do not assume a branch is active because its
+components exist in Forms API. Match
 submission method and settings when using a Cypress flow. If no spec covers
 the exact form, use matching tests for shared before/after behavior and the
 form definition plus renderer code for its specific pages. Note which tests
 use mocks and what they mock. Do not copy test fixture identities, labels,
 or panel order into a case that uses a different form. A redirect is a
 navigation step: inspect its `Location` before treating it as an error.
+
+## Fill order in the form
+
+Write fill steps in the order the tester meets the fields: page order, then
+component order within each page, including datagrid rows. Fill a field only
+after the field that controls its conditional, and only while it is shown.
+Do not reconstruct this order by reading the form definition by hand. For
+each case:
+
+1. Run `node bin/forms-api/form-flow.mjs --path '<form-path>'` (or
+   `--form <file>` for a generated form) for an overview of the pages,
+   fields, required flags, and conditionals with their controlling fields.
+2. Write the case's fills to a JSON file in the session artifacts, not the
+   repository: `fills` in the intended order with concrete values, and
+   `"reachesSummary": true` when the case continues to the summary. Mark
+   values the application fills, such as person data after login, with
+   `"prefilled": true`. List required fields the case leaves empty on
+   purpose, for example to test validation, in `leaveEmpty`. Set
+   `"revisit": true` only on a fill where the tester deliberately goes back.
+3. Custom JavaScript conditionals are never run. Read the expression and
+   record in `assume` whether the case's values show the field. Put each
+   assumption in `journeyCheck.note` so the tester can see the field
+   appearing or not.
+4. Run `node bin/forms-api/form-flow.mjs --path '<form-path>' --fills
+<fills.json>` and fix the fills until it reports no errors. Resolve each
+   warning, or record why it does not apply.
+5. Write the steps in the printed route order. Each `Page` heading is a page
+   transition, including pages with no fills, which the tester still passes
+   through with `Neste steg`. Name fields by their printed labels. Cite the
+   form revision and the checker run in `journeyCheck.evidence`.
+
+The checker uses the stored form definition. It does not check renderer
+behavior, prefill sources, validation rules other than `required`, or
+JSON-logic conditionals; map those from source as described above. Rerun it
+after changing a case's values or order.
+
+## Steps and evidence
 
 For each proposed numbered step, record the action, next page, and the
 specific source that supports that transition. Keep this mapping with the

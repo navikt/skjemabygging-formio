@@ -284,6 +284,10 @@ holds the example and the rules a schema cannot express.
   Metadata, schema checks, a similar form's Cypress test, and HTTP 200
   alone do not map or verify a route. Compare all rendered HTML or
   issue steps with that case's source map or trace.
+- Fill steps follow the route order printed by `bin/forms-api/form-flow.mjs`
+  for the case's fills, with no errors left. Never fill a field before the
+  field that controls it, or while it is hidden. `evidence` names the checker
+  run, and `note` records each assumption about a custom conditional.
 - The exploratory case above illustrates an unresolved route. A source-mapped
   verification case uses `"mode": "verification"` and
   `"journeyCheck": {"status": "source-mapped", ...}` with the actual form

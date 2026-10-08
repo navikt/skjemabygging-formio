@@ -134,7 +134,9 @@ Test plan progress:
 10. Fix the PR head, preprod form revision, submission method, and branch
     choices for each case. Derive its steps with
     [route-source-mapping.md](references/route-source-mapping.md), which also
-    covers digital submission without login.
+    covers digital submission without login. Write fill steps in the order
+    `bin/forms-api/form-flow.mjs` prints for the case's fills, after it reports
+    no errors.
 11. Write the plan following the Language rules above and
     [test-plan-model.md](references/test-plan-model.md).
 12. Generate the canonical plan JSON and run:
@@ -252,6 +254,10 @@ These scripts are executed, not read for logic:
 - `bin/forms-api/import-form.mjs --form <form.json>`: dry run by default; add
   `--apply --confirm '<operation>'` to create, or `--replace-existing` first
   to update. See [forms-api-import.md](references/forms-api-import.md).
+- `bin/forms-api/form-flow.mjs --path '<form-path>' [--fills <fills.json>]`
+  (or `--form <file>`): prints pages, fields, and conditionals, or checks a
+  case's fill sequence against form order and conditionals. Exits 1 when the
+  sequence has errors. See [route-source-mapping.md](references/route-source-mapping.md).
 - `pnpm test:skills`: runs this skill's and the Forms API tools' own tests.
   Run it after changing any script in this skill; CI runs it in
   `build-and-test.yaml`.

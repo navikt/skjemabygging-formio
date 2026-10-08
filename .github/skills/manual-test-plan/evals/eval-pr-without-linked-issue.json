@@ -11,6 +11,7 @@
     "Presents the proposed testing scope, including which parts are inferred rather than confirmed, before selecting forms or writing cases",
     "Asks the collaboration question before proceeding to delivery-path-specific steps",
     "Builds journeyCheck entries with a 'verified' or 'source-mapped' status backed by cited sources, never claiming a route is tested in preprod without a browser observation",
+    "Runs bin/forms-api/form-flow.mjs with each case's fills until it reports no errors, and writes fill steps in its route order so no field is filled before its controlling field or while hidden",
     "Includes a short coverage section naming what the cases do not test and why, separate from functionality explicitly outside the PR"
   ]
 }
