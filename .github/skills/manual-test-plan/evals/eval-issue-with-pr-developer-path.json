@@ -1,0 +1,21 @@
+{
+  "skills": ["manual-test-plan"],
+  "query": "/manual-test-plan 2179",
+  "files": [],
+  "expected_behavior": [
+    "Resolves 2179 through GitHub instead of assuming whether it is an issue or a pull request, using the has('pull_request') check from analysis-workflow.md",
+    "Finds the implementation pull request for the issue using the open-first search before searching merged pull requests",
+    "Analyzes the committed PR diff at its head commit rather than a local or uncommitted diff",
+    "Invokes frontend-development, backend-development, or both before detailed analysis when the diff touches their areas",
+    "Builds a behavior matrix comparing before, intended, and implemented behavior for each changed behavior",
+    "Presents a proposed testing scope and asks a freeform ask_user question before selecting forms or writing cases, and waits for the answer",
+    "Asks the collaboration question with exactly the choices 'Yes' and 'No', and does not infer the answer from case count or risk",
+    "On 'No', follows the developer path: writes github-issue.md through render-artifacts.mjs and does not ask about the output format until delivery",
+    "After reviewing the rendered output and before showing or creating the issue, asks whether to deliver a GitHub issue, HTML for printing to PDF, or both, and rerenders with --format html or --format both when HTML is chosen",
+    "Determines whether the PR is deployed to preprod or preprod-alt from deployment evidence and a live git-branch check, not the deploy workflow's default",
+    "Checks Forms API in preprod before choosing a form, and prefers a suitable production form over an outdated preprod copy",
+    "Shows the user the entire rendered test-plan issue title and body and waits for explicit confirmation before running create-issue.mjs with --apply",
+    "Does not create the test-plan issue, or claim one was created, before that confirmation",
+    "Shares the test-plan issue URL only after the issue has actually been created"
+  ]
+}

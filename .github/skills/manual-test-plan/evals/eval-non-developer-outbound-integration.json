@@ -1,0 +1,18 @@
+{
+  "skills": ["manual-test-plan"],
+  "query": "/manual-test-plan 2201",
+  "files": [],
+  "expected_behavior": [
+    "Identifies that the change affects an outbound integration (for example a submission reaching innsending-api) during the behavior trace",
+    "Does not generate verification cases for that integration until a concrete, approved evidence method is known: the receiving system, the value or document that proves the result, the approved inspection tool or procedure, and who can perform it",
+    "Does not treat a successful receipt, HTTP status, or page transition as evidence of the outbound payload",
+    "Asks the collaboration question and receives 'Yes' (non-developers collaborate)",
+    "For the submission case, offers team-logs and Joark evidence options separately, each with its own owner, ordered instructions, and expected result",
+    "Adds a no-access handoff evidence option because non-developers are collaborating, and does not mark the handoff or a success log as payload verification",
+    "Follows the non-developer path: renders local index.html (not a PDF) via render-artifacts.mjs, and never creates a GitHub issue or publishes to GitHub Pages",
+    "Gives the user the index.html file:// URL with ?print=1 appended and asks them to print to PDF",
+    "Asks the user to review every page of the printed PDF before requesting approval to share it, and does not claim a PDF exists merely because the HTML was rendered",
+    "Shares the reviewed PDF only after explicit approval, alongside a Trello task, and does not assume Trello access without confirming it",
+    "Keeps the synthetic-data reminder to once at the top of the plan rather than repeating it per case, and never places filled-in synthetic identity numbers in the PDF"
+  ]
+}
