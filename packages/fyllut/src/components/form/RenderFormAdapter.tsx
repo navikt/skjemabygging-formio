@@ -2,14 +2,15 @@ import { LetterUXSignals, useAppConfig } from '@navikt/skjemadigitalisering-shar
 import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
+  getAvailableLanguages,
   IntegrationContextValue,
   RenderForm,
   RenderFormProps,
+  resolveActiveLanguage,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
 
 type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {

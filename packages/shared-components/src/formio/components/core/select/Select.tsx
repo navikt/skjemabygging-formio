@@ -1,9 +1,9 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { http } from '@navikt/skjemadigitalisering-shared-frontend';
 import { Utils } from 'formiojs';
 import { useEffect, useState } from 'react';
 import ReactSelect, { components, OnChangeValue } from 'react-select';
 import Select from 'react-select/base';
-import http from '../../../../api/util/http/http';
 import BaseComponent from '../../base/BaseComponent';
 import selectBuilder from './Select.builder';
 import selectForm from './Select.form';

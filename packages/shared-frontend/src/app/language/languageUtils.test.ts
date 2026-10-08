@@ -1,4 +1,4 @@
-import { getAvailableLanguages, getCurrentLanguage, resolveActiveLanguage } from './newRendererLanguageUtils';
+import { getAvailableLanguages, getCurrentLanguage, resolveActiveLanguage } from './languageUtils';
 
 describe('new renderer language utils', () => {
   it('uses the languages provided by the backend and always includes bokmål', () => {

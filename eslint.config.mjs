@@ -100,6 +100,30 @@ export default tseslint.config(
     },
   },
   {
+    // Sendinn and the host-independent app shell must not depend on legacy shared-components or fyllut-specific code
+    files: ['packages/sendinn/**', 'packages/shared-frontend/src/app/**', 'packages/shared-frontend/src/sendinn/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@navikt/skjemadigitalisering-shared-components',
+                '@navikt/skjemadigitalisering-shared-components/*',
+              ],
+              message: 'shared-components is legacy. Move what you need to shared-frontend/src/app.',
+            },
+            {
+              group: ['**/fyllut', '**/fyllut/**'],
+              message: 'Do not depend on shared-frontend/src/fyllut from sendinn or the app shell.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/cypress/e2e/**'],
     ...pluginMocha.configs.recommended,
     rules: {
