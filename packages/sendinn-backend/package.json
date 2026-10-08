@@ -1,0 +1,42 @@
+{
+  "name": "@navikt/sendinn-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend for Send inn, serving the sendinn SPA under /sendinn",
+  "main": "dist/server.mjs",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development vite",
+    "build": "tsc && vite build",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage node_modules",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage"
+  },
+  "dependencies": {
+    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
+    "csp-header": "^6.3.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "html-react-parser": "^5.2.15",
+    "jsdom": "^29.1.1",
+    "mustache-express": "^1.3.2",
+    "prom-client": "^15.1.3",
+    "react": "^18.3.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/mustache-express": "^1.2.5",
+    "@types/node": "^24.6.2",
+    "@types/supertest": "^7.2.0",
+    "supertest": "^7.2.2",
+    "vite-plugin-node": "^7.0.0"
+  }
+}

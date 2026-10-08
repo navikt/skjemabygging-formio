@@ -394,4 +394,13 @@ export const statiske = {
     },
   },
   loading: 'Laster',
+  sendinn: {
+    journey: {
+      lospost: 'Send dokumenter til Nav',
+      form: 'Send inn dokumentasjon til skjema',
+      formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
+      task: 'Send inn etterspurt dokumentasjon',
+    },
+    comingSoon: 'Denne tjenesten er under utvikling.',
+  },
 };
