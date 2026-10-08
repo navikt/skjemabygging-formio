@@ -31,8 +31,8 @@ const config = {
   umamiWebsiteId: process.env.UMAMI_WEBSITE_ID,
   formsApiUrl: env('FORMS_API_URL', 'https://forms-api.intern.dev.nav.no'),
   texas: {
-    introspectionEndpoint: env('NAIS_TOKEN_INTROSPECTION_ENDPOINT', 'http://localhost:3300/texas/introspect'),
-    exchangeEndpoint: env('NAIS_TOKEN_EXCHANGE_ENDPOINT', 'http://localhost:3300/texas/exchange'),
+    introspectionEndpoint: env('NAIS_TOKEN_INTROSPECTION_ENDPOINT', 'http://127.0.0.1:3300/texas/introspect'),
+    exchangeEndpoint: env('NAIS_TOKEN_EXCHANGE_ENDPOINT', 'http://127.0.0.1:3300/texas/exchange'),
   },
   innsendingApi: {
     audience: env('INNSENDING_API_AUDIENCE', 'dev-gcp:team-soknad:innsending-api'),

@@ -1,4 +1,5 @@
 import globalTranslations from '../data/forms-api/global-translations.json';
+import publishedGlobalTranslations from '../data/forms-api/published-global-translations';
 import { findTestdata } from './formio-api';
 
 const toFormsApiTranslations = (formPath: string) => {
@@ -34,6 +35,31 @@ export default [
             // To update the mock data, just copy from prod https://forms-api.intern.nav.no/v1/global-translations
             res.send(globalTranslations);
           },
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-published-global-translations',
+    url: '/forms-api/v1/published-global-translations/:languageCode',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware: (req: any, res: any) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send(publishedGlobalTranslations[req.params.languageCode] ?? {});
+          },
+        },
+      },
+      {
+        id: 'error',
+        type: 'status',
+        options: {
+          status: 500,
         },
       },
     ],

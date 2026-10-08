@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
- * Starts fyllut or bygger on automatically allocated free ports.
+ * Starts fyllut, bygger or sendinn on automatically allocated free ports.
  * Designed for sub-agents and CI environments where default ports may be occupied.
  *
  * Usage:
  *   node bin/start.mjs fyllut
  *   node bin/start.mjs bygger
+ *   node bin/start.mjs sendinn
  *   node bin/start.mjs fyllut --no-runtime-config
  *   node bin/start.mjs bygger --no-runtime-config
  *
  *   pnpm start:fyllut:mocks
  *   pnpm start:bygger:mocks
+ *   pnpm start:sendinn:mocks
  *
  * Output (printed after servers are ready, easy to parse):
  *   START_PID=12345
@@ -86,6 +88,7 @@ const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
 const mocksTsNodeCliPath = resolve(repoRoot, 'mocks/node_modules/ts-node/dist/bin.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
 const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
+const sendinnCypressRuntimePath = resolve(repoRoot, 'packages/sendinn/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
 const normalizedArgs = args.filter((arg) => arg !== '--');
 const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
@@ -213,10 +216,76 @@ const configs = {
       onCleanup: shouldWriteRuntimeConfig ? () => rmSync(byggerCypressRuntimePath, { force: true }) : undefined,
     };
   },
+  sendinn: async () => {
+    const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
+    const mockUrl = `http://127.0.0.1:${mockPort}`;
+    const backendUrl = `http://127.0.0.1:${backendPort}/sendinn`;
+    const frontendUrl = `http://127.0.0.1:${frontendPort}/sendinn`;
+    const sendinnBackendEnv = {
+      NODE_ENV: 'development',
+      NO_DECORATOR: 'true',
+      FORMS_API_URL: `${mockUrl}/forms-api`,
+      NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockUrl}/texas/introspect`,
+      NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockUrl}/texas/exchange`,
+    };
+    return {
+      commands: [
+        [
+          nodeExecutable,
+          [
+            mocksTsNodeCliPath,
+            'mocks/server.ts',
+            '--no-plugins.inquirerCli.enabled',
+            '--mock.collections.selected=sendinn-base',
+            `--server.port=${mockPort}`,
+            `--plugins.adminApi.port=${mockAdminPort}`,
+          ],
+          {},
+          resolve(repoRoot, 'mocks'),
+        ],
+        [
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(backendPort)],
+          sendinnBackendEnv,
+          resolve(repoRoot, 'packages/sendinn-backend'),
+        ],
+        [
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(frontendPort)],
+          { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
+          resolve(repoRoot, 'packages/sendinn'),
+        ],
+      ],
+      ports: [mockPort, mockAdminPort, backendPort, frontendPort],
+      summaryLines: [
+        `SENDINN_MOCK_URL=${mockUrl}`,
+        `SENDINN_MOCK_ADMIN_PORT=${mockAdminPort}`,
+        `SENDINN_BACKEND_URL=${backendUrl}`,
+        `SENDINN_FRONTEND_URL=${frontendUrl}`,
+      ],
+      onReady: shouldWriteRuntimeConfig
+        ? () => {
+            mkdirSync(resolve(repoRoot, 'packages/sendinn/.runtime'), { recursive: true });
+            writeFileSync(
+              sendinnCypressRuntimePath,
+              JSON.stringify(
+                {
+                  baseUrl: `http://127.0.0.1:${frontendPort}`,
+                  env: { MOCKS_ADMIN_PORT: String(mockAdminPort) },
+                },
+                null,
+                2,
+              ),
+            );
+          }
+        : undefined,
+      onCleanup: shouldWriteRuntimeConfig ? () => rmSync(sendinnCypressRuntimePath, { force: true }) : undefined,
+    };
+  },
 };
 
 if (!configs[target] || unknownArgs.length > 0) {
-  console.error(`Usage: node bin/start.mjs <fyllut|bygger> [--no-runtime-config]`);
+  console.error(`Usage: node bin/start.mjs <fyllut|bygger|sendinn> [--no-runtime-config]`);
   process.exit(1);
 }
 
