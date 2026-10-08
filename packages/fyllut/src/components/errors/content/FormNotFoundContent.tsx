@@ -1,8 +1,8 @@
-import { BodyShort, Button, Heading, Link } from '@navikt/ds-react';
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { useLanguageCodeFromURL, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { MyPageLink, navUrls } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useLocation } from 'react-router';
-import { PATHS } from '../../../util/paths';
 
 export function FormNotFoundContent() {
   const { translate } = useLanguages();
@@ -18,10 +18,10 @@ export function FormNotFoundContent() {
         </Heading>
         <BodyShort>{translate(TEXTS.statiske.error.formNotFound.message)}</BodyShort>
       </div>
-      <Button as="a" href={url || PATHS.BASE_URL(locale)}>
+      <Button as="a" href={url || navUrls.BASE_URL(locale)}>
         {translate(TEXTS.statiske.error.startNewForm)}
       </Button>
-      <Link href={PATHS.MY_PAGE(locale)}>{stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}</Link>
+      <MyPageLink translate={translate} locale={locale} />
     </>
   );
 }
