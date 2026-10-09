@@ -1,0 +1,28 @@
+{
+  "name": "@navikt/sendinn-frontend",
+  "homepage": "/sendinn",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage node_modules .runtime .cypress-home cypress/screenshots cypress/downloads"
+  },
+  "dependencies": {
+    "@navikt/aksel-icons": "^8.2.0",
+    "@navikt/ds-css": "^8.2.0",
+    "@navikt/ds-react": "^8.2.2",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router": "^7.15.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0"
+  }
+}

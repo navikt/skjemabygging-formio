@@ -1,11 +1,11 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
+import { UrlLanguageSelector } from '../../app/language/UrlLanguageSelector';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
-import FormLanguageSelector from '../language/FormLanguageSelector';
 import FormLayout from '../layout/FormLayout';
 import { resolveDefaultSubmissionMethod } from '../submission-method/submissionMethodResolution';
 import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
@@ -60,7 +60,7 @@ const FyllutFormFlow = ({
                 setReceiptPdf={setReceiptPdf}
               >
                 <FormLayout>
-                  <FormLanguageSelector />
+                  <UrlLanguageSelector />
                   {shouldRenderFormFlow ? (
                     <FormRouter form={form} receiptPdf={receiptPdf} />
                   ) : (
