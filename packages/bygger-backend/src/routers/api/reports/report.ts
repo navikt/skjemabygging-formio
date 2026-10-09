@@ -1,5 +1,6 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { RequestHandler } from 'express';
+import { Writable } from 'node:stream';
 import { reportService } from '../../../services';
 import { ApiError } from '../helpers/errors';
 
@@ -9,17 +10,42 @@ const report: RequestHandler = async (req, res, next) => {
   if (!report) {
     throw new Error(`Report not implemented: ${reportId}`);
   }
+  // Let the pipeline destroy its sink without closing an HTTP response that has not started.
+  const output = new Writable({
+    write(chunk, encoding, callback) {
+      res.write(chunk, encoding, callback);
+    },
+    final(callback) {
+      res.end(callback);
+    },
+    destroy(error, callback) {
+      if (res.headersSent && !res.writableFinished) res.destroy();
+      callback(error);
+    },
+  });
+  const cancelOnClose = () => {
+    if (!res.writableFinished) output.destroy();
+  };
+  const failOnError = (error: Error) => output.destroy(error);
+  res.once('close', cancelOnClose);
+  res.once('error', failOnError);
+  if (res.destroyed) output.destroy();
+
   try {
     res.contentType(`${report.contentType}; charset=utf-8`);
     res.attachment(`${reportId}.${report.fileExtension}`);
-    await reportService.generate(reportId, res);
-  } catch (err) {
-    // A pipeline failure destroys the response. Never append an error document to a partial download.
+    await reportService.generate(reportId, output);
+  } catch {
     if (res.headersSent || res.destroyed) {
       if (!res.destroyed) res.destroy();
       return;
     }
-    next(new ApiError('Kunne ikke generere rapport', true, err as Error));
+    res.removeHeader('Content-Disposition');
+    res.removeHeader('Content-Type');
+    next(new ApiError('Kunne ikke generere rapport', true));
+  } finally {
+    res.off('close', cancelOnClose);
+    res.off('error', failOnError);
   }
 };
 
