@@ -120,64 +120,105 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
 
       ['upload', 'delete'].forEach((operation) => {
         ['success', 'failure'].forEach((outcome) => {
-          it(`blocks submission during a pending ${operation} and recovers after ${outcome}`, () => {
-            let submitRequests = 0;
-            cy.intercept('POST', '**/api/send-inn/digital-application/*', () => {
-              submitRequests += 1;
-            });
-            let releaseResponse = () => {
-              throw new Error('Attachment request has not been intercepted');
-            };
-            cy.intercept(
-              operation === 'upload' ? 'POST' : 'DELETE',
-              operation === 'upload'
-                ? '**/api/send-inn/digital-application/*/attachments/*'
-                : '**/api/send-inn/digital-application/*/attachments/*/*',
-              (request) =>
-                new Cypress.Promise<void>((resolve) => {
-                  releaseResponse = () => {
-                    if (outcome === 'failure') {
-                      request.reply({ statusCode: 503, body: { errorCode: 'SERVICE_UNAVAILABLE' } });
-                    } else {
-                      request.continue();
-                    }
-                    resolve();
-                  };
-                }),
-            ).as('pendingAttachment');
+          // The intercept stays pending while the test edits, navigates and attempts submission.
+          it(
+            `blocks submission during a pending ${operation} and recovers after ${outcome}`,
+            { defaultCommandTimeout: 30000 },
+            () => {
+              let submitRequests = 0;
+              cy.intercept('POST', '**/api/send-inn/digital-application/*', () => {
+                submitRequests += 1;
+              });
+              let releaseResponse: () => void = () => {
+                throw new Error('Attachment request has not been intercepted');
+              };
+              cy.intercept(
+                {
+                  method: operation === 'upload' ? 'POST' : 'DELETE',
+                  url:
+                    operation === 'upload'
+                      ? '**/api/send-inn/digital-application/*/attachments/*'
+                      : '**/api/send-inn/digital-application/*/attachments/*/*',
+                  times: 1,
+                },
+                (request) =>
+                  new Cypress.Promise<void>((resolve) => {
+                    releaseResponse = () => {
+                      if (outcome === 'failure') {
+                        request.reply({ statusCode: 503, body: { errorCode: 'SERVICE_UNAVAILABLE' } });
+                      } else if (operation === 'delete') {
+                        request.reply({ statusCode: 204 });
+                      } else {
+                        request.continue();
+                      }
+                      resolve();
+                    };
+                  }),
+              ).as('pendingAttachment');
 
-            cy.clickPreviousStep();
-            cy.contains('[data-cy=attachment-upload]', 'Vedlegg 1').within(() => {
+              cy.clickPreviousStep();
+              cy.contains('[data-cy=attachment-upload]', 'Vedlegg 1').within(() => {
+                if (operation === 'upload') {
+                  cy.uploadFile('another-small-file.txt');
+                } else {
+                  cy.findByRole('button', { name: 'Slett filen' }).click();
+                }
+              });
+              cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Edited while pending');
+              cy.clickSaveAndContinue();
+              cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+              cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav })
+                .should('be.enabled')
+                .and('have.attr', 'data-variant', 'secondary');
+              cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
+              cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+              cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('be.visible');
+              cy.then(() => submitRequests).should('eq', 0);
+              cy.findByText('Edited while pending').should('exist');
+
+              cy.then(() => releaseResponse());
+              cy.wait('@pendingAttachment')
+                .its('response.statusCode')
+                .should('eq', outcome === 'failure' ? 503 : operation === 'upload' ? 201 : 204);
+              cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('be.enabled');
+              cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
               if (operation === 'upload') {
-                cy.uploadFile('another-small-file.txt');
+                cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
+                  'have.attr',
+                  'data-variant',
+                  'primary',
+                );
               } else {
-                cy.findByRole('button', { name: 'Slett filen' }).click();
+                cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
+                  'have.attr',
+                  'data-variant',
+                  'secondary',
+                );
+                if (outcome === 'failure') {
+                  cy.findAllByRole('button', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
+                  cy.intercept('DELETE', '**/api/send-inn/digital-application/*/attachments/*/*', {
+                    statusCode: 204,
+                  }).as('retryDelete');
+                  cy.contains('[data-cy=attachment-upload]', 'Vedlegg 1').within(() => {
+                    cy.findByText('small-file.txt').should('be.visible');
+                    cy.findByText(TEXTS.statiske.uploadFile.deleteFileError).should('be.visible');
+                    cy.findByRole('button', { name: 'Slett filen' }).click();
+                    cy.wait('@retryDelete').its('response.statusCode').should('eq', 204);
+                    cy.findByText('small-file.txt').should('not.exist');
+                    cy.findByText(TEXTS.statiske.uploadFile.deleteFileError).should('not.exist');
+                    cy.uploadFile('small-file.txt', { verifyUpload: true });
+                  });
+                  cy.clickSaveAndContinue();
+                  cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+                  cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
+                    'have.attr',
+                    'data-variant',
+                    'primary',
+                  );
+                }
               }
-            });
-            cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Edited while pending');
-            cy.clickSaveAndContinue();
-            cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav })
-              .should('be.enabled')
-              .and('have.attr', 'data-variant', 'secondary');
-            cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
-            cy.findByRole('alert').should('contain.text', TEXTS.statiske.attachment.pendingOperations);
-            cy.then(() => submitRequests).should('eq', 0);
-            cy.findByText('Edited while pending').should('exist');
-
-            cy.then(() => releaseResponse());
-            cy.wait('@pendingAttachment');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('be.enabled');
-            cy.findByText(TEXTS.statiske.attachment.pendingOperations).should('not.exist');
-            if (operation === 'upload' || outcome === 'failure') {
-              cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).should(
-                'have.attr',
-                'data-variant',
-                'primary',
-              );
-            }
-          });
+            },
+          );
         });
       });
 

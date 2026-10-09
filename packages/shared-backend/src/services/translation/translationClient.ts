@@ -4,6 +4,7 @@ import { logger } from '../../shared/logger/logger';
 
 const formsUrl = 'v1/forms';
 const globalTranslationUrl = 'v1/global-translations';
+const publishedGlobalTranslationUrl = 'v1/published-global-translations';
 
 const buildLanguageCodesParam = (languageCodes?: TranslationLang[]): string => {
   return languageCodes ? `?${new URLSearchParams({ languageCodes: languageCodes.toString() })}` : '';
@@ -34,9 +35,21 @@ const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
   return await http.get<FormsApiTranslation[]>(targetUrl);
 };
 
+interface GetPublishedGlobalTranslationsProps {
+  baseUrl: string;
+  languageCode: TranslationLang;
+}
+const getPublishedGlobalTranslations = async ({ baseUrl, languageCode }: GetPublishedGlobalTranslationsProps) => {
+  const targetUrl = `${baseUrl}/${publishedGlobalTranslationUrl}/${languageCode}`;
+  logger.info('Getting published global translations', { languageCode, targetUrl });
+
+  return await http.get<Record<string, string>>(targetUrl);
+};
+
 const translationClient = {
   getFormTranslations,
   getGlobalTranslations,
+  getPublishedGlobalTranslations,
 };
 
 export default translationClient;
