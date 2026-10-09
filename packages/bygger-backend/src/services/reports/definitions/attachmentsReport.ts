@@ -18,8 +18,9 @@ const attachmentsReport = ({ formsService }: ReportDependencies): CsvReport<Atta
     attachmentCode: 'vedleggskode',
     label: 'label',
   },
-  rows: async function* (signal) {
+  rows: async function* (signal, setContext) {
     signal.throwIfAborted();
+    setContext({ operation: 'list-forms' });
     const forms = await awaitReportCall(signal, () =>
       formsService.getAll<Pick<Form, 'path' | 'title' | 'skjemanummer' | 'properties'>>(
         'path,title,skjemanummer,properties',
@@ -27,8 +28,10 @@ const attachmentsReport = ({ formsService }: ReportDependencies): CsvReport<Atta
     );
     for (const compact of forms.filter(isNotTestForm)) {
       signal.throwIfAborted();
+      setContext({ operation: 'load-form', formPath: compact.path });
       const form = await awaitReportCall(signal, () => formsService.get(compact.path));
       signal.throwIfAborted();
+      setContext({ operation: 'map-row', formPath: compact.path });
       for (const attachment of navFormUtils.getAttachmentProperties(form)) {
         signal.throwIfAborted();
         yield {

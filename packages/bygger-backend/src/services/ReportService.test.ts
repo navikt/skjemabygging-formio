@@ -11,6 +11,7 @@ import {
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import config from '../config';
+import { logger } from '../logging/logger';
 import ReportService from './ReportService';
 import { formPublicationsService, formsService, recipientService, staticPdfService } from './index';
 
@@ -24,6 +25,7 @@ describe('ReportService', () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     nock.abortPendingRequests();
     nock.cleanAll();
   });
@@ -678,6 +680,7 @@ describe('ReportService', () => {
       it.each([{ legacyType: 'UNSUPPORTED' }, { legacyType: null }, { legacyType: ['KUN_PAPIR'] }])(
         'rejects unsupported legacy submission metadata %j',
         async ({ legacyType }) => {
+          const logged = vi.spyOn(logger, 'warn');
           const form = {
             path: 'unsupported-publication',
             skjemanummer: 'EXAMPLE',
@@ -707,6 +710,14 @@ describe('ReportService', () => {
             'Unsupported legacy submission type in published form',
           );
           expect(api.isDone()).toBe(true);
+          expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+            reportId: 'forms-published-languages',
+            rowCount: 0,
+            durationMs: expect.any(Number),
+            operation: 'resolve-submission-types',
+            formPath: 'unsupported-publication',
+            errorType: 'Error',
+          });
         },
       );
 

@@ -104,8 +104,9 @@ const allFormsSummaryReport = ({
     paperSubsequentSubmissionUrl: 'ettersendingsurl (papir)',
     staticPdfSubsequentSubmissionUrl: 'ettersendingsurl (static PDF)',
   },
-  rows: async function* (signal) {
+  rows: async function* (signal, setContext) {
     signal.throwIfAborted();
+    setContext({ operation: 'list-forms' });
     const forms = await awaitReportCall(signal, () =>
       formsService.getAll<
         Pick<
@@ -115,6 +116,7 @@ const allFormsSummaryReport = ({
       >('title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy'),
     );
     signal.throwIfAborted();
+    setContext({ operation: 'list-recipients' });
     const recipients = new Map(
       (await awaitReportCall(signal, () => recipientService.getAll())).map((recipient) => [
         recipient.recipientId,
@@ -124,10 +126,15 @@ const allFormsSummaryReport = ({
     signal.throwIfAborted();
     for (const compact of forms.filter(isNotTestForm)) {
       signal.throwIfAborted();
+      setContext({ operation: 'load-form', formPath: compact.path });
       const form = await awaitReportCall(signal, () => formsService.get(compact.path));
       signal.throwIfAborted();
+      setContext({ operation: 'list-pdfs', formPath: compact.path });
       const pdfs = await awaitReportCall(signal, () => staticPdfService.getAll({ formPath: compact.path }));
       signal.throwIfAborted();
+      setContext({ operation: 'resolve-recipient', formPath: compact.path });
+      const address = recipientAddress(compact.properties.mottaksadresseId, recipients);
+      setContext({ operation: 'map-row', formPath: compact.path });
       const attachments = navFormUtils.getAttachmentProperties(form);
       const hasAttachments = attachments.length > 0;
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = compact;
@@ -197,7 +204,7 @@ const allFormsSummaryReport = ({
         declarationType: declarationLabels[declarationType ?? DeclarationType.none],
         customDeclarationText: declarationType === DeclarationType.custom ? (properties.declarationText ?? '') : '',
         subsequentSubmissionDeadline: properties.ettersendelsesfrist,
-        recipientAddress: recipientAddress(properties.mottaksadresseId, recipients),
+        recipientAddress: address,
         requiresPaperUnit: properties.enhetMaVelgesVedPapirInnsending ? 'ja' : '',
         hasGeneralInstructions: properties.descriptionOfSignatures?.trim() ? 'ja' : '',
         introPageEnabled: form.introPage?.enabled ? 'ja' : '',

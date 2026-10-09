@@ -1,6 +1,8 @@
 import MemoryStream from 'memorystream';
+import { Response } from 'node-fetch';
 import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
+import { HttpError } from '../../fetchUtils';
 import { logger } from '../../logging/logger';
 import { CsvReport, writeCsvReport } from './csvPipeline';
 
@@ -121,6 +123,7 @@ describe('CSV pipeline', () => {
   });
 
   it('propagates destination write errors and stops producing rows', async () => {
+    const logged = vi.spyOn(logger, 'warn');
     let produced = 0;
     const failure = new Error('Sink unavailable');
     const destination = new Writable({
@@ -149,6 +152,13 @@ describe('CSV pipeline', () => {
     expect(produced).toBe(afterFailure);
     expect(produced).toBeLessThan(1000);
     expect(destination.destroyed).toBe(true);
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId: 'failure-test',
+      rowCount: expect.any(Number),
+      durationMs: expect.any(Number),
+      operation: 'write-csv',
+      errorType: 'Error',
+    });
   });
 
   it('propagates destination finalization errors rather than completing successfully', async () => {
@@ -257,7 +267,7 @@ describe('CSV pipeline', () => {
     expect(produced).toBe(false);
   });
 
-  it('rejects an upstream failure after output starts and logs only report metadata', async () => {
+  it('logs a source failure category without exposing the original error', async () => {
     const logged = vi.spyOn(logger, 'warn');
     const chunks: string[] = [];
     const destination = new Writable({
@@ -282,10 +292,60 @@ describe('CSV pipeline', () => {
     expect(chunks.join('')).toContain('example row');
     expect(chunks.join('')).not.toContain('upstream');
     expect(destination.destroyed).toBe(true);
-    expect(logged).toHaveBeenCalledWith('Report failed or cancelled', {
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
       reportId: 'source-failure-test',
       rowCount: 1,
       durationMs: expect.any(Number),
+      operation: 'generate-rows',
+      errorType: 'Error',
     });
+  });
+
+  it.each([
+    {
+      name: 'legacy HTTP error',
+      error: new HttpError(new Response('private body', { status: 403, statusText: 'private status' }), 'private body'),
+      expected: { errorType: 'HttpError', httpStatus: 403 },
+    },
+    { name: 'type error', error: new TypeError('private details'), expected: { errorType: 'TypeError' } },
+    { name: 'syntax error', error: new SyntaxError('private details'), expected: { errorType: 'SyntaxError' } },
+    { name: 'thrown string', error: 'private details', expected: { errorType: 'NonError' } },
+    {
+      name: 'untrusted error name',
+      error: Object.assign(new Error('private details'), { name: 'private name', body: 'private body' }),
+      expected: { errorType: 'Error' },
+    },
+    {
+      name: 'upstream premature close',
+      error: Object.assign(new Error('private details'), { code: 'ERR_STREAM_PREMATURE_CLOSE' }),
+      expected: { errorType: 'Error' },
+    },
+  ])('logs only safe metadata for a $name', async ({ error, expected }) => {
+    const failed = vi.spyOn(logger, 'warn');
+    const cancelled = vi.spyOn(logger, 'info');
+    await expect(
+      writeCsvReport(
+        'diagnostic-test',
+        {
+          columns: { value: 'value' },
+          rows: async function* (_signal, setContext) {
+            setContext({ operation: 'load-form', formPath: 'example' });
+            yield* [];
+            throw error;
+          },
+        },
+        new Writable(),
+      ),
+    ).rejects.toBe(error);
+
+    expect(failed).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId: 'diagnostic-test',
+      rowCount: 0,
+      durationMs: expect.any(Number),
+      operation: 'load-form',
+      formPath: 'example',
+      ...expected,
+    });
+    expect(cancelled).not.toHaveBeenCalled();
   });
 });

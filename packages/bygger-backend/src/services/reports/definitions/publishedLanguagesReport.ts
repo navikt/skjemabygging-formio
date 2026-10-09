@@ -46,20 +46,26 @@ const publishedLanguagesReport = ({
     titleEn: 'skjematittel (en)',
     submissionTypes: 'submissionTypes',
   },
-  rows: async function* (signal) {
+  rows: async function* (signal, setContext) {
     signal.throwIfAborted();
+    setContext({ operation: 'list-publications' });
     const forms = await awaitReportCall(signal, () => formPublicationsService.getAll());
     for (const form of forms.filter(
       (form) => isNotTestForm(form) && (form.status === 'published' || form.status === 'pending'),
     )) {
       signal.throwIfAborted();
+      setContext({ operation: 'load-publication', formPath: form.path });
       const publishedForm = await awaitReportCall(signal, () => formPublicationsService.get(form.path));
       signal.throwIfAborted();
       if (publishedForm.status !== 'published' || !isNotTestForm(publishedForm)) continue;
+      setContext({ operation: 'load-translations', formPath: form.path });
       const { translations } = await awaitReportCall(signal, () =>
         formPublicationsService.getTranslations(form.path, ['nb', 'nn', 'en']),
       );
       signal.throwIfAborted();
+      setContext({ operation: 'resolve-submission-types', formPath: form.path });
+      const submissionTypes = getPublishedSubmissionTypes(publishedForm.properties);
+      setContext({ operation: 'map-row', formPath: form.path });
       const titleFor = (language: 'nb' | 'nn' | 'en') => {
         const dictionary = translations[language];
         // The compact list can contain a pending draft title, which is not a published translation key.
@@ -71,7 +77,7 @@ const publishedLanguagesReport = ({
         titleNb: titleFor('nb'),
         titleNn: titleFor('nn'),
         titleEn: titleFor('en'),
-        submissionTypes: formatSubmissionTypes(getPublishedSubmissionTypes(publishedForm.properties)),
+        submissionTypes: formatSubmissionTypes(submissionTypes),
       };
     }
   },

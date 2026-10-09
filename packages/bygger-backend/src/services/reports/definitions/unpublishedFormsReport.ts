@@ -16,8 +16,9 @@ const unpublishedFormsReport = ({ formsService }: ReportDependencies): CsvReport
     unpublishedAt: 'avpublisert',
     unpublishedBy: 'avpublisert av',
   },
-  rows: async function* (signal) {
+  rows: async function* (signal, setContext) {
     signal.throwIfAborted();
+    setContext({ operation: 'list-forms' });
     const forms = await awaitReportCall(signal, () =>
       formsService.getAll<
         Pick<Form, 'skjemanummer' | 'title' | 'status' | 'publishedAt' | 'publishedBy' | 'properties'>
@@ -26,6 +27,7 @@ const unpublishedFormsReport = ({ formsService }: ReportDependencies): CsvReport
     signal.throwIfAborted();
     for (const form of forms.filter((form) => isNotTestForm(form) && form.status === 'unpublished')) {
       signal.throwIfAborted();
+      setContext({ operation: 'map-row' });
       yield {
         formNumber: form.skjemanummer,
         formTitle: form.title,

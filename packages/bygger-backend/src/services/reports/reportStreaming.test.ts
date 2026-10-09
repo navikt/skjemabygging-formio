@@ -1,7 +1,8 @@
-import { Form, PublishedTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, PublishedTranslations, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
 import { mockDeep } from 'vitest-mock-extended';
+import { logger } from '../../logging/logger';
 import ReportService from '../ReportService';
 import { ReportDependencies } from './types';
 
@@ -23,6 +24,129 @@ const formFor = (path: string): Form => ({
 });
 
 describe('Report streaming orchestration', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it.each([
+    { failingCall: 'forms', operation: 'list-forms', formPath: undefined },
+    { failingCall: 'recipients', operation: 'list-recipients', formPath: undefined },
+    { failingCall: 'details', operation: 'load-form', formPath: 'one' },
+    { failingCall: 'pdfs', operation: 'list-pdfs', formPath: 'one' },
+  ])('logs safe context when $failingCall fails', async ({ failingCall, operation, formPath }) => {
+    const dependencies = mockDeep<ReportDependencies>();
+    const failure = new ResponseError('SERVICE_UNAVAILABLE', 'Private upstream response');
+    const logged = vi.spyOn(logger, 'warn');
+    dependencies.formsService.getAll.mockResolvedValue([formFor('one')]);
+    dependencies.recipientService.getAll.mockResolvedValue([]);
+    dependencies.formsService.get.mockResolvedValue(formFor('one'));
+    dependencies.staticPdfService.getAll.mockResolvedValue([]);
+    if (failingCall === 'forms') dependencies.formsService.getAll.mockRejectedValue(failure);
+    if (failingCall === 'recipients') dependencies.recipientService.getAll.mockRejectedValue(failure);
+    if (failingCall === 'details') dependencies.formsService.get.mockRejectedValue(failure);
+    if (failingCall === 'pdfs') dependencies.staticPdfService.getAll.mockRejectedValue(failure);
+
+    await expect(new ReportService(dependencies).generate('all-forms-summary', new Writable())).rejects.toBe(failure);
+
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId: 'all-forms-summary',
+      rowCount: 0,
+      durationMs: expect.any(Number),
+      operation,
+      ...(formPath && { formPath }),
+      errorType: 'ResponseError',
+      httpStatus: 503,
+    });
+  });
+
+  it('identifies the form whose recipient cannot be resolved without logging its data', async () => {
+    const dependencies = mockDeep<ReportDependencies>();
+    const form = formFor('missing-recipient');
+    form.title = 'Private title';
+    form.properties.mottaksadresseId = 'Private recipient ID';
+    dependencies.formsService.getAll.mockResolvedValue([form]);
+    dependencies.recipientService.getAll.mockResolvedValue([]);
+    dependencies.formsService.get.mockResolvedValue(form);
+    dependencies.staticPdfService.getAll.mockResolvedValue([]);
+    const logged = vi.spyOn(logger, 'warn');
+
+    await expect(new ReportService(dependencies).generate('all-forms-summary', new Writable())).rejects.toThrow(
+      'Report recipient lookup failed',
+    );
+
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId: 'all-forms-summary',
+      rowCount: 0,
+      durationMs: expect.any(Number),
+      operation: 'resolve-recipient',
+      formPath: 'missing-recipient',
+      errorType: 'ResponseError',
+      httpStatus: 500,
+    });
+  });
+
+  it.each([
+    { reportId: 'forms-published-languages', operation: 'list-publications', formPath: undefined },
+    { reportId: 'forms-published-languages', operation: 'load-publication', formPath: 'one' },
+    { reportId: 'forms-published-languages', operation: 'load-translations', formPath: 'one' },
+    { reportId: 'all-forms-and-attachments', operation: 'list-forms', formPath: undefined },
+    { reportId: 'all-forms-and-attachments', operation: 'load-form', formPath: 'one' },
+    { reportId: 'unpublished-forms', operation: 'list-forms', formPath: undefined },
+  ])('identifies $operation failures in $reportId', async ({ reportId, operation, formPath }) => {
+    const dependencies = mockDeep<ReportDependencies>();
+    const failure = new Error('Private upstream response');
+    const logged = vi.spyOn(logger, 'warn');
+    dependencies.formsService.getAll.mockResolvedValue([formFor('one')]);
+    dependencies.formPublicationsService.getAll.mockResolvedValue([formFor('one')]);
+    dependencies.formPublicationsService.get.mockResolvedValue(formFor('one'));
+    if (operation === 'list-publications') dependencies.formPublicationsService.getAll.mockRejectedValue(failure);
+    if (operation === 'load-publication') dependencies.formPublicationsService.get.mockRejectedValue(failure);
+    if (operation === 'load-translations') {
+      dependencies.formPublicationsService.getTranslations.mockRejectedValue(failure);
+    }
+    if (operation === 'list-forms') dependencies.formsService.getAll.mockRejectedValue(failure);
+    if (operation === 'load-form') dependencies.formsService.get.mockRejectedValue(failure);
+
+    await expect(new ReportService(dependencies).generate(reportId, new Writable())).rejects.toBe(failure);
+
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId,
+      rowCount: 0,
+      durationMs: expect.any(Number),
+      operation,
+      ...(formPath && { formPath }),
+      errorType: 'Error',
+    });
+  });
+
+  it('logs the failing second form rather than the last exported form', async () => {
+    const dependencies = mockDeep<ReportDependencies>();
+    const logged = vi.spyOn(logger, 'warn');
+    dependencies.formsService.getAll.mockResolvedValue([formFor('one'), formFor('two')]);
+    dependencies.recipientService.getAll.mockResolvedValue([]);
+    dependencies.formsService.get.mockImplementation(async (path) => {
+      if (path === 'two') throw new TypeError('Private details');
+      return formFor(path);
+    });
+    dependencies.staticPdfService.getAll.mockResolvedValue([]);
+    const destination = new Writable({
+      write(_chunk, _encoding, callback) {
+        callback();
+      },
+    });
+
+    await expect(new ReportService(dependencies).generate('all-forms-summary', destination)).rejects.toThrow();
+
+    expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
+      reportId: 'all-forms-summary',
+      rowCount: 1,
+      durationMs: expect.any(Number),
+      operation: 'load-form',
+      formPath: 'two',
+      errorType: 'TypeError',
+    });
+  });
+
   it('does not start another lookup after disconnection during an in-flight detail request', async () => {
     const dependencies = mockDeep<ReportDependencies>();
     const pendingDetail = deferred<Form>();
@@ -39,6 +163,8 @@ describe('Report streaming orchestration', () => {
       },
     });
     const generation = new ReportService(dependencies).generate('all-forms-summary', destination);
+    const cancelled = vi.spyOn(logger, 'info');
+    const failed = vi.spyOn(logger, 'warn');
     const failure = generation.catch((error: unknown) => error);
     await detailStarted.promise;
     destination.destroy();
@@ -47,6 +173,14 @@ describe('Report streaming orchestration', () => {
     await delay(10);
     expect(dependencies.formsService.get).toHaveBeenCalledTimes(1);
     expect(dependencies.staticPdfService.getAll).not.toHaveBeenCalled();
+    expect(cancelled).toHaveBeenCalledWith('Report cancelled', {
+      reportId: 'all-forms-summary',
+      rowCount: 0,
+      durationMs: expect.any(Number),
+      operation: 'load-form',
+      formPath: 'one',
+    });
+    expect(failed).not.toHaveBeenCalled();
   });
 
   it.each(['list', 'recipients', 'pdf'])('stops after cancellation during the %s lookup', async (pending) => {
