@@ -604,6 +604,112 @@ describe('ReportService', () => {
         );
       });
 
+      it.each<{
+        name: string;
+        legacyType?: string;
+        submissionTypes?: SubmissionType[];
+        expectedCell: string;
+      }>([
+        { name: 'legacy paper', legacyType: 'KUN_PAPIR', expectedCell: '"[""PAPER""]"' },
+        { name: 'legacy digital', legacyType: 'KUN_DIGITAL', expectedCell: '"[""DIGITAL""]"' },
+        {
+          name: 'legacy paper and digital',
+          legacyType: 'PAPIR_OG_DIGITAL',
+          expectedCell: '"[""PAPER"", ""DIGITAL""]"',
+        },
+        { name: 'legacy no submission', legacyType: 'INGEN', expectedCell: '[]' },
+        { name: 'missing submission metadata', expectedCell: '[]' },
+        {
+          name: 'modern empty types',
+          legacyType: 'PAPIR_OG_DIGITAL',
+          submissionTypes: [],
+          expectedCell: '[]',
+        },
+        {
+          name: 'modern types over legacy',
+          legacyType: 'KUN_PAPIR',
+          submissionTypes: ['DIGITAL_NO_LOGIN'],
+          expectedCell: '"[""DIGITAL_NO_LOGIN""]"',
+        },
+      ])('reports $name from the published snapshot', async ({ legacyType, submissionTypes, expectedCell }) => {
+        const compact: Form = {
+          path: 'legacy-publication',
+          skjemanummer: 'EXAMPLE',
+          title: 'Draft title',
+          status: 'pending',
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['STATIC_PDF'],
+            subsequentSubmissionTypes: [],
+          },
+          components: [],
+        };
+        const api = nock(formsApi.url)
+          .get('/v1/form-publications')
+          .reply(200, [compact])
+          .get('/v1/form-publications/legacy-publication')
+          .reply(200, {
+            ...compact,
+            title: 'Published title',
+            status: 'published',
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              innsending: legacyType,
+              submissionTypes,
+            },
+          })
+          .get('/v1/form-publications/legacy-publication/translations')
+          .query({ languageCodes: 'nb,nn,en' })
+          .reply(200, {
+            publishedAt: '2025-01-01',
+            publishedBy: 'TEST',
+            translations: { nb: {} },
+          });
+
+        const writableStream = createWritableStream();
+        await reportService.generate('forms-published-languages', writableStream);
+
+        expect(writableStream.toString()).toBe(CSV_HEADER_LINE + `EXAMPLE;nb;Published title;;;${expectedCell};1\n`);
+        expect(api.isDone()).toBe(true);
+      });
+
+      it.each([{ legacyType: 'UNSUPPORTED' }, { legacyType: null }, { legacyType: ['KUN_PAPIR'] }])(
+        'rejects unsupported legacy submission metadata %j',
+        async ({ legacyType }) => {
+          const form = {
+            path: 'unsupported-publication',
+            skjemanummer: 'EXAMPLE',
+            title: 'Published title',
+            status: 'published',
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              innsending: legacyType,
+            },
+            components: [],
+          };
+          const api = nock(formsApi.url)
+            .get('/v1/form-publications')
+            .reply(200, [form])
+            .get('/v1/form-publications/unsupported-publication')
+            .reply(200, form)
+            .get('/v1/form-publications/unsupported-publication/translations')
+            .query({ languageCodes: 'nb,nn,en' })
+            .reply(200, {
+              publishedAt: '2025-01-01',
+              publishedBy: 'TEST',
+              translations: { nb: {} },
+            });
+
+          await expect(reportService.generate('forms-published-languages', createWritableStream())).rejects.toThrow(
+            'Unsupported legacy submission type in published form',
+          );
+          expect(api.isDone()).toBe(true);
+        },
+      );
+
       it('uses the published title when reporting translated titles', async () => {
         const draft = {
           title: 'Draft title',

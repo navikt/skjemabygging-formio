@@ -1,4 +1,4 @@
-import { translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionType, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
 import { formatSubmissionTypes, isNotTestForm, ReportDependencies } from '../types';
 
@@ -9,6 +9,30 @@ type PublishedLanguagesRow = {
   titleNn: string;
   titleEn: string;
   submissionTypes: string;
+};
+
+// Published revisions can retain the legacy field after the current form has been migrated.
+const getPublishedSubmissionTypes = ({
+  submissionTypes,
+  innsending,
+}: {
+  submissionTypes?: SubmissionType[];
+  innsending?: unknown;
+}): SubmissionType[] => {
+  if (submissionTypes !== undefined) return submissionTypes;
+  switch (innsending) {
+    case undefined:
+    case 'INGEN':
+      return [];
+    case 'KUN_PAPIR':
+      return ['PAPER'];
+    case 'KUN_DIGITAL':
+      return ['DIGITAL'];
+    case 'PAPIR_OG_DIGITAL':
+      return ['PAPER', 'DIGITAL'];
+    default:
+      throw new Error('Unsupported legacy submission type in published form');
+  }
 };
 
 const publishedLanguagesReport = ({
@@ -47,7 +71,7 @@ const publishedLanguagesReport = ({
         titleNb: titleFor('nb'),
         titleNn: titleFor('nn'),
         titleEn: titleFor('en'),
-        submissionTypes: formatSubmissionTypes(publishedForm.properties.submissionTypes ?? []),
+        submissionTypes: formatSubmissionTypes(getPublishedSubmissionTypes(publishedForm.properties)),
       };
     }
   },
