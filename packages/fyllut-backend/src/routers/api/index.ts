@@ -63,7 +63,7 @@ apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
 
-const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
+const rateLimitHandler = rateLimiter(60000, appConfig.isTest || appConfig.mocksEnabled ? 1000 : 40);
 apiRouter.use(
   '/send-inn/nologin-application',
   rateLimitHandler,

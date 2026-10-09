@@ -1,9 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { formatUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NationalIdentityNumberDefinition } from '../../component-types';
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
-const SummaryNationalIdentityNumber = (props: FormComponentProps) => {
+const SummaryNationalIdentityNumber = (props: FormComponentProps<NationalIdentityNumberDefinition>) => {
   const { submission, submissionPath } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 

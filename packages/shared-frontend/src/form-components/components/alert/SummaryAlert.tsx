@@ -1,7 +1,8 @@
+import { AlertDefinition } from '../../component-types';
 import DefaultHtmlAnswer from '../../shared/SummaryDefaultHtmlAnswer';
 import { FormComponentProps } from '../../types';
 
-const SummaryAlert = (props: FormComponentProps) => {
+const SummaryAlert = (props: FormComponentProps<AlertDefinition>) => {
   return <DefaultHtmlAnswer {...props} />;
 };
 

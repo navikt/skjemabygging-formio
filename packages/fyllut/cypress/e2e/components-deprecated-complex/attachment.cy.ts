@@ -18,6 +18,7 @@ describe('Attachment', () => {
     attachment: 'Ny vedleggskomponent',
     attachmentWithOneOption: 'Vedlegg med ett valg',
     oldAttachment: 'Gammel radio komponent',
+    legacyValuesAttachment: 'Legacy values array',
     textarea: 'Ledetekst tilleggsinformasjon',
   };
 
@@ -56,6 +57,10 @@ describe('Attachment', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('be.checked');
       });
 
+    cy.findByRole('group', { name: new RegExp(`^${TITLE.legacyValuesAttachment}`) }).within(() => {
+      cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check();
+    });
+
     cy.clickNextStep();
 
     cy.contains('dt', TITLE.attachment).should('exist');
@@ -63,6 +68,8 @@ describe('Attachment', () => {
     cy.contains('dt', TITLE.attachmentWithOneOption).should('exist');
     cy.contains('dt', TITLE.oldAttachment).should('exist');
     cy.contains('dd', TEXTS.statiske.attachment.levertTidligere).should('exist');
+    cy.contains('dt', TITLE.legacyValuesAttachment).should('exist');
+    cy.contains('dd', 'Jeg ettersender dokumentasjonen senere').should('exist');
 
     cy.go('back');
     cy.findByRole('group', { name: attachmentGroupName }).should('exist');

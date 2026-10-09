@@ -3,10 +3,10 @@ import {
   Attachment,
   mapPartyToApplication,
   OpplastingsStatus,
+  resolveSubmissionAttachments,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  AttachmentSettingValues,
   Component,
   Form,
   I18nTranslationMap,
@@ -26,8 +26,10 @@ const assembleSubmitApplicationRequest = (
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
 ): SubmitApplicationRequest => {
-  const activeAttachments: Component[] =
-    navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
+  const activeAttachments = navFormUtils
+    .flattenComponents(navFormUtils.getAllActivePanelsFromForm(form, submission) as Component[])
+    .filter((component) => component.type === 'attachment');
+  const submissionAttachments = resolveSubmissionAttachments(form, submission);
   const applicationParty = extractApplicationParty(form, submission);
 
   if (!applicationParty) {
@@ -52,13 +54,16 @@ const assembleSubmitApplicationRequest = (
       }),
     ),
     attachments:
-      submission.attachments
+      submissionAttachments
         ?.filter(
           (attachment) =>
-            attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
+            attachment.type === 'personal-id' ||
+            activeAttachments.some((component) => navFormUtils.getNavId(component) === attachment.navId),
         )
         .map((attachment) => {
-          const component = activeAttachments.find((c) => c.navId === attachment.navId);
+          const component = activeAttachments.find(
+            (activeAttachment) => navFormUtils.getNavId(activeAttachment) === attachment.navId,
+          );
           return validateAttachment(
             {
               attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
@@ -69,7 +74,7 @@ const assembleSubmitApplicationRequest = (
               description: component?.description ? translate(component?.description) : null,
               formNumberPath: component?.properties?.vedleggskjema,
             },
-            component?.navId ?? attachment.type,
+            (component ? navFormUtils.getNavId(component) : undefined) ?? attachment.type,
           );
         }) ?? [],
     otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
@@ -94,7 +99,7 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
   return attachment;
 };
 
-function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
+function mapToStatus(value?: string): OpplastingsStatus {
   if (!value) {
     return 'IkkeValgt';
   }

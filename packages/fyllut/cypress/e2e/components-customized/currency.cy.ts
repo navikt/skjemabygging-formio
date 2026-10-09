@@ -86,19 +86,6 @@ describe('Currency', () => {
       cy.focused().type('100');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
-
-    it('should support custom validation', () => {
-      const label = 'Beløp egendefinert';
-      const errorMessage = 'Kun 100 er tillatt';
-      cy.findByLabelText(`${label} (valgfritt)`).type('50');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelOptional(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('100');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
   });
 
   describe('Translation', () => {

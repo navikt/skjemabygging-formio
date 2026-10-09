@@ -1,4 +1,3 @@
-// Note: defaultValue pre-selects a radio option but is not specifically tested here.
 // Note: properties (api tab) sets custom HTML attributes on the component and is not tested here.
 
 const assertRadioWithDescription = (label: string, description: string) => {

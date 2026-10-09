@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--ax-space-16);
+}
+
+@media print {
+  .container {
+    display: none;
+  }
+}

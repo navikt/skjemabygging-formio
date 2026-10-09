@@ -84,7 +84,22 @@ describe('DataFetcher', () => {
     beforeEach(() => {
       cy.mocksUseRouteVariant('get-register-data-activities:success');
       cy.defaultIntercepts();
-      cy.visit(`${PANEL_URL}?sub=digital&lang=en`);
+      const draftId = '00000000-0000-4000-8000-000000000001';
+      cy.intercept('GET', `/fyllut/api/send-inn/soknad/${draftId}`, {
+        statusCode: 200,
+        body: {
+          innsendingsId: draftId,
+          endretDato: '2026-08-27T10:00:00Z',
+          skalSlettesDato: '2026-09-24',
+          hoveddokumentVariant: {
+            document: {
+              language: 'en',
+              data: { data: {} },
+            },
+          },
+        },
+      });
+      cy.visit(`${PANEL_URL}?sub=digital&lang=en&innsendingsId=${draftId}`);
       cy.defaultWaits();
     });
 

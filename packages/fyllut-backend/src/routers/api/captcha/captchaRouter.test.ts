@@ -1,8 +1,4 @@
-import {
-  CaptchaChallenge,
-  SolvedCaptchaChallenge,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { CaptchaChallenge, SolvedCaptchaChallenge, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import { Express } from 'express';
 import request from 'supertest';
@@ -169,5 +165,4 @@ describe('Captcha Handler Tests', () => {
         .expect(200);
     });
   });
-
 });

@@ -28,10 +28,21 @@ const injectParams = (
   currentLanguage?: string,
 ) => {
   if (template && params && typeof template === 'string') {
-    return template.replace(
-      /{{2}([^{}]+)}{2}/g,
-      (match, $1) => translateWithTextReplacements({ textOrKey: params[$1], translations, currentLanguage }) || match,
-    );
+    return template.replace(/{{2}([^{}]+)}{2}/g, (match, $1) => {
+      if (!Object.prototype.hasOwnProperty.call(params, $1) || params[$1] === undefined || params[$1] === null) {
+        return match;
+      }
+
+      const translatedReplacement = translateWithTextReplacements({
+        textOrKey: params[$1],
+        translations,
+        currentLanguage,
+      });
+
+      return translatedReplacement === undefined || translatedReplacement === null
+        ? match
+        : String(translatedReplacement);
+    });
   }
   return template;
 };

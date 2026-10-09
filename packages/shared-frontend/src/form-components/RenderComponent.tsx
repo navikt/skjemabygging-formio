@@ -1,15 +1,36 @@
-import { Alert } from '@navikt/ds-react';
-import { FormComponentProps } from './types';
+import { ComponentType, useEffect } from 'react';
+import Alert from '../components/alert/Alert';
+import { FormComponentProps, SummaryComponentType } from './types';
+import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 const RenderComponent = (props: FormComponentProps) => {
-  const { componentRegistry, component, appConfig } = props;
-  const { logger, config } = appConfig;
+  const { componentRegistry, component, rendererConfig } = props;
+  const { logger, environment } = rendererConfig;
   const { type } = component;
-  const RegistryComponent = componentRegistry[type];
+  // Images are intentionally left out of the summary (see `case 'image'` in formSummaryUtils)
+  const isIgnoredType = type === 'image';
+  // Single boundary cast: indexing the mapped registry by the runtime `type`
+  // yields a union of adapters with incompatible props that JSX cannot spread,
+  // so we erase to the generic adapter shape here. Adapters remain fully typed.
+  const RegistryComponent = componentRegistry[type as SummaryComponentType] as
+    ComponentType<FormComponentProps> | undefined;
 
-  if (!componentRegistry[type]) {
-    logger?.error?.(`Unsupported component type in summary: ${type}`);
-    if (config?.NAIS_CLUSTER_NAME !== 'prod-gcp') {
+  useEffect(() => {
+    if (!RegistryComponent && !isIgnoredType) {
+      reportUnsupportedComponent(logger, {
+        componentType: type,
+        formPath: rendererConfig.formPath,
+        surface: 'summary',
+      });
+    }
+  }, [logger, RegistryComponent, isIgnoredType, rendererConfig.formPath, type]);
+
+  if (isIgnoredType) {
+    return null;
+  }
+
+  if (!RegistryComponent) {
+    if (environment !== 'production') {
       return <Alert variant="error">Unsupported component type: {type}</Alert>;
     }
 

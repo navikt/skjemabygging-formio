@@ -1,4 +1,18 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { expect } from 'chai';
+
+const assertPageHeader = (pageTitle: string) => {
+  cy.findByRole('heading', { name: pageTitle, level: 2 })
+    .should('be.visible')
+    .then(($pageTitle) => {
+      const pageTitleFontSize = $pageTitle.css('font-size');
+      cy.findByRole('heading', { name: 'Uinnlogget søknad', level: 1 })
+        .should('be.visible')
+        .should(($heading) => {
+          expect(parseFloat($heading.css('font-size'))).to.be.lessThan(parseFloat(pageTitleFontSize));
+        });
+    });
+};
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -19,21 +33,23 @@ describe('Digital submission without user login', () => {
       cy.visit('/fyllut/nologinsubmission');
       cy.defaultWaits();
       cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+      assertPageHeader(TEXTS.grensesnitt.introPage.noLogin);
       cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
-      cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+      assertPageHeader(TEXTS.statiske.uploadId.title);
 
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
+      assertPageHeader(TEXTS.grensesnitt.introPage.title);
 
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+      assertPageHeader('Veiledning');
 
       cy.clickNextStep();
-      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
+      assertPageHeader('Dine opplysninger');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
@@ -42,9 +58,11 @@ describe('Digital submission without user login', () => {
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
+      assertPageHeader('Utdanning');
 
       cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
       cy.clickNextStep();
+      assertPageHeader(TEXTS.statiske.attachment.title);
     });
 
     it('should submit application successfully', () => {
@@ -71,12 +89,19 @@ describe('Digital submission without user login', () => {
       cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
 
       cy.clickNextStep();
+      assertPageHeader(TEXTS.statiske.summaryPage.title);
 
       cy.clickSendNav();
       cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      assertPageHeader(TEXTS.statiske.receipt.title);
+      cy.findByRole('button', { name: TEXTS.statiske.receipt.printFriendlyVersion }).should('be.visible');
+      cy.findByRole('link', { name: TEXTS.statiske.error.goToMyPage }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
+      cy.window().then((window) => {
+        expect(window.history.state.usr).not.to.have.property('pdfBase64');
+      });
     });
 
     it('prevents further editing when navigating back after submission', () => {
@@ -112,6 +137,9 @@ describe('Digital submission without user login', () => {
         });
       cy.get('.aksel-alert--success').should('not.exist');
       cy.get('.aksel-alert--warning').should('exist').and('be.visible');
+      cy.findByRole('link', { name: 'nav.no/ettersende' })
+        .should('have.attr', 'href', 'https://www.nav.no/ettersende')
+        .should('have.attr', 'target', '_blank');
 
       cy.go('back');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
@@ -246,10 +274,12 @@ describe('Digital submission without user login', () => {
 
     it('shows service unavailable error when upload fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('upload-file:service-unavailable');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadId');
       cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@uploadId');
       cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
       cy.clickNextStep();
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).shouldBeVisible();
+      cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).shouldBeVisible();
     });
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
@@ -438,8 +468,9 @@ describe('Digital submission without user login', () => {
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]').should('exist');
         cy.get('[data-cy=error-summary]').within(() => {
-          cy.findAllByRole('link').should('have.length', 1);
+          cy.findAllByRole('link').should('have.length', 2);
           cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
@@ -453,7 +484,10 @@ describe('Digital submission without user login', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
-        cy.get('[data-cy=error-summary]').should('not.exist');
+        cy.get('[data-cy=error-summary]').within(() => {
+          cy.findAllByRole('link').should('have.length', 1);
+          cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+        });
         cy.findByRole('button', { name: 'Velg fil' }).click();
         cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();

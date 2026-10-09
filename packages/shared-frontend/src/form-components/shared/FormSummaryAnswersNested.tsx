@@ -1,27 +1,14 @@
 import { FormSummary } from '@navikt/ds-react';
-import { createUseStyles } from 'react-jss';
-
-const useStyles = createUseStyles({
-  grey: {
-    backgroundColor: 'var(--ax-neutral-100)',
-    '& &': {
-      backgroundColor: 'var(--ax-bg-neutral-soft)',
-    },
-  },
-});
+import styles from './FormSummaryAnswersNested.module.css';
 
 interface Props {
   children: React.ReactNode;
 }
 
-const FormSummaryAnswersNested = ({ children, ...rest }: Props) => {
-  const styles = useStyles();
-
-  return (
-    <FormSummary.Answers className={styles.grey} {...rest}>
-      {children}
-    </FormSummary.Answers>
-  );
-};
+const FormSummaryAnswersNested = ({ children, ...rest }: Props) => (
+  <FormSummary.Answers className={styles.grey} {...rest}>
+    {children}
+  </FormSummary.Answers>
+);
 
 export default FormSummaryAnswersNested;

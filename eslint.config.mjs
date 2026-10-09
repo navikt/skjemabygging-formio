@@ -105,6 +105,7 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unused-expressions': 'off',
       'mocha/no-exclusive-tests': 'error',
+      'vitest/valid-expect': 'off', // Cypress uses Chai assertions, e.g. expect(x).to.be.closeTo(...)
     },
   },
 );

@@ -4,40 +4,22 @@ import {
   I18nTranslationReplacements,
   Recipient,
   Submission,
-  SubmissionAttachmentValue,
   SubmissionMethod,
   SubmissionType,
   TranslationLang,
-  navFormUtils,
+  attachmentUtils,
   resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
-
-const getAttachments = (submission: Submission, form: Form) => {
-  return navFormUtils
-    .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => {
-      const submissionData = { ...submission.data };
-      const submissionAttachment =
-        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
-        submissionData[component.key];
-
-      return (
-        submissionAttachment === 'leggerVedNaa' ||
-        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
-      );
-    });
-};
 
 const getAttachmentLabels = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): string[] => {
-  return getAttachments(submission, form).map((component) =>
-    translate ? translate(component.label) : component.label,
-  );
+  return attachmentUtils
+    .getAttachmentsForCoverPage(submission, form)
+    .map((component) => (translate ? translate(component.label) : component.label));
 };
 
 const getRecipient = (

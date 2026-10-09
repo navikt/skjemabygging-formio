@@ -212,7 +212,7 @@ describe('Umami', () => {
 
       cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
 
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
       cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
       cy.wait('@umamiEvent');
 
@@ -248,7 +248,7 @@ describe('Umami', () => {
 
       cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
 
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
       cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
       cy.wait('@umamiEvent');
 
