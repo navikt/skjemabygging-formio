@@ -52,7 +52,7 @@ describe('ReportService', () => {
 
   describe('Reports', () => {
     const CSV_HEADER_LINE =
-      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en);radnummer\n';
+      '\uFEFFskjemanummer;språk;skjematittel (nb);skjematittel (nn);skjematittel (en);submissionTypes;radnummer\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
@@ -551,7 +551,7 @@ describe('ReportService', () => {
     });
 
     describe('generateAllFormsSummary', () => {
-      it('includes published forms with its respective languages', async () => {
+      it('includes published forms with their languages and submission types', async () => {
         const publishedForms = [
           {
             title: 'Testskjema1',
@@ -563,7 +563,7 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               skjemanummer: 'TEST1',
-              submissionTypes: [],
+              submissionTypes: ['DIGITAL', 'PAPER'],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -576,7 +576,7 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               skjemanummer: 'TEST2',
-              submissionTypes: [],
+              submissionTypes: ['STATIC_PDF'],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -598,9 +598,9 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
           CSV_HEADER_LINE +
-            'TEST1;Testskjema1;nb, en, nn;Testskjema1;Testskjema1;Testskjema1;1\n' +
-            'TEST2;Testskjema2;nb, en;Testskjema2;;Testskjema2;2\n' +
-            'TEST3;Testskjema3;nb;Testskjema3;;;3\n',
+            'TEST1;nb, en, nn;Testskjema1;Testskjema1;Testskjema1;"[""DIGITAL"", ""PAPER""]";1\n' +
+            'TEST2;nb, en;Testskjema2;;Testskjema2;"[""STATIC_PDF""]";2\n' +
+            'TEST3;nb;Testskjema3;;;[];3\n',
         );
       });
 
@@ -613,7 +613,7 @@ describe('ReportService', () => {
           status: 'pending',
           properties: {
             skjemanummer: 'TEST1',
-            submissionTypes: [],
+            submissionTypes: ['STATIC_PDF'],
             subsequentSubmissionTypes: [],
           } as unknown as FormPropertiesType,
         };
@@ -621,6 +621,10 @@ describe('ReportService', () => {
           ...draft,
           title: 'Published title',
           status: 'published',
+          properties: {
+            ...draft.properties,
+            submissionTypes: ['DIGITAL', 'PAPER'],
+          },
         };
         const translations: PublishedTranslations = {
           publishedAt: '2025-01-28T10:00:10.325Z',
@@ -643,10 +647,101 @@ describe('ReportService', () => {
         await reportService.generate('forms-published-languages', writableStream);
 
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Draft title;nb, en;Published title;;English title;1\n',
+          CSV_HEADER_LINE + 'TEST1;nb, en;Published title;;English title;"[""DIGITAL"", ""PAPER""]";1\n',
         );
         expect(api.isDone()).toBe(true);
       });
+
+      it('excludes drafts, unpublished forms and test forms marked in either version', async () => {
+        const createForm = (path: string, status: Form['status'] = 'published'): Form => ({
+          path,
+          skjemanummer: path,
+          title: path,
+          status,
+          properties: {
+            skjemanummer: path,
+            tema: 'TEST',
+            submissionTypes: ['DIGITAL'],
+            subsequentSubmissionTypes: [],
+          },
+          components: [],
+        });
+        const published = createForm('published');
+        const pending = createForm('pending', 'pending');
+        const draft = createForm('draft', 'draft');
+        const unpublished = createForm('unpublished', 'unpublished');
+        const markedInList = createForm('rune-test');
+        markedInList.title = 'Rune test';
+        markedInList.properties.isTestForm = true;
+        const markedInSnapshot = createForm('magnus-test');
+        markedInSnapshot.title = 'Magnus test';
+        const snapshot = {
+          ...markedInSnapshot,
+          properties: { ...markedInSnapshot.properties, isTestForm: true },
+        };
+        const legitimate = createForm('allergitest');
+        const api = nock(formsApi.url)
+          .get('/v1/form-publications')
+          .reply(200, [published, pending, draft, unpublished, markedInList, markedInSnapshot, legitimate])
+          .get('/v1/form-publications/published')
+          .reply(200, published)
+          .get('/v1/form-publications/pending')
+          .reply(200, { ...pending, status: 'published' })
+          .get('/v1/form-publications/magnus-test')
+          .reply(200, snapshot)
+          .get('/v1/form-publications/allergitest')
+          .reply(200, legitimate);
+        for (const path of ['published', 'pending', 'allergitest']) {
+          api
+            .get(`/v1/form-publications/${path}/translations`)
+            .query({ languageCodes: 'nb,nn,en' })
+            .reply(200, {
+              publishedAt: '2025-01-01',
+              publishedBy: 'TEST',
+              translations: { nb: {} },
+            });
+        }
+
+        const writableStream = createWritableStream();
+        await reportService.generate('forms-published-languages', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms.map((row) => [row[0], row.at(-1)])).toEqual([
+          ['published', '1'],
+          ['pending', '2'],
+          ['allergitest', '3'],
+        ]);
+        expect(api.isDone()).toBe(true);
+      });
+
+      it.each(['draft', 'unpublished', 'pending'] as const)(
+        'does not report a %s snapshot as published',
+        async (status) => {
+          const form: Form = {
+            path: 'not-published',
+            skjemanummer: 'EXAMPLE',
+            title: 'Not published',
+            status: 'published',
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              submissionTypes: [],
+              subsequentSubmissionTypes: [],
+            },
+            components: [],
+          };
+          const api = nock(formsApi.url)
+            .get('/v1/form-publications')
+            .reply(200, [form])
+            .get('/v1/form-publications/not-published')
+            .reply(200, { ...form, status });
+          const writableStream = createWritableStream();
+          await reportService.generate('forms-published-languages', writableStream);
+
+          expect(writableStream.toString()).toBe(CSV_HEADER_LINE);
+          expect(api.isDone()).toBe(true);
+        },
+      );
 
       it('has correct attachment fields', async () => {
         const HEADER_NUMBER_OF_ATTACHMENTS = 'antall vedlegg';

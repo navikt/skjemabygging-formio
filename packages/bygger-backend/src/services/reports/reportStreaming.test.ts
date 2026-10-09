@@ -17,6 +17,7 @@ const formFor = (path: string): Form => ({
   path,
   skjemanummer: path,
   title: `Example ${path}`,
+  status: 'published',
   components: [],
   properties: { skjemanummer: path, tema: 'TEST', submissionTypes: [], subsequentSubmissionTypes: [] },
 });

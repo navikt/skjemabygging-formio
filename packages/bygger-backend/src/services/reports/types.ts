@@ -1,5 +1,5 @@
 import { StaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormPublicationsService } from '../formPublications/types';
 import { FormsService } from '../forms/types';
 import RecipientService from '../RecipientService';
@@ -12,6 +12,7 @@ type ReportDependencies = {
 };
 
 const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
+const formatSubmissionTypes = (types: SubmissionType[]) => `[${types.map((type) => JSON.stringify(type)).join(', ')}]`;
 
-export { isNotTestForm };
+export { formatSubmissionTypes, isNotTestForm };
 export type { ReportDependencies };

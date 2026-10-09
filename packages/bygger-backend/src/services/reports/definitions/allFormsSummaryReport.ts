@@ -5,12 +5,11 @@ import {
   Recipient,
   ResponseError,
   signatureUtils,
-  SubmissionType,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import config from '../../../config';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { isNotTestForm, ReportDependencies } from '../types';
+import { formatSubmissionTypes, isNotTestForm, ReportDependencies } from '../types';
 
 type SummaryRow = {
   formNumber: string;
@@ -50,8 +49,6 @@ const declarationLabels: Record<DeclarationType, string> = {
   [DeclarationType.default]: 'Standard',
   [DeclarationType.custom]: 'Tilpasset',
 };
-
-const formatSubmissionTypes = (types: SubmissionType[]) => `[${types.map((type) => JSON.stringify(type)).join(', ')}]`;
 
 const recipientAddress = (recipientId: string | undefined, recipients: Map<string | undefined, Recipient>) => {
   if (!recipientId) return '';
