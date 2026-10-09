@@ -127,7 +127,7 @@ const allFormsSummaryReport = ({
       const pdfs = await awaitReportCall(signal, () => staticPdfService.getAll({ formPath: compact.path }));
       signal.throwIfAborted();
       const attachments = navFormUtils.getAttachmentProperties(form);
-      const hasAttachments = navFormUtils.hasAttachment(form);
+      const hasAttachments = attachments.length > 0;
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = compact;
       const { submissionTypes = [], subsequentSubmissionTypes = [], declarationType } = properties;
       const signatures = signatureUtils.mapBackwardCompatibleSignatures(properties.signatures);

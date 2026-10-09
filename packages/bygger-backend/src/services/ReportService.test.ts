@@ -1122,6 +1122,89 @@ describe('ReportService', () => {
         expect(report.forms[0][report.getHeaderIndex('hvem signerer, hvis ikke standard')]).toBe('Doctor, Applicant');
       });
 
+      it('does not enable subsequent submission for a panel without attachment components', async () => {
+        const form: Form = {
+          path: 'attachment-panel-content',
+          skjemanummer: 'EXAMPLE',
+          title: 'Attachment panel content',
+          components: [
+            {
+              key: 'attachments',
+              label: 'Attachments',
+              type: 'panel',
+              isAttachmentPanel: true,
+              components: [{ key: 'information', label: 'Information', type: 'content', html: 'Information' }],
+            },
+          ],
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['DIGITAL', 'PAPER', 'STATIC_PDF'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+          },
+        };
+        setupNock([form]);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms[0][report.getHeaderIndex('antall vedlegg')]).toBe('0');
+        expect(report.forms[0][report.getHeaderIndex('subsequentSubmissionTypes')]).toBe('"[""DIGITAL"", ""PAPER""]"');
+        for (const header of report.headers.filter((header) => header.startsWith('ettersendingsurl'))) {
+          expect(report.forms[0][report.getHeaderIndex(header)]).toBe('');
+        }
+      });
+
+      it('includes legacy attachment components when enabling subsequent submission', async () => {
+        const form: Form = {
+          path: 'legacy-attachment',
+          skjemanummer: 'EXAMPLE',
+          title: 'Legacy attachment',
+          components: [
+            {
+              key: 'attachments',
+              label: 'Attachments',
+              type: 'panel',
+              isAttachmentPanel: true,
+              components: [
+                {
+                  key: 'document',
+                  label: 'Document',
+                  type: 'radiopanel',
+                  values: [{ label: 'Attach now', value: 'leggerVedNaa' }],
+                  properties: { vedleggstittel: 'Document' },
+                },
+              ],
+            },
+          ],
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['DIGITAL', 'PAPER', 'STATIC_PDF'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+          },
+        };
+        setupNock([form]);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+        const submissionUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut/legacy-attachment';
+        const subsequentUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/legacy-attachment';
+
+        expect(report.forms[0][report.getHeaderIndex('antall vedlegg')]).toBe('1');
+        expect(report.forms[0][report.getHeaderIndex('subsequentSubmissionTypes')]).toBe(
+          '"[""DIGITAL"", ""PAPER"", ""STATIC_PDF""]"',
+        );
+        expect(report.forms[0][report.getHeaderIndex('ettersendingsurl')]).toBe(subsequentUrl);
+        expect(report.forms[0][report.getHeaderIndex('ettersendingsurl (digital)')]).toBe(
+          `${subsequentUrl}?sub=digital`,
+        );
+        expect(report.forms[0][report.getHeaderIndex('ettersendingsurl (papir)')]).toBe(`${subsequentUrl}?sub=paper`);
+        expect(report.forms[0][report.getHeaderIndex('ettersendingsurl (static PDF)')]).toBe(
+          `${submissionUrl}/pdf?type=ettersending`,
+        );
+      });
+
       describe('URLs for supported submission options', () => {
         const submissionUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut/url-options';
         const subsequentUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/url-options';
