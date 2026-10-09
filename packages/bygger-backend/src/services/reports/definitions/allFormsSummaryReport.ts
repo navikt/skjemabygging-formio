@@ -29,7 +29,10 @@ type SummaryRow = {
   attachmentNames: string;
   submissionUrl: string;
   paperSubmissionUrl: string;
+  digitalSubmissionUrl: string;
+  staticPdfSubmissionUrl: string;
   subsequentSubmissionUrl: string;
+  digitalSubsequentSubmissionUrl: string;
   paperSubsequentSubmissionUrl: string;
   staticPdfSubsequentSubmissionUrl: string;
   declarationType: string;
@@ -91,8 +94,11 @@ const allFormsSummaryReport = ({
     staticPdfEnabled: 'STATIC_PDF aktivert',
     submissionUrl: 'innsendingsurl',
     paperSubmissionUrl: 'innsendingsurl (papir)',
+    digitalSubmissionUrl: 'innsendingsurl (digital)',
     noLoginSubmissionUrl: 'innsendingsurl (nologin)',
+    staticPdfSubmissionUrl: 'innsendingsurl (static PDF)',
     subsequentSubmissionUrl: 'ettersendingsurl',
+    digitalSubsequentSubmissionUrl: 'ettersendingsurl (digital)',
     paperSubsequentSubmissionUrl: 'ettersendingsurl (papir)',
     staticPdfSubsequentSubmissionUrl: 'ettersendingsurl (static PDF)',
   },
@@ -160,15 +166,25 @@ const allFormsSummaryReport = ({
         attachmentNames: attachments
           .map((attachment) => attachment.vedleggstittel?.trim() || attachment.label?.trim())
           .join(', '),
-        submissionUrl: submissionTypesUtils.isDigitalSubmission(submissionTypes) ? submissionUrl : '',
+        submissionUrl: submissionTypesUtils.isStaticPdfOnly(submissionTypes) ? '' : submissionUrl,
+        digitalSubmissionUrl: submissionTypesUtils.isDigitalSubmission(submissionTypes)
+          ? `${submissionUrl}?sub=digital`
+          : '',
+        staticPdfSubmissionUrl: submissionTypesUtils.isStaticPdf(submissionTypes) ? `${submissionUrl}/pdf` : '',
         paperSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
           ? submissionUrl
           : submissionTypesUtils.isPaperSubmission(submissionTypes)
             ? `${submissionUrl}?sub=paper`
             : '',
         subsequentSubmissionUrl:
-          submissionTypesUtils.isDigitalSubmission(subsequentSubmissionTypes) && hasAttachments
+          hasAttachments &&
+          (submissionTypesUtils.isDigitalSubmission(subsequentSubmissionTypes) ||
+            submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes))
             ? subsequentSubmissionUrl
+            : '',
+        digitalSubsequentSubmissionUrl:
+          submissionTypesUtils.isDigitalSubmission(subsequentSubmissionTypes) && hasAttachments
+            ? `${subsequentSubmissionUrl}?sub=digital`
             : '',
         paperSubsequentSubmissionUrl:
           submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachments
