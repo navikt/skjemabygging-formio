@@ -1,7 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormContainer } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router';
-import { FormContainer } from '../components/form/container/FormContainer';
 import FormProgress from '../components/form/form-progress/FormProgress';
 import { FormTitle } from '../components/form/form-title/FormTitle';
 import { useForm } from '../context/form/FormContext';
