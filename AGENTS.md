@@ -41,3 +41,10 @@ accessibility routing, form interaction defaults, and frontend test choice.
 ## Starting dev servers (sub-agents)
 
 Use `pnpm start:fyllut:mocks` or `pnpm start:bygger:mocks` — see the `start-dev-servers` skill for the full pattern.
+
+## pnpm install fails with 401
+
+If a pnpm command or the pre-commit hook starts an install that fails with
+HTTP 401 from `npm.pkg.github.com`, restore `node_modules` offline. See
+"Recovering node_modules after a failed install" in the `start-dev-servers`
+skill.
