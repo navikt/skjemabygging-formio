@@ -29,6 +29,7 @@ type SummaryRow = {
   attachmentNames: string;
   submissionUrl: string;
   paperSubmissionUrl: string;
+  paperNoCoverPageSubmissionUrl: string;
   digitalSubmissionUrl: string;
   staticPdfSubmissionUrl: string;
   subsequentSubmissionUrl: string;
@@ -97,6 +98,7 @@ const allFormsSummaryReport = ({
     digitalSubmissionUrl: 'innsendingsurl (digital)',
     noLoginSubmissionUrl: 'innsendingsurl (nologin)',
     staticPdfSubmissionUrl: 'innsendingsurl (static PDF)',
+    paperNoCoverPageSubmissionUrl: 'utfyllingsurl (uten førsteside)',
     subsequentSubmissionUrl: 'ettersendingsurl',
     digitalSubsequentSubmissionUrl: 'ettersendingsurl (digital)',
     paperSubsequentSubmissionUrl: 'ettersendingsurl (papir)',
@@ -171,11 +173,10 @@ const allFormsSummaryReport = ({
           ? `${submissionUrl}?sub=digital`
           : '',
         staticPdfSubmissionUrl: submissionTypesUtils.isStaticPdf(submissionTypes) ? `${submissionUrl}/pdf` : '',
-        paperSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
-          ? submissionUrl
-          : submissionTypesUtils.isPaperSubmission(submissionTypes)
-            ? `${submissionUrl}?sub=paper`
-            : '',
+        paperSubmissionUrl: submissionTypesUtils.isPaperSubmission(submissionTypes) ? `${submissionUrl}?sub=paper` : '',
+        paperNoCoverPageSubmissionUrl: submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
+          ? `${submissionUrl}?sub=papernocoverpage`
+          : '',
         subsequentSubmissionUrl:
           hasAttachments &&
           (submissionTypesUtils.isDigitalSubmission(subsequentSubmissionTypes) ||

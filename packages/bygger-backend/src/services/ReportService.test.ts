@@ -923,6 +923,7 @@ describe('ReportService', () => {
         const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
         const HEADER_INNSENDING_DIGITAL = 'innsendingsurl (digital)';
         const HEADER_INNSENDING_STATIC_PDF = 'innsendingsurl (static PDF)';
+        const HEADER_UTEN_FORSTESIDE = 'utfyllingsurl (uten førsteside)';
         const HEADER_ETTERSENDING = 'ettersendingsurl';
         const HEADER_ETTERSENDING_DIGITAL = 'ettersendingsurl (digital)';
         const HEADER_ETTERSENDING_PAPER = 'ettersendingsurl (papir)';
@@ -1028,19 +1029,20 @@ describe('ReportService', () => {
         const report = parseReport(writableStream.toString());
         expect(report.numberOfForms).toBe(3);
         expect(report.headers).not.toContain('første publiseringsdato');
-        expect(report.headers.slice(-10)).toEqual([
+        expect(report.headers.slice(-11)).toEqual([
           HEADER_INNSENDING,
           HEADER_INNSENDING_PAPER,
           HEADER_INNSENDING_DIGITAL,
           'innsendingsurl (nologin)',
           HEADER_INNSENDING_STATIC_PDF,
+          HEADER_UTEN_FORSTESIDE,
           HEADER_ETTERSENDING,
           HEADER_ETTERSENDING_DIGITAL,
           HEADER_ETTERSENDING_PAPER,
           HEADER_ETTERSENDING_STATIC_PDF,
           'radnummer',
         ]);
-        expect(report.headers.slice(0, -10).some((header) => header.includes('url'))).toBe(false);
+        expect(report.headers.slice(0, -11).some((header) => header.includes('url'))).toBe(false);
         expect(report.forms.every((row) => row.length === report.headers.length)).toBe(true);
 
         const formFields1 = report.forms[0];
@@ -1057,6 +1059,7 @@ describe('ReportService', () => {
           `${fyllutBaseUrl}/test1?sub=digital`,
         );
         expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_STATIC_PDF)]).toBe(`${fyllutBaseUrl}/test1/pdf`);
+        expect(formFields1[report.getHeaderIndex(HEADER_UTEN_FORSTESIDE)]).toBe('');
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(
           `${ettersendingBaseUrl}/test1?sub=digital`,
@@ -1078,7 +1081,10 @@ describe('ReportService', () => {
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
-        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe('');
+        expect(formFields2[report.getHeaderIndex(HEADER_UTEN_FORSTESIDE)]).toBe(
+          `${fyllutBaseUrl}/test2?sub=papernocoverpage`,
+        );
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe('');
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_STATIC_PDF)]).toBe('');
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
@@ -1089,6 +1095,7 @@ describe('ReportService', () => {
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test3`);
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
+        expect(formFields3[report.getHeaderIndex(HEADER_UTEN_FORSTESIDE)]).toBe('');
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe('');
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_STATIC_PDF)]).toBe('');
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test3`);
@@ -1212,6 +1219,7 @@ describe('ReportService', () => {
         const digitalUrl = `${submissionUrl}?sub=digital`;
         const staticPdfSubmissionUrl = `${submissionUrl}/pdf`;
         const noLoginUrl = `${submissionUrl}?sub=digitalnologin`;
+        const paperNoCoverPageUrl = `${submissionUrl}?sub=papernocoverpage`;
         const digitalSubsequentUrl = `${subsequentUrl}?sub=digital`;
         const paperSubsequentUrl = `${subsequentUrl}?sub=paper`;
         const staticPdfUrl = `${submissionUrl}/pdf?type=ettersending`;
@@ -1228,56 +1236,84 @@ describe('ReportService', () => {
             submissionTypes: ['DIGITAL'],
             subsequentSubmissionTypes: [],
             hasAttachments: true,
-            urls: [submissionUrl, '', digitalUrl, '', '', '', '', '', ''],
+            urls: [submissionUrl, '', digitalUrl, '', '', '', '', '', '', ''],
           },
           {
             name: 'paper submission and digital subsequent submission',
             submissionTypes: ['PAPER'],
             subsequentSubmissionTypes: ['DIGITAL'],
             hasAttachments: true,
-            urls: [submissionUrl, paperUrl, '', '', '', subsequentUrl, digitalSubsequentUrl, '', ''],
+            urls: [submissionUrl, paperUrl, '', '', '', '', subsequentUrl, digitalSubsequentUrl, '', ''],
           },
           {
             name: 'paper submission and paper subsequent submission',
             submissionTypes: ['PAPER'],
             subsequentSubmissionTypes: ['PAPER'],
             hasAttachments: true,
-            urls: [submissionUrl, paperUrl, '', '', '', subsequentUrl, '', paperSubsequentUrl, ''],
+            urls: [submissionUrl, paperUrl, '', '', '', '', subsequentUrl, '', paperSubsequentUrl, ''],
           },
           {
             name: 'nologin submission without subsequent submission',
             submissionTypes: ['DIGITAL_NO_LOGIN'],
             subsequentSubmissionTypes: [],
             hasAttachments: true,
-            urls: [submissionUrl, '', '', noLoginUrl, '', '', '', '', ''],
+            urls: [submissionUrl, '', '', noLoginUrl, '', '', '', '', '', ''],
           },
           {
             name: 'static PDF with attachments',
             submissionTypes: ['STATIC_PDF'],
             subsequentSubmissionTypes: [],
             hasAttachments: true,
-            urls: ['', '', '', '', staticPdfSubmissionUrl, '', '', '', staticPdfUrl],
+            urls: ['', '', '', '', staticPdfSubmissionUrl, '', '', '', '', staticPdfUrl],
           },
           {
             name: 'static PDF without attachments',
             submissionTypes: ['STATIC_PDF'],
             subsequentSubmissionTypes: [],
             hasAttachments: false,
-            urls: ['', '', '', '', staticPdfSubmissionUrl, '', '', '', ''],
+            urls: ['', '', '', '', staticPdfSubmissionUrl, '', '', '', '', ''],
           },
           {
             name: 'fill-in and download without a cover page',
             submissionTypes: ['PAPER_NO_COVER_PAGE'],
             subsequentSubmissionTypes: [],
             hasAttachments: true,
-            urls: [submissionUrl, submissionUrl, '', '', '', '', '', '', ''],
+            urls: [submissionUrl, '', '', '', '', paperNoCoverPageUrl, '', '', '', ''],
           },
           {
             name: 'legacy fill-in and download with no submission types',
             submissionTypes: [],
             subsequentSubmissionTypes: [],
             hasAttachments: true,
-            urls: [submissionUrl, submissionUrl, '', '', '', '', '', '', ''],
+            urls: [submissionUrl, '', '', '', '', paperNoCoverPageUrl, '', '', '', ''],
+          },
+          {
+            name: 'digital plus no-cover-page',
+            submissionTypes: ['DIGITAL', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: false,
+            urls: [submissionUrl, '', digitalUrl, '', '', paperNoCoverPageUrl, '', '', '', ''],
+          },
+          {
+            name: 'paper plus no-cover-page',
+            submissionTypes: ['PAPER', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: false,
+            urls: [submissionUrl, paperUrl, '', '', '', paperNoCoverPageUrl, '', '', '', ''],
+          },
+          {
+            name: 'nologin plus no-cover-page',
+            submissionTypes: ['DIGITAL_NO_LOGIN', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: false,
+            urls: [submissionUrl, '', '', noLoginUrl, '', paperNoCoverPageUrl, '', '', '', ''],
+          },
+          {
+            name: 'static PDF plus no-cover-page',
+            submissionTypes: ['STATIC_PDF', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: [],
+            hasAttachments: true,
+            urls: [submissionUrl, '', '', '', staticPdfSubmissionUrl, paperNoCoverPageUrl, '', '', '', staticPdfUrl],
           },
           {
             name: 'all options with attachments',
@@ -1290,6 +1326,7 @@ describe('ReportService', () => {
               digitalUrl,
               noLoginUrl,
               staticPdfSubmissionUrl,
+              '',
               subsequentUrl,
               digitalSubsequentUrl,
               paperSubsequentUrl,
@@ -1301,7 +1338,43 @@ describe('ReportService', () => {
             submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF'],
             subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
             hasAttachments: false,
-            urls: [submissionUrl, paperUrl, digitalUrl, noLoginUrl, staticPdfSubmissionUrl, '', '', '', ''],
+            urls: [submissionUrl, paperUrl, digitalUrl, noLoginUrl, staticPdfSubmissionUrl, '', '', '', '', ''],
+          },
+          {
+            name: 'all options plus no-cover-page',
+            submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+            hasAttachments: true,
+            urls: [
+              submissionUrl,
+              paperUrl,
+              digitalUrl,
+              noLoginUrl,
+              staticPdfSubmissionUrl,
+              paperNoCoverPageUrl,
+              subsequentUrl,
+              digitalSubsequentUrl,
+              paperSubsequentUrl,
+              staticPdfUrl,
+            ],
+          },
+          {
+            name: 'all options, no-cover, no attachments',
+            submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF', 'PAPER_NO_COVER_PAGE'],
+            subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
+            hasAttachments: false,
+            urls: [
+              submissionUrl,
+              paperUrl,
+              digitalUrl,
+              noLoginUrl,
+              staticPdfSubmissionUrl,
+              paperNoCoverPageUrl,
+              '',
+              '',
+              '',
+              '',
+            ],
           },
         ])('$name', async ({ submissionTypes, subsequentSubmissionTypes, hasAttachments, urls }) => {
           const form: Form = {
@@ -1332,7 +1405,8 @@ describe('ReportService', () => {
           const report = parseReport(writableStream.toString());
 
           expect(report.forms).toHaveLength(1);
-          expect(report.forms[0].slice(-10)).toEqual([...urls, '1']);
+          expect(report.headers).toContain('utfyllingsurl (uten førsteside)');
+          expect(report.forms[0].slice(-11)).toEqual([...urls, '1']);
         });
       });
 
@@ -1358,7 +1432,7 @@ describe('ReportService', () => {
             properties: {
               skjemanummer: 'EXAMPLE',
               tema: 'TEST',
-              submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF'],
+              submissionTypes: ['DIGITAL', 'PAPER', 'DIGITAL_NO_LOGIN', 'STATIC_PDF', 'PAPER_NO_COVER_PAGE'],
               subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
             },
             components: [
@@ -1376,12 +1450,13 @@ describe('ReportService', () => {
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
 
-          expect(report.forms[0].slice(-10)).toEqual([
+          expect(report.forms[0].slice(-11)).toEqual([
             `${submissionBase}/url-hosts`,
             `${submissionBase}/url-hosts?sub=paper`,
             `${submissionBase}/url-hosts?sub=digital`,
             `${submissionBase}/url-hosts?sub=digitalnologin`,
             `${submissionBase}/url-hosts/pdf`,
+            `${submissionBase}/url-hosts?sub=papernocoverpage`,
             `${subsequentBase}/url-hosts`,
             `${subsequentBase}/url-hosts?sub=digital`,
             `${subsequentBase}/url-hosts?sub=paper`,
