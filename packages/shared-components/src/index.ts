@@ -1,21 +1,25 @@
 import { guid } from '@navikt/skjemadigitalisering-shared-domain';
-import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
+import {
+  FormContainer,
+  http,
+  RenderSummaryForm,
+  SkeletonList,
+  ValidationExclamationIcon,
+  type FetchHeader,
+  type FetchOptions,
+} from '@navikt/skjemadigitalisering-shared-frontend';
 import jss from 'jss';
 import preset from 'jss-preset-default';
-import type { FetchHeader, FetchOptions } from './api/util/http/http';
-import http from './api/util/http/http';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
 import DownloadPdfButton from './components/button/DownloadPdfButton';
 import { FieldsetErrorMessage } from './components/error/FieldsetErrorMessage';
 import ErrorPage from './components/error/page/ErrorPage';
-import { FormContainer } from './components/form/container/FormContainer';
 import { FormTitle } from './components/form/form-title/FormTitle';
 import InnerHtml from './components/inner-html/InnerHtml';
 import Intro from './components/intro';
 import LetterUXSignals from './components/letter/ux-signals/LetterUXSignals';
 import LinkButton from './components/link-button/LinkButton';
 import LoadingComponent from './components/loading/LoadingComponent';
-import SkeletonList from './components/loading/SkeletonList';
 import Modal from './components/modal/Modal';
 import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
 import useModal from './components/modal/useModal';
