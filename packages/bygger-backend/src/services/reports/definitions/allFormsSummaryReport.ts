@@ -130,6 +130,7 @@ const allFormsSummaryReport = ({
       const hasAttachments = navFormUtils.hasAttachment(form);
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = compact;
       const { submissionTypes = [], subsequentSubmissionTypes = [], declarationType } = properties;
+      const signatures = signatureUtils.mapBackwardCompatibleSignatures(properties.signatures);
       const hasStaticPdfSubsequentSubmission = submissionTypesUtils.isStaticPdf(submissionTypes) && hasAttachments;
       const reportSubsequentSubmissionTypes =
         hasStaticPdfSubsequentSubmission && !subsequentSubmissionTypes.includes('STATIC_PDF')
@@ -155,9 +156,8 @@ const allFormsSummaryReport = ({
         changedBy,
         submissionTypes: formatSubmissionTypes(submissionTypes),
         subsequentSubmissionTypes: formatSubmissionTypes(reportSubsequentSubmissionTypes),
-        signatureCount: properties.signatures?.length || 1,
-        signerLabels: signatureUtils
-          .mapBackwardCompatibleSignatures(properties.signatures)
+        signatureCount: signatures.length || 1,
+        signerLabels: signatures
           .map((signature) => signature.label?.trim())
           .filter(Boolean)
           .join(', '),

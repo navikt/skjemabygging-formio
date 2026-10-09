@@ -1099,6 +1099,29 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
       });
 
+      it('counts legacy signatures consistently with the signer labels', async () => {
+        const form: Form = {
+          path: 'legacy-signatures',
+          skjemanummer: 'EXAMPLE',
+          title: 'Legacy signatures',
+          components: [],
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: ['PAPER'],
+            subsequentSubmissionTypes: [],
+            signatures: { signature1: 'Doctor', signature2: 'Applicant' },
+          },
+        };
+        setupNock([form]);
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+
+        expect(report.forms[0][report.getHeaderIndex('signaturfelt')]).toBe('2');
+        expect(report.forms[0][report.getHeaderIndex('hvem signerer, hvis ikke standard')]).toBe('Doctor, Applicant');
+      });
+
       describe('URLs for supported submission options', () => {
         const submissionUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut/url-options';
         const subsequentUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/url-options';
