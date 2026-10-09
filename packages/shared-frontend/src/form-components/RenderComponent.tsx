@@ -7,6 +7,8 @@ const RenderComponent = (props: FormComponentProps) => {
   const { componentRegistry, component, rendererConfig } = props;
   const { logger, environment } = rendererConfig;
   const { type } = component;
+  // Images are intentionally left out of the summary (see `case 'image'` in formSummaryUtils)
+  const isIgnoredType = type === 'image';
   // Single boundary cast: indexing the mapped registry by the runtime `type`
   // yields a union of adapters with incompatible props that JSX cannot spread,
   // so we erase to the generic adapter shape here. Adapters remain fully typed.
@@ -14,14 +16,18 @@ const RenderComponent = (props: FormComponentProps) => {
     ComponentType<FormComponentProps> | undefined;
 
   useEffect(() => {
-    if (!RegistryComponent) {
+    if (!RegistryComponent && !isIgnoredType) {
       reportUnsupportedComponent(logger, {
         componentType: type,
         formPath: rendererConfig.formPath,
         surface: 'summary',
       });
     }
-  }, [logger, RegistryComponent, rendererConfig.formPath, type]);
+  }, [logger, RegistryComponent, isIgnoredType, rendererConfig.formPath, type]);
+
+  if (isIgnoredType) {
+    return null;
+  }
 
   if (!RegistryComponent) {
     if (environment !== 'production') {
