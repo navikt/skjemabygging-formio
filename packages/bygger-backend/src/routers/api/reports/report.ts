@@ -10,10 +10,15 @@ const report: RequestHandler = async (req, res, next) => {
     throw new Error(`Report not implemented: ${reportId}`);
   }
   try {
-    res.contentType(report.contentType);
-    res.attachment(`${reportId}.${report.fileEnding}`);
+    res.contentType(`${report.contentType}; charset=utf-8`);
+    res.attachment(`${reportId}.${report.fileExtension}`);
     await reportService.generate(reportId, res);
   } catch (err) {
+    // A pipeline failure destroys the response. Never append an error document to a partial download.
+    if (res.headersSent || res.destroyed) {
+      if (!res.destroyed) res.destroy();
+      return;
+    }
     next(new ApiError('Kunne ikke generere rapport', true, err as Error));
   }
 };
