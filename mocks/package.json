@@ -11,7 +11,8 @@
   },
   "scripts": {
     "mocks:fyllut": "pnpm exec ts-node mocks/server.ts",
-    "mocks:fyllut:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
+    "mocks:fyllut:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled",
+    "mocks:sendinn:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled --mock.collections.selected=sendinn-base"
   },
   "dependencies": {
     "@types/multer": "^2.1.0",

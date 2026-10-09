@@ -39,6 +39,8 @@ jobs:
         run: pnpm test:fyllut
       - name: 'Test form-spec-api'
         run: pnpm test:form-spec-api
+      - name: 'Test sendinn'
+        run: pnpm test:sendinn
       - name: 'Test shared-components'
         run: pnpm test:shared-components
       - name: 'Test shared-domain'

@@ -74,8 +74,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
-
+          path: ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
@@ -114,4 +113,47 @@ jobs:
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
+          path: ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
+
+  cypress-run-sendinn:
+    runs-on: ubuntu-latest-8-cores
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: 'Install dependencies'
+        run: pnpm install --frozen-lockfile
+      - name: 'Install Cypress binary (sendinn)'
+        run: pnpm --dir packages/sendinn exec cypress install
+      - name: 'Build sendinn'
+        run: pnpm build:sendinn
+      - name: 'Run mock server'
+        run: pnpm mocks:sendinn:no-cli > /tmp/sendinn-mocks.log 2>&1 &
+      - name: 'Cypress tests (sendinn)'
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          start: pnpm preview:sendinn
+          wait-on: 'http://localhost:3003/sendinn/internal/isReady'
+          wait-on-timeout: 120
+          command: pnpm --dir packages/sendinn exec cypress run --browser electron --env INCLUDE_DIST_TESTS=true
+        env:
+          SENDINN_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: cypress-sendinn-screenshots
+          path: ${{ github.workspace }}/packages/sendinn/cypress/screenshots/*
