@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { logger } from '../logger/logger';
 import http from './http';
 
 describe('http', () => {
@@ -87,5 +88,125 @@ describe('http', () => {
       'content-type': 'application/octet-stream',
     });
     expect(response.body).toBeInstanceOf(ReadableStream);
+  });
+
+  it('preserves binary merge responses even when the content type is incorrect', async () => {
+    const pdf = Buffer.from('%PDF-1.7\nsample');
+    const response = new Response(pdf, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    Object.defineProperty(response, 'url', {
+      value: 'http://innsending-api.team-soknad/fyllUt/v1/merge-filer',
+    });
+    vi.spyOn(global, 'fetch').mockResolvedValue(response);
+
+    await expect(http.post(response.url, { filer: [] })).resolves.toBe(pdf.toString('base64'));
+  });
+
+  it('reports invalid base64 padding without exposing the document or raw error body', async () => {
+    const errorBody = {
+      message:
+        'JSON parse error: Cannot deserialize value of type `byte[]` from String "private-document": ' +
+        "Unexpected end of base64-encoded String: base64 variant 'MIME-NO-LINEFEEDS' expects padding",
+      errorCode: 'somethingFailedTryLater',
+      correlationId: 'upstream-correlation-id',
+      document: 'private-document',
+    };
+    const response = new Response(JSON.stringify(errorBody), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-correlation-id': 'header-correlation-id',
+      },
+    });
+    Object.defineProperty(response, 'url', {
+      value: 'http://innsending-api.team-soknad/fyllUt/v1/merge-filer?detail=private-value',
+    });
+    vi.spyOn(global, 'fetch').mockResolvedValue(response);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.post(response.url, { filer: [] })).rejects.toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'PDF merge failed: invalid base64 padding',
+      correlationId: 'upstream-correlation-id',
+      body: errorBody,
+      userMessage: undefined,
+    });
+    expect(warn).toHaveBeenCalledWith('Http request failed', {
+      service: 'innsending-api.team-soknad',
+      endpoint: '/fyllUt/v1/merge-filer',
+      upstream_status: 500,
+      error_code: 'INTERNAL_SERVER_ERROR',
+      reason: 'PDF merge failed: invalid base64 padding',
+      upstream_correlation_id: 'upstream-correlation-id',
+    });
+    expect(JSON.stringify(warn.mock.calls)).not.toContain('private-');
+  });
+
+  it.each(['application/json', 'text/plain', 'text/html'])(
+    'handles %s merge errors without base64 encoding or exposing their contents',
+    async (contentType) => {
+      const errorBody =
+        contentType === 'application/json'
+          ? JSON.stringify({ message: 'private-upstream-details' })
+          : 'private-upstream-details';
+      const response = new Response(errorBody, {
+        status: 503,
+        headers: {
+          'Content-Type': contentType,
+          'x-correlation-id': 'header-correlation-id',
+        },
+      });
+      Object.defineProperty(response, 'url', {
+        value: 'http://innsending-api.team-soknad/fyllUt/v1/merge-filer',
+      });
+      vi.spyOn(global, 'fetch').mockResolvedValue(response);
+      const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+      await expect(http.post(response.url, { filer: [] })).rejects.toMatchObject({
+        errorCode: 'SERVICE_UNAVAILABLE',
+        message: 'PDF merge request failed',
+        correlationId: 'header-correlation-id',
+      });
+      expect(warn).toHaveBeenCalledWith(
+        'Http request failed',
+        expect.objectContaining({
+          upstream_status: 503,
+          reason: 'PDF merge request failed',
+          upstream_correlation_id: 'header-correlation-id',
+        }),
+      );
+      expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
+    },
+  );
+
+  it('preserves non-merge errors without logging their raw bodies', async () => {
+    const errorBody = {
+      message: 'Service unavailable',
+      correlation_id: 'upstream-correlation-id',
+      details: 'private-upstream-details',
+    };
+    const response = new Response(JSON.stringify(errorBody), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+    vi.spyOn(global, 'fetch').mockResolvedValue(response);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.get('http://example.test/resource')).rejects.toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Service unavailable',
+      correlationId: 'upstream-correlation-id',
+      body: errorBody,
+    });
+    expect(warn).toHaveBeenCalledWith('Http request failed', {
+      service: 'example.test',
+      endpoint: '/resource',
+      upstream_status: 503,
+      error_code: 'SERVICE_UNAVAILABLE',
+      reason: 'SERVICE_UNAVAILABLE',
+      upstream_correlation_id: 'upstream-correlation-id',
+    });
+    expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
   });
 });
