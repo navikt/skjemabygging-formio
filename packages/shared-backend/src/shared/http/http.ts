@@ -44,7 +44,7 @@ async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetad
     redirect: options?.redirect,
   });
 
-  return handleResponse<T>(response, options);
+  return handleResponse<T>(response, url, options);
 }
 
 function post<T>(
@@ -62,7 +62,7 @@ async function post<T>(url: string, body?: object, options?: HttpOptions): Promi
     redirect: options?.redirect,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function put<T>(
@@ -80,7 +80,7 @@ async function put<T>(url: string, body?: object, options?: HttpOptions): Promis
     redirect: options?.redirect,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function httpDelete<T>(
@@ -98,7 +98,7 @@ async function httpDelete<T>(url: string, body?: object, options?: HttpOptions):
     redirect: options?.redirect,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function postMultipart<T>(
@@ -122,7 +122,7 @@ async function postMultipart<T>(
     redirect: options?.redirect,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 const createHeaders = (options?: HttpOptions): HeadersInit => {
@@ -168,7 +168,7 @@ const isManualRedirectResponse = (response: Response, options?: HttpOptions) =>
 const handleBody = async (response: Response) => {
   try {
     // TODO fjern når riktig header på merge kallet
-    if (response.url.includes('merge')) {
+    if (response.ok && response.url.includes('merge')) {
       return stringToBase64(await response.arrayBuffer());
     }
 
@@ -188,6 +188,7 @@ const handleBody = async (response: Response) => {
 
 const handleResponse = async <T>(
   response: Response,
+  requestUrl: string,
   options?: HttpOptions,
 ): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> => {
   if (options?.responseType === 'stream' && response.ok) {
@@ -211,7 +212,17 @@ const handleResponse = async <T>(
   }
 
   const errorBody = await handleBody(response);
-  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  let message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  const responseUrl = new URL(response.url || requestUrl);
+  const isMergeResponse = responseUrl.pathname.includes('merge');
+  if (isMergeResponse) {
+    message =
+      typeof message === 'string' &&
+      message.includes('Unexpected end of base64-encoded String') &&
+      message.includes('expects padding')
+        ? 'PDF merge failed: invalid base64 padding'
+        : 'PDF merge request failed';
+  }
   const correlationId =
     typeof errorBody === 'string'
       ? (response.headers.get('x-correlation-id') ?? undefined)
@@ -221,8 +232,13 @@ const handleResponse = async <T>(
         undefined);
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
 
-  logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
-    body: errorBody,
+  logger.warn('Http request failed', {
+    service: responseUrl.hostname,
+    endpoint: responseUrl.pathname,
+    upstream_status: response.status,
+    error_code: error.errorCode,
+    reason: isMergeResponse ? message : error.errorCode,
+    upstream_correlation_id: correlationId,
   });
 
   throw error;
