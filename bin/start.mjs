@@ -127,13 +127,13 @@ const configs = {
         ],
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(backendPort)],
           fyllutBackendEnv,
           resolve(repoRoot, 'packages/fyllut-backend'),
         ],
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/fyllut'),
         ],
@@ -182,13 +182,13 @@ const configs = {
       commands: [
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(backendPort)],
           { NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger-backend'),
         ],
         [
           nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
+          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger'),
         ],

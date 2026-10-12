@@ -1,4 +1,6 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
+  isLanguageAllowedForForm,
   navFormUtils,
   ResponseError,
   SubmissionMethod,
@@ -38,6 +40,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const qpForm = req.query.form;
     const qpInnsendingsId = req.query.innsendingsId;
     const qpSub = req.query.sub as QueryParamSub;
+    const qpLang = requestUtil.getStringQuery(req, 'lang', true);
     const formPath = res.locals.formId;
 
     let redirectUrl: string | undefined;
@@ -75,19 +78,31 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     let httpStatusCode = 200;
     if (formPath) {
       logger.debug('Loading form...', { formPath });
-      const form = await formService.getForm({ formPath, select: ['title', 'path', 'properties'] }).catch((err) => {
-        if (err instanceof ResponseError && err.errorCode === 'NOT_FOUND') {
-          return undefined;
-        }
+      const form = await formService
+        .getForm({ formPath, select: ['title', 'path', 'properties', 'publishedLanguages', 'status'] })
+        .catch((err) => {
+          if (err instanceof ResponseError && err.errorCode === 'NOT_FOUND') {
+            return undefined;
+          }
 
-        throw err;
-      });
+          throw err;
+        });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         const staticPdfRoute = isStaticPdfRoute(req);
+        const invalidLanguageParam = req.query.lang !== undefined && qpLang === undefined;
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
           httpStatusCode = 404;
+        } else if (!staticPdfRoute && (invalidLanguageParam || !isLanguageAllowedForForm(qpLang, form))) {
+          const logMeta = { formPath, lang: req.query.lang, publishedLanguages: form.publishedLanguages };
+          logger.info('Removing invalid or unpublished lang query param', logMeta);
+          return res.redirect(
+            url.format({
+              pathname: req.baseUrl,
+              query: excludeQueryParam('lang', req.query),
+            }),
+          );
         } else if (!qpSub) {
           if (staticPdfRoute) {
             if (!submissionTypesUtils.isStaticPdf(submissionTypes)) {
