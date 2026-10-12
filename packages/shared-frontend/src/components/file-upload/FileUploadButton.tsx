@@ -1,5 +1,6 @@
 import { UploadIcon } from '@navikt/aksel-icons';
 import { Button, FileObject, FileUpload } from '@navikt/ds-react';
+import styles from './FileUploadButton.module.css';
 
 interface Props {
   id: string;
@@ -16,6 +17,7 @@ const FileUploadButton = ({ id, label, loading, variant, accept, maxSizeInBytes,
   const button = (
     <Button
       id={id}
+      className={styles.button}
       variant={variant}
       loading={loading}
       icon={<UploadIcon aria-hidden fontSize="1.5rem" />}

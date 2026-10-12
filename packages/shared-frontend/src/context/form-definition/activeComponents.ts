@@ -34,32 +34,33 @@ const resolveActiveComponents = (
   evaluateConditionals = true,
 ): Component[] => {
   const data = submission.data ?? {};
+  const activeComponents: Component[] = [];
 
-  return components.reduce<Component[]>((activeComponents, component) => {
+  components.forEach((component) => {
     if (evaluateConditionals && !checkCondition(component, row, data, form, undefined, submission, options)) {
-      return activeComponents;
+      return;
     }
 
     if (!component.components) {
-      return [...activeComponents, { navId: getNavId(component), ...component }];
+      activeComponents.push({ navId: getNavId(component), ...component });
+      return;
     }
 
     const evaluateChildConditionals = evaluateConditionals && conditionallyTraversedTypes.has(component.type);
-    return [
-      ...activeComponents,
-      {
-        ...component,
-        components: resolveActiveComponents(
-          component.components,
-          form,
-          submission,
-          options,
-          getChildConditionRow(component, row, data),
-          evaluateChildConditionals,
-        ),
-      },
-    ];
-  }, []);
+    activeComponents.push({
+      ...component,
+      components: resolveActiveComponents(
+        component.components,
+        form,
+        submission,
+        options,
+        getChildConditionRow(component, row, data),
+        evaluateChildConditionals,
+      ),
+    });
+  });
+
+  return activeComponents;
 };
 
 const getActivePanels = (form: Form, submission?: Submission, options?: CheckConditionOptions): Panel[] => {

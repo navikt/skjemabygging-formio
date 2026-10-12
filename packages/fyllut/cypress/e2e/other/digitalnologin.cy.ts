@@ -125,6 +125,41 @@ describe('Digital no login', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
     });
 
+    it('keeps the file selection button the same size when an upload error appears', () => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      return cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($button) => {
+        const { width, height } = $button[0].getBoundingClientRect();
+
+        cy.clickNextStep();
+        cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).should('be.visible');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should(($buttonWithError) => {
+          const errorRect = $buttonWithError[0].getBoundingClientRect();
+          expect(errorRect.width).to.equal(width);
+          expect(errorRect.height).to.equal(height);
+        });
+        cy.get('[data-cy="upload-button-personal-id"]').within(() => {
+          cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($currentButton) => {
+            const buttonWidth = $currentButton[0].getBoundingClientRect().width;
+            cy.findByText(TEXTS.statiske.uploadId.missingUploadError)
+              .parent()
+              .should(($alert) => {
+                const alertWidth = $alert[0].getBoundingClientRect().width;
+                expect(alertWidth).to.be.greaterThan(buttonWidth);
+              });
+            cy.findByText(TEXTS.statiske.uploadId.missingUploadError)
+              .parent()
+              .then(($alert) => {
+                const alertBottom = $alert[0].getBoundingClientRect().bottom;
+                cy.findByText(TEXTS.statiske.uploadId.readMoreHeader).should(($readMore) => {
+                  const readMoreTop = $readMore[0].getBoundingClientRect().top;
+                  expect(readMoreTop - alertBottom).to.be.within(0, 24);
+                });
+              });
+          });
+        });
+      });
+    });
+
     it('redirect user if we get 403 from ID upload', () => {
       cy.mocksUseRouteVariant('upload-file:forbidden');
 

@@ -55,7 +55,9 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
       {showNoSubmissionContent ? (
         <>
           <BodyShort className={styles.description}>{translate(form.properties.innsendingForklaring)}</BodyShort>
-          <ApplicationDownloadSection documentType={documentType} />
+          <div className={styles.download}>
+            <ApplicationDownloadSection documentType={documentType} />
+          </div>
         </>
       ) : (
         <PostalSubmissionInstructions attachments={attachments}>

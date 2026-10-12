@@ -1,3 +1,7 @@
 .description {
   margin-block-end: var(--ax-space-40);
 }
+
+.download {
+  margin-block-end: var(--ax-space-16);
+}

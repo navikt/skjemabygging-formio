@@ -1,10 +1,10 @@
 import { Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../../context/state/SubmissionStateContext';
 import { updateSearch } from '../../../utils/searchParams';
 import { withDraftMetadata } from '../../draft/withDraftMetadata';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
@@ -24,7 +24,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
   const { search } = useLocation();
   const searchRef = useRef(search);
   const navigate = useNavigate();
-  const { setSubmission, getLatestSubmission } = useSubmissionState();
+  const { setSubmission, getLatestSubmission } = useSubmissionActions();
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const persist = useRef(
     createDraftPersistence(new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId),
@@ -118,31 +118,36 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
     [createDraft, goToActiveTasks, isActive, syncDraft],
   );
 
-  const saveDraft =
-    submissionMethod === 'digital'
-      ? async (submission: Submission) => {
-          await persist.current(prepareSubmissionForTransport(submission), {
-            create: (transportSubmission) =>
-              createDraft(transportSubmission, TEXTS.statiske.mellomlagringError.create.message),
-            update: async (id, transportSubmission) => {
-              try {
-                return await applications.updateDraft({
-                  id,
-                  formPath: form.path,
-                  submission: transportSubmission,
-                  language: currentLanguage,
-                  submissionMethod,
-                });
-              } catch (error) {
-                throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
-              }
-            },
-            sync: syncDraft,
-            alreadyExists: goToActiveTasks,
-            isActive,
-          });
-        }
-      : undefined;
+  // Memoized so the form actions context stays stable while the user types; a new function here
+  // would rerender every form actions consumer, including the whole form page.
+  const saveDraft = useMemo(
+    () =>
+      submissionMethod === 'digital'
+        ? async (submission: Submission) => {
+            await persist.current(prepareSubmissionForTransport(submission), {
+              create: (transportSubmission) =>
+                createDraft(transportSubmission, TEXTS.statiske.mellomlagringError.create.message),
+              update: async (id, transportSubmission) => {
+                try {
+                  return await applications.updateDraft({
+                    id,
+                    formPath: form.path,
+                    submission: transportSubmission,
+                    language: currentLanguage,
+                    submissionMethod,
+                  });
+                } catch (error) {
+                  throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
+                }
+              },
+              sync: syncDraft,
+              alreadyExists: goToActiveTasks,
+              isActive,
+            });
+          }
+        : undefined,
+    [applications, createDraft, currentLanguage, form.path, goToActiveTasks, isActive, submissionMethod, syncDraft],
+  );
 
   return { ensureInnsendingsId, saveDraft };
 };

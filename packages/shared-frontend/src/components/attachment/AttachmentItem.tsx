@@ -89,6 +89,7 @@ const AttachmentItem = ({
   const filesExternalError = useValidationExternalError(filesPath);
   const filesValidationError = useValidationFieldError(filesPath, pageKey);
   const filesError = filesValidationError ?? filesExternalError;
+  const uploadReadMore = showButton && !readOnly ? readMore : undefined;
   const fields = toAttachmentFilesValidationFields({
     submissionPath,
     attachmentId,
@@ -143,13 +144,6 @@ const AttachmentItem = ({
           onDownloadFile={downloadEnabled ? handleDownloadFileItem : undefined}
         />
       )}
-      {(!showButton || readOnly) && filesError && (
-        <div id={inputId(filesPath)} tabIndex={-1}>
-          <Alert variant="error" inline>
-            {filesError}
-          </Alert>
-        </div>
-      )}
       {showButton && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
@@ -174,9 +168,7 @@ const AttachmentItem = ({
                 multipleAttachments={multipleAttachments}
                 variant={initialUpload ? 'primary' : 'secondary'}
                 allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-                translationParams={fileUploadErrorParams}
                 accept={accept}
-                readMore={readMore}
                 maxFileSizeInBytes={maxFileSizeInBytes}
                 onSuccess={() => onUpload?.(initialAttachment)}
               />
@@ -187,6 +179,18 @@ const AttachmentItem = ({
               )}
             </HStack>
           )}
+        </VStack>
+      )}
+      {(filesError || uploadReadMore) && (
+        <VStack gap="space-16">
+          {filesError && (
+            <div id={inputId(filesPath)} tabIndex={-1}>
+              <Alert variant="error" inline marginBottom="space-0">
+                {translate(filesError, fileUploadErrorParams)}
+              </Alert>
+            </div>
+          )}
+          {uploadReadMore}
         </VStack>
       )}
     </VStack>

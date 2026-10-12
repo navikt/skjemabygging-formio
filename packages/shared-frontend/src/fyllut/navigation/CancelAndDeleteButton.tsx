@@ -7,7 +7,7 @@ import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadCo
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { useSubmissionState } from '../../context/state/SubmissionStateContext';
+import { useSubmissionActions } from '../../context/state/SubmissionStateContext';
 import ConfirmationModal from './ConfirmationModal';
 import { getExitUrl } from './navUrls';
 
@@ -21,7 +21,7 @@ const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
   const { search } = useLocation();
-  const { setSubmission } = useSubmissionState();
+  const { setSubmission } = useSubmissionActions();
   const { handleDeleteAllFiles } = useAttachmentUpload();
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();

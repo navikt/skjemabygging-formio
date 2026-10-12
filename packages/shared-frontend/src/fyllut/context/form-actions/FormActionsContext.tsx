@@ -1,6 +1,7 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useAttachmentUpload } from '../../../context/attachment/AttachmentUploadContext';
+import { useSubmissionActions } from '../../../context/state/SubmissionStateContext';
 import { saveLatestSubmission } from './saveLatestSubmission';
 
 type FormActionStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
@@ -27,7 +28,8 @@ interface Props extends FormActionHandlers {
 const FormActionsContext = createContext<FormActionsContextValue>({} as FormActionsContextValue);
 
 const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandler }: Props) => {
-  const { getLatestSubmission } = useSubmissionState();
+  const { getLatestSubmission } = useSubmissionActions();
+  const { hasPendingOperations } = useAttachmentUpload();
   const [status, setStatus] = useState<FormActionStatus>('idle');
   const [error, setError] = useState<unknown>();
   const saveLoopRef = useRef<Promise<boolean> | null>(null);
@@ -57,11 +59,12 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
   }, [getLatestSubmission, saveHandler]);
 
   const submit = useCallback(async () => {
-    if (!submitHandler) return;
+    if (!submitHandler || hasPendingOperations()) return;
 
     if (saveLoopRef.current && !(await saveLoopRef.current)) {
       return;
     }
+    if (hasPendingOperations()) return;
 
     const latestSubmission = getLatestSubmission();
     if (!latestSubmission) return;
@@ -75,7 +78,7 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
       setError(e);
       setStatus('idle');
     }
-  }, [getLatestSubmission, submitHandler]);
+  }, [getLatestSubmission, hasPendingOperations, submitHandler]);
 
   const clearError = useCallback(() => setError(undefined), []);
 

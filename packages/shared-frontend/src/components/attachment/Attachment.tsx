@@ -145,33 +145,36 @@ const Attachment = ({
         />
       ))}
       <VStack gap="space-24" data-cy={uploadEnabled ? 'attachment-upload' : undefined}>
-        {uploadEnabled && uploadedFiles.length > 0 ? (
-          <div id={inputId(choicePath)} tabIndex={-1}>
-            <Label>{translate(label)}</Label>
-            {description && <BodyShort>{translate(description)}</BodyShort>}
-            {(validationError ?? externalError) && (
-              <Alert variant="error" inline>
-                {validationError ?? externalError}
-              </Alert>
-            )}
-          </div>
-        ) : (
-          <AttachmentOptionSelect
-            title={translate(label)}
-            required={required}
-            description={translate(description)}
-            error={validationError ?? externalError}
-            value={attachment}
-            values={values}
-            attachmentId={attachmentId}
-            onChange={handleValueChange}
-            translate={translate}
-            deadline={deadlineDays}
-            uploadEnabled={uploadEnabled}
-            submissionPath={statePath}
-            readOnly={readOnly}
-          />
-        )}
+        <div>
+          {uploadEnabled && uploadedFiles.length > 0 ? (
+            <div id={inputId(choicePath)} tabIndex={-1}>
+              <Label>{translate(label)}</Label>
+              {description && <BodyShort>{translate(description)}</BodyShort>}
+              {(validationError ?? externalError) && (
+                <Alert variant="error" inline>
+                  {validationError ?? externalError}
+                </Alert>
+              )}
+            </div>
+          ) : (
+            <AttachmentOptionSelect
+              title={translate(label)}
+              required={required}
+              description={translate(description)}
+              error={validationError ?? externalError}
+              value={attachment}
+              values={values}
+              attachmentId={attachmentId}
+              onChange={handleValueChange}
+              translate={translate}
+              deadline={deadlineDays}
+              uploadEnabled={uploadEnabled}
+              submissionPath={statePath}
+              readOnly={readOnly}
+            />
+          )}
+          {readMore && <ReadMore {...readMore} />}
+        </div>
         {uploadSelected && (
           <VStack gap="space-8">
             {uploadedFiles.length > 0 && (
@@ -229,7 +232,6 @@ const Attachment = ({
             </VStack>
           </VStack>
         )}
-        {readMore && <ReadMore {...readMore} />}
       </VStack>
     </FormElementBox>
   );

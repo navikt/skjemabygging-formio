@@ -218,6 +218,7 @@ export const statiske = {
     maxFileSizeLabel: 'Maks filstørrelse:',
     maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn {{size}}.',
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
+    pendingOperations: 'Vent til opplasting eller sletting av vedlegg er ferdig før du sender inn skjemaet.',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
     deleteAttachment: 'Slett vedlegg',
     deleteAllFiles: 'Slett alle',

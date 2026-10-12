@@ -1,10 +1,10 @@
 import { Heading } from '@navikt/ds-react';
 import { PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
+import { useAttachmentPendingOperations, useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import {
   useFormDefinitionForm,
   useFormDefinitionPanels,
@@ -33,7 +33,9 @@ const SummaryPage = () => {
   const { submission } = useSubmissionState();
   const { validatePages } = useValidationActions();
   const { submit, status, canSubmit, canSaveDraft } = useFormActions();
-  const { handleDownloadFile } = useAttachmentUpload();
+  const { handleDownloadFile, hasPendingOperations } = useAttachmentUpload();
+  const hasPendingAttachments = useAttachmentPendingOperations();
+  const [attemptedPendingSubmit, setAttemptedPendingSubmit] = useState(false);
   const { goToPanel, goToError } = useFormNavigation('summary');
   const isNoSubmissionFlow =
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
@@ -54,6 +56,10 @@ const SummaryPage = () => {
       : TEXTS.grensesnitt.navigation.sendToNav;
 
   const handleSubmit = () => {
+    const pending = hasPendingOperations();
+    setAttemptedPendingSubmit(pending);
+    if (pending) return;
+
     // Every page is validated from the current submission, so a page the user never opened reports
     // its missing answers here instead of silently passing.
     if (validatePages(validationPageKeys).length > 0) {
@@ -76,6 +82,7 @@ const SummaryPage = () => {
   };
 
   const hasValidationErrors = validationErrors.length > 0;
+  const isReadyToSubmit = !hasValidationErrors && !hasPendingAttachments;
   const navigateToFirstError = () => {
     const firstError = validationErrors[0];
     if (firstError) {
@@ -125,11 +132,16 @@ const SummaryPage = () => {
         }}
       />
       <FormActionError />
+      {hasPendingAttachments && attemptedPendingSubmit && (
+        <Alert variant="error" marginBottom="space-16">
+          {translate(TEXTS.statiske.attachment.pendingOperations)}
+        </Alert>
+      )}
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
           <FormPrevButton
-            variant={hasValidationErrors ? 'primary' : 'secondary'}
+            variant={isReadyToSubmit ? 'secondary' : 'primary'}
             label={translate(
               hasValidationErrors ? TEXTS.grensesnitt.summaryPage.editAnswers : TEXTS.grensesnitt.navigation.previous,
             )}
@@ -138,7 +150,7 @@ const SummaryPage = () => {
         }
         nextButton={
           <FormNextButton
-            variant={hasValidationErrors ? 'secondary' : 'primary'}
+            variant={isReadyToSubmit ? 'primary' : 'secondary'}
             label={translate(primaryActionLabel)}
             onClick={handleSubmit}
             loading={status === 'submitting'}
