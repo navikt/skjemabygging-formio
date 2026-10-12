@@ -30,6 +30,7 @@ import SummaryFormGroup from './components/form-group/SummaryFormGroup';
 import SummaryHtmlElement from './components/html-element/SummaryHtmlElement';
 import SummaryIban from './components/iban/SummaryIban';
 import SummaryIdentity from './components/identity/SummaryIdentity';
+import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
 import SummaryNationalIdentityNumber from './components/national-identity-number/SummaryNationalIdentityNumber';
@@ -98,6 +99,7 @@ const RenderSummaryForm = ({
     alertstripe: SummaryAlert,
     navCheckbox: SummaryCheckbox,
     htmlelement: SummaryHtmlElement,
+    image: SummaryImage,
     number: SummaryNumber,
     radiopanel: SummaryRadio,
     select: SummarySelect,
