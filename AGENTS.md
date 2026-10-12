@@ -49,3 +49,10 @@ https://github.com/navikt/skjemautfylling-formio/tree/master/forms. Check the
 current forms there when changing component interpretation, submission data,
 validation, summaries, PDF rendering, or generated schemas to avoid breaking
 forms already in production.
+
+## pnpm install fails with 401
+
+If a pnpm command or the pre-commit hook starts an install that fails with
+HTTP 401 from `npm.pkg.github.com`, restore `node_modules` offline. See
+"Recovering node_modules after a failed install" in the `start-dev-servers`
+skill.

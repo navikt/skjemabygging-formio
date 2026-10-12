@@ -63,6 +63,22 @@ Important:
 - If PDF download calls fail with `500`, check whether the local send-inn/PDF
   dependency is mocked or proxied correctly before changing the test itself.
 
+### Failures in specs you did not touch
+
+If a spec fails on your PR but you did not change it or the code it covers,
+check the base branch before debugging:
+
+1. Look at the latest Cypress run on the base branch, for example
+   `gh run list --branch <base> --workflow cypress-tests.yaml --limit 3`.
+2. If the same spec fails there, or the base branch has not run it yet, run
+   the spec locally on the base branch.
+3. If it fails on the base branch, fix it there in its own commit, then merge
+   the base branch into your branch. Do not hide the fix in an unrelated PR.
+
+Before you open PRs against a base branch, check that its Cypress run is
+green. If it is red, say so before you start, because every PR on top of it
+will inherit the failure.
+
 ## Repo-specific habits
 
 1. Use focused specs while iterating.
