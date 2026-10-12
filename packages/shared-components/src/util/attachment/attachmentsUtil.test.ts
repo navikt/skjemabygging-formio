@@ -7,7 +7,7 @@ import {
   vedleggBekreftelseBostedsadresse,
 } from '../../../test/test-data/form/defaultFormElements';
 import vedleggConditional from '../../../test/test-data/form/vedlegg-conditional';
-import { getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil';
+import { getAllAttachments, getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil';
 
 const borDuINorgeRadiopanelKey = borDuINorgeRadiopanel.key;
 
@@ -225,6 +225,35 @@ describe('attachmentUtil', () => {
       const attachments = getRelevantAttachments(form, { data: submissionData });
       expect(attachments).toHaveLength(1);
       expect(attachments[0].label).toEqual(vedleggBekreftelseBostedsadresse.label);
+    });
+  });
+
+  describe('attachments with custom conditional on submission method', () => {
+    const digitalOnly = 'show = instance.isSubmissionDigital();';
+    const form = {
+      components: [
+        {
+          ...panelVedleggsliste,
+          components: [
+            { ...vedleggAnnenDokumentasjon, customConditional: digitalOnly },
+            { ...vedleggBekreftelseBostedsadresse, customConditional: digitalOnly },
+          ],
+        },
+      ],
+      properties: { ...testFormProperties, submissionTypes: ['PAPER', 'DIGITAL'] },
+    } as unknown as NavFormType;
+    const submission = { data: {} };
+
+    it('includes digital-only attachments when submission method is digital', () => {
+      expect(getRelevantAttachments(form, submission, 'digital')).toHaveLength(1);
+      expect(hasOtherDocumentation(form, submission, 'digital')).toBe(true);
+      expect(getAllAttachments(form, submission, 'digital')).toHaveLength(2);
+    });
+
+    it('excludes digital-only attachments when submission method is paper', () => {
+      expect(getRelevantAttachments(form, submission, 'paper')).toHaveLength(0);
+      expect(hasOtherDocumentation(form, submission, 'paper')).toBe(false);
+      expect(getAllAttachments(form, submission, 'paper')).toHaveLength(0);
     });
   });
 });

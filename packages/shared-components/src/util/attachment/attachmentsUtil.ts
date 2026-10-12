@@ -8,6 +8,7 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
+  SubmissionMethod,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
@@ -35,13 +36,19 @@ const getAttachment = (navId: string, form: NavFormType): Attachment | undefined
 };
 
 // TODO getAllAttachments should return Component[], not Attachment[]
-const getAllAttachments = (navForm: NavFormType, submission: Submission): Attachment[] => {
+const getAllAttachments = (
+  navForm: NavFormType,
+  submission: Submission,
+  submissionMethod?: SubmissionMethod,
+): Attachment[] => {
   const form = formioFormsApiUtils.mapNavFormToForm(navForm);
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) || isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) =>
+      checkCondition(comp, undefined, submission?.data, form, undefined, submission, { submissionMethod }),
+    )
     .map((comp) => {
       return {
         ...comp,
@@ -50,13 +57,19 @@ const getAllAttachments = (navForm: NavFormType, submission: Submission): Attach
     });
 };
 
-const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
+const getRelevantAttachments = (
+  form: NavFormType,
+  submission: Submission,
+  submissionMethod?: SubmissionMethod,
+): Attachment[] => {
   const formAsForm = formioFormsApiUtils.mapNavFormToForm(form);
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) && !isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission))
+    .filter((comp) =>
+      checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission, { submissionMethod }),
+    )
     .map(toAttachment);
 };
 
@@ -78,12 +91,14 @@ const toAttachment = (comp: Component): Attachment => {
   };
 };
 
-const hasOtherDocumentation = (form, submission: Submission) => {
+const hasOtherDocumentation = (form, submission: Submission, submissionMethod?: SubmissionMethod) => {
   const formAsForm = formioFormsApiUtils.mapNavFormToForm(form);
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission))
+    .filter((comp) =>
+      checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission, { submissionMethod }),
+    )
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };
@@ -102,8 +117,11 @@ const sanitize = (component) => {
   return clone;
 };
 
-const hasRelevantAttachments = (form: NavFormType, submission: Submission) => {
-  return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
+const hasRelevantAttachments = (form: NavFormType, submission: Submission, submissionMethod?: SubmissionMethod) => {
+  return (
+    !!getRelevantAttachments(form, submission, submissionMethod).length ||
+    hasOtherDocumentation(form, submission, submissionMethod)
+  );
 };
 
 export {

@@ -83,8 +83,8 @@ export const updateUtfyltSoknad = async (
   setRedirectLocation: (location: string) => void,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
-  const attachments = getRelevantAttachments(form, submission);
-  const otherDocumentation = hasOtherDocumentation(form, submission);
+  const attachments = getRelevantAttachments(form, submission, submissionMethod);
+  const otherDocumentation = hasOtherDocumentation(form, submission, submissionMethod);
 
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(

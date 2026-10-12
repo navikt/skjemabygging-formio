@@ -41,7 +41,7 @@ export function SummaryPageNextButton({
   const submissionTypes = form?.properties.submissionTypes;
   const digitalWithoutAttachments =
     (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
-    !hasRelevantAttachments(form, submission ?? { data: {} });
+    !hasRelevantAttachments(form, submission ?? { data: {} }, submissionMethod);
   const digitalWithUploadsInFyllut = submissionMethod === 'digital' && attachmentPageEnabled;
   const toResponseError = (error: unknown) =>
     error instanceof ResponseError

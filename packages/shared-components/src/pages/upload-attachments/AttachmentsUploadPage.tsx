@@ -5,6 +5,7 @@ import AttachmentComponent from '../../components/attachment/Attachment';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
@@ -21,10 +22,11 @@ const useStyles = makeStyles({
 
 const AttachmentsUploadPage = () => {
   const { form, submission, setTitle, setFormProgressVisible } = useForm();
+  const { submissionMethod } = useAppConfig();
   const { errors: uploadErrors } = useAttachmentUpload();
   const { translate } = useLanguages();
   const styles = useStyles();
-  const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
+  const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission), submissionMethod);
   const attachmentRefs = useRef<Record<string, HTMLFieldSetElement | HTMLInputElement | HTMLButtonElement | null>>({});
   const errorSummaryRef = useRef<HTMLElement | null>(null);
   const attachmentOrder = attachments.reduce((acc, att, index) => ({ ...acc, [att.navId as string]: index }), {});
