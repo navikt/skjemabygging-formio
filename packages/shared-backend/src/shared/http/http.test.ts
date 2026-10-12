@@ -103,7 +103,7 @@ describe('http', () => {
     await expect(http.post(response.url, { filer: [] })).resolves.toBe(pdf.toString('base64'));
   });
 
-  it('reports invalid base64 padding without exposing the document or raw error body', async () => {
+  it('preserves upstream merge errors without merge-specific mapping or logging raw bodies', async () => {
     const errorBody = {
       message:
         'JSON parse error: Cannot deserialize value of type `byte[]` from String "private-document": ' +
@@ -127,7 +127,7 @@ describe('http', () => {
 
     await expect(http.post(response.url, { filer: [] })).rejects.toMatchObject({
       errorCode: 'INTERNAL_SERVER_ERROR',
-      message: 'PDF merge failed: invalid base64 padding',
+      message: errorBody.message,
       correlationId: 'upstream-correlation-id',
       body: errorBody,
       userMessage: undefined,
@@ -137,48 +137,11 @@ describe('http', () => {
       endpoint: '/fyllUt/v1/merge-filer',
       upstream_status: 500,
       error_code: 'INTERNAL_SERVER_ERROR',
-      reason: 'PDF merge failed: invalid base64 padding',
+      reason: 'INTERNAL_SERVER_ERROR',
       upstream_correlation_id: 'upstream-correlation-id',
     });
     expect(JSON.stringify(warn.mock.calls)).not.toContain('private-');
   });
-
-  it.each(['application/json', 'text/plain', 'text/html'])(
-    'handles %s merge errors without base64 encoding or exposing their contents',
-    async (contentType) => {
-      const errorBody =
-        contentType === 'application/json'
-          ? JSON.stringify({ message: 'private-upstream-details' })
-          : 'private-upstream-details';
-      const response = new Response(errorBody, {
-        status: 503,
-        headers: {
-          'Content-Type': contentType,
-          'x-correlation-id': 'header-correlation-id',
-        },
-      });
-      Object.defineProperty(response, 'url', {
-        value: 'http://innsending-api.team-soknad/fyllUt/v1/merge-filer',
-      });
-      vi.spyOn(global, 'fetch').mockResolvedValue(response);
-      const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
-
-      await expect(http.post(response.url, { filer: [] })).rejects.toMatchObject({
-        errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'PDF merge request failed',
-        correlationId: 'header-correlation-id',
-      });
-      expect(warn).toHaveBeenCalledWith(
-        'Http request failed',
-        expect.objectContaining({
-          upstream_status: 503,
-          reason: 'PDF merge request failed',
-          upstream_correlation_id: 'header-correlation-id',
-        }),
-      );
-      expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
-    },
-  );
 
   it('preserves non-merge errors without logging their raw bodies', async () => {
     const errorBody = {

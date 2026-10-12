@@ -186,22 +186,6 @@ const handleBody = async (response: Response) => {
   }
 };
 
-const getErrorMessage = (errorBody: Awaited<ReturnType<typeof handleBody>>, statusText: string, pathname: string) => {
-  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? statusText);
-  if (!pathname.includes('merge')) {
-    return { message };
-  }
-
-  const mergeMessage =
-    typeof message === 'string' &&
-    message.includes('Unexpected end of base64-encoded String') &&
-    message.includes('expects padding')
-      ? 'PDF merge failed: invalid base64 padding'
-      : 'PDF merge request failed';
-
-  return { message: mergeMessage, reason: mergeMessage };
-};
-
 const handleResponse = async <T>(
   response: Response,
   requestUrl: string,
@@ -229,7 +213,7 @@ const handleResponse = async <T>(
 
   const errorBody = await handleBody(response);
   const responseUrl = new URL(response.url || requestUrl);
-  const { message, reason } = getErrorMessage(errorBody, response.statusText, responseUrl.pathname);
+  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
   const correlationId =
     typeof errorBody === 'string'
       ? (response.headers.get('x-correlation-id') ?? undefined)
@@ -244,7 +228,7 @@ const handleResponse = async <T>(
     endpoint: responseUrl.pathname,
     upstream_status: response.status,
     error_code: error.errorCode,
-    reason: reason ?? error.errorCode,
+    reason: error.errorCode,
     upstream_correlation_id: correlationId,
   });
 
