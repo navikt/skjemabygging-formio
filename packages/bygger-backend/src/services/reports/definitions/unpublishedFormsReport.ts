@@ -1,6 +1,6 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { isNotTestForm, ReportDependencies } from '../types';
+import { formatReportTimestamp, isNotTestForm, ReportDependencies } from '../types';
 
 type UnpublishedRow = {
   formNumber: string;
@@ -31,7 +31,7 @@ const unpublishedFormsReport = ({ formsService }: ReportDependencies): CsvReport
       yield {
         formNumber: form.skjemanummer,
         formTitle: form.title,
-        unpublishedAt: form.publishedAt,
+        unpublishedAt: formatReportTimestamp(form.publishedAt),
         unpublishedBy: form.publishedBy,
       };
     }

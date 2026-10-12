@@ -12,7 +12,10 @@ type ReportDependencies = {
 };
 
 const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
-const formatSubmissionTypes = (types: SubmissionType[]) => `[${types.map((type) => JSON.stringify(type)).join(', ')}]`;
+const formatSubmissionTypes = (types: SubmissionType[]) =>
+  types.length ? `[${types.map((type) => JSON.stringify(type)).join(', ')}]` : '';
+const formatReportTimestamp = (timestamp?: string) =>
+  timestamp ? new Date(timestamp).toISOString().slice(0, 19).replace('T', ', ') : undefined;
 
-export { formatSubmissionTypes, isNotTestForm };
+export { formatReportTimestamp, formatSubmissionTypes, isNotTestForm };
 export type { ReportDependencies };

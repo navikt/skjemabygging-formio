@@ -9,7 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import config from '../../../config';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { formatSubmissionTypes, isNotTestForm, ReportDependencies } from '../types';
+import { formatReportTimestamp, formatSubmissionTypes, isNotTestForm, ReportDependencies } from '../types';
 
 type SummaryRow = {
   formNumber: string;
@@ -158,10 +158,10 @@ const allFormsSummaryReport = ({
         formNumber: properties.skjemanummer,
         formTitle: title,
         topic: properties.tema,
-        publishedAt: isPublished ? publishedAt : undefined,
+        publishedAt: isPublished ? formatReportTimestamp(publishedAt) : undefined,
         publishedBy: isPublished ? publishedBy : undefined,
         unpublishedChanges: status === 'pending' ? 'ja' : status === 'published' ? 'nei' : '',
-        changedAt,
+        changedAt: formatReportTimestamp(changedAt),
         changedBy,
         submissionTypes: formatSubmissionTypes(submissionTypes),
         subsequentSubmissionTypes: formatSubmissionTypes(reportSubsequentSubmissionTypes),

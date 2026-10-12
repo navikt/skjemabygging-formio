@@ -113,6 +113,146 @@ describe('ReportService', () => {
       };
     }
 
+    describe.each(['all-forms-summary', 'unpublished-forms'])('%s timestamps', (reportId) => {
+      it.each([
+        { name: 'milliseconds', timestamp: '2026-10-12T11:39:01.493Z', expected: '2026-10-12, 11:39:01' },
+        { name: 'microseconds', timestamp: '2026-10-12T11:39:01.493123Z', expected: '2026-10-12, 11:39:01' },
+        { name: 'whole seconds', timestamp: '2026-01-01T12:00:00Z', expected: '2026-01-01, 12:00:00' },
+        { name: 'no rounding', timestamp: '2026-12-31T23:59:59.999Z', expected: '2026-12-31, 23:59:59' },
+        { name: 'UTC normalization', timestamp: '2026-01-01T00:30:00+01:00', expected: '2025-12-31, 23:30:00' },
+        { name: 'missing timestamp', timestamp: undefined, expected: '' },
+        { name: 'empty timestamp', timestamp: '', expected: '' },
+      ])('formats $name with a comma and space between date and time', async ({ timestamp, expected }) => {
+        const form: Form = {
+          path: 'timestamp-example',
+          skjemanummer: 'EXAMPLE',
+          title: 'Example form',
+          status: reportId === 'unpublished-forms' ? 'unpublished' : 'published',
+          publishedAt: timestamp,
+          changedAt: timestamp,
+          components: [],
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          },
+        };
+        setupNock([form]);
+
+        const writableStream = createWritableStream();
+        await reportService.generate(reportId, writableStream);
+        const report = parseReport(writableStream.toString());
+        const headers = reportId === 'all-forms-summary' ? ['sist publisert', 'sist endret'] : ['avpublisert'];
+
+        expect(report.numberOfForms).toBe(1);
+        expect(report.forms[0]).toHaveLength(report.headers.length);
+        for (const header of headers) {
+          expect(report.forms[0][report.getHeaderIndex(header)]).toBe(expected);
+        }
+      });
+
+      it('rejects invalid timestamps rather than exporting an invalid or empty date', async () => {
+        const form: Form = {
+          path: 'invalid-timestamp',
+          skjemanummer: 'EXAMPLE',
+          title: 'Example form',
+          status: reportId === 'unpublished-forms' ? 'unpublished' : 'published',
+          publishedAt: 'invalid-date',
+          changedAt: 'invalid-date',
+          components: [],
+          properties: {
+            skjemanummer: 'EXAMPLE',
+            tema: 'TEST',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          },
+        };
+        setupNock([form]);
+
+        await expect(reportService.generate(reportId, createWritableStream())).rejects.toThrow(RangeError);
+      });
+    });
+
+    describe('summary formatting', () => {
+      it.each(['published', 'pending', 'draft', 'unpublished'] as const)(
+        'preserves publication visibility for %s forms',
+        async (status) => {
+          const form: Form = {
+            path: 'publication-visibility',
+            skjemanummer: 'EXAMPLE',
+            title: 'Example form',
+            status,
+            publishedAt: '2026-10-12T11:39:01.493Z',
+            changedAt: '2026-10-12T11:40:02.123Z',
+            components: [],
+            properties: {
+              skjemanummer: 'EXAMPLE',
+              tema: 'TEST',
+              submissionTypes: [],
+              subsequentSubmissionTypes: [],
+              ettersendelsesfrist: '14',
+            },
+          };
+          setupNock([form]);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+
+          expect(report.forms[0][report.getHeaderIndex('sist publisert')]).toBe(
+            status === 'published' || status === 'pending' ? '2026-10-12, 11:39:01' : '',
+          );
+          expect(report.forms[0][report.getHeaderIndex('sist endret')]).toBe('2026-10-12, 11:40:02');
+          expect(report.forms[0][report.getHeaderIndex('ettersendelsesfrist')]).toBe('14');
+        },
+      );
+
+      it.each<{
+        name: string;
+        submissionTypes: SubmissionType[];
+        subsequentSubmissionTypes: SubmissionType[];
+        expectedSubmission: string;
+        expectedSubsequent: string;
+      }>([
+        {
+          name: 'empty lists',
+          submissionTypes: [],
+          subsequentSubmissionTypes: [],
+          expectedSubmission: '',
+          expectedSubsequent: '',
+        },
+        {
+          name: 'non-empty lists',
+          submissionTypes: ['DIGITAL', 'PAPER'],
+          subsequentSubmissionTypes: ['PAPER'],
+          expectedSubmission: '"[""DIGITAL"", ""PAPER""]"',
+          expectedSubsequent: '"[""PAPER""]"',
+        },
+      ])(
+        'formats $name without changing other cells',
+        async ({ submissionTypes, subsequentSubmissionTypes, expectedSubmission, expectedSubsequent }) => {
+          const form: Form = {
+            path: 'submission-list-example',
+            skjemanummer: 'EXAMPLE',
+            title: '[]',
+            status: 'published',
+            components: [],
+            properties: { skjemanummer: 'EXAMPLE', tema: 'TEST', submissionTypes, subsequentSubmissionTypes },
+          };
+          setupNock([form]);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+
+          expect(report.forms[0][report.getHeaderIndex('submissionTypes')]).toBe(expectedSubmission);
+          expect(report.forms[0][report.getHeaderIndex('subsequentSubmissionTypes')]).toBe(expectedSubsequent);
+          expect(report.forms[0][report.getHeaderIndex('skjematittel')]).toBe('[]');
+        },
+      );
+    });
+
     describe('generateFormsPublishedLanguage', () => {
       describe('PDF forms', () => {
         it('reports uploaded PDFs and STATIC_PDF independently as yes or blank', async () => {
@@ -602,7 +742,7 @@ describe('ReportService', () => {
           CSV_HEADER_LINE +
             'TEST1;nb, en, nn;Testskjema1;Testskjema1;Testskjema1;"[""DIGITAL"", ""PAPER""]";1\n' +
             'TEST2;nb, en;Testskjema2;;Testskjema2;"[""STATIC_PDF""]";2\n' +
-            'TEST3;nb;Testskjema3;;;[];3\n',
+            'TEST3;nb;Testskjema3;;;;3\n',
         );
       });
 
@@ -619,13 +759,13 @@ describe('ReportService', () => {
           legacyType: 'PAPIR_OG_DIGITAL',
           expectedCell: '"[""PAPER"", ""DIGITAL""]"',
         },
-        { name: 'legacy no submission', legacyType: 'INGEN', expectedCell: '[]' },
-        { name: 'missing submission metadata', expectedCell: '[]' },
+        { name: 'legacy no submission', legacyType: 'INGEN', expectedCell: '' },
+        { name: 'missing submission metadata', expectedCell: '' },
         {
           name: 'modern empty types',
           legacyType: 'PAPIR_OG_DIGITAL',
           submissionTypes: [],
-          expectedCell: '[]',
+          expectedCell: '',
         },
         {
           name: 'modern types over legacy',
@@ -1193,7 +1333,7 @@ describe('ReportService', () => {
         expect(formFields1[report.getHeaderIndex('submissionTypes')]).toBe(
           '"[""DIGITAL"", ""PAPER"", ""STATIC_PDF""]"',
         );
-        expect(formFields2[report.getHeaderIndex('submissionTypes')]).toBe('[]');
+        expect(formFields2[report.getHeaderIndex('submissionTypes')]).toBe('');
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe('"[""PAPER""]"');
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
@@ -1614,7 +1754,7 @@ describe('ReportService', () => {
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;en, nn;;Testskjema1;Testskjema1;[];1\n');
+        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;en, nn;;Testskjema1;Testskjema1;;1\n');
       });
 
       it('fails if unknown report', async () => {
@@ -1734,7 +1874,7 @@ describe('ReportService', () => {
 
         expect(writableStream.toString()).toBe(
           '\uFEFFskjemanummer;skjematittel;avpublisert;avpublisert av;radnummer\n' +
-            'FIRST;First form;2026-01-01T12:00:00Z;example;1\n' +
+            'FIRST;First form;2026-01-01, 12:00:00;example;1\n' +
             'SECOND;Second form;;;2\n',
         );
       });
