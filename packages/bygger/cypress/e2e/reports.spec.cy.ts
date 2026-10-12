@@ -18,7 +18,7 @@ describe('Reports', () => {
     cy.defaultIntercepts();
   });
 
-  it('renders report download links in the current tab', () => {
+  it('renders report download links in a new tab', () => {
     cy.intercept('GET', '/api/reports', reports).as('getReports');
     cy.visit('/rapporter');
     cy.wait('@getReports');
@@ -27,7 +27,9 @@ describe('Reports', () => {
     cy.findByRole('link', { name: reports[0].title })
       .should('have.attr', 'href')
       .and('match', /\/api\/reports\/all-forms-summary$/);
-    cy.findByRole('link', { name: reports[0].title }).should('not.have.attr', 'target');
+    cy.findByRole('link', { name: reports[0].title })
+      .should('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noreferrer');
     cy.findByRole('link', { name: reports[1].title }).should('be.visible');
     cy.findByRole('textbox').should('not.exist');
   });
