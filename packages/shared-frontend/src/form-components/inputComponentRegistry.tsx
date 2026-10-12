@@ -20,6 +20,7 @@ import InputFormGroup from './components/form-group/InputFormGroup';
 import InputHtmlElement from './components/html-element/InputHtmlElement';
 import InputIban from './components/iban/InputIban';
 import InputIdentity from './components/identity/InputIdentity';
+import InputImage from './components/image/InputImage';
 import InputMonthPicker from './components/month-picker/InputMonthPicker';
 import InputNationalIdentityNumber from './components/national-identity-number/InputNationalIdentityNumber';
 import InputNumber from './components/number/InputNumber';
@@ -51,6 +52,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   datagrid: InputDataGrid,
   drivinglist: InputDrivingList,
   htmlelement: InputHtmlElement,
+  image: InputImage,
   iban: InputIban,
   navSkjemagruppe: InputFormGroup,
   fieldset: InputFormGroup,
