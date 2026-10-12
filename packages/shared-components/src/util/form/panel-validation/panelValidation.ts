@@ -7,6 +7,7 @@ import {
   PanelValidation,
   Submission,
   SubmissionAttachment,
+  SubmissionMethod,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 const findFirstInputWithValidationError = (wizardComponent, data): string | undefined => {
@@ -31,8 +32,20 @@ const findFirstInputWithValidationError = (wizardComponent, data): string | unde
   return undefined;
 };
 
-export const validateWizardPanels = (formioInstance, form: NavFormType, submission: Submission): PanelValidation[] => {
-  const formSummaryPanels = formSummaryUtils.createFormSummaryPanels(form, submission, (txt: string) => txt, false);
+export const validateWizardPanels = (
+  formioInstance,
+  form: NavFormType,
+  submission: Submission,
+  submissionMethod?: SubmissionMethod,
+): PanelValidation[] => {
+  const formSummaryPanels = formSummaryUtils.createFormSummaryPanels(
+    form,
+    submission,
+    (txt: string) => txt,
+    false,
+    undefined,
+    { submissionMethod },
+  );
   return formSummaryPanels
     .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(

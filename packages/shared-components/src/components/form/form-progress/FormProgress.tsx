@@ -8,7 +8,7 @@ import { useLanguages } from '../../../context/languages';
 
 const FormProgress = () => {
   const { form, submission, formProgressOpen, setFormProgressOpen } = useForm();
-  const { baseUrl, attachmentPageEnabled } = useAppConfig();
+  const { baseUrl, attachmentPageEnabled, submissionMethod } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
   const panelSlug = params.panelSlug ?? params['*'];
@@ -20,7 +20,7 @@ const FormProgress = () => {
 
   const formSteps = useMemo(() => {
     const formioSteps = navFormUtils
-      .getActivePanelsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
+      .getActivePanelsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
 
     const steps = [
@@ -44,7 +44,7 @@ const FormProgress = () => {
     });
 
     return steps;
-  }, [attachmentPageEnabled, form, submission]);
+  }, [attachmentPageEnabled, form, submission, submissionMethod]);
 
   const getActiveStepper = () => {
     return formSteps.findIndex((step) => step.key === panelSlug);

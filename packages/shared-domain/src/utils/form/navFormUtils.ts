@@ -317,16 +317,22 @@ export const enrichComponentsWithNavIds = (
  * @param form
  * @param submission
  */
-const getActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] => {
+const getActivePanelsFromForm = (form: Form, submission?: Submission, submissionMethod?: SubmissionMethod): Panel[] => {
   const data = submission?.data ?? {};
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => Boolean(checkCondition(panel, [], data, form, undefined, submission)))
+    .filter((panel): panel is Panel =>
+      Boolean(checkCondition(panel, [], data, form, undefined, submission, { submissionMethod })),
+    )
     .filter((panel) => !isVedleggspanel(panel));
 };
 
-const getActiveComponentsFromForm = (form: Form, submission?: Submission): Component[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+const getActiveComponentsFromForm = (
+  form: Form,
+  submission?: Submission,
+  submissionMethod?: SubmissionMethod,
+): Component[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, submissionMethod);
 
   const panels = form.components.filter((component) => component.type === 'panel' && !isVedleggspanel(component));
 
@@ -353,8 +359,12 @@ const getActiveComponents = (components: Component[], conditionals?: any): Compo
 };
 
 // For attachment panel when submission values are in submission.attachments rather than submission.data
-const getActiveAttachmentPanelFromForm = (form: Form, submission?: Submission): Panel | undefined => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+const getActiveAttachmentPanelFromForm = (
+  form: Form,
+  submission?: Submission,
+  submissionMethod?: SubmissionMethod,
+): Panel | undefined => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, submissionMethod);
   const attachmentPanel = getAttachmentPanel(form);
   const [activeAttachmentPanel] = attachmentPanel ? getActiveComponents([attachmentPanel], conditionals) : [];
   return activeAttachmentPanel && isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;

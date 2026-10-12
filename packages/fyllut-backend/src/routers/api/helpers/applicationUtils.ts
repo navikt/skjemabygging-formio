@@ -13,6 +13,7 @@ import {
   navFormUtils,
   resolveParty,
   Submission,
+  SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
@@ -25,9 +26,10 @@ const assembleSubmitApplicationRequest = (
   language: TranslationLang,
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
+  submissionMethod?: SubmissionMethod,
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
-    navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
+    navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod)?.components ?? [];
   const applicationParty = extractApplicationParty(form, submission);
 
   if (!applicationParty) {

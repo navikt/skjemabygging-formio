@@ -30,8 +30,12 @@ const renderApplicationPdf = ({
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
   const translate = translationUtil.createTranslate(translations, language);
 
-  const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
-  const activeAttachmentUploadsPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
+  const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
+  const activeAttachmentUploadsPanel = navFormUtils.getActiveAttachmentPanelFromForm(
+    form,
+    submission,
+    submissionMethod,
+  );
 
   return renderPdfForm({
     activeComponents,

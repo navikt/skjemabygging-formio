@@ -42,16 +42,25 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const { attachmentPageEnabled, http, baseUrl, submissionMethod } = useAppConfig();
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission),
-    [form, submission],
+    () =>
+      navFormUtils.getActiveComponentsFromForm(
+        formioFormsApiUtils.mapNavFormToForm(form),
+        submission,
+        submissionMethod,
+      ),
+    [form, submission, submissionMethod],
   );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = attachmentPageEnabled
-      ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
+      ? navFormUtils.getActiveAttachmentPanelFromForm(
+          formioFormsApiUtils.mapNavFormToForm(form),
+          submission,
+          submissionMethod,
+        )
       : undefined;
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
-  }, [form, submission, attachmentPageEnabled]);
+  }, [form, submission, attachmentPageEnabled, submissionMethod]);
 
   const setDeepValue = useCallback((obj: object, path: string[], value: any) => {
     const setValue = (target: any, currentPath: string[]) => {

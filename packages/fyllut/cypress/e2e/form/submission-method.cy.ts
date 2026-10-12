@@ -96,6 +96,36 @@ describe('Submission method', () => {
     });
   });
 
+  describe('Custom conditional on submission method', () => {
+    it('shows digital-only component in summary when submission method is digital', () => {
+      cy.visit('/fyllut/submissionmethodconditional/applicant?sub=digital');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: 'Applicant name' }).type('Test Testesen');
+      cy.findByRole('checkbox', { name: 'Digital only confirmation' }).check();
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Applicant', () => {
+        cy.get('dt').eq(1).should('contain.text', 'Digital only confirmation');
+        cy.get('dd').eq(1).should('contain.text', 'Ja');
+      });
+    });
+
+    it('hides digital-only component in form and summary when submission method is paper', () => {
+      cy.visit('/fyllut/submissionmethodconditional/applicant?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: 'Applicant name' }).type('Test Testesen');
+      cy.findByRole('checkbox', { name: 'Digital only confirmation' }).should('not.exist');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Applicant', () => {
+        cy.get('dt').should('have.length', 1);
+        cy.findByText('Digital only confirmation').should('not.exist');
+      });
+    });
+  });
+
   describe("Subscription method 'paper'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/submissionmethod/veiledning?sub=paper');

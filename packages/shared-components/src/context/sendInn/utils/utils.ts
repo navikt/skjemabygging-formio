@@ -3,6 +3,7 @@ import {
   NavFormType,
   Submission,
   SubmissionData,
+  SubmissionMethod,
   dateUtils,
   formSummaryUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -56,7 +57,11 @@ const filterOutIfNotInSummary = (originalData: SubmissionData, formSummaryCompon
   return Object.fromEntries(filteredSubmissionEntries);
 };
 
-const getSubmissionFromResponse = (response?: SendInnSoknadResponse, form?: NavFormType): Submission => {
+const getSubmissionFromResponse = (
+  response?: SendInnSoknadResponse,
+  form?: NavFormType,
+  submissionMethod?: SubmissionMethod,
+): Submission => {
   const submissionFromResponse: Submission | undefined = response?.hoveddokumentVariant?.document?.data;
   if (!submissionFromResponse) {
     return { data: {} };
@@ -67,7 +72,7 @@ const getSubmissionFromResponse = (response?: SendInnSoknadResponse, form?: NavF
   }
 
   const formSummaryComponents = formSummaryUtils
-    .createFormSummaryPanels(form, submissionFromResponse)
+    .createFormSummaryPanels(form, submissionFromResponse, undefined, undefined, undefined, { submissionMethod })
     .flatMap((panel) => panel.components);
   const submissionData = filterOutIfNotInSummary({ ...submissionFromResponse.data }, formSummaryComponents);
   return { ...submissionFromResponse, data: submissionData };
@@ -90,9 +95,10 @@ export const getFyllutMellomlagringState = (
 export const getSubmissionWithFyllutState = (
   response?: SendInnSoknadResponse,
   form?: NavFormType,
+  submissionMethod?: SubmissionMethod,
 ): Submission | undefined => {
   if (response) {
-    const submission = getSubmissionFromResponse(response, form);
+    const submission = getSubmissionFromResponse(response, form, submissionMethod);
     return {
       ...submission,
       fyllutState: {

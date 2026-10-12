@@ -281,6 +281,10 @@ import {
   selectDeprecatedTranslations,
 } from '../data/forms-api/select-deprecated/selectDeprecatedForm';
 import {
+  submissionMethodConditionalForm,
+  submissionMethodConditionalTranslations,
+} from '../data/forms-api/submission-method/submissionMethodConditionalForm';
+import {
   submissionMethodForm,
   submissionMethodTranslations,
 } from '../data/forms-api/submission-method/submissionMethodForm';
@@ -494,6 +498,7 @@ const allForms = [
   { form: selectBoxesDeprecatedForm(), translations: selectBoxesDeprecatedTranslations() },
   { form: selectDeprecatedForm(), translations: selectDeprecatedTranslations() },
   { form: submissionMethodForm(), translations: submissionMethodTranslations() },
+  { form: submissionMethodConditionalForm(), translations: submissionMethodConditionalTranslations() },
   { form: customDownloadButtonTextForm(), translations: customDownloadButtonTextTranslations() },
   { form: submissionTypesDigitalForm(), translations: submissionTypesDigitalTranslations() },
   {

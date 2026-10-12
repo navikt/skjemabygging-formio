@@ -65,7 +65,7 @@ export function SummaryPage() {
 
       webform.checkData(submissionCopy?.data, [], undefined);
 
-      const panelValidations = validateWizardPanels(webform, form, submission!);
+      const panelValidations = validateWizardPanels(webform, form, submission!, appConfig.submissionMethod);
 
       if (form.introPage?.enabled && !submission?.selfDeclaration) {
         panelValidations.push({
@@ -75,7 +75,11 @@ export function SummaryPage() {
       }
 
       const attachmentPanel = appConfig.attachmentPageEnabled
-        ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
+        ? navFormUtils.getActiveAttachmentPanelFromForm(
+            formioFormsApiUtils.mapNavFormToForm(form),
+            submission,
+            appConfig.submissionMethod,
+          )
         : undefined;
       if (attachmentPanel) {
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(

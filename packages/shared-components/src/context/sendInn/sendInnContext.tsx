@@ -160,7 +160,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         } else {
           addSearchParamToUrl('lang', savedLanguage);
         }
-        setSubmission(getSubmissionWithFyllutState(response, form));
+        setSubmission(getSubmissionWithFyllutState(response, form, appConfig.submissionMethod));
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },

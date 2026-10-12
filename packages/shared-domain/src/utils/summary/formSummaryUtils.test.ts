@@ -78,6 +78,51 @@ describe('form summary', () => {
     });
   });
 
+  describe('Custom conditional depending on submission method', () => {
+    const digitalOnlyCheckbox = {
+      ...createDummyCheckbox('Digital only', 'digitalOnlyNavId'),
+      customConditional: 'show = instance.isSubmissionDigital();',
+    };
+    const formWithPaperAndDigital = createFormObject(
+      [createPanelObject('Panel', [digitalOnlyCheckbox], 'Panel', 'panelNavId')],
+      'Test form',
+      { submissionTypes: ['PAPER', 'DIGITAL'] },
+    );
+    const submission = { data: { digitalonly: true } };
+
+    it('shows the component when submission method is digital', () => {
+      expect(mapAndEvaluateConditionals(formWithPaperAndDigital, submission, 'digital')).toEqual({});
+    });
+
+    it('hides the component when submission method is paper', () => {
+      expect(mapAndEvaluateConditionals(formWithPaperAndDigital, submission, 'paper')).toEqual({
+        'digitalonly-digitalOnlyNavId': false,
+      });
+    });
+
+    it('includes the component in summary panels when opts.submissionMethod is digital', () => {
+      const [panel] = formSummaryUtils.createFormSummaryPanels(
+        formWithPaperAndDigital,
+        submission,
+        mockedTranslate,
+        false,
+        undefined,
+        { submissionMethod: 'digital' },
+      );
+      expect(panel.components.map((component) => component.key)).toEqual(['digitalonly']);
+    });
+
+    it('includes the component in active components when submission method is digital', () => {
+      const [panel] = navFormUtils.getActiveComponentsFromForm(formWithPaperAndDigital, submission, 'digital');
+      expect(panel.components.map((component) => component.key)).toEqual(['digitalonly']);
+    });
+
+    it('excludes the component from active components when submission method is paper', () => {
+      const [panel] = navFormUtils.getActiveComponentsFromForm(formWithPaperAndDigital, submission, 'paper');
+      expect(panel.components).toEqual([]);
+    });
+  });
+
   describe('Image component with custom conditional', () => {
     it('should not be visible when inputCondition=doNotShowImg', () => {
       const { imgForm, submissionDoNotShowConditionalInput } = testImgFormCustomConditional;
