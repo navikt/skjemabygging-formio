@@ -63,6 +63,49 @@ pnpm playwright:fyllut --port-range 3440:3447
 pnpm playwright:fyllut:built --ports 3440,3441,3442,3443
 ```
 
+## An existing dedicated epoch
+
+Existing mode consumes one fresh epoch prepared by the managed launcher for one
+named test. It is not an attachment to an arbitrary URL or to the ordinary
+interactive Cypress stack. The manifest delegates lifecycle control of that
+dedicated epoch only. The launcher keeps ownership of its child processes and
+executes quiesce/stop requests over a local control socket. Playwright never
+signals the controller or unrelated processes.
+
+In one terminal, prepare the test's setup and wait for `START_PID`:
+
+```sh
+pnpm playwright:fyllut:prepare F029-T002 --built --port-range 3440:3447
+```
+
+In another terminal, use the printed `PLAYWRIGHT_EXISTING_MANIFEST` path:
+
+```sh
+pnpm playwright:fyllut:existing <manifest-path> --grep 'data is empty'
+```
+
+The manifest supplies the explicit dev/built mode. An optional `--built` must
+agree with it. The selected run must contain exactly the manifest's test, with
+no retry, port override or technical fault injection. Source changes, a new
+commit, changed built entrypoints, another worktree, stale/expired manifests
+and concurrent or repeated claims are rejected. `--list` does not claim the
+epoch. An unused setup expires after ten minutes and stops its owned services.
+Do not visit or mutate the prepared setup before its test.
+
+The ordinary fixture still closes browser contexts, asks the launcher to stop
+application producers, restores variants, finalizes mock evidence and stops
+mocks, in that order. Worker loss disconnects the lease and triggers owned
+cleanup. The epoch cannot be reused. Its original startup log remains beside
+the preparation manifest; the test run records the same epoch identity, process
+metadata, teardown barriers and mock evidence in its own report directory.
+The controller remains alive after normal consumption so the caller can inspect
+it, then stop it with Ctrl-C or `kill <START_PID>`. No backend reset or process
+reuse is claimed.
+
+On Unix, existing mode uses a socket inside the worktree's `.runtime` directory.
+An overlong socket path fails explicitly before starting services. Windows uses
+a named pipe; its execution has not been verified in this Linux environment.
+
 Main and technical runs use the same 1280x1000 viewport as FyllUt Cypress.
 This aligns rendering dimensions, not browser engines or manual accessibility
 coverage.

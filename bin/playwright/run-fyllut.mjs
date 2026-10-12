@@ -6,21 +6,37 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'no
 import { relative, resolve } from 'node:path';
 import { defaultPortRange, parsePortRange, parsePorts } from '../lib/test-ports.mjs';
 import { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery } from './check-migration.mjs';
+import { loadExistingManifest } from './existing-manifest.mjs';
 import { checkBuild } from './test-epoch.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
 const args = process.argv.slice(2).filter((arg) => arg !== '--');
-const mode = args.includes('--built') ? 'built' : 'dev';
-const listOnly = args.includes('--list');
+let mode = 'dev';
+let builtRequested = false;
+let listOnly = false;
 const selection = [];
 let ports;
 let portRange;
+let existingPath;
 for (let index = 0; index < args.length; index++) {
   const argument = args[index];
-  if (['--built', '--list'].includes(argument)) continue;
+  if (argument === '--built') {
+    builtRequested = true;
+    mode = 'built';
+    continue;
+  }
+  if (argument === '--list') {
+    listOnly = true;
+    continue;
+  }
   if (argument === '--grep') {
     assert(args[index + 1], '--grep needs a value');
     selection.push(argument, args[++index]);
+    continue;
+  }
+  if (argument === '--existing') {
+    assert(!existingPath && args[index + 1], '--existing needs one manifest path');
+    existingPath = resolve(args[++index]);
     continue;
   }
   if (argument === '--ports' || argument === '--port-range') {
@@ -35,7 +51,12 @@ for (let index = 0; index < args.length; index++) {
   } else selection.push(argument);
 }
 assert(!(ports && portRange), 'TEST_PORT_OPTIONS_CONFLICT');
-portRange ??= ports ? undefined : defaultPortRange;
+assert(!(existingPath && (ports || portRange)), 'EXISTING_PORT_OPTIONS_FORBIDDEN');
+const existing = existingPath ? loadExistingManifest(existingPath) : undefined;
+if (existing) {
+  assert(!builtRequested || existing.epoch.mode === 'built', 'EXISTING_MODE_MISMATCH');
+  mode = existing.epoch.mode;
+} else portRange ??= ports ? undefined : defaultPortRange;
 // Do not allow runner options to disable isolation, retries or the result reporter.
 for (let index = 0; index < selection.length; index++) {
   if (selection[index] === '--grep') {
@@ -53,6 +74,7 @@ const env = {
   FYLLUT_PLAYWRIGHT_OUTPUT_DIR: output,
   FYLLUT_PLAYWRIGHT_PORTS: ports?.join(',') ?? '',
   FYLLUT_PLAYWRIGHT_PORT_RANGE: portRange?.join(':') ?? '',
+  FYLLUT_PLAYWRIGHT_EXISTING_MANIFEST: existingPath ?? '',
 };
 const command = [
   resolve(root, 'packages/fyllut/node_modules/@playwright/test/cli.js'),
@@ -107,6 +129,10 @@ try {
     (test) => test.annotations.find((annotation) => annotation.type === 'migration-id')?.description,
   );
   assert(selectedIds.length, 'EMPTY_SELECTION');
+  if (existing) {
+    assert.deepEqual(selectedIds, [existing.epoch.testId], 'EXISTING_REQUIRES_ONE_MATCHING_TEST');
+    assert(mode === 'built' || selectedIds[0] !== 'F086-T002', 'EXISTING_SKIP_NOT_EXECUTABLE');
+  }
   const selected = implemented.filter((entry) => selectedIds.includes(entry.id));
   checkDiscovery(selected, flattenDiscovery(report), mode);
   writeFileSync(resolve(output, 'discovery.json'), JSON.stringify(report, null, 2));
@@ -124,6 +150,7 @@ try {
     }).trim(),
     fixtureVersion: 'dev-local/mr-sha/forms@git-sha',
     repoRoot: root,
+    existingManifest: existingPath,
     portSelection: ports ? { ports } : { portRange },
     build: buildFiles.map((file) => ({
       file: relative(root, file),

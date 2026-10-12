@@ -1,6 +1,7 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import { resolve } from 'node:path';
 import { parsePortRange, parsePorts } from '../../../../bin/lib/test-ports.mjs';
+import { attachExistingEpoch } from '../../../../bin/playwright/existing-epoch.mjs';
 import { startTestEpoch, type Epoch } from '../../../../bin/playwright/test-epoch.mjs';
 import { restoreRouteVariants, useRouteVariant } from './mock-client';
 import { createMockEvidence } from './mock-evidence';
@@ -37,18 +38,28 @@ const test = base.extend<Fixtures>({
         ['migration-id', 'technical-id'].includes(annotation.type),
       )?.description;
       if (!id) throw new Error('Missing test identity');
-      const epoch = await startTestEpoch({
+      const identity = {
         mode: process.env.FYLLUT_PLAYWRIGHT_MODE ?? 'dev',
         testId: id,
         attempt: testInfo.retry,
         output: process.env.FYLLUT_PLAYWRIGHT_OUTPUT_DIR ?? resolve('packages/fyllut/.runtime/playwright/local'),
-        observeMocks,
-        mockFault,
-        ports: process.env.FYLLUT_PLAYWRIGHT_PORTS ? parsePorts(process.env.FYLLUT_PLAYWRIGHT_PORTS) : undefined,
-        portRange: process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE
-          ? parsePortRange(process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE)
-          : undefined,
-      });
+      };
+      const existingManifest = process.env.FYLLUT_PLAYWRIGHT_EXISTING_MANIFEST;
+      if (existingManifest && (!observeMocks || mockFault)) throw new Error('EXISTING_FAULT_OPTIONS_FORBIDDEN');
+      const epoch = existingManifest
+        ? await attachExistingEpoch({
+            ...identity,
+            manifestPath: existingManifest,
+          })
+        : await startTestEpoch({
+            ...identity,
+            observeMocks,
+            mockFault,
+            ports: process.env.FYLLUT_PLAYWRIGHT_PORTS ? parsePorts(process.env.FYLLUT_PLAYWRIGHT_PORTS) : undefined,
+            portRange: process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE
+              ? parsePortRange(process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE)
+              : undefined,
+          });
       const errors: unknown[] = [];
       const evidence = createMockEvidence(epoch);
       try {
