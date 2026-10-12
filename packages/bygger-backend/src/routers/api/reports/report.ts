@@ -2,9 +2,8 @@ import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { RequestHandler } from 'express';
 import { Writable } from 'node:stream';
 import { reportService } from '../../../services';
-import { ApiError } from '../helpers/errors';
 
-const report: RequestHandler = async (req, res, next) => {
+const report: RequestHandler = async (req, res) => {
   const reportId = requestUtil.getStringParam(req, 'reportId')!;
   const report = reportService.getReportDefinition(reportId);
   if (!report) {
@@ -42,7 +41,8 @@ const report: RequestHandler = async (req, res, next) => {
     }
     res.removeHeader('Content-Disposition');
     res.removeHeader('Content-Type');
-    next(new ApiError('Kunne ikke generere rapport', true));
+    // The report pipeline has already logged the failure with context; the shared handler would log it again.
+    res.status(500).json({ message: 'Kunne ikke generere rapport', functional: true });
   } finally {
     res.off('close', cancelOnClose);
     res.off('error', failOnError);

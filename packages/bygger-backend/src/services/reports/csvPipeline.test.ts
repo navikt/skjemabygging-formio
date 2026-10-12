@@ -123,7 +123,7 @@ describe('CSV pipeline', () => {
   });
 
   it('propagates destination write errors and stops producing rows', async () => {
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
     let produced = 0;
     const failure = new Error('Sink unavailable');
     const destination = new Writable({
@@ -268,7 +268,7 @@ describe('CSV pipeline', () => {
   });
 
   it('logs a source failure category without exposing the original error', async () => {
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
     const chunks: string[] = [];
     const destination = new Writable({
       write(chunk, _encoding, callback) {
@@ -321,7 +321,7 @@ describe('CSV pipeline', () => {
       expected: { errorType: 'Error' },
     },
   ])('logs only safe metadata for a $name', async ({ error, expected }) => {
-    const failed = vi.spyOn(logger, 'warn');
+    const failed = vi.spyOn(logger, 'error');
     const cancelled = vi.spyOn(logger, 'info');
     await expect(
       writeCsvReport(

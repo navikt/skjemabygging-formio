@@ -3,11 +3,11 @@ import express, { Request, Response } from 'express';
 import { createServer, Server } from 'node:http';
 import { Writable } from 'node:stream';
 import { mock, mockDeep } from 'vitest-mock-extended';
+import { logger } from '../../../logging/logger';
 import { reportService } from '../../../services';
 import ReportService from '../../../services/ReportService';
 import { ReportDependencies } from '../../../services/reports/types';
 import apiErrorHandler from '../helpers/apiErrorHandler';
-import { ApiError } from '../helpers/errors';
 import report from './report';
 
 const deferred = <T = void>() => {
@@ -34,6 +34,7 @@ describe('Report download route', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('preserves download headers and waits for generation', async () => {
@@ -56,15 +57,15 @@ describe('Report download route', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('passes pre-stream failures to the existing error handler', async () => {
+  it('responds with the existing JSON error without passing pre-stream failures on', async () => {
     vi.mocked(reportService.generate).mockRejectedValue(new Error('failure'));
+    const res = mock<Response>({ headersSent: false, destroyed: false });
+    res.status.mockReturnValue(res);
     const next = vi.fn();
-    await report(
-      mock<Request>({ params: { reportId: 'all-forms-summary' } }),
-      mock<Response>({ headersSent: false, destroyed: false }),
-      next,
-    );
-    expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+    await report(mock<Request>({ params: { reportId: 'all-forms-summary' } }), res, next);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Kunne ikke generere rapport', functional: true });
+    expect(next).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -127,6 +128,8 @@ describe('Report download route', () => {
     it.each(['forms', 'recipients', 'details', 'pdfs', 'row'])(
       'returns a safe HTTP error if %s fails before the first CSV byte',
       async (stage) => {
+        const failed = vi.spyOn(logger, 'error');
+        const warned = vi.spyOn(logger, 'warn');
         const failure = new Error('Private upstream response must not be exposed');
         if (stage === 'forms') dependencies.formsService.getAll.mockRejectedValue(failure);
         if (stage === 'recipients') dependencies.recipientService.getAll.mockRejectedValue(failure);
@@ -144,6 +147,11 @@ describe('Report download route', () => {
         expect(response.headers.get('content-type')).toContain('application/json');
         expect(response.headers.get('content-disposition')).toBeNull();
         expect(await response.json()).toEqual({ message: 'Kunne ikke generere rapport', functional: true });
+        expect(failed).toHaveBeenCalledExactlyOnceWith(
+          'Report failed',
+          expect.objectContaining({ reportId: 'all-forms-summary' }),
+        );
+        expect(warned).not.toHaveBeenCalled();
       },
     );
 
@@ -163,6 +171,8 @@ describe('Report download route', () => {
     });
 
     it('terminates a partial CSV instead of appending an error response', async () => {
+      const failed = vi.spyOn(logger, 'error');
+      const warned = vi.spyOn(logger, 'warn');
       const releaseFailure = deferred();
       dependencies.formsService.get.mockImplementation(async (path) => {
         if (path === 'two') {
@@ -192,6 +202,11 @@ describe('Report download route', () => {
       expect(downloaded).not.toContain('Kunne ikke generere rapport');
       expect(downloaded).not.toContain('Private upstream response');
       expect(dependencies.staticPdfService.getAll).toHaveBeenCalledTimes(1);
+      expect(failed).toHaveBeenCalledExactlyOnceWith(
+        'Report failed',
+        expect.objectContaining({ reportId: 'all-forms-summary', operation: 'load-form', formPath: 'two' }),
+      );
+      expect(warned).not.toHaveBeenCalled();
     });
 
     it('cancels an in-flight lookup when the HTTP client disconnects before output', async () => {

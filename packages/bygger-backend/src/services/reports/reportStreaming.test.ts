@@ -36,7 +36,7 @@ describe('Report streaming orchestration', () => {
   ])('logs safe context when $failingCall fails', async ({ failingCall, operation, formPath }) => {
     const dependencies = mockDeep<ReportDependencies>();
     const failure = new ResponseError('SERVICE_UNAVAILABLE', 'Private upstream response');
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
     dependencies.formsService.getAll.mockResolvedValue([formFor('one')]);
     dependencies.recipientService.getAll.mockResolvedValue([]);
     dependencies.formsService.get.mockResolvedValue(formFor('one'));
@@ -68,7 +68,7 @@ describe('Report streaming orchestration', () => {
     dependencies.recipientService.getAll.mockResolvedValue([]);
     dependencies.formsService.get.mockResolvedValue(form);
     dependencies.staticPdfService.getAll.mockResolvedValue([]);
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
 
     await expect(new ReportService(dependencies).generate('all-forms-summary', new Writable())).rejects.toThrow(
       'Report recipient lookup failed',
@@ -95,7 +95,7 @@ describe('Report streaming orchestration', () => {
   ])('identifies $operation failures in $reportId', async ({ reportId, operation, formPath }) => {
     const dependencies = mockDeep<ReportDependencies>();
     const failure = new Error('Private upstream response');
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
     dependencies.formsService.getAll.mockResolvedValue([formFor('one')]);
     dependencies.formPublicationsService.getAll.mockResolvedValue([formFor('one')]);
     dependencies.formPublicationsService.get.mockResolvedValue(formFor('one'));
@@ -121,7 +121,7 @@ describe('Report streaming orchestration', () => {
 
   it('logs the failing second form rather than the last exported form', async () => {
     const dependencies = mockDeep<ReportDependencies>();
-    const logged = vi.spyOn(logger, 'warn');
+    const logged = vi.spyOn(logger, 'error');
     dependencies.formsService.getAll.mockResolvedValue([formFor('one'), formFor('two')]);
     dependencies.recipientService.getAll.mockResolvedValue([]);
     dependencies.formsService.get.mockImplementation(async (path) => {
@@ -164,7 +164,7 @@ describe('Report streaming orchestration', () => {
     });
     const generation = new ReportService(dependencies).generate('all-forms-summary', destination);
     const cancelled = vi.spyOn(logger, 'info');
-    const failed = vi.spyOn(logger, 'warn');
+    const failed = vi.spyOn(logger, 'error');
     const failure = generation.catch((error: unknown) => error);
     await detailStarted.promise;
     destination.destroy();

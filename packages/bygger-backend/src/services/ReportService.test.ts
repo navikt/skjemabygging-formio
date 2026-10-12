@@ -680,7 +680,7 @@ describe('ReportService', () => {
       it.each([{ legacyType: 'UNSUPPORTED' }, { legacyType: null }, { legacyType: ['KUN_PAPIR'] }])(
         'rejects unsupported legacy submission metadata %j',
         async ({ legacyType }) => {
-          const logged = vi.spyOn(logger, 'warn');
+          const logged = vi.spyOn(logger, 'error');
           const form = {
             path: 'unsupported-publication',
             skjemanummer: 'EXAMPLE',

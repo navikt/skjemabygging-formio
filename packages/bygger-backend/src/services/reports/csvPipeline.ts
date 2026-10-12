@@ -109,7 +109,7 @@ const writeCsvReport = async <Row extends object>(reportId: string, report: CsvR
     if (cancelled) {
       logger.info('Report cancelled', { ...metadata, ...context });
     } else {
-      logger.warn('Report failed', {
+      logger.error('Report failed', {
         ...metadata,
         ...(sourceFailure && sourceFailure.error === error ? sourceFailure.context : { operation: 'write-csv' }),
         ...errorMetadata(error),
