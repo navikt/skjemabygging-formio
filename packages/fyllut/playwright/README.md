@@ -1,6 +1,6 @@
 # FyllUt Playwright pilot
 
-This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 809 active declarations in 92 Cypress files at `616692eaa50239c42b16c5485b7953b73ea8af65`. The earlier 89-file/795-declaration and 86-file/787-declaration baselines remain in its reconciliation history. The 41 declarations in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. Ten tests have Playwright counterparts. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. The 42 declarations in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. The full-file goal is now 43 declarations, with ten Playwright counterparts and 33 still planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 New files and tests append IDs rather than renumbering earlier cases. Explicit
 source-order mappings preserve inserted cases and existing title changes.
@@ -12,7 +12,13 @@ not approve retiring its requirement or prove coverage equivalence.
 
 These are static declaration counts, not runtime case counts. F082-T013's
 saved-language declaration generates three cases, recorded in `runtimeCases`.
-All require future coverage. Build-only classification includes inherited
+F061-T005 generates four pending-upload/delete cases across success and failure,
+also recorded separately. The October 12 merge adds seven declarations with
+ten runtime cases: five image cases, four pending attachment cases and one
+personal-ID upload layout case. It removes none. Three no-login navigation
+cases now collect the required identity without changing their IDs.
+These additions remain planned, not covered by the existing ten counterparts.
+Build-only classification includes inherited
 hooks and excludes commented-out calls; thirteen current declarations require
 built routing. A later migration must preserve parameterized cases and their
 distinct outcomes, rather than translating one declaration into one test.

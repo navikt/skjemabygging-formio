@@ -88,15 +88,15 @@ test('per-test hashes include applicable hooks, exclude sibling hooks, and detec
   );
 });
 
-test('current 92-file register has 809 active declarations and 41 pending pilot checklists', () => {
+test('current 93-file register has 816 active declarations and 42 pending pilot checklists', () => {
   assert.equal(checkMigration(inventory, read).length, 0);
-  assert.equal(inventory.files.length, 92);
-  assert.equal(inventory.staticTestDeclarations, 809);
+  assert.equal(inventory.files.length, 93);
+  assert.equal(inventory.staticTestDeclarations, 816);
   assert.equal(inventory.historicalTests.length, 9);
   const pilots = inventory.files.filter((file) => ['F004', 'F017', 'F061', 'F073', 'F086'].includes(file.id));
   assert.equal(
     pilots.reduce((count, file) => count + file.tests.length, 0),
-    41,
+    42,
   );
   assert.equal(inventory.files.find((file) => file.id === 'F063').tests.at(-1).id, 'F063-T026');
   assert.deepEqual(
@@ -107,11 +107,12 @@ test('current 92-file register has 809 active declarations and 41 pending pilot 
     ['F074-T015', 'F074-T009', 'F074-T010'],
   );
   assert.deepEqual(
-    inventory.files.slice(-3).map(({ id, tests }) => [id, tests.length]),
+    inventory.files.slice(-4).map(({ id, tests }) => [id, tests.length]),
     [
       ['F090', 2],
       ['F091', 3],
       ['F092', 1],
+      ['F093', 5],
     ],
   );
   assert.equal(
@@ -122,6 +123,35 @@ test('current 92-file register has 809 active declarations and 41 pending pilot 
     inventory.files.find((file) => file.id === 'F085').tests.find((entry) => entry.id === 'F085-T005').title,
     'sends all values and the versioned footer',
   );
+});
+
+test('pending attachment operations retain all four runtime cases and the existing submission ID', () => {
+  const file = inventory.files.find((entry) => entry.id === 'F061');
+  assert.deepEqual(
+    file.tests.map((entry) => entry.id),
+    ['F061-T001', 'F061-T002', 'F061-T003', 'F061-T005', 'F061-T004'],
+  );
+  const pending = file.tests.find((entry) => entry.id === 'F061-T005');
+  assert.equal(pending.status, 'planned');
+  assert.equal(pending.coverageReview, 'pending');
+  assert.equal(pending.playwrightReview, 'pending');
+  assert.equal(pending.coverageChecklist.length, 4);
+  assert.deepEqual(
+    pending.runtimeCases,
+    ['upload', 'delete'].flatMap((operation) =>
+      ['success', 'failure'].map((outcome) => ({
+        operation,
+        outcome,
+        titlePath: [...pending.scopes, `blocks submission during a pending ${operation} and recovers after ${outcome}`],
+      })),
+    ),
+  );
+  const shifted = structuredClone(inventory);
+  shifted.sourceOrderOverrides.F061 = [...shifted.sourceOrderOverrides.F061].sort();
+  assert.throws(() => checkMigration(shifted, read), /Stable source order changed: F061/);
+  const noLogin = inventory.files.find((entry) => entry.id === 'F076');
+  assert.equal(noLogin.tests[4].id, 'F076-T012');
+  assert.equal(noLogin.tests[5].id, 'F076-T005');
 });
 
 test('merged insertions and renamed cases retain their earlier identities', () => {

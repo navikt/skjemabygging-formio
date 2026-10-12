@@ -75,11 +75,17 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       ...Array.from({ length: 5 }, (_, index) => migrationId('F044', index + 7)),
     ],
     F048: ['F048-T008', ...Array.from({ length: 7 }, (_, index) => migrationId('F048', index))],
+    F061: ['F061-T001', 'F061-T002', 'F061-T003', 'F061-T005', 'F061-T004'],
     F063: [...Array.from({ length: 25 }, (_, index) => migrationId('F063', index)), 'F063-T027', 'F063-T026'],
     F074: [
       ...Array.from({ length: 8 }, (_, index) => migrationId('F074', index)),
       'F074-T015',
       ...Array.from({ length: 6 }, (_, index) => migrationId('F074', index + 8)),
+    ],
+    F076: [
+      ...Array.from({ length: 4 }, (_, index) => migrationId('F076', index)),
+      'F076-T012',
+      ...Array.from({ length: 7 }, (_, index) => migrationId('F076', index + 4)),
     ],
     F082: [
       ...Array.from({ length: 8 }, (_, index) => migrationId('F082', index)),
