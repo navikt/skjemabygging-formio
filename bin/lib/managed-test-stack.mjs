@@ -1,13 +1,23 @@
 import { spawn } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
+import { resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
 const isPortFree = (port) =>
-  new Promise((done) => {
+  new Promise((done, fail) => {
     const server = createServer();
-    server.once('error', () => done(false));
-    server.listen(port, '127.0.0.1', () => server.close(() => done(true)));
+    server.once('error', (error) => {
+      if (error.code === 'EADDRINUSE') done(false);
+      else fail(new Error(`STACK_PORT_CHECK_FAILED: ${port}: ${error.code}`, { cause: error }));
+    });
+    server.listen(port, '127.0.0.1', () =>
+      server.close((error) => {
+        if (error) fail(error);
+        else done(true);
+      }),
+    );
   });
 
 const stopChild = async (child, graceMs = 3000) => {
@@ -66,9 +76,12 @@ const startManagedStack = async (
   signal?.throwIfAborted();
   const ports = listeningPorts.flat();
   if (!(await Promise.all(ports.map(isPortFree))).every(Boolean)) {
-    throw new Error(`STACK_PORT_COLLISION: ${ports.join(', ')}`);
+    throw Object.assign(new Error(`STACK_PORT_COLLISION: ${ports.join(', ')}`), { code: 'EADDRINUSE' });
   }
   signal?.throwIfAborted();
+  const reportRoot = resolve(import.meta.dirname, '../../.runtime');
+  mkdirSync(reportRoot, { recursive: true });
+  const reportDirectory = mkdtempSync(resolve(reportRoot, 'bind-'));
   const children = [];
   const childStops = new Map();
   const bound = listeningPorts.map(() => new Set());
@@ -101,6 +114,7 @@ const startManagedStack = async (
         errors.push(error);
       }
       if (errors.length) throw new AggregateError(errors, 'STACK_CLEANUP_FAILED');
+      rmSync(reportDirectory, { recursive: true });
     })();
     return stopPromise;
   };
@@ -117,7 +131,7 @@ const startManagedStack = async (
         ['--require', fileURLToPath(new URL('./report-listening.mjs', import.meta.url)), ...args],
         {
           cwd,
-          env: { ...process.env, ...env },
+          env: { ...process.env, ...env, MANAGED_STACK_BIND_REPORT_DIR: reportDirectory },
           detached: process.platform !== 'win32',
           stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
         },
@@ -126,16 +140,30 @@ const startManagedStack = async (
       if (child.pid) onSpawn(child.pid);
       child.stdout.on('data', log);
       child.stderr.on('data', log);
+      const bindFailure = (message) => {
+        if (message?.type !== 'listen-error' || message.pid !== child.pid) return;
+        fail(
+          Object.assign(new Error(`STACK_LISTEN_FAILED: ${message.code}: ${message.port}`), {
+            code: listeningPorts[index].includes(message.port) ? message.code : undefined,
+          }),
+        );
+      };
       child.on('message', (message) => {
         if (message?.type === 'listening' && message.pid === child.pid) {
           if (listeningPorts[index].includes(message.port)) bound[index].add(message.port);
+        } else if (message?.type === 'listen-error' && message.pid === child.pid) {
+          bindFailure(message);
         }
       });
       child.once('error', (error) => {
         if (!childStops.has(child)) fail(error);
       });
       child.once('exit', (code, exitSignal) => {
-        if (!childStops.has(child)) fail(new Error(`STACK_CHILD_EXIT: ${child.pid}: ${code ?? exitSignal}`));
+        if (!childStops.has(child)) {
+          const report = resolve(reportDirectory, `${child.pid}.json`);
+          if (existsSync(report)) bindFailure(JSON.parse(readFileSync(report, 'utf8')));
+          fail(new Error(`STACK_CHILD_EXIT: ${child.pid}: ${code ?? exitSignal}`));
+        }
       });
     }
     const deadline = Date.now() + timeoutMs;

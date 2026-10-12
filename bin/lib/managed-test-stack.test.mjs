@@ -1,6 +1,8 @@
 /* eslint-disable vitest/no-import-node-test -- Standalone process lifecycle tests. */
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
+import { resolve } from 'node:path';
 import { test } from 'node:test';
 import { isPortFree, startManagedStack } from './managed-test-stack.mjs';
 
@@ -14,6 +16,44 @@ const config = (script, options = {}) => ({
 });
 const server = `import {createServer} from 'node:http'; createServer((req,res)=>res.end('owned')).listen(${port},'127.0.0.1');`;
 const log = () => {};
+
+test('a collision after preflight reports the bind error, cleans owned children and preserves the foreign listener', async () => {
+  const directory = mkdtempSync(resolve(import.meta.dirname, '.bind-race-'));
+  const gate = resolve(directory, 'release');
+  const foreign = createServer((req, res) => res.end('foreign'));
+  const pids = [];
+  const script = `
+    import {existsSync, watch} from 'node:fs';
+    import {createServer} from 'node:http';
+    const bind = () => createServer((req,res)=>res.end('owned'))
+      .on('error', () => process.exit(1)).listen(${port},'127.0.0.1');
+    if (existsSync(${JSON.stringify(gate)})) bind();
+    else {
+      const watcher = watch(${JSON.stringify(directory)}, () => {
+        if (!existsSync(${JSON.stringify(gate)})) return;
+        watcher.close();
+        bind();
+      });
+    }
+  `;
+  try {
+    await assert.rejects(
+      startManagedStack(config(script), {
+        log,
+        onSpawn: (pid) => {
+          pids.push(pid);
+          foreign.listen(port, '127.0.0.1', () => writeFileSync(gate, 'ready'));
+        },
+      }),
+      (error) => error.code === 'EADDRINUSE',
+    );
+    assert.equal(await (await fetch(url)).text(), 'foreign');
+    for (const pid of pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+  } finally {
+    if (foreign.listening) await new Promise((done, fail) => foreign.close((error) => (error ? fail(error) : done())));
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 test('owned bind, health, group exit and same-port reuse', async () => {
   for (let index = 0; index < 2; index++) {

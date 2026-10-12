@@ -1,5 +1,7 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { startManagedStack } from './managed-test-stack.mjs';
+import { selectPorts, validatePorts } from './test-ports.mjs';
 
 const createFyllutTestStack = ({
   repoRoot,
@@ -49,6 +51,11 @@ const createFyllutTestStack = ({
   let runtimeWritten = false;
 
   return {
+    ports,
+    baseURL: `http://127.0.0.1:${mode === 'built' ? backendPort : frontendPort}`,
+    backendURL: backendUrl,
+    mockURL: mockUrl,
+    adminURL: `http://127.0.0.1:${mockAdminPort}`,
     commands: [
       [
         nodeExecutable,
@@ -153,4 +160,50 @@ const createFyllutTestStack = ({
   };
 };
 
-export { createFyllutTestStack };
+const startFyllutTestStack = async (
+  { ports: fixedPorts, portRange, ...configuration },
+  { start = startManagedStack, ...options } = {},
+) => {
+  if (fixedPorts && portRange) throw new Error('TEST_PORT_OPTIONS_CONFLICT');
+  if (fixedPorts) validatePorts(fixedPorts);
+  const startupAttempts = [];
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let ports;
+    try {
+      ports =
+        fixedPorts ??
+        (await selectPorts(4, {
+          range: portRange,
+          signal: options.signal,
+          exclude: startupAttempts.flatMap((record) => record.ports),
+        }));
+    } catch (error) {
+      error.startupAttempts = startupAttempts;
+      throw error;
+    }
+    const plan = createFyllutTestStack({ ...configuration, ports });
+    const record = { ports, pids: [], startedAt: new Date().toISOString() };
+    startupAttempts.push(record);
+    try {
+      const stack = await start(plan, {
+        ...options,
+        onSpawn: (pid) => {
+          record.pids.push(pid);
+          options.onSpawn?.(pid);
+        },
+      });
+      record.readyAt = new Date().toISOString();
+      return { ...plan, ...stack, startupAttempts };
+    } catch (error) {
+      record.errorCode = error.code ?? null;
+      if (error instanceof AggregateError) record.cleanupFailed = true;
+      else record.cleanedUpAt = new Date().toISOString();
+      error.startupAttempts = startupAttempts;
+      if (fixedPorts || error.code !== 'EADDRINUSE' || attempt === 2) throw error;
+      options.signal?.throwIfAborted();
+      options.log?.(`STACK_PORT_RETRY: ${ports.join(', ')}\n`);
+    }
+  }
+};
+
+export { createFyllutTestStack, startFyllutTestStack };

@@ -23,8 +23,9 @@
 import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { createFyllutTestStack } from './lib/fyllut-test-stack.mjs';
+import { startFyllutTestStack } from './lib/fyllut-test-stack.mjs';
 import { isPortFree, startManagedStack } from './lib/managed-test-stack.mjs';
+import { parsePortRange, parsePorts } from './lib/test-ports.mjs';
 
 const getFreePorts = async (count, start = 3440) => {
   const ports = [];
@@ -43,15 +44,33 @@ const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cyp
 const [target, ...args] = process.argv.slice(2);
 const normalizedArgs = args.filter((arg) => arg !== '--');
 const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
-const unknownArgs = normalizedArgs.filter((arg) => arg !== '--no-runtime-config');
+const unknownArgs = [];
+let ports;
+let portRange;
+for (let index = 0; index < normalizedArgs.length; index++) {
+  const argument = normalizedArgs[index];
+  if (argument === '--no-runtime-config') continue;
+  if (target === 'fyllut' && ['--ports', '--port-range'].includes(argument)) {
+    if (!normalizedArgs[index + 1]) throw new Error(`${argument} needs a value`);
+    if (argument === '--ports') {
+      if (ports) throw new Error('Duplicate --ports');
+      ports = parsePorts(normalizedArgs[++index]);
+    } else {
+      if (portRange) throw new Error('Duplicate --port-range');
+      portRange = parsePortRange(normalizedArgs[++index]);
+    }
+  } else unknownArgs.push(argument);
+}
+if (ports && portRange) throw new Error('TEST_PORT_OPTIONS_CONFLICT');
 
 const configs = {
   fyllut: async () => {
-    return createFyllutTestStack({
+    return {
       repoRoot,
-      ports: await getFreePorts(4),
       shouldWriteRuntimeConfig,
-    });
+      ports,
+      portRange,
+    };
   },
   bygger: async () => {
     const [backendPort, frontendPort] = await getFreePorts(2);
@@ -120,7 +139,9 @@ const configs = {
 };
 
 if (!configs[target] || unknownArgs.length > 0) {
-  console.error(`Usage: node bin/start.mjs <fyllut|bygger> [--no-runtime-config]`);
+  console.error(
+    'Usage: node bin/start.mjs <fyllut|bygger> [--no-runtime-config] [--ports a,b,c,d | --port-range min:max (fyllut)]',
+  );
   process.exit(1);
 }
 
@@ -147,7 +168,7 @@ process.on('SIGINT', () => void shutdown(130));
 process.on('SIGTERM', () => void shutdown(143));
 starting = (async () => {
   try {
-    stack = await startManagedStack(config, {
+    stack = await (target === 'fyllut' ? startFyllutTestStack : startManagedStack)(config, {
       signal: controller.signal,
       onFailure: (error) => {
         console.error(error);
@@ -165,6 +186,6 @@ if (shutdownPromise) {
 } else if (!stack) {
   await shutdown(1);
 } else {
-  console.log(`\n${config.summaryLines.join('\n')}`);
+  console.log(`\n${(stack.summaryLines ?? config.summaryLines).join('\n')}`);
   console.log(`START_PID=${process.pid}`);
 }

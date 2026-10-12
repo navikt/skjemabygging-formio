@@ -56,6 +56,68 @@ test('quiesce awaits application exit but leaves mocks available for final evide
   for (const pid of epoch.pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
 });
 
+for (const mode of ['dev', 'built']) {
+  test(`two automatic ${mode} epochs have independent ports and stopping one preserves the other`, async () => {
+    const base = resolve('packages/fyllut/.runtime/playwright', `concurrent-${randomUUID()}`);
+    const epochs = [];
+    const errors = [];
+    try {
+      const results = await Promise.allSettled(
+        ['first', 'second'].map(async (testId) => {
+          const epoch = await startTestEpoch({
+            mode,
+            testId,
+            attempt: 0,
+            output: resolve(base, testId),
+            portRange: [3440, 3455],
+          });
+          epochs.push(epoch);
+          return epoch;
+        }),
+      );
+      for (const result of results) if (result.status === 'rejected') throw result.reason;
+      const [first, second] = epochs;
+      const boundCount = mode === 'built' ? 3 : 4;
+      assert.equal(
+        new Set([...first.ports.slice(0, boundCount), ...second.ports.slice(0, boundCount)]).size,
+        boundCount * 2,
+      );
+      assert.notEqual(first.epochId, second.epochId);
+      assert(first.pids.every((pid) => !second.pids.includes(pid)));
+      await first.stop();
+      for (const pid of first.pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+      second.assertHealthy();
+      assert.equal((await fetch(`${second.adminURL}/api/about`)).status, 200);
+      assert.equal((await fetch(`${second.backendURL}/fyllut/internal/isready`)).status, 200);
+      const claim = await fetch(`${second.mockURL}/__playwright/claim`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-playwright-epoch': second.epochId,
+          'x-playwright-owner': randomUUID(),
+        },
+        body: JSON.stringify({ 'post-familie-pdf': 'success-tc07', 'post-digital-soknad': 'success-tc07' }),
+      });
+      assert.equal(claim.status, 201);
+    } catch (error) {
+      errors.push(error);
+    } finally {
+      const stopped = await Promise.allSettled(epochs.map((epoch) => epoch.stop()));
+      for (const result of stopped) if (result.status === 'rejected') errors.push(result.reason);
+    }
+    if (errors.length) throw new AggregateError(errors, errors.map(String).join('\n'));
+    for (const epoch of epochs) {
+      for (const port of epoch.ports) assert(await isPortFree(port));
+      const manifest = JSON.parse(readFileSync(resolve(epoch.directory, 'manifest.json'), 'utf8'));
+      assert.equal(manifest.repoRoot, resolve('.'));
+      for (const attempt of manifest.startupAttempts) {
+        if (!attempt.readyAt) assert(attempt.cleanedUpAt);
+        for (const pid of attempt.pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+      }
+    }
+  });
+}
+
 for (const signal of ['SIGTERM', 'SIGKILL']) {
   test(`worker ${signal} cannot leave its application processes or permit another epoch`, async () => {
     const output = resolve('packages/fyllut/.runtime/playwright', `owner-${randomUUID()}`);

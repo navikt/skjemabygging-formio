@@ -6,8 +6,10 @@ type Epoch = {
     pids: number[];
     startupMs: number;
     baseURL: string;
+    backendURL: string;
     mockURL: string;
     adminURL: string;
+    ports: [number, number, number, number];
     directory: string;
     fatal: (error: Error) => void;
     assertHealthy: () => void;
@@ -24,6 +26,8 @@ declare const startTestEpoch: (options: {
     signal?: AbortSignal;
     observeMocks?: boolean;
     mockFault?: 'hold-pdf' | 'missing-static-form';
+    ports?: [number, number, number, number];
+    portRange?: [number, number];
 }) => Promise<Epoch>;
 
 export { checkBuild, startTestEpoch, type Epoch };

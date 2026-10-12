@@ -35,7 +35,33 @@ pnpm playwright:fyllut -- components-deprecated-complex/data-fetcher.spec.ts
 node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.test.mjs
 ```
 
-The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes. The fixed test ports are 3440 through 3443; occupied ports fail rather than selecting alternatives or stopping foreign services.
+The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes.
+
+Ordinary runs allocate four available ports inside 3440 through 3499. Use
+`--port-range 3440:3447` to constrain that pool to ports approved for your CPLT
+session, or `--ports 3440,3441,3442,3443` for an exact assignment. Permission
+failures stop immediately; the launcher never changes sandbox configuration.
+Automatic allocation retries a bind collision at most twice after confirmed
+cleanup of its own partial stack. Explicit ports fail on collision. This is
+startup recovery, not a retry of a test action.
+Each retry avoids the earlier attempted ports, since a competing launcher may
+still be starting its slower processes. A pool with no remaining quartet fails
+explicitly rather than searching outside the configured range.
+
+`pnpm start:fyllut:mocks -- --no-runtime-config` uses the same bounded allocation
+and collision recovery and accepts those port options. Bygger startup is
+unchanged. Every manifest records the actual ports, URLs, worktree root and
+startup attempts. Commands and build paths resolve from that worktree; install
+dependencies there separately before using it. No shared dotenv or Cypress
+runtime file is needed by Playwright. Concurrent runs still have one worker and
+fresh process epochs per test, rather than sharing a mock server.
+The tuple order is mock, admin, backend, frontend. Built mode uses the backend
+origin for both API and frontend and does not bind the fourth port.
+
+```sh
+pnpm playwright:fyllut --port-range 3440:3447
+pnpm playwright:fyllut:built --ports 3440,3441,3442,3443
+```
 
 Main and technical runs use the same 1280x1000 viewport as FyllUt Cypress.
 This aligns rendering dimensions, not browser engines or manual accessibility
@@ -161,8 +187,8 @@ not only before startup or during the test body. Keep the producer alive when
 testing the old race, and require confirmed producer exit before final evidence.
 One green source/counterpart pair does not establish equivalent failure coverage.
 
-All commands are local. There is no new CI workflow, sharding, existing-server
-mode or Cypress removal. Final Cypress/Playwright comparisons and human review
+All commands are local. There is no new CI workflow, sharding or Cypress removal.
+Final Cypress/Playwright comparisons and human review
 remain separate acceptance gates.
 
 Fresh process epochs have a startup cost. Record `startupMs` from epoch

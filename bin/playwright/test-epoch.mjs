@@ -12,7 +12,17 @@ const checkBuild = (mode, repoRoot = root) => {
   }
   return files.map((file) => resolve(repoRoot, file));
 };
-const startTestEpoch = async ({ mode, testId, attempt, output, signal, observeMocks = true, mockFault }) => {
+const startTestEpoch = async ({
+  mode,
+  testId,
+  attempt,
+  output,
+  signal,
+  observeMocks = true,
+  mockFault,
+  ports,
+  portRange,
+}) => {
   if (!['dev', 'built'].includes(mode)) throw new Error(`Invalid execution mode: ${mode}`);
   if (attempt !== 0) throw new Error('EPOCH_RETRY_FORBIDDEN');
   const fatalFile = resolve(output, 'fatal-cleanup.txt');
@@ -41,9 +51,6 @@ const startTestEpoch = async ({ mode, testId, attempt, output, signal, observeMo
     testId,
     attempt,
     mode,
-    baseURL: `http://127.0.0.1:${mode === 'built' ? 3442 : 3443}`,
-    mockURL: 'http://127.0.0.1:3440',
-    adminURL: 'http://127.0.0.1:3441',
   };
   const fd = openSync(resolve(directory, 'stack.log'), 'a');
   let owner;
@@ -97,12 +104,24 @@ const startTestEpoch = async ({ mode, testId, attempt, output, signal, observeMo
         } else if (message?.type === 'ready') done(message.manifest);
       });
       void exited.then((code) => fail(failure ?? new Error(`EPOCH_OWNER_EXIT: ${code}; see ${directory}`)));
-      owner.send({ type: 'start', manifest, directory, fatalFile, observeMocks, mockFault }, (error) => {
-        if (error) {
-          fatal(error);
-          fail(error);
-        }
-      });
+      owner.send(
+        {
+          type: 'start',
+          manifest,
+          directory,
+          fatalFile,
+          observeMocks,
+          mockFault,
+          ports: ports ?? (portRange ? undefined : [3440, 3441, 3442, 3443]),
+          portRange,
+        },
+        (error) => {
+          if (error) {
+            fatal(error);
+            fail(error);
+          }
+        },
+      );
     });
     if (failure) throw failure;
     return {

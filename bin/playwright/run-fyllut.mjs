@@ -4,6 +4,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
+import { defaultPortRange, parsePortRange, parsePorts } from '../lib/test-ports.mjs';
 import { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery } from './check-migration.mjs';
 import { checkBuild } from './test-epoch.mjs';
 
@@ -11,7 +12,30 @@ const root = resolve(import.meta.dirname, '../..');
 const args = process.argv.slice(2).filter((arg) => arg !== '--');
 const mode = args.includes('--built') ? 'built' : 'dev';
 const listOnly = args.includes('--list');
-const selection = args.filter((arg) => !['--built', '--list'].includes(arg));
+const selection = [];
+let ports;
+let portRange;
+for (let index = 0; index < args.length; index++) {
+  const argument = args[index];
+  if (['--built', '--list'].includes(argument)) continue;
+  if (argument === '--grep') {
+    assert(args[index + 1], '--grep needs a value');
+    selection.push(argument, args[++index]);
+    continue;
+  }
+  if (argument === '--ports' || argument === '--port-range') {
+    assert(args[index + 1], `${argument} needs a value`);
+    if (argument === '--ports') {
+      assert(!ports, 'Duplicate --ports');
+      ports = parsePorts(args[++index]);
+    } else {
+      assert(!portRange, 'Duplicate --port-range');
+      portRange = parsePortRange(args[++index]);
+    }
+  } else selection.push(argument);
+}
+assert(!(ports && portRange), 'TEST_PORT_OPTIONS_CONFLICT');
+portRange ??= ports ? undefined : defaultPortRange;
 // Do not allow runner options to disable isolation, retries or the result reporter.
 for (let index = 0; index < selection.length; index++) {
   if (selection[index] === '--grep') {
@@ -23,7 +47,13 @@ for (let index = 0; index < selection.length; index++) {
 const runId = `${Date.now()}-${process.pid}`;
 const output = resolve(root, 'packages/fyllut/.runtime/playwright', runId);
 mkdirSync(output, { recursive: true });
-const env = { ...process.env, FYLLUT_PLAYWRIGHT_MODE: mode, FYLLUT_PLAYWRIGHT_OUTPUT_DIR: output };
+const env = {
+  ...process.env,
+  FYLLUT_PLAYWRIGHT_MODE: mode,
+  FYLLUT_PLAYWRIGHT_OUTPUT_DIR: output,
+  FYLLUT_PLAYWRIGHT_PORTS: ports?.join(',') ?? '',
+  FYLLUT_PLAYWRIGHT_PORT_RANGE: portRange?.join(':') ?? '',
+};
 const command = [
   resolve(root, 'packages/fyllut/node_modules/@playwright/test/cli.js'),
   'test',
@@ -93,6 +123,8 @@ try {
       encoding: 'utf8',
     }).trim(),
     fixtureVersion: 'dev-local/mr-sha/forms@git-sha',
+    repoRoot: root,
+    portSelection: ports ? { ports } : { portRange },
     build: buildFiles.map((file) => ({
       file: relative(root, file),
       modifiedAt: statSync(file).mtime.toISOString(),

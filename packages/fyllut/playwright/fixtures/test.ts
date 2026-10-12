@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import { resolve } from 'node:path';
+import { parsePortRange, parsePorts } from '../../../../bin/lib/test-ports.mjs';
 import { startTestEpoch, type Epoch } from '../../../../bin/playwright/test-epoch.mjs';
 import { restoreRouteVariants, useRouteVariant } from './mock-client';
 import { createMockEvidence } from './mock-evidence';
@@ -43,6 +44,10 @@ const test = base.extend<Fixtures>({
         output: process.env.FYLLUT_PLAYWRIGHT_OUTPUT_DIR ?? resolve('packages/fyllut/.runtime/playwright/local'),
         observeMocks,
         mockFault,
+        ports: process.env.FYLLUT_PLAYWRIGHT_PORTS ? parsePorts(process.env.FYLLUT_PLAYWRIGHT_PORTS) : undefined,
+        portRange: process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE
+          ? parsePortRange(process.env.FYLLUT_PLAYWRIGHT_PORT_RANGE)
+          : undefined,
       });
       const errors: unknown[] = [];
       const evidence = createMockEvidence(epoch);

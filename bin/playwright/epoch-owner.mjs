@@ -1,7 +1,6 @@
 import { appendFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createFyllutTestStack } from '../lib/fyllut-test-stack.mjs';
-import { startManagedStack } from '../lib/managed-test-stack.mjs';
+import { startFyllutTestStack } from '../lib/fyllut-test-stack.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
 const controller = new AbortController();
@@ -84,36 +83,60 @@ process.on('message', (message) => {
   }
   if (message?.type !== 'start' || starting || stopping) return;
   ({ manifest, directory, fatalFile } = message);
-  manifest = { ...manifest, ownerPid: process.pid, pids: [], state: 'starting' };
+  manifest = {
+    ...manifest,
+    ownerPid: process.pid,
+    pids: [],
+    state: 'starting',
+    repoRoot: root,
+    portSelection: { ports: message.ports, portRange: message.portRange },
+  };
   save();
   const startedAt = Date.now();
   starting = (async () => {
     try {
-      const plan = createFyllutTestStack({
+      stack = await startFyllutTestStack(
+        {
+          repoRoot: root,
+          ports: message.ports,
+          portRange: message.portRange,
+          shouldWriteRuntimeConfig: false,
+          mode: manifest.mode,
+          epoch: JSON.stringify({ epochId: manifest.epochId, testId: manifest.testId, attempt: manifest.attempt }),
+          observeMocks: message.observeMocks,
+          mockFault: message.mockFault,
+        },
+        {
+          signal: controller.signal,
+          log: (chunk) => appendFileSync(resolve(directory, 'stack.log'), chunk),
+          onFailure: (error) => {
+            fatal(error);
+            void stop(error);
+          },
+          onSpawn: (pid) => {
+            manifest = { ...manifest, pids: [...manifest.pids, pid] };
+            save();
+          },
+        },
+      );
+      manifest = {
+        ...manifest,
+        state: 'ready',
+        pids: stack.pids,
+        startupMs: Date.now() - startedAt,
+        ports: stack.ports,
+        baseURL: stack.baseURL,
+        backendURL: stack.backendURL,
+        mockURL: stack.mockURL,
+        adminURL: stack.adminURL,
         repoRoot: root,
-        ports: [3440, 3441, 3442, 3443],
-        shouldWriteRuntimeConfig: false,
-        mode: manifest.mode,
-        epoch: JSON.stringify({ epochId: manifest.epochId, testId: manifest.testId, attempt: manifest.attempt }),
-        observeMocks: message.observeMocks,
-        mockFault: message.mockFault,
-      });
-      stack = await startManagedStack(plan, {
-        signal: controller.signal,
-        log: (chunk) => appendFileSync(resolve(directory, 'stack.log'), chunk),
-        onFailure: (error) => {
-          fatal(error);
-          void stop(error);
-        },
-        onSpawn: (pid) => {
-          manifest = { ...manifest, pids: [...manifest.pids, pid] };
-          save();
-        },
-      });
-      manifest = { ...manifest, state: 'ready', pids: stack.pids, startupMs: Date.now() - startedAt };
+        startupAttempts: stack.startupAttempts,
+      };
       save();
       if (!stopping) notify({ type: 'ready', manifest });
     } catch (error) {
+      manifest = { ...manifest, startupAttempts: error.startupAttempts ?? [] };
+      save();
       fatal(error);
       console.error(error);
       notify({ type: 'error', message: error.message });
