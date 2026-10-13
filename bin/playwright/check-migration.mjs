@@ -94,7 +94,12 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
     ],
   };
   for (const [fileId, order] of Object.entries(stableOrders)) {
-    assert.deepEqual(sourceOrderOverrides[fileId], order, `Stable source order changed: ${fileId}`);
+    const activeIds = new Set(inventory.files.find((file) => file.id === fileId)?.tests.map((test) => test.id));
+    assert.deepEqual(
+      sourceOrderOverrides[fileId]?.filter((id) => order.includes(id)),
+      order.filter((id) => activeIds.has(id)),
+      `Stable source order changed: ${fileId}`,
+    );
   }
   assert.deepEqual(
     Object.keys(sourceOrderOverrides).sort(),
@@ -107,6 +112,7 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
   assert.equal(new Set(inventory.sharedSources.map((entry) => entry.path)).size, 4, 'Duplicate shared source');
   const implemented = [];
   for (const [fileIndex, file] of inventory.files.entries()) {
+    if (file.sourceRevision) assert.match(file.sourceRevision, /^[a-f0-9]{40}$/, 'Invalid file source revision');
     assert.equal(file.id, `F${String(fileIndex + 1).padStart(3, '0')}`, 'Source IDs changed');
     assert(!sources.has(file.source), `Duplicate source: ${file.source}`);
     assert(!targets.has(file.target), `Duplicate target: ${file.target}`);
@@ -118,7 +124,11 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       `Invalid target: ${file.id}`,
     );
     const current = parseSource(file.source, read(file.source));
-    assert.equal(current.sourceHash, file.sourceHash, `Source changed: ${file.source}. Reconcile the register.`);
+    assert.equal(
+      current.sourceHash,
+      file.sourceHash,
+      `Source changed: ${file.source}. Run pnpm playwright:fyllut:inventory for the full change report.`,
+    );
     assert.equal(current.tests.length, file.tests.length, `Test count changed: ${file.source}`);
     assert.deepEqual(
       current.hooks.map(({ type, scopes, sourceHash }) => ({ type, scopes, sourceHash })),
@@ -314,7 +324,7 @@ const checkSourceSet = (inventory) => {
   assert.deepEqual(
     listSources(resolve(root, 'packages/fyllut/cypress/e2e')).sort(),
     inventory.files.map((file) => file.source).sort(),
-    'Cypress file set changed. Reconcile the register.',
+    'Cypress file set changed. Run pnpm playwright:fyllut:inventory for the full change report.',
   );
 };
 
@@ -333,4 +343,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   );
 }
 
-export { checkDiscovery, checkMigration, checkResults, checkSourceSet, expandRuntimeCases, flattenDiscovery };
+export {
+  checkDiscovery,
+  checkMigration,
+  checkResults,
+  checkSourceSet,
+  expandRuntimeCases,
+  flattenDiscovery,
+  listSources,
+};

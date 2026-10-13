@@ -7,6 +7,39 @@ point for a new developer or agent session.
 
 The pilot does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
+## When Cypress changes
+
+The register is a checklist of source tests, not another test suite. A source
+change stops the Playwright gate until the checklist is reconciled. This also
+applies to files not yet migrated, so additions and removals cannot disappear
+from the migration backlog. Ordinary comments and formatting do not change
+the canonical source hash.
+
+Run `pnpm playwright:fyllut:inventory` to see all changed files, affected IDs,
+new declarations and removals. This command does not write anything. It exits
+with code 1 when changes need attention, and 0 when the register matches.
+
+For unambiguous changes in files that have not been migrated:
+
+1. Review the report and commit the Cypress source change using your normal Git workflow.
+2. Run `pnpm playwright:fyllut:inventory --write --revision HEAD --reason "Explain the source change"`.
+3. Review and commit the resulting register diff.
+
+The writer checks that the source exactly matches the specified commit. It
+updates only affected file metadata and records each file's `sourceRevision`;
+the original global baseline and untouched files remain unchanged. New tests
+and files get appended IDs even when inserted in the middle of source order.
+Removed tests keep their IDs in `historicalTests` with a pending requirement
+decision. Recording a removal does not approve loss of coverage.
+
+The command refuses to write anything if a change needs explicit identity or
+counterpart review: a migrated file, shared Cypress support, dynamic test
+registration, duplicate title paths, a possible rename, or a removed/renamed
+file. The report identifies the reason and affected source. Those changes
+still require a deliberate source/counterpart review and register edit; the
+tool must not guess identities, invent checklists or approve coverage.
+The existing source, discovery and result gates remain mandatory.
+
 New files and tests append IDs rather than renumbering earlier cases. Explicit
 source-order mappings preserve inserted cases and existing title changes.
 `historicalTests` reserves nine upstream removals, with their original titles,

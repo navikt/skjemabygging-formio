@@ -12,6 +12,12 @@ The [migration register](migration/inventory.json) is the source of truth for
 IDs, source hashes, checklists and review status. Counts below are a snapshot;
 reconcile the register again after renderer merges.
 
+Use `pnpm playwright:fyllut:inventory` for a complete read-only drift report.
+The [source-change workflow](README.md#when-cypress-changes) can reconcile
+unambiguous, committed changes in unmigrated files without editing hashes by
+hand. Changes affecting migrated tests or ambiguous identities still require
+explicit review. The command never grants human approval.
+
 ## Result and recommendation
 
 The pilot can run through the CLI in an approved CPLT environment and on

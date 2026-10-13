@@ -17,6 +17,7 @@ const parseSource = (path, text) => {
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true);
   const tests = [];
   const hooks = [];
+  let dynamicRegistration = false;
   const buildOnlyHooks = new Set();
   const canonical = (node) => printer.printNode(ts.EmitHint.Unspecified, node, source);
   const line = (node) => source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
@@ -24,12 +25,22 @@ const parseSource = (path, text) => {
     if (ts.isCallExpression(node)) {
       const name = node.expression.getText(source);
       if (/^describe(?:\.(?:skip|only))?$/.test(name)) {
+        dynamicRegistration ||= !ts.isStringLiteralLike(node.arguments[0]);
         const next = [...scopes, titleOf(node.arguments[0])];
         const modifiers = [...inheritedModifiers, ...name.split('.').slice(1)];
         node.arguments.slice(1).forEach((arg) => visit(arg, next, modifiers));
         return;
       }
       if (/^it(?:\.(?:skip|only))?$/.test(name)) {
+        dynamicRegistration ||= !ts.isStringLiteralLike(node.arguments[0]);
+        for (let parent = node.parent; parent; parent = parent.parent) {
+          if (
+            ts.isIterationStatement(parent, false) ||
+            (ts.isCallExpression(parent) && !/^describe(?:\.(?:skip|only))?$/.test(parent.expression.getText(source)))
+          ) {
+            dynamicRegistration = true;
+          }
+        }
         const title = titleOf(node.arguments[0]);
         const start = node.getStart(source);
         const end = node.getEnd();
@@ -70,7 +81,7 @@ const parseSource = (path, text) => {
     test.sourceHash = hash(JSON.stringify([test.sourceHash, ...applicableHooks.map((hook) => hook.sourceHash)]));
     test.buildOnly ||= applicableHooks.some((hook) => buildOnlyHooks.has(hook));
   }
-  return { sourceHash: hash(printer.printFile(source)), tests, hooks };
+  return { sourceHash: hash(printer.printFile(source)), tests, hooks, dynamicRegistration };
 };
 
 export { hash, parseSource };
