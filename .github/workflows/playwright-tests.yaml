@@ -1,4 +1,4 @@
-name: Playwright FyllUt pilot
+name: Playwright pilot in FyllUt
 
 on:
   push:
@@ -24,7 +24,7 @@ env:
 
 jobs:
   pilot:
-    name: Isolated Playwright pilot in FyllUt and matching benchmark
+    name: Playwright pilot in FyllUt and Cypress comparison
     runs-on: ubuntu-latest-8-cores
     timeout-minutes: 60
     steps:
@@ -100,7 +100,7 @@ jobs:
           pnpm playwright:fyllut:measure --repetitions "$REPETITIONS" \
             --output packages/fyllut/.runtime/playwright-measurements/ci
 
-      - name: Upload pilot reports and measurements
+      - name: Upload HTML test reports and timing summaries
         if: always()
         uses: actions/upload-artifact@v7
         with:
@@ -127,7 +127,7 @@ jobs:
           BUILD_SECONDS: ${{ steps.build.outputs.seconds }}
         run: |
           {
-            echo "# FyllUt CI timing"
+            echo "# Playwright pilot in FyllUt - CI timing"
             echo
             echo "Dependency installation: ${DEPENDENCIES_SECONDS:-not completed} s"
             echo "Browser installation: ${BROWSERS_SECONDS:-not completed} s"

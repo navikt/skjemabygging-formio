@@ -13,6 +13,14 @@ import {
 } from './measurements.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
+test('workflow display names identify the Playwright pilot, Cypress comparison and uploaded reports', () => {
+  const workflow = readFileSync(resolve(root, '.github/workflows/playwright-tests.yaml'), 'utf8');
+  assert.match(workflow, /^name: Playwright pilot in FyllUt$/m);
+  assert.match(workflow, /^ {4}name: Playwright pilot in FyllUt and Cypress comparison$/m);
+  assert.match(workflow, /^ {6}- name: Upload HTML test reports and timing summaries$/m);
+  assert.match(workflow, /echo "# Playwright pilot in FyllUt - CI timing"/);
+});
+
 const inventory = JSON.parse(readFileSync(resolve(root, 'packages/fyllut/playwright/migration/inventory.json')));
 const implemented = checkMigration(inventory);
 const cases = measurementCases(expandRuntimeCases(implemented));

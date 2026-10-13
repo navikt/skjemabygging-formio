@@ -365,7 +365,7 @@ The workflow does not grant human review approval or change `verified`.
 
 ### Finding the uploaded reports
 
-"Upload pilot reports and measurements" copies generated files from the
+"Upload HTML test reports and timing summaries" copies generated files from the
 temporary runner into a ZIP stored by GitHub. It does not commit files,
 deploy an application or publish a report website.
 

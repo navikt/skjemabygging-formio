@@ -1,5 +1,14 @@
 # Handover for the Playwright pilot in FyllUt
 
+The Actions workflow is named `Playwright pilot in FyllUt`; its check is
+`Playwright pilot in FyllUt and Cypress comparison`. Before merging, a
+maintainer must check whether branch rules require either previous check name:
+`Isolated FyllUt pilot and matching benchmark` or
+`Isolated Playwright pilot in FyllUt and matching benchmark`.
+Update such a requirement to the current name if necessary. Display-name
+changes do not update branch rules automatically. No remote rules were changed
+as part of the naming cleanup.
+
 Snapshot dated 13 October 2026. The accepted executable revision is
 `a526e5d1615d0b7e0b9f414b9322e8a0fd777c88`.
 This document hands over the bounded pilot for
