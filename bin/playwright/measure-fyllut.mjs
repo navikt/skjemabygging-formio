@@ -6,7 +6,13 @@ import { createRequire } from 'node:module';
 import { relative, resolve } from 'node:path';
 import { isPortFree } from '../lib/managed-test-stack.mjs';
 import { checkMigration, checkSourceSet, expandRuntimeCases } from './check-migration.mjs';
-import { cypressMeasurements, formatMeasurements, measurementCases, playwrightMeasurements } from './measurements.mjs';
+import {
+  cypressArtifactOptions,
+  cypressMeasurements,
+  formatMeasurements,
+  measurementCases,
+  playwrightMeasurements,
+} from './measurements.mjs';
 import { verifyEvidence } from './mock-evidence.mjs';
 import { checkBuild, startTestEpoch } from './test-epoch.mjs';
 
@@ -160,7 +166,13 @@ const runCypress = async (iteration) => {
       project: resolve(root, 'packages/fyllut'),
       spec: [...new Set(cases.map(({ source }) => resolve(root, source)))].join(','),
       browser: 'electron',
-      config: { baseUrl: epoch.baseURL, retries: 0, viewportWidth: 1280, viewportHeight: 1000 },
+      config: {
+        baseUrl: epoch.baseURL,
+        retries: 0,
+        viewportWidth: 1280,
+        viewportHeight: 1000,
+        ...cypressArtifactOptions(directory),
+      },
       env: {
         MOCKS_ADMIN_PORT: epoch.ports[1],
         INCLUDE_DIST_TESTS: true,

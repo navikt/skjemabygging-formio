@@ -5,6 +5,7 @@ import { relative, resolve } from 'node:path';
 import { test } from 'node:test';
 import { checkMigration, expandRuntimeCases } from './check-migration.mjs';
 import {
+  cypressArtifactOptions,
   cypressMeasurements,
   duration,
   formatMeasurements,
@@ -13,12 +14,49 @@ import {
 } from './measurements.mjs';
 
 const root = resolve(import.meta.dirname, '../..');
-test('workflow display names identify the Playwright pilot, Cypress comparison and uploaded reports', () => {
+test('failure artifacts have narrow upload paths and do not upload raw server logs', () => {
+  const workflow = readFileSync(resolve(root, '.github/workflows/playwright-tests.yaml'), 'utf8');
+  assert.deepEqual(cypressArtifactOptions('/run/cypress-1'), {
+    screenshotsFolder: resolve('/run/cypress-1/screenshots'),
+    screenshotOnRunFailure: true,
+  });
+  assert.match(workflow, /playwright\/\*\/epochs\/\*\/startup\.json/);
+  assert.match(workflow, /playwright-measurements\/ci\/cypress-\*\/screenshots\//);
+  assert.doesNotMatch(workflow, /stack\.log|source\.diff|cypress-home/);
+});
+test('workflow display names identify the Playwright pilot and uploaded reports', () => {
   const workflow = readFileSync(resolve(root, '.github/workflows/playwright-tests.yaml'), 'utf8');
   assert.match(workflow, /^name: Playwright pilot in FyllUt$/m);
-  assert.match(workflow, /^ {4}name: Playwright pilot in FyllUt and Cypress comparison$/m);
+  assert.match(workflow, /^ {4}name: Playwright pilot in FyllUt$/m);
   assert.match(workflow, /^ {6}- name: Upload HTML test reports and timing summaries$/m);
   assert.match(workflow, /echo "# Playwright pilot in FyllUt - CI timing"/);
+});
+
+test('only manual workflow runs install Cypress and repeat the cases for benchmarking', () => {
+  const workflow = readFileSync(resolve(root, '.github/workflows/playwright-tests.yaml'), 'utf8');
+  const steps = workflow.split(/^ {6}- name: /m).slice(1);
+  for (const name of ['Install Cypress for the manual comparison', 'Measure matching cases on the same build']) {
+    const step = steps.find((entry) => entry.startsWith(`${name}\n`));
+    assert(step, `Missing step: ${name}`);
+    assert.match(step, /^ {8}if: github\.event_name == 'workflow_dispatch'$/m);
+  }
+  for (const name of [
+    'Install Chromium',
+    'Verify isolation, lifecycle and failure controls',
+    'Run all 46 built pilot cases',
+  ]) {
+    const step = steps.find((entry) => entry.startsWith(`${name}\n`));
+    assert(step, `Missing validation step: ${name}`);
+    assert.doesNotMatch(step, /^ {8}if:/m);
+  }
+  assert.equal((workflow.match(/exec cypress install/g) ?? []).length, 1);
+  assert.match(
+    steps.find((entry) => entry.startsWith('Install dependencies\n')),
+    /CYPRESS_INSTALL_BINARY: '0'/,
+  );
+  assert.equal((workflow.match(/pnpm playwright:fyllut:measure --repetitions/g) ?? []).length, 1);
+  assert.match(workflow, /Benchmark not requested\. Push runs validate the pilot/);
+  assert.match(workflow, /group: playwright-fyllut-\$\{\{ github.event_name \}\}-\$\{\{ github.ref \}\}/);
 });
 
 const inventory = JSON.parse(readFileSync(resolve(root, 'packages/fyllut/playwright/migration/inventory.json')));

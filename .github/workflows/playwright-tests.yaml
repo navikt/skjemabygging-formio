@@ -15,7 +15,7 @@ permissions:
   packages: read
 
 concurrency:
-  group: playwright-fyllut-${{ github.ref }}
+  group: playwright-fyllut-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -24,7 +24,7 @@ env:
 
 jobs:
   pilot:
-    name: Playwright pilot in FyllUt and Cypress comparison
+    name: Playwright pilot in FyllUt
     runs-on: ubuntu-latest-8-cores
     timeout-minutes: 60
     steps:
@@ -62,16 +62,24 @@ jobs:
         id: dependencies
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_INSTALL_BINARY: '0'
         run: |
           started=$SECONDS
           pnpm install --frozen-lockfile
           echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
 
-      - name: Install browsers
+      - name: Install Chromium
         id: browsers
         run: |
           started=$SECONDS
           pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+          echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
+
+      - name: Install Cypress for the manual comparison
+        if: github.event_name == 'workflow_dispatch'
+        id: cypress
+        run: |
+          started=$SECONDS
           pnpm --dir packages/fyllut exec cypress install
           echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
 
@@ -94,6 +102,7 @@ jobs:
         run: pnpm playwright:fyllut:built
 
       - name: Measure matching cases on the same build
+        if: github.event_name == 'workflow_dispatch'
         env:
           REPETITIONS: ${{ inputs.repetitions || '1' }}
         run: |
@@ -114,9 +123,12 @@ jobs:
             packages/fyllut/.runtime/playwright/*/run.json
             packages/fyllut/.runtime/playwright/*/summary.json
             packages/fyllut/.runtime/playwright/*/epochs/*/timings.json
+            packages/fyllut/.runtime/playwright/*/epochs/*/startup.json
             packages/fyllut/.runtime/playwright/*/epochs/*/mock-evidence.json
             packages/fyllut/.runtime/playwright-measurements/ci/summary.json
             packages/fyllut/.runtime/playwright-measurements/ci/summary.md
+            packages/fyllut/.runtime/playwright-measurements/ci/cypress-*/screenshots/
+            packages/fyllut/.runtime/playwright-measurements/ci/cypress-*/epochs/*/startup.json
 
       - name: Summarize measured work
         if: always()
@@ -124,13 +136,18 @@ jobs:
           START_MS: ${{ steps.start.outputs.ms }}
           DEPENDENCIES_SECONDS: ${{ steps.dependencies.outputs.seconds }}
           BROWSERS_SECONDS: ${{ steps.browsers.outputs.seconds }}
+          CYPRESS_SECONDS: ${{ steps.cypress.outputs.seconds }}
           BUILD_SECONDS: ${{ steps.build.outputs.seconds }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           {
             echo "# Playwright pilot in FyllUt - CI timing"
             echo
             echo "Dependency installation: ${DEPENDENCIES_SECONDS:-not completed} s"
-            echo "Browser installation: ${BROWSERS_SECONDS:-not completed} s"
+            echo "Chromium installation: ${BROWSERS_SECONDS:-not completed} s"
+            if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+              echo "Cypress installation: ${CYPRESS_SECONDS:-not completed} s"
+            fi
             echo "Build: ${BUILD_SECONDS:-not completed} s"
             if [ -n "$START_MS" ]; then
               echo "Elapsed through artifact upload: $(( $(date +%s%3N) - START_MS )) ms"
@@ -140,7 +157,10 @@ jobs:
             echo
             echo "Completed job duration in Actions also includes post-job cache actions."
             echo
-            if [ -f packages/fyllut/.runtime/playwright-measurements/ci/summary.md ]; then
+            if [ "$EVENT_NAME" != "workflow_dispatch" ]; then
+              echo "Benchmark not requested. Push runs validate the pilot without repeating it for timing."
+              echo "Use Run workflow for a manual Cypress/Playwright comparison, or pnpm playwright:fyllut:measure locally."
+            elif [ -f packages/fyllut/.runtime/playwright-measurements/ci/summary.md ]; then
               cat packages/fyllut/.runtime/playwright-measurements/ci/summary.md
             else
               echo "No completed benchmark report. Inspect the preceding failed or cancelled steps."

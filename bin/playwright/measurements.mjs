@@ -7,6 +7,11 @@ const duration = (value, label) => {
   return value;
 };
 
+const cypressArtifactOptions = (directory) => ({
+  screenshotsFolder: resolve(directory, 'screenshots'),
+  screenshotOnRunFailure: true,
+});
+
 const measurementCases = (cases) => {
   const selected = cases.filter(({ id }) => id !== 'F029-T002');
   assert.equal(cases.length, 46, 'MEASUREMENT_REQUIRES_FULL_PILOT');
@@ -151,4 +156,11 @@ const formatMeasurements = (summary) => {
   ].join('\n');
 };
 
-export { cypressMeasurements, duration, formatMeasurements, measurementCases, playwrightMeasurements };
+export {
+  cypressArtifactOptions,
+  cypressMeasurements,
+  duration,
+  formatMeasurements,
+  measurementCases,
+  playwrightMeasurements,
+};
