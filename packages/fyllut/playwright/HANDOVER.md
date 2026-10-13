@@ -1,10 +1,10 @@
 # Handover for the Playwright pilot in FyllUt
 
-The Actions workflow is named `Playwright pilot in FyllUt`; its check is
-`Playwright pilot in FyllUt and Cypress comparison`. Before merging, a
-maintainer must check whether branch rules require either previous check name:
+The Actions workflow and check are named `Playwright pilot in FyllUt`.
+Before merging, a maintainer must check whether branch rules require a previous check name:
 `Isolated FyllUt pilot and matching benchmark` or
-`Isolated Playwright pilot in FyllUt and matching benchmark`.
+`Isolated Playwright pilot in FyllUt and matching benchmark`, or
+`Playwright pilot in FyllUt and Cypress comparison`.
 Update such a requirement to the current name if necessary. Display-name
 changes do not update branch rules automatically. No remote rules were changed
 as part of the naming cleanup.
@@ -125,6 +125,22 @@ CI already distributes FyllUt across twelve folder jobs. Compare wall time
 and total runner consumption at the same resource budget. Any optimization
 must retain late-request, mock-comparator and cleanup controls.
 
+The local review follow-up measured service bind times across 46 fresh built
+epochs. Mocks averaged 2.78 seconds from spawn to bind; the compiled backend
+averaged 0.56 seconds. They start concurrently, so mocks currently determine
+most of the startup wait. This does not isolate TypeScript compilation from
+mock-library initialization. Investigate prebuilding mocks before assuming
+that `ts-node` accounts for the whole cost.
+
+Controlled test-only shutdown is another candidate. The current three-second
+fallback contributes roughly 140 seconds over 45 cases. A separate shutdown
+protocol must close incoming HTTP work, drain ongoing operations and confirm
+backend exit while mocks still observe outbound calls. Do not shorten the
+timeout, kill earlier or change production SIGTERM behavior for a better number.
+Prove both valid and mismatching late requests under the proposed protocol.
+Do this as a bounded optimization before expanding the migration, not as part
+of an unrelated test rewrite.
+
 ## Human review
 
 All 43 pilot declarations remain `implemented`, with `coverageReview` and
@@ -225,6 +241,25 @@ reference, not an instruction to reset or overwrite later work.
 Follow existing repository skills before changing frontend/backend behavior.
 For ordinary UI work outside this specifically authorized pilot, the
 repository's Cypress policy still applies.
+
+If Cypress sources change, start with `pnpm playwright:fyllut:inventory`.
+It reports every changed source and explains which changes require explicit
+review. Follow [When Cypress changes](README.md#when-cypress-changes); do not
+silence the source gate, invent new identities for renamed tests or approve
+coverage merely to make CI green.
+
+Push runs perform support checks and the full 46-case pilot. The extra
+Cypress/Playwright timing comparison runs only on `workflow_dispatch`.
+For local timing, use `pnpm playwright:fyllut:measure --repetitions 1` after
+building. Do not re-enable automatic benchmark runs to address a missing
+measurement report on a push; its absence is intentional. Remote benchmark
+execution still requires the developer's authorization.
+
+For a failure, start with the terminal assertion and the printed report/log
+paths. [Debugging a failed test](README.md#debugging-a-failed-test) gives
+single-test reruns and `--headed`. Keep the root runner even when debugging.
+Inspector and UI mode remain unsupported until paused-run cleanup is proved;
+they are not substitutes for the source and result gates.
 
 Confirm dependencies, shared builds, browser execution and approved localhost
 ports before running. Use the root runners, never raw Playwright options

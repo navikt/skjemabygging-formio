@@ -274,6 +274,47 @@ endpoint. If a run fails, inspect its epoch `stack.log`, mock metadata and
 Playwright trace. A `fatal-cleanup.txt` marker means the run cannot continue
 with another stack. Do not delete it to make the same run proceed.
 
+## Debugging a failed test
+
+Start with the terminal output. Playwright prints the failed assertion and
+test title; the wrapper prints the report directory and the command to open
+its HTML report. You do not need to read timing JSON to diagnose a test.
+
+Rerun just the failing test, using its spec filename and title. For example:
+
+```sh
+pnpm playwright:fyllut:built bankaccount.spec.ts --grep 'should be visible and interactable'
+pnpm playwright:fyllut:built bankaccount.spec.ts --grep 'should be visible and interactable' --headed
+```
+
+`--headed` shows the browser and keeps the normal timeouts and checks.
+It uses a separate Chromium configuration directory under the run's
+`browser-config/`, rather than the personal browser configuration.
+It needs a graphical display; headless AI sessions can use the ordinary
+command and saved report instead.
+
+Inspector's `--debug` and watch-mode `--ui` are not supported by this wrapper.
+An Inspector trial opened successfully, but interrupting a paused test did
+not finish cleanup within 30 seconds. Do not bypass the wrapper or disable
+timeouts to work around this. Safe interactive pause/resume/stop behavior
+needs separate work before this pilot can offer a Cypress-like interactive
+runner. Saved traces still show the steps and page state of a failed run.
+
+For backend or mock problems, open
+`<report-directory>/epochs/<epoch-id>/stack.log` in your editor, or follow it
+with `tail -f` while the test runs. These are the local server logs, not a new
+logging tool. In CI, the `startup.json` beside each epoch records service
+PIDs, ports, bind times, readiness status and startup failures. It excludes
+environment values, URL credentials/query strings and response bodies.
+Readiness probes begin after all expected ports bind; use each service's
+`boundMs` to distinguish process startup costs, not `readyMs` alone.
+
+On GitHub, first read the failed step's log. If that is insufficient, download
+the run's artifact and open the HTML report for its screenshot and trace.
+Manual Cypress comparisons also save failure screenshots under
+`playwright-measurements/ci/cypress-<sample>/screenshots/`.
+Raw `stack.log` files stay local because they can contain request data.
+
 ## Checks before expanding the migration
 
 Compare each source test together with its inherited hooks and the helpers it
@@ -314,12 +355,15 @@ Permissions are limited to reading contents and packages. The automatic
 `GITHUB_TOKEN` is passed only to the dependency-installation step, not to the
 application or mock processes.
 
-One job installs Chromium and Cypress, checks support types, builds FyllUt
+On push, one job installs Chromium, checks support types, builds FyllUt
 once, runs the technical failure controls, and executes all 46 built pilot
-cases. It then measures 45 matching cases in both frameworks on that same
-build. There is no background service outside the job, production deployment
-or external Cypress dashboard recording. A newer push cancels an older
-Playwright job on the same branch. The job has a 60-minute timeout; owned
+cases. It does not install the Cypress browser or run the additional
+45-case comparison. The existing Cypress workflow still runs independently.
+A manually dispatched run also installs Cypress and measures 45 matching
+cases in both frameworks on the same build. There is no background service
+outside the job, production deployment or external Cypress dashboard recording.
+A newer push cancels an older push run on the same branch, not an explicit
+manual comparison. The job has a 60-minute timeout; owned
 process cleanup still runs through the existing epoch lifecycle.
 The GitHub-hosted runner is discarded when the job ends.
 
@@ -331,8 +375,9 @@ server children. The control still requires every server PID to disappear,
 all selected ports to be free, a final cleanup manifest and a rejected
 consumer lease. Live owners do not satisfy the termination check.
 
-Each push takes one benchmark sample. `workflow_dispatch` offers one or three
-samples, defaulting to three. GitHub requires a dispatchable workflow to exist
+Benchmarking is opt-in. Use it when changing test infrastructure or comparing
+performance, not for every source change. `workflow_dispatch` offers one or
+three samples, defaulting to three. GitHub requires a dispatchable workflow to exist
 on the default branch before its "Run workflow" button is available. Push
 execution on the pilot branch does not depend on that button or a merge.
 No agent push or remote run is implied by adding this workflow locally.
@@ -378,10 +423,11 @@ For the accepted run, the bundle is
 It expires after seven days. Preserve a copy before expiry if it is needed
 for human review; a run link alone will not preserve its files.
 
-The run's Summary page also displays the CI timing and benchmark tables
-without downloading. In the ZIP, start with
-`playwright-measurements/ci/summary.md`. `summary.json` contains machine-readable
-measurements and provenance. `playwright/<run-id>/html/index.html` belongs to
+The run's Summary page displays CI timing and says explicitly when no
+benchmark was requested. In the ZIP, start with
+`playwright/<run-id>/html/index.html`. Manual comparisons also include
+`playwright-measurements/ci/summary.md` and machine-readable `summary.json`
+measurements and provenance. The HTML directory belongs to
 the full pilot or benchmark report, with `run.json`, `results.json` and
 per-epoch timing/mock metadata beside it. Technical-control verification is
 under `playwright/verify-<run-id>/summary.json`.
