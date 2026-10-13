@@ -41,7 +41,7 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | `pnpm cypress:fyllut`            | Kjører Cypress-tester for Fyllut                                            |
 | `pnpm start:fyllut:mocks`        | Starter Fyllut med mocks på ledige porter og skriver Cypress runtime config |
 | `pnpm start:bygger:mocks`        | Starter Bygger på ledige porter og skriver Cypress runtime config           |
-| `pnpm playwright:fyllut`         | Kjører FyllUt-piloten i Playwright med eget dev-/mock-oppsett               |
+| `pnpm playwright:fyllut`         | Kjører Playwright-piloten i FyllUt med eget dev-/mock-oppsett               |
 | `pnpm playwright:fyllut:built`   | Kjører alle pilottilfellene mot et ferdig FyllUt-bygg                       |
 | `pnpm playwright:fyllut:verify`  | Verifiserer pilotens sporbarhet, mock-bevis og livsløpskontroller           |
 | `pnpm playwright:fyllut:measure` | Måler samme pilotutvalg i Playwright og Cypress                             |
@@ -51,7 +51,7 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | `pnpm lint`                      | Sjekker kodekvalitet                                                        |
 | `pnpm get-tokens`                | Henter tokens for eksterne API-er ved lokal kjøring                         |
 
-FyllUt-piloten erstatter ikke Cypress. Se [kjøreveiledningen](packages/fyllut/playwright/README.md)
+Playwright-piloten i FyllUt erstatter ikke Cypress. Se [kjøreveiledningen](packages/fyllut/playwright/README.md)
 for oppsett, testutvalg og rapporter, og [overleveringen](packages/fyllut/playwright/HANDOVER.md)
 for resultater, menneskelig review og gjenstående migreringsarbeid.
 

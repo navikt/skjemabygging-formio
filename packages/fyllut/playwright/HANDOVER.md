@@ -1,4 +1,4 @@
-# FyllUt Playwright pilot handover
+# Handover for the Playwright pilot in FyllUt
 
 Snapshot dated 13 October 2026. The accepted executable revision is
 `a526e5d1615d0b7e0b9f414b9322e8a0fd777c88`.

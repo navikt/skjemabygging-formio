@@ -1,4 +1,4 @@
-# FyllUt Playwright pilot
+# Playwright pilot in FyllUt
 
 This is the operating guide for the bounded pilot in #2207.
 The [handover](HANDOVER.md) records accepted results, performance limitations,
