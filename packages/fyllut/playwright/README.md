@@ -1,6 +1,11 @@
 # FyllUt Playwright pilot
 
-This is the full-file pilot for #2207, with a separate step 4 CI workflow and matching-case measurements. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the operating guide for the bounded pilot in #2207.
+The [handover](HANDOVER.md) records accepted results, performance limitations,
+the developer-review procedure and remaining migration work. It is the starting
+point for a new developer or agent session.
+
+The pilot does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 New files and tests append IDs rather than renumbering earlier cases. Explicit
 source-order mappings preserve inserted cases and existing title changes.
@@ -27,14 +32,17 @@ distinct outcomes, rather than translating one declaration into one test.
 After installing workspace dependencies and the Chromium browser (`pnpm --dir packages/fyllut exec playwright install chromium`), run from the repository root:
 
 ```sh
-pnpm playwright:fyllut
 pnpm build:fyllut
+pnpm playwright:fyllut
 pnpm playwright:fyllut:built
 pnpm playwright:fyllut:verify
 pnpm playwright:fyllut -- components-customized/bankaccount.spec.ts
 pnpm playwright:fyllut -- components-deprecated-complex/data-fetcher.spec.ts
 node --test bin/playwright/check-migration.test.mjs bin/lib/fyllut-test-stack.test.mjs
 ```
+
+Build once in a fresh checkout to supply shared-package artifacts, even before
+dev execution. Built mode must be rebuilt after relevant source changes.
 
 The runner uses Chromium, one worker and no retries. Each executable test gets a fresh epoch with its own mock server and application processes. Dev uses Vite backend/frontend servers. Built uses `fyllut-backend/dist/server.mjs` to serve both API and the compiled frontend, with no Vite server or implicit build. Rebuild after relevant source changes.
 
@@ -253,6 +261,9 @@ mock-evidence and cleanup guarantees; it is not part of this bounded pilot.
 
 ## GitHub Actions
 
+The accepted [run on `a526e5d16`](https://github.com/navikt/skjemabygging-formio/actions/runs/38402028109)
+is recorded in the handover. A later run must be checked on its own revision.
+
 `.github/workflows/playwright-tests.yaml` runs on push, separately from the
 unchanged Cypress workflow. It uses the same `ubuntu-latest-8-cores` runner
 class, Node version and dependency-installation pattern as existing CI.
@@ -313,6 +324,36 @@ attachments can contain the synthetic form data and network traffic from the
 test. Do not introduce real credentials or personal data into these fixtures.
 The workflow does not grant human review approval or change `verified`.
 
+### Finding the uploaded reports
+
+"Upload pilot reports and measurements" copies generated files from the
+temporary runner into a ZIP stored by GitHub. It does not commit files,
+deploy an application or publish a report website.
+
+1. Open the workflow run under the repository's **Actions** tab.
+2. Select **Summary**, not the individual job's step log.
+3. Under **Artifacts**, download `fyllut-playwright-<github-run-id>-<attempt>`.
+
+For the accepted run, the bundle is
+[`fyllut-playwright-38402028109-1`](https://github.com/navikt/skjemabygging-formio/actions/runs/38402028109/artifacts/11819220167).
+It expires after seven days. Preserve a copy before expiry if it is needed
+for human review; a run link alone will not preserve its files.
+
+The run's Summary page also displays the CI timing and benchmark tables
+without downloading. In the ZIP, start with
+`playwright-measurements/ci/summary.md`. `summary.json` contains machine-readable
+measurements and provenance. `playwright/<run-id>/html/index.html` belongs to
+the full pilot or benchmark report, with `run.json`, `results.json` and
+per-epoch timing/mock metadata beside it. Technical-control verification is
+under `playwright/verify-<run-id>/summary.json`.
+
+Keep each HTML directory intact. With workspace dependencies available,
+`pnpm --dir packages/fyllut exec playwright show-report <path-to-html-directory>`
+serves the downloaded report locally; stop that report server with Ctrl-C.
+No additional server is required to read the Markdown measurement summary.
+The handover preserves the accepted aggregate results in the repository,
+not the raw traces, logs or downloadable ZIP.
+
 ## Matching-case measurements
 
 Run after building, with all intended new files staged so the recorded Git diff
@@ -359,6 +400,12 @@ remain intentional differences and are stated in the report. A single sample
 or this pilot selection cannot establish a whole-suite speedup. Repeat
 measurements on the same runner class before deciding on optimization.
 
-In CPLT, the documented `sandbox.allow_cache_exec = ["ms-playwright"]` setting permits running Playwright's Chromium. Localhost access must also be active for the app and mock server. All eight browser journeys passed in an AI-run CPLT session. The mock-server log confirmed that `success-empty` handled the activities request. A negative-control run using `success` instead failed on the empty-array assertion, receiving three activities. Developer coverage and Playwright-practice review is still pending.
+In CPLT, an operator-approved `sandbox.allow_cache_exec = ["ms-playwright"]`
+setting permits running Playwright's Chromium. Localhost access must also be
+active for the app and mock server. The full-file pilot passed in an approved
+AI-run environment; the handover distinguishes its local and GitHub evidence.
+This does not authorize an agent to change those permissions or establish
+compatibility with every CPLT configuration. Developer coverage and
+Playwright-practice review is still pending.
 
 CPLT resolves permissions when it starts. Launching from a parent directory does not automatically apply this repository's approved `.cplt.toml`; resuming a conversation or changing directories later does not change those permissions. Successful runs in one approved environment do not establish general CPLT compatibility. On Linux, port grants also permit connections to remote hosts on those ports. The Playwright runner requires its four ports to be free and does not expand permissions. Native pnpm and Chromium must already be executable, workspace dependencies installed, and the ordinary Git hook readable for local commits. Resolve registry authentication outside the agent session; never put credentials in test configuration.
