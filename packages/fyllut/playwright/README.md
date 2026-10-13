@@ -5,6 +5,11 @@ The [handover](HANDOVER.md) records accepted results, performance limitations,
 the developer-review procedure and remaining migration work. It is the starting
 point for a new developer or agent session.
 
+**Execution time is a high-priority unresolved improvement.** The current pilot
+is too slow, and its per-test app/mock restarts are not a Playwright requirement.
+Address the [performance follow-up](HANDOVER.md#high-priority-follow-up-execution-time)
+before expanding the migration. Passing tests do not mean the speed goal is met.
+
 The pilot does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 ## When Cypress changes

@@ -1,5 +1,10 @@
 # Handover for the Playwright pilot in FyllUt
 
+> **High-priority improvement: execution time.** The pilot is too slow.
+> Green test results do not close this issue. Address the
+> [performance follow-up](#high-priority-follow-up-execution-time) before
+> expanding the migration.
+
 The Actions workflow and check are named `Playwright pilot in FyllUt`.
 Before merging, a maintainer must check whether branch rules require a previous check name:
 `Isolated FyllUt pilot and matching benchmark` or
@@ -53,6 +58,41 @@ its assertions, fixtures and lifecycle.
 Cypress and its existing CI remain active. Bygger, more migrated files,
 shared CI builds, sharding and process reuse are not delivered by this pilot.
 No skill changes or new agent permissions are part of this handover.
+
+## High-priority follow-up: execution time
+
+Execution time is one of the highest-priority improvements after this pilot,
+not optional cleanup. The current lifecycle is an interim isolation strategy,
+not an accepted design for the full suite. This remains open even when all
+tests pass and the bounded pilot is merged.
+
+The pilot covers 43 source declarations producing 46 runtime cases. The latest
+local comparison on `ece879d9a` ran the same 45 cases in each framework on the
+same source and build: Playwright took 350.75 seconds and Cypress 117.42 seconds,
+roughly a threefold difference. Playwright spent 130.39 seconds on startup and
+141.28 seconds on teardown, about 77 percent of its command time. Its test
+scope took 75.07 seconds. This is one local sample, not a full-suite comparison
+or a prediction of GitHub performance.
+
+The main cost comes from our choice to start and stop app/mock processes for
+every case, while the Cypress benchmark shares them. Playwright does not
+require per-test server restarts. We chose them to prevent late backend calls
+and mutable mock state from leaking between tests without changing product
+code. Any replacement must preserve that guarantee; fresh browser contexts
+alone do not isolate backend work.
+
+The follow-up must:
+
+1. Reduce lifecycle overhead. Investigate orderly test-only backend shutdown and prebuilt mocks. Explicitly assess whether fresh processes per case should remain the long-term design or whether controlled per-worker reuse can provide equivalent isolation.
+2. Preserve assertions, real outbound body validation, late-request detection, mock isolation and confirmed cleanup. Do not shorten shutdown timeouts, kill earlier, add retries or change production signal handling to manufacture a better result.
+3. Demonstrate the improvement with repeated matching-case comparisons on the same source/build and runner class. Keep viewport and retry policy aligned and disclose browser differences. Report command wall time, startup, test scope, teardown and complete CI-job time. Compare bounded parallelism at the same resource budget, including total runner consumption.
+
+The goal is faster equivalent execution than Cypress, not merely a smaller
+regression. Record the evidence before expanding the migration; a green suite
+or a faster run with fewer assertions is not performance acceptance.
+The [baseline below](#performance-baseline) records earlier GitHub measurements.
+The full source catalogue contains 816 static declarations, not a verified
+runtime count to compare directly with the pilot's 46 cases.
 
 ## Accepted execution evidence
 
@@ -119,8 +159,8 @@ One sample does not establish variance or full-suite performance. The pilot
 job also runs technical controls and both frameworks, so its total duration
 is not the cost of a future Playwright-only suite.
 
-A later optimization investigation should measure process startup/shutdown
-and bounded sharding before considering shared processes. Existing Cypress
+The high-priority performance follow-up must measure process startup/shutdown
+and assess bounded sharding and safe process reuse. Existing Cypress
 CI already distributes FyllUt across twelve folder jobs. Compare wall time
 and total runner consumption at the same resource budget. Any optimization
 must retain late-request, mock-comparator and cleanup controls.
@@ -219,8 +259,8 @@ tests and outbound payloads need different helpers and proof than simple
 field assertions. Current runner guards pin the 43 pilot declarations;
 expansion must deliberately update those guards and their tests.
 
-After pilot review, authorize a small additional batch of whole files across
-simple components and complex form/submission behavior. Record implementation,
+After pilot review and the performance follow-up, authorize a small additional
+batch of whole files across simple components and complex form/submission behavior. Record implementation,
 debugging, comparison and human-review time separately. Use that measured
 throughput and the area totals to estimate subsequent batches, including
 CI/parallelization work. Do not budget this as a mechanical rename of 773 tests.
