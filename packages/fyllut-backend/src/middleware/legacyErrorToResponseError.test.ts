@@ -39,6 +39,18 @@ describe('legacyErrorToResponseError', () => {
     });
   });
 
+  it('does not mask unexpected body-parser failures as aborted requests', () => {
+    const error = Object.assign(new Error('stream not readable'), { type: 'stream.not.readable', status: 500 });
+    const next = vi.fn();
+
+    legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
+
+    expect(next.mock.calls[0][0]).toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'Det oppstod en feil',
+    });
+  });
+
   it('masks plain errors until routes are migrated to ResponseError', () => {
     const error = new Error('secret implementation detail') as Error & { correlation_id?: string };
     error.correlation_id = 'test-correlation-id';
