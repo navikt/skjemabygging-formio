@@ -1,4 +1,5 @@
 import { test as base, expect, type Page } from '@playwright/test';
+import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parsePortRange, parsePorts } from '../../../../bin/lib/test-ports.mjs';
 import { attachExistingEpoch } from '../../../../bin/playwright/existing-epoch.mjs';
@@ -46,6 +47,7 @@ const test = base.extend<Fixtures>({
       };
       const existingManifest = process.env.FYLLUT_PLAYWRIGHT_EXISTING_MANIFEST;
       if (existingManifest && (!observeMocks || mockFault)) throw new Error('EXISTING_FAULT_OPTIONS_FORBIDDEN');
+      const setupStarted = performance.now();
       const epoch = existingManifest
         ? await attachExistingEpoch({
             ...identity,
@@ -62,6 +64,8 @@ const test = base.extend<Fixtures>({
           });
       const errors: unknown[] = [];
       const evidence = createMockEvidence(epoch);
+      let testStarted: number | undefined;
+      let teardownStarted: number | undefined;
       try {
         try {
           await resetVariants(epoch.adminURL, 'before');
@@ -69,12 +73,14 @@ const test = base.extend<Fixtures>({
           epoch.fatal(new Error('MOCK_RESET_FAILED'));
           throw error;
         }
+        testStarted = performance.now();
         // eslint-disable-next-line react-hooks/rules-of-hooks -- Playwright fixture callback.
         await use({ ...epoch, evidence });
         epoch.assertHealthy();
       } catch (error) {
         errors.push(error);
       } finally {
+        teardownStarted = performance.now();
         for (const context of browser.contexts()) {
           try {
             await context.close();
@@ -110,6 +116,36 @@ const test = base.extend<Fixtures>({
         } catch (error) {
           errors.push(error);
           epoch.fatal(new Error('EPOCH_CLEANUP_FAILED'));
+        }
+        const stopped = performance.now();
+        try {
+          writeFileSync(
+            resolve(epoch.directory, 'timings.json'),
+            JSON.stringify(
+              {
+                epochId: epoch.epochId,
+                testId: id,
+                attempt: testInfo.retry,
+                browserVersion: browser.version(),
+                policy: {
+                  browser: browser.browserType().name(),
+                  workers: testInfo.config.workers,
+                  retries: testInfo.project.retries,
+                  viewport: testInfo.project.use.viewport,
+                },
+                setupMs: (testStarted ?? teardownStarted) - setupStarted,
+                testScopeMs: testStarted === undefined ? null : teardownStarted - testStarted,
+                teardownMs: stopped - teardownStarted,
+                totalMs: stopped - setupStarted,
+                completed: errors.length === 0 && testInfo.status === 'passed',
+              },
+              null,
+              2,
+            ),
+          );
+        } catch (error) {
+          errors.push(error);
+          epoch.fatal(new Error('EPOCH_TIMINGS_WRITE_FAILED'));
         }
       }
       if (errors.length) throw new AggregateError(errors, errors.map(String).join('\n'));

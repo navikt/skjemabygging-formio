@@ -1,6 +1,6 @@
 # FyllUt Playwright pilot
 
-This is the step 3 full-file pilot for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the full-file pilot for #2207, with a separate step 4 CI workflow and matching-case measurements. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 New files and tests append IDs rather than renumbering earlier cases. Explicit
 source-order mappings preserve inserted cases and existing title changes.
@@ -241,15 +241,102 @@ not only before startup or during the test body. Keep the producer alive when
 testing the old race, and require confirmed producer exit before final evidence.
 One green source/counterpart pair does not establish equivalent failure coverage.
 
-All commands are local. There is no new CI workflow, sharding or Cypress removal.
-Final Cypress/Playwright comparisons and human review
-remain separate acceptance gates.
+The separate CI workflow does not introduce sharding, process reuse or Cypress
+removal. Green runtime comparisons and human review remain separate acceptance
+gates.
 
 Fresh process epochs have a startup cost. Record `startupMs` from epoch
 manifests separately from test actions, teardown and total runner time. Compare
 the same cases, viewport, build and retry policy before claiming a speedup.
 Changing to shared processes or sharding requires preserving delayed-request,
 mock-evidence and cleanup guarantees; it is not part of this bounded pilot.
+
+## GitHub Actions
+
+`.github/workflows/playwright-tests.yaml` runs on push, separately from the
+unchanged Cypress workflow. It uses the same `ubuntu-latest-8-cores` runner
+class, Node version and dependency-installation pattern as existing CI.
+Permissions are limited to reading contents and packages. The automatic
+`GITHUB_TOKEN` is passed only to the dependency-installation step, not to the
+application or mock processes.
+
+One job installs Chromium and Cypress, checks support types, builds FyllUt
+once, runs the technical failure controls, and executes all 46 built pilot
+cases. It then measures 45 matching cases in both frameworks on that same
+build. There is no background service outside the job, production deployment
+or external Cypress dashboard recording. A newer push cancels an older
+Playwright job on the same branch. The job has a 60-minute timeout; owned
+process cleanup still runs through the existing epoch lifecycle.
+The GitHub-hosted runner is discarded when the job ends.
+
+Each push takes one benchmark sample. `workflow_dispatch` offers one or three
+samples, defaulting to three. GitHub requires a dispatchable workflow to exist
+on the default branch before its "Run workflow" button is available. Push
+execution on the pilot branch does not depend on that button or a merge.
+No agent push or remote run is implied by adding this workflow locally.
+Remote acceptance requires inspecting an actual GitHub run after the user
+pushes.
+
+The Actions summary separates dependency installation, browser installation,
+build and elapsed work through artifact upload. For the complete job duration,
+including post-job cache actions, use the completed job's duration in Actions
+or its `started_at` and `completed_at` API fields. Benchmark command wall times
+are not whole-job timings and do not measure queueing or runner provisioning.
+
+Reports are uploaded even after test failure, with seven-day retention.
+Uploads include HTML reports and their failure attachments, result/provenance
+JSON, phase timings, technical-control summaries, mock-evidence metadata and
+the benchmark summary. They deliberately exclude raw server logs, source
+diffs and Cypress's complete API result/config object. Browser failure
+attachments can contain the synthetic form data and network traffic from the
+test. Do not introduce real credentials or personal data into these fixtures.
+The workflow does not grant human review approval or change `verified`.
+
+## Matching-case measurements
+
+Run after building, with all intended new files staged so the recorded Git diff
+includes them:
+
+```sh
+pnpm playwright:fyllut:measure
+pnpm playwright:fyllut:measure --repetitions 3
+pnpm playwright:fyllut:measure --repetitions 1 --output packages/fyllut/.runtime/playwright-measurements/my-run
+```
+
+The output directory must be fresh. These commands start and stop their own
+built stacks, never attach to shared servers or alter Cypress runtime config.
+They execute five entire, unchanged Cypress source files and the exact
+corresponding 45 Playwright runtime cases. F029-T002 remains in the separate
+46-case pilot run. Excluding it from the benchmark avoids comparing its one
+Playwright case with all 21 cases in the data-fetcher Cypress file.
+
+Every comparison validates exact source files, titles and IDs, one passed
+attempt per case, unchanged Git source/build hashes, confirmed owner/child
+exits, free selected ports and unchanged ordinary Cypress runtime config.
+Playwright tc07 still requires completed body-comparator evidence for both
+outbound routes. Missing cases, unexpected skips, failures, retries, incomplete
+cleanup and missing/non-finite duration fields fail the measurement command.
+
+Reports are under `.runtime/playwright-measurements/<run-id>/`. `summary.json`
+records the selected IDs, source/build fingerprints, browser versions, runner
+class, execution order and per-case durations. `summary.md` is the readable
+comparison. Three-sample runs alternate framework order to reduce ordering
+bias. Partial/failed runs are explicitly marked and never count as successful
+comparisons.
+
+Playwright epochs also write `timings.json`: setup, test scope, teardown and
+total fixture time. Setup includes epoch startup and variant reset. Test scope
+includes dependent fixture setup/teardown, not only user actions. Cypress
+records shared-stack startup, execution, teardown and its own reported
+per-test durations; those per-test boundaries are not interchangeable with
+Playwright's. Command wall time includes framework startup and owned cleanup.
+Neither framework retries test actions.
+
+Both use the same 1280x1000 viewport and built frontend/backend entrypoints.
+Chromium versus Electron and fresh-per-case versus shared-per-sample epochs
+remain intentional differences and are stated in the report. A single sample
+or this pilot selection cannot establish a whole-suite speedup. Repeat
+measurements on the same runner class before deciding on optimization.
 
 In CPLT, the documented `sandbox.allow_cache_exec = ["ms-playwright"]` setting permits running Playwright's Chromium. Localhost access must also be active for the app and mock server. All eight browser journeys passed in an AI-run CPLT session. The mock-server log confirmed that `success-empty` handled the activities request. A negative-control run using `success` instead failed on the empty-array assertion, receiving three activities. Developer coverage and Playwright-practice review is still pending.
 

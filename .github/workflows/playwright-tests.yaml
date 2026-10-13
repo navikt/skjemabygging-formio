@@ -1,0 +1,137 @@
+name: Playwright FyllUt pilot
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      repetitions:
+        description: Matching 45-case benchmark samples on one build
+        type: choice
+        options: ['1', '3']
+        default: '3'
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: playwright-fyllut-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: Europe/Oslo
+  FYLLUT_CI_RUNNER_CLASS: ubuntu-latest-8-cores
+
+jobs:
+  pilot:
+    name: Isolated FyllUt pilot and matching benchmark
+    runs-on: ubuntu-latest-8-cores
+    timeout-minutes: 60
+    steps:
+      - name: Record start
+        id: start
+        run: echo "ms=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+
+      - name: Install dependencies
+        id: dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          started=$SECONDS
+          pnpm install --frozen-lockfile
+          echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
+
+      - name: Install browsers
+        id: browsers
+        run: |
+          started=$SECONDS
+          pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+          pnpm --dir packages/fyllut exec cypress install
+          echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
+
+      - name: Check test-support types
+        run: |
+          pnpm exec tsc --project packages/fyllut/playwright/tsconfig.json --noEmit
+          pnpm exec tsc --project mocks/tsconfig.json --noEmit
+
+      - name: Build FyllUt once
+        id: build
+        run: |
+          started=$SECONDS
+          pnpm build:fyllut
+          echo "seconds=$((SECONDS - started))" >> "$GITHUB_OUTPUT"
+
+      - name: Verify isolation, lifecycle and failure controls
+        run: pnpm playwright:fyllut:verify
+
+      - name: Run all 46 built pilot cases
+        run: pnpm playwright:fyllut:built
+
+      - name: Measure matching cases on the same build
+        env:
+          REPETITIONS: ${{ inputs.repetitions || '1' }}
+        run: |
+          pnpm playwright:fyllut:measure --repetitions "$REPETITIONS" \
+            --output packages/fyllut/.runtime/playwright-measurements/ci
+
+      - name: Upload pilot reports and measurements
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fyllut-playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          include-hidden-files: true
+          path: |
+            packages/fyllut/.runtime/playwright/*/html/
+            packages/fyllut/.runtime/playwright/*/results.json
+            packages/fyllut/.runtime/playwright/*/run.json
+            packages/fyllut/.runtime/playwright/*/summary.json
+            packages/fyllut/.runtime/playwright/*/epochs/*/timings.json
+            packages/fyllut/.runtime/playwright/*/epochs/*/mock-evidence.json
+            packages/fyllut/.runtime/playwright-measurements/ci/summary.json
+            packages/fyllut/.runtime/playwright-measurements/ci/summary.md
+
+      - name: Summarize measured work
+        if: always()
+        env:
+          START_MS: ${{ steps.start.outputs.ms }}
+          DEPENDENCIES_SECONDS: ${{ steps.dependencies.outputs.seconds }}
+          BROWSERS_SECONDS: ${{ steps.browsers.outputs.seconds }}
+          BUILD_SECONDS: ${{ steps.build.outputs.seconds }}
+        run: |
+          {
+            echo "# FyllUt CI timing"
+            echo
+            echo "Dependency installation: ${DEPENDENCIES_SECONDS:-not completed} s"
+            echo "Browser installation: ${BROWSERS_SECONDS:-not completed} s"
+            echo "Build: ${BUILD_SECONDS:-not completed} s"
+            if [ -n "$START_MS" ]; then
+              echo "Elapsed through artifact upload: $(( $(date +%s%3N) - START_MS )) ms"
+            else
+              echo "Elapsed time unavailable: the start step did not complete."
+            fi
+            echo
+            echo "Completed job duration in Actions also includes post-job cache actions."
+            echo
+            if [ -f packages/fyllut/.runtime/playwright-measurements/ci/summary.md ]; then
+              cat packages/fyllut/.runtime/playwright-measurements/ci/summary.md
+            else
+              echo "No completed benchmark report. Inspect the preceding failed or cancelled steps."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
