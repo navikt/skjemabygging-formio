@@ -8,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { isObjectRecord } from '../../utils/isObjectRecord';
+import { getConditionInstance } from './conditionInstances';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -60,7 +61,11 @@ const getActiveRowComponents = (
   submission?: Submission,
 ): ComponentDefinition[] =>
   components
-    .filter((component) => checkCondition(component, row, data, form, undefined, submission, { submissionMethod }))
+    .filter((component) =>
+      checkCondition(component, row, data, form, getConditionInstance(component, form, submissionMethod), submission, {
+        submissionMethod,
+      }),
+    )
     .map((component) => {
       if (component.type === 'datagrid' || !component.components?.length) {
         return component;
