@@ -1,6 +1,6 @@
 # FyllUt Playwright pilot
 
-This is the step 1b prototype for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. The 42 declarations in the original five pilot files have source-specific checklists; an additional data-fetcher test probes mock route variants. The full-file goal is now 43 declarations, with ten Playwright counterparts and 33 still planned. Coverage and Playwright-practice review fields remain pending until developers review them.
+This is the step 3 full-file pilot for #2207. It does not replace or disable any Cypress tests or CI jobs. The register in `migration/inventory.json` records 816 active declarations in 93 Cypress files at `9acb96336a262241301d0d235efa98f444684103`. Earlier baselines remain in its reconciliation history. All 42 declarations in the five representative files now have Playwright counterparts, alongside F029-T002's empty mock variant. These 43 declarations produce 46 runtime cases. The other 773 declarations remain planned. Coverage and Playwright-practice review fields remain pending until developers review them.
 
 New files and tests append IDs rather than renumbering earlier cases. Explicit
 source-order mappings preserve inserted cases and existing title changes.
@@ -17,7 +17,8 @@ also recorded separately. The October 12 merge adds seven declarations with
 ten runtime cases: five image cases, four pending attachment cases and one
 personal-ID upload layout case. It removes none. Three no-login navigation
 cases now collect the required identity without changing their IDs.
-These additions remain planned, not covered by the existing ten counterparts.
+The pending attachment cases are included in this pilot. Image and personal-ID
+upload cases outside the representative files remain planned.
 Build-only classification includes inherited
 hooks and excludes commented-out calls; thirteen current declarations require
 built routing. A later migration must preserve parameterized cases and their
@@ -116,10 +117,20 @@ Teardown closes browser contexts, stops the owned backend/frontend processes and
 
 Reports are under `packages/fyllut/.runtime/playwright/<run-id>/`. `run.json` records mode, selected IDs, commit and built-entrypoint timestamps/hashes. `source.diff` records tracked worktree changes, including staged new files; untracked paths are listed separately and must be staged or captured for final review evidence. Each epoch records its immutable test ID, attempt, URLs, owner/child PIDs, startup duration and stop time. JSON results are checked against the exact selected IDs; discovery is not runtime evidence. F029-T002 confirms `get-register-data-activities:success-empty` and checks the backend response and empty-state UI.
 
-The ten source IDs are F004-T005/T006 (bank account), F017-T007 (date boundary), F029-T002 (empty mock variant), F061-T001/T004 (attachment errors/focus and four-file submission), F073-T001/T003 (axe), and F086-T001/T002 (static PDF and compiled-backend routing). Each existing Cypress test keeps running and points to its counterpart; each Playwright test annotates the source path and ID.
+The full-file source IDs are F004-T001 through T007 (bank account), F017-T001
+through T011 (dates), F029-T002 (empty mock variant), F061-T001 through T005
+(attachments), F073-T001 through T008 (axe), and F086-T001 through T011
+(static PDF). Each existing Cypress test keeps running and points to its
+counterpart; each Playwright test annotates the source path and ID.
 
-Dev must report nine passes and only F086-T002 skipped. Built must report all
-ten passed. F086-T002 makes a real HTTP request through the epoch's API context
+F061-T005 keeps its source declaration ID and maps to F061-T005-C001 through
+C004, ordered upload/success, upload/failure, delete/success, delete/failure.
+Each case has its own epoch, result, title and source backlink. Missing,
+duplicated or reordered outcomes fail the register/result controls. Existing
+mode accepts a concrete case ID, not the ambiguous F061-T005 declaration.
+
+Dev must report 45 passes and only F086-T002 skipped. Built must report all
+46 passed. F086-T002 makes a real HTTP request through the epoch's API context
 and requires a 404 from the compiled backend; Vite's fallback is not equivalent.
 F061-T004 uploads all four source-fixture files, checks the receipt and requires
 completed, body-validated tc07 calls on both observed routes. The backend receives

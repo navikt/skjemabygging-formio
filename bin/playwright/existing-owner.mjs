@@ -14,7 +14,7 @@ const prepareExistingEpoch = async (
   const path = withinRoot(manifestPath);
   withinRoot(output);
   if (existsSync(path)) throw new Error('EXISTING_MANIFEST_ALREADY_EXISTS');
-  if (!/^F\d{3}-T\d{3}$/.test(testId)) throw new Error('EXISTING_INVALID_TEST_ID');
+  if (!/^F\d{3}-T\d{3}(?:-C\d{3})?$/.test(testId)) throw new Error('EXISTING_INVALID_TEST_ID');
   const socketId = randomBytes(8).toString('hex');
   const socketPath =
     process.platform === 'win32'

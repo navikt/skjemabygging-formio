@@ -5,7 +5,14 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { defaultPortRange, parsePortRange, parsePorts } from '../lib/test-ports.mjs';
-import { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery } from './check-migration.mjs';
+import {
+  checkDiscovery,
+  checkMigration,
+  checkResults,
+  checkSourceSet,
+  expandRuntimeCases,
+  flattenDiscovery,
+} from './check-migration.mjs';
 import { loadExistingManifest } from './existing-manifest.mjs';
 import { checkBuild } from './test-epoch.mjs';
 
@@ -95,23 +102,20 @@ try {
   const inventory = JSON.parse(
     readFileSync(resolve(root, 'packages/fyllut/playwright/migration/inventory.json'), 'utf8'),
   );
-  const implemented = checkMigration(inventory);
+  const declarations = checkMigration(inventory);
+  const implemented = expandRuntimeCases(declarations);
   checkSourceSet(inventory);
   assert.deepEqual(
-    implemented.map((entry) => entry.id).sort(),
+    declarations.map((entry) => entry.id).sort(),
     [
-      'F004-T005',
-      'F004-T006',
-      'F017-T007',
+      ...Array.from({ length: 7 }, (_, index) => `F004-T${String(index + 1).padStart(3, '0')}`),
+      ...Array.from({ length: 11 }, (_, index) => `F017-T${String(index + 1).padStart(3, '0')}`),
       'F029-T002',
-      'F061-T001',
-      'F061-T004',
-      'F073-T001',
-      'F073-T003',
-      'F086-T001',
-      'F086-T002',
+      ...Array.from({ length: 5 }, (_, index) => `F061-T${String(index + 1).padStart(3, '0')}`),
+      ...Array.from({ length: 8 }, (_, index) => `F073-T${String(index + 1).padStart(3, '0')}`),
+      ...Array.from({ length: 11 }, (_, index) => `F086-T${String(index + 1).padStart(3, '0')}`),
     ],
-    'The step 1b run must declare exactly its ten migration IDs',
+    'The step 3 run must declare exactly its 43 source migration IDs',
   );
   const discover = (filters) =>
     JSON.parse(
@@ -131,7 +135,10 @@ try {
   assert(selectedIds.length, 'EMPTY_SELECTION');
   if (existing) {
     assert.deepEqual(selectedIds, [existing.epoch.testId], 'EXISTING_REQUIRES_ONE_MATCHING_TEST');
-    assert(mode === 'built' || selectedIds[0] !== 'F086-T002', 'EXISTING_SKIP_NOT_EXECUTABLE');
+    assert(
+      mode === 'built' || !implemented.find((entry) => entry.id === selectedIds[0]).buildOnly,
+      'EXISTING_SKIP_NOT_EXECUTABLE',
+    );
   }
   const selected = implemented.filter((entry) => selectedIds.includes(entry.id));
   checkDiscovery(selected, flattenDiscovery(report), mode);

@@ -873,7 +873,7 @@
           "sourceHash": "bc8a862141cce0abf8e9637ce81ac3f118a5319be9e436832c549974d325380c",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["Paper display: Kontonummer exists as textbox, visible, enabled, and not readonly."],
           "playwrightReview": "pending"
@@ -889,7 +889,7 @@
           "sourceHash": "6597473e902fed51f3c29ade22e34737d1301910a4f34680cb226a21d112116d",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Paper display: description exists; expanded description starts hidden, then appears after clicking mer."
@@ -907,7 +907,7 @@
           "sourceHash": "475e0085da5978791cbd66587bdd5f166e46f881cfce05b66dee564c89799ff7",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Paper validation: empty required account yields two errors; error link focuses input; valid 01234567892 clears both errors."
@@ -925,7 +925,7 @@
           "sourceHash": "c6e4fc90a5603fc21184baf47372bc0e3c368f872d3fe53d0b25e0fd0c5b51ae",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Paper validation: optional label exists and empty optional account yields no required error."
@@ -981,7 +981,7 @@
           "sourceHash": "b8c77b29d1de5f33de3f06ab5410ce6675aec35a7380a1b86fd17a206a8be2ee",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "English paper display: translated Kontonummer med beskrivelse (en) and Dette er en beskrivelse (en) exist."
@@ -2962,7 +2962,7 @@
           "buildOnly": false,
           "modifiers": [],
           "sourceUrl": "https://github.com/navikt/skjemabygging-formio/blob/9acb96336a262241301d0d235efa98f444684103/packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts#L11-L23",
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "playwrightReview": "pending",
           "coverageChecklist": [
@@ -2980,7 +2980,7 @@
           "sourceHash": "f9b72f5c4711bbb8c142ff974f04f182170f640d6b2aafac63e4a289b3469f2e",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Clock is fixed to 2025-01-15; date display field exists, visible, enabled and not readonly."
@@ -2998,7 +2998,7 @@
           "sourceHash": "5f9a31c1eaaf0b080f6e9e93ab0a4509c6cca312b056e055fd38eff142c29d9c",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["Clock fixed to 2025-01-15; entering 15.01.2025 retains that input value."],
           "playwrightReview": "pending"
@@ -3014,7 +3014,7 @@
           "sourceHash": "5774ea036b0adae5563d8466c7b32d488525a784b449f834bf091c3ff2402b42",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["Dato med beskrivelse shows visible Velg ønsket dato."],
           "playwrightReview": "pending"
@@ -3030,7 +3030,7 @@
           "sourceHash": "5a1a4243f1108c7029667c79dad0acae33448576db870387f5024a27749c5328",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Dato med tilleggsbeskrivelse: Mer informasjon exists; extended description hidden until button clicked, then visible."
@@ -3048,7 +3048,7 @@
           "sourceHash": "4cdaab23da0b4b6433c17fa5ffdcfe92ebe88352891ec38ddacb03b0878e9d97",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Required date: empty submit produces two errors; error link focuses input; 15.01.2025 and resubmit clear both."
@@ -3066,7 +3066,7 @@
           "sourceHash": "e981e371278c20688cbe74d2db3000dbf1338f6302906523d7f3ae9a34893adb",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["Optional Dato ikke påkrevd has no required errors after empty submit."],
           "playwrightReview": "pending"
@@ -3100,7 +3100,7 @@
           "sourceHash": "fe1d06db2b3a85103f6c55f87c1b5fc3d514fe0fd0a07d37c82d58bab21c54c7",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Latest boundary: 25.01.2025 produces two Datoen kan ikke være senere enn 20.01.2025 errors; 15.01.2025 and resubmit clear them."
@@ -3118,7 +3118,7 @@
           "sourceHash": "e04b2687b61f1a471be6df971d2671277c99aafaca9265ba19a56e6fb28bacee",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["English paper display contains label Dato (dd.mm.åååå) (en)."],
           "playwrightReview": "pending"
@@ -3134,7 +3134,7 @@
           "sourceHash": "82aee3413458cf1d4ddb97eb4d1ce34782987e0c5e1109cdf6d0efd5ef796d5e",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["English paper display shows Velg ønsket dato (en) inside Dato med beskrivelse (en)."],
           "playwrightReview": "pending"
@@ -10153,7 +10153,7 @@
           "sourceHash": "ab44c8ef436c733966dde70bcb8ddafd0093b8995a4522618d0e09ec6395614f",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Attachment step shows Kontroller at vedleggene er riktige før du fortsetter.; enter Relevant kommentar in Kommentar til vedlegg.",
@@ -10181,7 +10181,7 @@
           "sourceHash": "ac8cc3fdaad5a2966c4844fb03e2c3496b44ef45fb876227da1a97c7ad6ec423",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Upload small-file.txt and another-small-file.txt to Vedlegg 1/2, test.txt to upload-only and Annen dokumentasjon titled Annet vedlegg 1.",
@@ -10209,7 +10209,7 @@
           "buildOnly": false,
           "modifiers": [],
           "sourceUrl": "https://github.com/navikt/skjemabygging-formio/blob/9acb96336a262241301d0d235efa98f444684103/packages/fyllut/cypress/e2e/digital-submission/digital-attachment-upload.cy.ts#L125-L222",
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "playwrightReview": "pending",
           "coverageChecklist": [
@@ -13485,7 +13485,7 @@
           "sourceHash": "1812918de4af5e1671d503966d0f72eb7440584fdde0e609a2aaf5e203998dff",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session starts Person; heading exists and full-page axe check passes.",
@@ -13527,7 +13527,7 @@
           "sourceHash": "6ed6db48e8e8fd8a5df4ec0db0554f238fd1111cdf4c5b4bf76f5002940ccadb",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: navigate Bedrift / organisasjon, assert heading and run full-page axe check.",
@@ -13546,7 +13546,7 @@
           "sourceHash": "95d1b64d21e800fb7facd219c09ba3f1356a21d8700d9e2335161107cbf183ea",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: navigate Dato og tid, assert heading and run full-page axe check.",
@@ -13565,7 +13565,7 @@
           "sourceHash": "76de51439b914c65a5cee30ad1c162569ea9bb3ee54039dbe4554b5843784a1d",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: navigate Standard felter, assert heading and run full-page axe check.",
@@ -13584,7 +13584,7 @@
           "sourceHash": "edeaf4c01a6bfa0478529503f5c73278bd0d742cf0729860ec9e3b125be5f435",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: navigate Layout, assert heading and run full-page axe check.",
@@ -13603,7 +13603,7 @@
           "sourceHash": "35a0e95ef4f168ea1b2215aab0b84e7ad83bd05fa1c2ee4fb42fcaa740a9f492",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: navigate Data, assert heading and run full-page axe check.",
@@ -16169,7 +16169,7 @@
           "sourceHash": "5e23e6c876effea38841553f0cfd38d090cafaafcc8afa040a6857a1fb8f5541",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Static PDF: select person without identity number, fill Ola Nordmann and Fyrstikkalléen 1, 0661 Oslo; select Vedlegg 1 and 2, continue and download.",
@@ -16191,7 +16191,7 @@
           "sourceHash": "49a20b8c6a67ca3a01cc54fad3adf16caae95643752ddbf0f23fb2519fb5287f",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Static PDF: identity 22015614475, both attachment checkboxes exist but neither selected; continue and download.",
@@ -16210,7 +16210,7 @@
           "sourceHash": "1df63aba3ace8d47d2218c5f5b4c5f3f5f35d4cc370bebe79a9a21c86c8c1c2b",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["Empty ?filter= shows both Vedlegg 1 and Vedlegg 2 checkboxes."],
           "playwrightReview": "pending"
@@ -16226,7 +16226,7 @@
           "sourceHash": "a98c85c40fe6e41afb3f035615485f31b7caf0d4a7833aadf1eed2d7686420c7",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["?filter=R4 shows Vedlegg 1 checkbox but not Vedlegg 2."],
           "playwrightReview": "pending"
@@ -16245,7 +16245,7 @@
           "sourceHash": "b8104f73c0cc317bbabce808b9f2f88d5b811a12021a46a37521bd5ee044f0ce",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "?filter=%20R4%20,%20,%20K2%20 shows both attachment checkboxes despite whitespace and empty code."
@@ -16263,7 +16263,7 @@
           "sourceHash": "50b85bef4b5a91aa778481e07ab108bde65dbd3e78416d17ea6a6278bd489c12",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": ["?filter=R4,ZZ shows Vedlegg 1 checkbox but not Vedlegg 2."],
           "playwrightReview": "pending"
@@ -16279,7 +16279,7 @@
           "sourceHash": "742bf196c6e2dfb8cf60245ab96ce181f991882d34349b107b735be68547f41b",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "?filter=ZZ shows neither attachment; national ID 22015614475 can still continue and download.",
@@ -16298,7 +16298,7 @@
           "buildOnly": false,
           "modifiers": [],
           "sourceUrl": "https://github.com/navikt/skjemabygging-formio/blob/9acb96336a262241301d0d235efa98f444684103/packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts#L155-L175",
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "playwrightReview": "pending",
           "coverageChecklist": [
@@ -16316,7 +16316,7 @@
           "buildOnly": false,
           "modifiers": [],
           "sourceUrl": "https://github.com/navikt/skjemabygging-formio/blob/9acb96336a262241301d0d235efa98f444684103/packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts#L177-L181",
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "playwrightReview": "pending",
           "coverageChecklist": [

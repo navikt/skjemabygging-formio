@@ -141,6 +141,22 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
       assert(!ids.has(test.id), `Duplicate migration ID: ${test.id}`);
       ids.add(test.id);
       const actual = current.tests[index];
+      if (test.id === 'F061-T005') {
+        assert.deepEqual(
+          test.runtimeCases,
+          ['upload', 'delete'].flatMap((operation) =>
+            ['success', 'failure'].map((outcome) => ({
+              operation,
+              outcome,
+              titlePath: [
+                ...test.scopes,
+                `blocks submission during a pending ${operation} and recovers after ${outcome}`,
+              ],
+            })),
+          ),
+          'Pending attachment operations require all four distinct outcomes',
+        );
+      }
       assert.deepEqual(actual.proposedTitlePath, test.proposedTitlePath, `Title changed: ${test.id}`);
       assert.equal(actual.sourceHash, test.sourceHash, `Test changed: ${test.id}`);
       assert.equal(actual.buildOnly, test.buildOnly, `Built-only status changed: ${test.id}`);
@@ -213,6 +229,18 @@ const checkMigration = (inventory, read = (path) => readFileSync(resolve(root, p
   return implemented;
 };
 
+const expandRuntimeCases = (implemented) =>
+  implemented.flatMap((entry) =>
+    entry.runtimeCases
+      ? entry.runtimeCases.map((runtimeCase, index) => ({
+          ...entry,
+          id: `${entry.id}-C${String(index + 1).padStart(3, '0')}`,
+          declarationId: entry.id,
+          proposedTitlePath: runtimeCase.titlePath,
+        }))
+      : [entry],
+  );
+
 const checkDiscovery = (implemented, discovered, mode = 'built') => {
   assert(['dev', 'built'].includes(mode), 'Invalid execution mode');
   assert(Array.isArray(discovered), 'Discovery must be a flat array of Playwright tests');
@@ -232,7 +260,7 @@ const checkDiscovery = (implemented, discovered, mode = 'built') => {
       test.annotations.some((a) => a.type === 'cypress-source' && a.description === expected.source),
       `Missing backlink: ${id}`,
     );
-    const expectedSkip = mode === 'dev' && id === 'F086-T002';
+    const expectedSkip = mode === 'dev' && !!expected.buildOnly;
     assert.equal(test.expectedStatus === 'skipped' || !!test.skipped, expectedSkip, `Unexpected skip: ${id}`);
     assert(
       ['passed', ...(expectedSkip ? ['skipped'] : [])].includes(test.expectedStatus ?? 'passed'),
@@ -273,7 +301,7 @@ const checkResults = (implemented, report, mode) => {
   checkDiscovery(implemented, tests, mode);
   for (const test of tests) {
     const id = test.annotations.find((annotation) => annotation.type === 'migration-id').description;
-    const skipped = mode === 'dev' && id === 'F086-T002';
+    const skipped = mode === 'dev' && !!implemented.find((entry) => entry.id === id).buildOnly;
     assert.equal(test.results?.length, 1, `Missing result or retry: ${id}`);
     assert.equal(test.results[0].retry, 0, `Retry: ${id}`);
     assert.equal(test.results[0].status, skipped ? 'skipped' : 'passed', `Unexpected result: ${id}`);
@@ -295,10 +323,14 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   checkSourceSet(inventory);
   const implemented = checkMigration(inventory);
   assert(implemented.length === 0 || process.argv[2], 'Playwright discovery JSON required for implemented tests');
-  if (process.argv[2]) checkDiscovery(implemented, flattenDiscovery(JSON.parse(readFileSync(process.argv[2], 'utf8'))));
+  if (process.argv[2])
+    checkDiscovery(
+      expandRuntimeCases(implemented),
+      flattenDiscovery(JSON.parse(readFileSync(process.argv[2], 'utf8'))),
+    );
   console.log(
     `Migration register: ${inventory.staticTestDeclarations} source tests, ${implemented.length} implemented; reviews remain explicit.`,
   );
 }
 
-export { checkDiscovery, checkMigration, checkResults, checkSourceSet, flattenDiscovery };
+export { checkDiscovery, checkMigration, checkResults, checkSourceSet, expandRuntimeCases, flattenDiscovery };

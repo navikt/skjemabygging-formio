@@ -56,7 +56,7 @@ const loadExistingManifest = (path) => {
     epoch.repoRoot !== repoRoot ||
     typeof epoch.epochId !== 'string' ||
     !/^[a-f0-9-]{36}$/.test(epoch.epochId) ||
-    !/^F\d{3}-T\d{3}$/.test(epoch.testId) ||
+    !/^F\d{3}-T\d{3}(?:-C\d{3})?$/.test(epoch.testId) ||
     !Number.isInteger(epoch.ownerPid) ||
     epoch.ownerPid <= 0 ||
     !Array.isArray(epoch.pids) ||

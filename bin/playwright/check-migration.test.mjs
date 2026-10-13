@@ -146,6 +146,19 @@ test('pending attachment operations retain all four runtime cases and the existi
       })),
     ),
   );
+  for (const mutate of [
+    (cases) => cases.pop(),
+    (cases) => {
+      cases[1] = structuredClone(cases[0]);
+    },
+    (cases) => cases.reverse(),
+  ]) {
+    const changed = structuredClone(inventory);
+    mutate(
+      changed.files.find((entry) => entry.id === 'F061').tests.find((entry) => entry.id === pending.id).runtimeCases,
+    );
+    assert.throws(() => checkMigration(changed, read), /all four distinct outcomes/);
+  }
   const shifted = structuredClone(inventory);
   shifted.sourceOrderOverrides.F061 = [...shifted.sourceOrderOverrides.F061].sort();
   assert.throws(() => checkMigration(shifted, read), /Stable source order changed: F061/);
@@ -274,9 +287,9 @@ test('built-only classification inherits real skip calls and ignores comments or
   );
 });
 
-test('ten pilot pointers match the current working tree', () => {
+test('43 pilot declarations match the current working tree', () => {
   const entries = checkMigration(currentInventory);
-  assert.equal(entries.length, 10);
+  assert.equal(entries.length, 43);
 });
 
 test('source or inventory tampering fails closed', () => {

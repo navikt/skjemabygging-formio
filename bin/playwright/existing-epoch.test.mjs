@@ -71,6 +71,19 @@ const waitFor = async (condition) => {
   throw new Error('EXISTING_CONTROL_DID_NOT_COMPLETE');
 };
 
+test('an existing epoch consumes a concrete parameterized identity but rejects another outcome', async () => {
+  const prepared = await prepareExistingEpoch({ ...options(), testId: 'F061-T005-C001' }, { startEpoch: fakeStart });
+  try {
+    await assert.rejects(attach(prepared, { testId: 'F061-T005-C002' }), /EXISTING_IDENTITY_MISMATCH/);
+    const epoch = await attach(prepared, { testId: 'F061-T005-C001' });
+    await epoch.quiesce();
+    await epoch.stop();
+    assert.equal(prepared.manifest.state, 'consumed');
+  } finally {
+    await prepared.close();
+  }
+});
+
 test('an existing epoch accepts one concurrent claimant and cannot be replayed after consumption', async () => {
   const prepared = await prepareExistingEpoch(options(), { startEpoch: fakeStart });
   try {

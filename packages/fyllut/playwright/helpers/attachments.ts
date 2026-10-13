@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { resolve } from 'node:path';
 import { saveAndContinue, visitForm } from './form';
 
@@ -17,6 +17,24 @@ const visitAttachments = async (page: Page) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Vedlegg' })).toBeVisible();
 };
 
+const uploadAttachmentFile = async (page: Page, attachment: Locator, file: string) => {
+  const uploaded = page.waitForResponse(
+    (response) =>
+      response.request().method() === 'POST' &&
+      /\/fyllut\/api\/send-inn\/digital-application\/[^/]+\/attachments\/[^/?]+$/.test(response.url()),
+  );
+  await attachment
+    .locator('input[type="file"]')
+    .setInputFiles(resolve(import.meta.dirname, '../../cypress/fixtures/files', file));
+  const response = await uploaded;
+  expect(response.status()).toBe(201);
+  const error = await response.finished();
+  if (error) throw new Error('ATTACHMENT_UPLOAD_RESPONSE_INCOMPLETE', { cause: error });
+  const uploadedFile = attachment.getByRole('listitem').filter({ has: page.getByText(file, { exact: true }) });
+  await expect(uploadedFile.getByText(file, { exact: true })).toBeVisible();
+  await expect(uploadedFile.getByRole('button', { name: 'Slett filen', exact: true })).toBeVisible();
+};
+
 const prepareAttachmentSubmission = async (page: Page) => {
   await visitAttachments(page);
   const uploads = [
@@ -33,21 +51,7 @@ const prepareAttachmentSubmission = async (page: Page) => {
     if (name === 'Annen dokumentasjon') {
       await attachment.getByLabel('Gi vedlegget et beskrivende navn').fill('Annet vedlegg 1');
     }
-    const uploaded = page.waitForResponse(
-      (response) =>
-        response.request().method() === 'POST' &&
-        /\/fyllut\/api\/send-inn\/digital-application\/[^/]+\/attachments\/[^/?]+$/.test(response.url()),
-    );
-    await attachment
-      .locator('input[type="file"]')
-      .setInputFiles(resolve(import.meta.dirname, '../../cypress/fixtures/files', file));
-    const response = await uploaded;
-    expect(response.status()).toBe(201);
-    const error = await response.finished();
-    if (error) throw new Error('ATTACHMENT_UPLOAD_RESPONSE_INCOMPLETE', { cause: error });
-    const uploadedFile = attachment.getByRole('listitem').filter({ has: page.getByText(file, { exact: true }) });
-    await expect(uploadedFile.getByText(file, { exact: true })).toBeVisible();
-    await expect(uploadedFile.getByRole('button', { name: 'Slett filen', exact: true })).toBeVisible();
+    await uploadAttachmentFile(page, attachment, file);
   }
   await saveAndContinue(page);
   await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering' })).toBeVisible();
@@ -60,4 +64,4 @@ const sendToNav = async (page: Page) => {
     .click();
 };
 
-export { prepareAttachmentSubmission, sendToNav, visitAttachments };
+export { prepareAttachmentSubmission, sendToNav, uploadAttachmentFile, visitAttachments };

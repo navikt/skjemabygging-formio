@@ -2,14 +2,48 @@
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { test } from 'node:test';
-import { checkResults } from './check-migration.mjs';
+import { checkResults, expandRuntimeCases } from './check-migration.mjs';
 import { verifyEvidence } from './mock-evidence.mjs';
 import { checkBuild } from './test-epoch.mjs';
 
 const entries = [
   { id: 'F061-T004', target: 'a.spec.ts', source: 'a.cy.ts', proposedTitlePath: ['attachments'] },
-  { id: 'F086-T002', target: 'b.spec.ts', source: 'b.cy.ts', proposedTitlePath: ['static'] },
+  { id: 'F086-T002', target: 'b.spec.ts', source: 'b.cy.ts', proposedTitlePath: ['static'], buildOnly: true },
 ];
+
+test('all parameterized outcomes have distinct identities and missing or duplicated cases fail closed', () => {
+  const declared = {
+    ...entries[0],
+    id: 'F061-T005',
+    runtimeCases: ['upload', 'delete'].flatMap((operation) =>
+      ['success', 'failure'].map((outcome) => ({ titlePath: [operation, outcome] })),
+    ),
+  };
+  const expanded = expandRuntimeCases([declared]);
+  assert.deepEqual(
+    expanded.map(({ id }) => id),
+    ['F061-T005-C001', 'F061-T005-C002', 'F061-T005-C003', 'F061-T005-C004'],
+  );
+  const report = expanded.map((entry) => ({
+    file: entry.target,
+    titlePath: entry.proposedTitlePath,
+    annotations: [
+      { type: 'migration-id', description: entry.id },
+      { type: 'cypress-source', description: entry.source },
+    ],
+    expectedStatus: 'passed',
+    status: 'expected',
+    results: [{ retry: 0, status: 'passed', errors: [] }],
+  }));
+  checkResults(expanded, report, 'built');
+  assert.throws(() => checkResults(expanded, report.slice(1), 'built'), /Unexpected number/);
+  const duplicate = structuredClone(report);
+  duplicate[1] = duplicate[0];
+  assert.throws(() => checkResults(expanded, duplicate, 'built'), /Duplicate discovered ID/);
+  const wrongTitle = structuredClone(report);
+  wrongTitle[0].titlePath = ['delete', 'success'];
+  assert.throws(() => checkResults(expanded, wrongTitle, 'built'), /Wrong target title/);
+});
 
 test('missing compiled artifacts fail before execution, while dev requires no build', () => {
   const missing = resolve('packages/fyllut/.runtime/nonexistent-playwright-build');

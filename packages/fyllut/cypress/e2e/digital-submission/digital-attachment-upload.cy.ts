@@ -69,6 +69,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       });
     });
 
+    // Playwright: F061-T002 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > renders attachments together with regular components without attachment-panel metadata
     it('renders attachments together with regular components without attachment-panel metadata', () => {
       cy.findByText('Kontroller at vedleggene er riktige før du fortsetter.').should('be.visible');
       cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Relevant kommentar');
@@ -107,6 +108,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       });
 
+      // Playwright: F061-T003 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > shows uploaded attachments on summary page
       it('shows uploaded attachments on summary page', () => {
         cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
           .should('exist')
@@ -122,6 +124,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       ['upload', 'delete'].forEach((operation) => {
         ['success', 'failure'].forEach((outcome) => {
           // The intercept stays pending while the test edits, navigates and attempts submission.
+          // Playwright: F061-T005 | packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > `blocks submission during a pending ${operation} and recovers after ${outcome}`
           it(
             `blocks submission during a pending ${operation} and recovers after ${outcome}`,
             { defaultCommandTimeout: 30000 },

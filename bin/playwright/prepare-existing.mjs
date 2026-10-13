@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parsePortRange, parsePorts } from '../lib/test-ports.mjs';
-import { checkMigration, checkSourceSet } from './check-migration.mjs';
+import { checkMigration, checkSourceSet, expandRuntimeCases } from './check-migration.mjs';
 import { repoRoot } from './existing-manifest.mjs';
 import { prepareExistingEpoch } from './existing-owner.mjs';
 
@@ -40,10 +40,10 @@ process.once('SIGINT', () => shutdown('SIGINT'));
 process.once('SIGTERM', () => shutdown('SIGTERM'));
 try {
   const inventory = JSON.parse(readFileSync(resolve(repoRoot, 'packages/fyllut/playwright/migration/inventory.json')));
-  const selected = checkMigration(inventory).find((test) => test.id === testId);
+  const selected = expandRuntimeCases(checkMigration(inventory)).find((test) => test.id === testId);
   checkSourceSet(inventory);
   if (!selected) throw new Error(`EXISTING_UNKNOWN_TEST: ${testId}`);
-  if (mode === 'dev' && testId === 'F086-T002') throw new Error('EXISTING_BUILD_ONLY_TEST');
+  if (mode === 'dev' && selected.buildOnly) throw new Error('EXISTING_BUILD_ONLY_TEST');
   const output = resolve(repoRoot, 'packages/fyllut/.runtime/playwright', `existing-${randomUUID()}`);
   mkdirSync(output, { recursive: true });
   console.log(`PLAYWRIGHT_PREPARING_OUTPUT=${output}`);
