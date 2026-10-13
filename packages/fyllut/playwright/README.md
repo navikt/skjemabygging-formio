@@ -123,6 +123,12 @@ The launcher requires successful bind notifications from its own children and HT
 
 Teardown closes browser contexts, stops the owned backend/frontend processes and awaits their exit while mocks remain available. It then restores variants, checks and releases final mock evidence, and stops the remaining mock process. The final snapshot therefore includes observed calls during application shutdown and restore. Only owned process groups are signalled, with bounded SIGTERM-to-SIGKILL escalation. A dedicated epoch-owner process handles worker loss through IPC disconnect, including SIGKILL of the worker. Failed reset, application shutdown, evidence finalization, cleanup or unexpected owner loss poisons the run and prevents another epoch. Cypress runtime configuration is not written or deleted.
 
+The developer launcher is shared with Bygger. Its backend readiness probe uses
+`/internal/isReady`, not `/`, which intentionally returns 404 in development.
+The verification command starts the real Bygger launcher, checks readiness and
+port cleanup, and checks that AI mode leaves Cypress runtime configuration
+unchanged. Changes to shared startup code must preserve both applications.
+
 Reports are under `packages/fyllut/.runtime/playwright/<run-id>/`. `run.json` records mode, selected IDs, commit and built-entrypoint timestamps/hashes. `source.diff` records tracked worktree changes, including staged new files; untracked paths are listed separately and must be staged or captured for final review evidence. Each epoch records its immutable test ID, attempt, URLs, owner/child PIDs, startup duration and stop time. JSON results are checked against the exact selected IDs; discovery is not runtime evidence. F029-T002 confirms `get-register-data-activities:success-empty` and checks the backend response and empty-state UI.
 
 The full-file source IDs are F004-T001 through T007 (bank account), F017-T001
