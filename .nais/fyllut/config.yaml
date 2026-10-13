@@ -7,10 +7,9 @@ metadata:
   labels:
     team: skjemadigitalisering
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "151M"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    haproxy.org/timeout-connect: "120s"
+    haproxy.org/timeout-client: "120s"
+    haproxy.org/timeout-server: "300s"
 spec:
   image: {{image}}
   port: 8080
