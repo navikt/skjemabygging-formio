@@ -5,6 +5,7 @@ import { logger } from '../../shared/logger/logger';
 const formsUrl = 'v1/forms';
 const globalTranslationUrl = 'v1/global-translations';
 const publishedGlobalTranslationUrl = 'v1/published-global-translations';
+const PUBLISHED_TRANSLATIONS_TIMEOUT_MS = 5000;
 
 const buildLanguageCodesParam = (languageCodes?: TranslationLang[]): string => {
   return languageCodes ? `?${new URLSearchParams({ languageCodes: languageCodes.toString() })}` : '';
@@ -43,7 +44,9 @@ const getPublishedGlobalTranslations = async ({ baseUrl, languageCode }: GetPubl
   const targetUrl = `${baseUrl}/${publishedGlobalTranslationUrl}/${languageCode}`;
   logger.info('Getting published global translations', { languageCode, targetUrl });
 
-  return await http.get<Record<string, string>>(targetUrl);
+  return await http.get<Record<string, string>>(targetUrl, {
+    signal: AbortSignal.timeout(PUBLISHED_TRANSLATIONS_TIMEOUT_MS),
+  });
 };
 
 const translationClient = {
