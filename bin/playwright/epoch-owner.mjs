@@ -93,6 +93,7 @@ process.on('message', (message) => {
   };
   save();
   const startedAt = Date.now();
+  const startupReports = [];
   starting = (async () => {
     try {
       stack = await startFyllutTestStack(
@@ -109,6 +110,10 @@ process.on('message', (message) => {
         {
           signal: controller.signal,
           log: (chunk) => appendFileSync(resolve(directory, 'stack.log'), chunk),
+          onStartupDiagnostics: (report) => {
+            startupReports.push(report);
+            writeFileSync(resolve(directory, 'startup.json'), JSON.stringify({ attempts: startupReports }, null, 2));
+          },
           onFailure: (error) => {
             fatal(error);
             void stop(error);

@@ -56,6 +56,7 @@ const createFyllutTestStack = ({
     backendURL: backendUrl,
     mockURL: mockUrl,
     adminURL: `http://127.0.0.1:${mockAdminPort}`,
+    serviceNames: mode === 'built' ? ['mocks', 'backend'] : ['mocks', 'backend', 'frontend'],
     commands: [
       [
         nodeExecutable,

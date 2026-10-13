@@ -1,5 +1,7 @@
 /* eslint-disable vitest/no-import-node-test -- Standalone result checker tests. */
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { test } from 'node:test';
 import { checkResults, expandRuntimeCases } from './check-migration.mjs';
@@ -10,6 +12,32 @@ const entries = [
   { id: 'F061-T004', target: 'a.spec.ts', source: 'a.cy.ts', proposedTitlePath: ['attachments'] },
   { id: 'F086-T002', target: 'b.spec.ts', source: 'b.cy.ts', proposedTitlePath: ['static'], buildOnly: true },
 ];
+
+test('the root runner accepts visible debugging without exposing isolation overrides', () => {
+  const run = (args) =>
+    spawnSync(process.execPath, ['bin/playwright/run-fyllut.mjs', ...args], {
+      cwd: resolve(import.meta.dirname, '../..'),
+      encoding: 'utf8',
+      timeout: 30000,
+    });
+  const result = run(['--list', 'bankaccount.spec.ts', '--grep', 'should be visible and interactable', '--headed']);
+  assert.equal(result.status, 0, result.stderr);
+  const directory = /PLAYWRIGHT_ARTIFACTS=(.+)/.exec(result.stdout)?.[1];
+  assert(directory);
+  const manifest = JSON.parse(readFileSync(resolve(directory, 'run.json'), 'utf8'));
+  assert.equal(manifest.headed, true);
+  assert.deepEqual(manifest.selectedIds, ['F004-T001']);
+  const ambiguous = run(['--list', '--grep', '^no-matching-test$']);
+  assert.equal(ambiguous.status, 1);
+  assert.match(ambiguous.stderr, /No tests found/);
+  assert.match(ambiguous.stderr, /Reports and local logs:/);
+  assert.match(ambiguous.stderr, /Rerun one test:/);
+  for (const flag of ['--workers=4', '--retries=1', '--ui', '--debug']) {
+    const result = run(['--list', flag]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Unsupported runner argument/);
+  }
+});
 
 test('all parameterized outcomes have distinct identities and missing or duplicated cases fail closed', () => {
   const declared = {

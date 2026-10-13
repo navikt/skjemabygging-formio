@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { mkdirSync, readFileSync, readdirSync, watch } from 'node:fs';
+import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { test } from 'node:test';
 import { isPortFree } from '../lib/managed-test-stack.mjs';
@@ -33,10 +34,52 @@ const waitForStop = (directory) =>
     check();
   });
 
+test('a real epoch startup failure saves diagnostics and leaves a foreign listener untouched', async () => {
+  const output = resolve('packages/fyllut/.runtime/playwright', `startup-diagnostics-${randomUUID()}`);
+  const foreign = createServer((req, res) => res.end('foreign'));
+  await new Promise((done, fail) => {
+    foreign.once('error', fail);
+    foreign.listen(3440, '127.0.0.1', done);
+  });
+  try {
+    await assert.rejects(
+      startTestEpoch({
+        mode: 'built',
+        testId: 'startup-diagnostics',
+        attempt: 0,
+        output,
+        ports: [3440, 3441, 3442, 3443],
+      }),
+      /STACK_PORT_COLLISION/,
+    );
+    const [id] = readdirSync(resolve(output, 'epochs'));
+    const directory = resolve(output, 'epochs', id);
+    const { attempts } = JSON.parse(readFileSync(resolve(directory, 'startup.json'), 'utf8'));
+    assert.equal(attempts.length, 1);
+    assert.equal(attempts[0].state, 'failed');
+    assert.equal(attempts[0].reason, 'port-check');
+    assert(attempts[0].services.every(({ pid }) => pid === null));
+    const manifest = JSON.parse(readFileSync(resolve(directory, 'manifest.json'), 'utf8'));
+    assert(manifest.stoppedAt);
+    assert.throws(() => process.kill(manifest.ownerPid, 0), { code: 'ESRCH' });
+    assert.equal(await (await fetch('http://127.0.0.1:3440')).text(), 'foreign');
+  } finally {
+    await new Promise((done, fail) => foreign.close((error) => (error ? fail(error) : done())));
+  }
+  assert(await isPortFree(3440));
+});
+
 test('quiesce awaits application exit but leaves mocks available for final evidence', async () => {
   const output = resolve('packages/fyllut/.runtime/playwright', `quiesce-${randomUUID()}`);
   const epoch = await startTestEpoch({ mode: 'built', testId: 'quiesce', attempt: 0, output });
   try {
+    const { attempts } = JSON.parse(readFileSync(resolve(epoch.directory, 'startup.json'), 'utf8'));
+    assert.equal(attempts.at(-1).state, 'ready');
+    assert.deepEqual(
+      attempts.at(-1).services.map(({ name }) => name),
+      ['mocks', 'backend'],
+    );
+    assert(attempts.at(-1).probes.every(({ status }) => status >= 200 && status < 300));
     await epoch.quiesce();
     await epoch.quiesce();
     epoch.assertHealthy();

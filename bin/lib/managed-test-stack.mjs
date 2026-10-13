@@ -64,19 +64,46 @@ const stopChild = async (child, graceMs = 3000) => {
 };
 
 const startManagedStack = async (
-  { commands, listeningPorts, healthUrls, onReady, onCleanup },
+  { commands, listeningPorts, healthUrls, serviceNames, onReady, onCleanup },
   {
     timeoutMs = 60000,
     log = (chunk) => process.stdout.write(chunk),
     signal,
     onFailure = () => {},
     onSpawn = () => {},
+    onStartupDiagnostics = () => {},
   } = {},
 ) => {
+  const started = performance.now();
+  const elapsed = () => Math.round(performance.now() - started);
+  const services = listeningPorts.map((ports, index) => ({
+    name: serviceNames?.[index] ?? `service-${index + 1}`,
+    ports,
+    pid: null,
+    spawnedMs: null,
+    boundMs: null,
+    exitCode: null,
+    exitSignal: null,
+  }));
+  const probes = healthUrls.map((value) => {
+    const url = new URL(value);
+    url.username = '';
+    url.password = '';
+    url.search = '';
+    url.hash = '';
+    return { url: url.href, status: null, error: null, readyMs: null };
+  });
+  const diagnose = (state, reason = null) =>
+    onStartupDiagnostics(structuredClone({ state, reason, elapsedMs: elapsed(), services, probes }));
   signal?.throwIfAborted();
   const ports = listeningPorts.flat();
-  if (!(await Promise.all(ports.map(isPortFree))).every(Boolean)) {
-    throw Object.assign(new Error(`STACK_PORT_COLLISION: ${ports.join(', ')}`), { code: 'EADDRINUSE' });
+  try {
+    if (!(await Promise.all(ports.map(isPortFree))).every(Boolean)) {
+      throw Object.assign(new Error(`STACK_PORT_COLLISION: ${ports.join(', ')}`), { code: 'EADDRINUSE' });
+    }
+  } catch (error) {
+    diagnose('failed', 'port-check');
+    throw error;
   }
   signal?.throwIfAborted();
   const reportRoot = resolve(import.meta.dirname, '../../.runtime');
@@ -137,6 +164,8 @@ const startManagedStack = async (
         },
       );
       children.push(child);
+      services[index].pid = child.pid ?? null;
+      services[index].spawnedMs = elapsed();
       if (child.pid) onSpawn(child.pid);
       child.stdout.on('data', log);
       child.stderr.on('data', log);
@@ -151,6 +180,7 @@ const startManagedStack = async (
       child.on('message', (message) => {
         if (message?.type === 'listening' && message.pid === child.pid) {
           if (listeningPorts[index].includes(message.port)) bound[index].add(message.port);
+          if (listeningPorts[index].every((port) => bound[index].has(port))) services[index].boundMs = elapsed();
         } else if (message?.type === 'listen-error' && message.pid === child.pid) {
           bindFailure(message);
         }
@@ -159,6 +189,8 @@ const startManagedStack = async (
         if (!childStops.has(child)) fail(error);
       });
       child.once('exit', (code, exitSignal) => {
+        services[index].exitCode = code;
+        services[index].exitSignal = exitSignal;
         if (!childStops.has(child)) {
           const report = resolve(reportDirectory, `${child.pid}.json`);
           if (existsSync(report)) bindFailure(JSON.parse(readFileSync(report, 'utf8')));
@@ -173,22 +205,31 @@ const startManagedStack = async (
       if (failure) throw failure;
       if (listeningPorts.every((expected, index) => expected.every((port) => bound[index].has(port)))) {
         await Promise.all(
-          healthUrls
-            .filter((url) => !healthy.has(url))
-            .map(async (url) => {
-              try {
-                const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(1000) });
-                await response.body?.cancel();
-                if (response.ok) healthy.add(url);
-              } catch (error) {
-                if (!(error instanceof TypeError) && error.name !== 'TimeoutError') throw error;
+          healthUrls.map(async (url, index) => {
+            if (healthy.has(url)) return;
+            try {
+              const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(1000) });
+              await response.body?.cancel();
+              probes[index].status = response.status;
+              probes[index].error = null;
+              if (response.ok) {
+                healthy.add(url);
+                probes[index].readyMs = elapsed();
               }
-            }),
+            } catch (error) {
+              if (!(error instanceof TypeError) && error.name !== 'TimeoutError') throw error;
+              probes[index].status = null;
+              probes[index].error = error.name === 'TimeoutError' ? 'timeout' : 'connection';
+            }
+          }),
         );
         signal?.throwIfAborted();
         if (failure) throw failure;
         if (healthy.size === new Set(healthUrls).size) {
           await onReady?.();
+          signal?.throwIfAborted();
+          if (failure) throw failure;
+          diagnose('ready');
           signal?.throwIfAborted();
           if (failure) throw failure;
           ready = true;
@@ -206,11 +247,23 @@ const startManagedStack = async (
     }
     throw new Error(`STACK_STARTUP_TIMEOUT: ${timeoutMs}ms; ports ${ports.join(', ')}`);
   } catch (error) {
+    const errors = [error];
     try {
       await stop();
     } catch (cleanupError) {
-      throw new AggregateError([error, cleanupError], 'Stack startup and cleanup failed', { cause: cleanupError });
+      errors.push(cleanupError);
     }
+    try {
+      const reason = signal?.aborted
+        ? 'interrupted'
+        : error.message.startsWith('STACK_STARTUP_TIMEOUT')
+          ? 'readiness-timeout'
+          : 'startup-error';
+      diagnose('failed', reason);
+    } catch (diagnosticError) {
+      errors.push(diagnosticError);
+    }
+    if (errors.length > 1) throw new AggregateError(errors, 'Stack startup and cleanup failed', { cause: error });
     throw error;
   }
 };

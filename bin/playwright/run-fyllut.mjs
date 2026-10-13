@@ -21,12 +21,17 @@ const args = process.argv.slice(2).filter((arg) => arg !== '--');
 let mode = 'dev';
 let builtRequested = false;
 let listOnly = false;
+let headed = false;
 const selection = [];
 let ports;
 let portRange;
 let existingPath;
 for (let index = 0; index < args.length; index++) {
   const argument = args[index];
+  if (argument === '--headed') {
+    headed = true;
+    continue;
+  }
   if (argument === '--built') {
     builtRequested = true;
     mode = 'built';
@@ -83,6 +88,10 @@ const env = {
   FYLLUT_PLAYWRIGHT_PORT_RANGE: portRange?.join(':') ?? '',
   FYLLUT_PLAYWRIGHT_EXISTING_MANIFEST: existingPath ?? '',
 };
+if (headed && !listOnly) {
+  env.XDG_CONFIG_HOME = resolve(output, 'browser-config');
+  mkdirSync(env.XDG_CONFIG_HOME, { recursive: true });
+}
 const command = [
   resolve(root, 'packages/fyllut/node_modules/@playwright/test/cli.js'),
   'test',
@@ -148,6 +157,7 @@ try {
     runId,
     mode,
     listOnly,
+    headed,
     selection,
     selectedIds,
     commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
@@ -169,7 +179,12 @@ try {
   console.log(`PLAYWRIGHT_MODE=${mode}\nPLAYWRIGHT_ARTIFACTS=${output}\nPLAYWRIGHT_IDS=${selectedIds.join(',')}`);
   if (!listOnly) {
     const exitCode = await new Promise((done, fail) => {
-      runner = spawn(process.execPath, [...command, ...selection], { cwd: root, env, stdio: 'inherit' });
+      const presentation = headed ? ['--headed'] : [];
+      runner = spawn(process.execPath, [...command, ...selection, ...presentation], {
+        cwd: root,
+        env,
+        stdio: 'inherit',
+      });
       runner.once('error', fail);
       runner.once('exit', (code) => done(code ?? 1));
     });
@@ -182,5 +197,16 @@ try {
   }
 } catch (error) {
   console.error(error);
+  const localOutput = relative(root, output);
+  console.error(`Reports and local logs: ${localOutput}`);
+  if (existsSync(resolve(output, 'html/index.html'))) {
+    console.error(`Open report: pnpm --dir packages/fyllut exec playwright show-report "${resolve(output, 'html')}"`);
+  }
+  console.error(`Server logs: ${localOutput}/epochs/<epoch-id>/stack.log`);
+  console.error(`Startup status: ${localOutput}/epochs/<epoch-id>/startup.json`);
+  console.error(
+    `Rerun one test: pnpm playwright:fyllut${mode === 'built' ? ':built' : ''} <spec-path> --grep '<test-title>'`,
+  );
+  console.error('Add --headed to watch the test in a browser. This needs a graphical display.');
   process.exitCode = interrupted === 'SIGINT' ? 130 : interrupted === 'SIGTERM' ? 143 : 1;
 }

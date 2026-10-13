@@ -110,6 +110,7 @@ const configs = {
           resolve(repoRoot, 'packages/bygger'),
         ],
       ],
+      serviceNames: ['backend', 'frontend'],
       healthUrls: [`${backendUrl}/internal/isReady`, frontendUrl],
       listeningPorts: [[backendPort], [frontendPort]],
       summaryLines: [`BYGGER_BACKEND_URL=${backendUrl}`, `BYGGER_FRONTEND_URL=${frontendUrl}`],
