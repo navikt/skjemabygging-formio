@@ -34,6 +34,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v6
         with:
@@ -46,6 +48,15 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+
+      - name: Verify migration baseline is available
+        run: |
+          node --input-type=module -e '
+            import { execFileSync } from "node:child_process";
+            import { readFileSync } from "node:fs";
+            const { revision } = JSON.parse(readFileSync("packages/fyllut/playwright/migration/inventory.json"));
+            execFileSync("git", ["cat-file", "-e", `${revision}^{commit}`], { stdio: "inherit" });
+          '
 
       - name: Install dependencies
         id: dependencies

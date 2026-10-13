@@ -70,6 +70,27 @@ const waitFor = async (condition) => {
   }
   throw new Error('EXISTING_CONTROL_DID_NOT_COMPLETE');
 };
+const ownerHasExited = (pid) => {
+  try {
+    process.kill(pid, 0);
+  } catch (error) {
+    if (error.code === 'ESRCH') return true;
+    throw error;
+  }
+  if (process.platform !== 'linux') return false;
+  try {
+    const stat = readFileSync(`/proc/${pid}/stat`, 'utf8');
+    // An orphan can remain a zombie until its new parent reaps it, despite having exited.
+    return stat.slice(stat.lastIndexOf(')') + 2).split(' ')[0] === 'Z';
+  } catch (error) {
+    if (error.code === 'ENOENT') return true;
+    throw error;
+  }
+};
+
+test('an executing owner cannot satisfy the orphan termination check', () => {
+  assert.equal(ownerHasExited(process.pid), false);
+});
 
 test('an existing epoch consumes a concrete parameterized identity but rejects another outcome', async () => {
   const prepared = await prepareExistingEpoch({ ...options(), testId: 'F061-T005-C001' }, { startEpoch: fakeStart });
@@ -325,8 +346,8 @@ test('controller SIGKILL fails the attachment and its surviving owner still clea
     const ownerDirectory = resolve(path, '..', 'epochs', epoch.epochId);
     await waitFor(() => JSON.parse(readFileSync(resolve(ownerDirectory, 'manifest.json'))).stoppedAt);
     assert.throws(() => epoch.assertHealthy(), /EXISTING_CONTROLLER_DISCONNECTED/);
-    for (const pid of [prepared.epoch.ownerPid, ...prepared.epoch.pids])
-      assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
+    await waitFor(() => ownerHasExited(prepared.epoch.ownerPid));
+    for (const pid of prepared.epoch.pids) assert.throws(() => process.kill(pid, 0), { code: 'ESRCH' });
     await assert.rejects(epoch.stop(), /closed|destroyed|DISCONNECTED/i);
     for (const port of prepared.epoch.ports) assert(await isPortFree(port));
   } finally {

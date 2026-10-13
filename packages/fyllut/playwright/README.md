@@ -256,6 +256,10 @@ mock-evidence and cleanup guarantees; it is not part of this bounded pilot.
 `.github/workflows/playwright-tests.yaml` runs on push, separately from the
 unchanged Cypress workflow. It uses the same `ubuntu-latest-8-cores` runner
 class, Node version and dependency-installation pattern as existing CI.
+Checkout fetches full Git history because the register controls read their
+pinned baseline revision. An explicit baseline check fails before installation
+if that revision is unavailable. A shallow checkout is not a valid environment
+for these controls.
 Permissions are limited to reading contents and packages. The automatic
 `GITHUB_TOKEN` is passed only to the dependency-installation step, not to the
 application or mock processes.
@@ -269,6 +273,14 @@ Playwright job on the same branch. The job has a 60-minute timeout; owned
 process cleanup still runs through the existing epoch lifecycle.
 The GitHub-hosted runner is discarded when the job ends.
 
+The controller-SIGKILL control also waits for its orphaned epoch owner to
+terminate. On Linux, an exited orphan may remain as a zombie until its new
+parent reaps it; a successful signal-zero probe alone does not mean it can
+still execute. This exception applies only to the orphan owner, never its
+server children. The control still requires every server PID to disappear,
+all selected ports to be free, a final cleanup manifest and a rejected
+consumer lease. Live owners do not satisfy the termination check.
+
 Each push takes one benchmark sample. `workflow_dispatch` offers one or three
 samples, defaulting to three. GitHub requires a dispatchable workflow to exist
 on the default branch before its "Run workflow" button is available. Push
@@ -276,6 +288,15 @@ execution on the pilot branch does not depend on that button or a merge.
 No agent push or remote run is implied by adding this workflow locally.
 Remote acceptance requires inspecting an actual GitHub run after the user
 pushes.
+
+Before delivering CI changes, validate an independent checkout with the
+workflow's history depth, its own frozen dependency installation, a fresh
+build and the same verification/pilot/measurement commands. Syntax checks and
+green runs in a prepared developer checkout are insufficient. Keep the exact
+commit, checkout settings, commands, results and unverified environment
+differences in the acceptance evidence. Exercise orphan-process cleanup with
+delayed reaping as well as ordinary exit. Do not call local acceptance
+GitHub acceptance or bypass failed controls with retries.
 
 The Actions summary separates dependency installation, browser installation,
 build and elapsed work through artifact upload. For the complete job duration,
