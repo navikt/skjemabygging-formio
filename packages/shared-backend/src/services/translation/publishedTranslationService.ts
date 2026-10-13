@@ -3,6 +3,7 @@ import { logger } from '../../shared/logger/logger';
 import translationClient from './translationClient';
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
+const RETRY_DELAY_MS = 30 * 1000;
 
 type PublishedTranslationClient = Pick<typeof translationClient, 'getPublishedGlobalTranslations'>;
 
@@ -22,6 +23,7 @@ type PublishedTranslationService = {
   /**
    * Published global translations for one language, cached per language.
    * Never throws: on failure it serves stale content, or an empty map so the UI falls back to nb.
+   * Fetches time out after 5 seconds; failed refreshes keep stale content for 30 seconds before retrying.
    */
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
 };
@@ -51,6 +53,9 @@ const createPublishedTranslationService = ({
       return translations;
     } catch (error) {
       const stale = cache.get(languageCode);
+      if (stale) {
+        stale.expiresAt = now() + RETRY_DELAY_MS;
+      }
       logger.warn('Failed to fetch published global translations', {
         languageCode,
         servingStale: !!stale,

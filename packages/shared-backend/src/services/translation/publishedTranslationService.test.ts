@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createPublishedTranslationService } from './publishedTranslationService';
 
 const baseUrl = 'http://forms-api.example';
@@ -16,6 +16,11 @@ const setup = (getPublishedGlobalTranslations = vi.fn()) => {
 };
 
 describe('createPublishedTranslationService', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
   it('fetches and maps translations for the language', async () => {
     const { service, getPublishedGlobalTranslations } = setup(vi.fn().mockResolvedValue({ Ja: 'Yes' }));
 
@@ -63,6 +68,67 @@ describe('createPublishedTranslationService', () => {
     advance(ttlMs);
 
     await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
+  });
+
+  it('backs off after a failed refresh and recovers after 30 seconds', async () => {
+    const { service, getPublishedGlobalTranslations, advance } = setup(
+      vi
+        .fn()
+        .mockResolvedValueOnce({ Ja: 'Yes' })
+        .mockRejectedValueOnce(new Error('forms-api down'))
+        .mockResolvedValueOnce({ Ja: 'Updated' }),
+    );
+
+    await service.getGlobalTranslations('en');
+    advance(ttlMs);
+    await service.getGlobalTranslations('en');
+    advance(30_000 - 1);
+    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
+    expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(2);
+
+    advance(1);
+    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Updated' } });
+    expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(3);
+  });
+
+  it.each([false, true])('bounds a stalled fetch to 5 seconds (cached: %s)', async (cached) => {
+    vi.useFakeTimers();
+    vi.spyOn(AbortSignal, 'timeout').mockImplementation((ms) => {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(new DOMException('Request timed out', 'TimeoutError')), ms);
+      return controller.signal;
+    });
+    const fetch = vi.spyOn(global, 'fetch');
+    if (cached) {
+      fetch.mockResolvedValueOnce(
+        new Response(JSON.stringify({ Ja: 'Yes' }), { headers: { 'Content-Type': 'application/json' } }),
+      );
+    }
+    fetch.mockImplementation(
+      (_url, options) =>
+        new Promise((_resolve, reject) => {
+          options?.signal?.addEventListener('abort', () => reject(options.signal?.reason));
+        }),
+    );
+    const service = createPublishedTranslationService({ baseUrl, ttlMs });
+    if (cached) {
+      await service.getGlobalTranslations('en');
+      await vi.advanceTimersByTimeAsync(ttlMs);
+    }
+
+    const request = service.getGlobalTranslations('en');
+    const concurrentRequest = service.getGlobalTranslations('en');
+    const settled = vi.fn();
+    void request.then(settled);
+    await vi.advanceTimersByTimeAsync(4999);
+    expect(settled).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+
+    const expected = cached ? { Ja: { en: 'Yes' } } : {};
+    await expect(request).resolves.toEqual(expected);
+    await expect(concurrentRequest).resolves.toEqual(expected);
+    expect(AbortSignal.timeout).toHaveBeenLastCalledWith(5000);
+    expect(fetch).toHaveBeenCalledTimes(cached ? 2 : 1);
   });
 
   it('retries on the next call after a failure', async () => {
