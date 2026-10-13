@@ -132,7 +132,7 @@ const formatMeasurements = (summary) => {
       `| ${iteration} | ${order.join(' then ')} | ${seconds(playwright.wallMs)} | ${seconds(cypress.wallMs)} | ${seconds(playwright.startupMs)} | ${seconds(playwright.testScopeMs)} | ${seconds(playwright.teardownMs)} |`,
   );
   return [
-    '# FyllUt pilot measurements',
+    '# Measurements for the Playwright pilot in FyllUt',
     '',
     `Status: ${summary.status}. ${summary.selectedIds.length} matching cases in five whole source files.`,
     `Commit: ${summary.source.commit}. Runner: ${summary.environment.runnerClass}.`,

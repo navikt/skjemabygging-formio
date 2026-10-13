@@ -225,6 +225,7 @@ test('the human-readable report distinguishes command timing, job timing and bro
       },
     ],
   });
+  assert.equal(report.split('\n')[0], '# Measurements for the Playwright pilot in FyllUt');
   assert.match(report, /45 matching cases/);
   assert.match(report, /exclude dependency installation, build and artifact upload/);
   assert.match(report, /Cypress uses Electron and one shared epoch/);

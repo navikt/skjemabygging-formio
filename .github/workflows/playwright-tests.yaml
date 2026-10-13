@@ -24,7 +24,7 @@ env:
 
 jobs:
   pilot:
-    name: Isolated FyllUt pilot and matching benchmark
+    name: Isolated Playwright pilot in FyllUt and matching benchmark
     runs-on: ubuntu-latest-8-cores
     timeout-minutes: 60
     steps:
