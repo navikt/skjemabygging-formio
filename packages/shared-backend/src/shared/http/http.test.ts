@@ -137,7 +137,7 @@ describe('http', () => {
       endpoint: '/fyllUt/v1/merge-filer',
       upstream_status: 500,
       error_code: 'INTERNAL_SERVER_ERROR',
-      reason: 'INTERNAL_SERVER_ERROR',
+      upstream_error_code: 'somethingFailedTryLater',
       upstream_correlation_id: 'upstream-correlation-id',
     });
     expect(JSON.stringify(warn.mock.calls)).not.toContain('private-');
@@ -167,9 +167,36 @@ describe('http', () => {
       endpoint: '/resource',
       upstream_status: 503,
       error_code: 'SERVICE_UNAVAILABLE',
-      reason: 'SERVICE_UNAVAILABLE',
+      upstream_error_code: undefined,
       upstream_correlation_id: 'upstream-correlation-id',
     });
     expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
   });
+
+  it.each([null, 42, { details: 'private-upstream-details' }])(
+    'omits a non-string upstream error code (%j) without changing error mapping',
+    async (errorCode) => {
+      vi.spyOn(global, 'fetch').mockResolvedValue(
+        new Response(JSON.stringify({ errorCode, message: 'Service unavailable' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+      const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+      await expect(http.get('http://example.test/resource')).rejects.toMatchObject({
+        errorCode: 'SERVICE_UNAVAILABLE',
+        message: 'Service unavailable',
+      });
+      expect(warn).toHaveBeenCalledWith('Http request failed', {
+        service: 'example.test',
+        endpoint: '/resource',
+        upstream_status: 503,
+        error_code: 'SERVICE_UNAVAILABLE',
+        upstream_error_code: undefined,
+        upstream_correlation_id: undefined,
+      });
+      expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
+    },
+  );
 });

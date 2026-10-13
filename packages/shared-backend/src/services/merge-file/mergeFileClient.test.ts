@@ -42,6 +42,7 @@ describe('mergeFileClient', () => {
         'JSON parse error: Cannot deserialize value of type `byte[]` from String "private-document": ' +
         "Unexpected end of base64-encoded String: base64 variant 'MIME-NO-LINEFEEDS' expects padding",
       correlationId: 'upstream-correlation-id',
+      errorCode: 'somethingFailedTryLater',
       document: 'private-document',
     };
     vi.spyOn(global, 'fetch').mockResolvedValue(
@@ -67,7 +68,8 @@ describe('mergeFileClient', () => {
       'Http request failed',
       expect.objectContaining({
         upstream_status: 500,
-        reason: 'INTERNAL_SERVER_ERROR',
+        error_code: 'INTERNAL_SERVER_ERROR',
+        upstream_error_code: 'somethingFailedTryLater',
         upstream_correlation_id: 'upstream-correlation-id',
       }),
     );

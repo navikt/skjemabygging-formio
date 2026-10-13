@@ -222,13 +222,14 @@ const handleResponse = async <T>(
         response.headers.get('x-correlation-id') ??
         undefined);
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
+  const upstreamErrorCode = errorBody?.errorCode;
 
   logger.warn('Http request failed', {
     service: responseUrl.hostname,
     endpoint: responseUrl.pathname,
     upstream_status: response.status,
     error_code: error.errorCode,
-    reason: error.errorCode,
+    upstream_error_code: typeof upstreamErrorCode === 'string' ? upstreamErrorCode : undefined,
     upstream_correlation_id: correlationId,
   });
 
