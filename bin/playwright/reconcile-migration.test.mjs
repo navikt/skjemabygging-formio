@@ -10,9 +10,34 @@ import { describeChanges, formatChanges, reconcileInventory } from './reconcile-
 
 const inventory = JSON.parse(readFileSync('packages/fyllut/playwright/migration/inventory.json', 'utf8'));
 const paths = inventory.files.map((file) => file.source);
-const read = (path) => readFileSync(path, 'utf8');
 const file = inventory.files.find((entry) => entry.id === 'F001');
-const original = read(file.source);
+const original = `describe('Source group', () => {
+  beforeEach(() => cy.defaultIntercepts());
+  it('first source case', () => {
+    cy.get('input').should('exist');
+  });
+  it('second source case', () => {
+    cy.get('button').should('exist');
+  });
+  it('third source case', () => {
+    cy.get('form').should('exist');
+  });
+});`;
+const parsed = parseSource(file.source, original);
+file.sourceHash = parsed.sourceHash;
+file.hooks = parsed.hooks;
+file.tests = parsed.tests.map(({ referenceComments: _comments, ...metadata }, index) => ({
+  ...metadata,
+  id: `F001-T${String(index + 1).padStart(3, '0')}`,
+  sourceUrl: `https://github.com/navikt/skjemabygging-formio/blob/${inventory.revision}/${file.source}#L${metadata.line}`,
+  status: 'planned',
+  coverageReview: 'pending',
+}));
+delete file.sourceRevision;
+inventory.historicalTests = inventory.historicalTests.filter((entry) => entry.fileId !== file.id);
+inventory.sourceOrderOverrides.F001 = file.tests.map((test) => test.id);
+inventory.staticTestDeclarations = inventory.files.reduce((count, entry) => count + entry.tests.length, 0);
+const read = (path) => (path === file.source ? original : readFileSync(path, 'utf8'));
 const revision = 'a'.repeat(40);
 const reason = 'Reviewed the changed Cypress source without approving migration coverage.';
 const inspect = (source, snapshot = inventory, sources = paths) =>
@@ -55,8 +80,8 @@ test('routine source changes preserve IDs, untouched files, review fields and th
 
 test('middle insertion appends an ID, and deletion reserves the original ID with a pending decision', () => {
   const added = original.replace(
-    "    it('should render Vegadresse field'",
-    "    it('new source case', () => cy.visit('/fyllut/example'));\n    it('should render Vegadresse field'",
+    "  it('second source case'",
+    "  it('new source case', () => cy.visit('/fyllut/example'));\n  it('second source case'",
   );
   const inserted = reconcile(added);
   const newId = `F001-T${String(file.tests.length + 1).padStart(3, '0')}`;
@@ -90,8 +115,8 @@ test('new source files append a file ID even when alphabetically before the exis
 
 test('ambiguous renames, duplicate titles, file removal, and migrated files require explicit review', () => {
   const variants = [
-    inspect(original.replace('should render C/O field', 'renamed test')),
-    inspect(original.replace('should render Vegadresse field', 'should render C/O field')),
+    inspect(original.replace('first source case', 'renamed test')),
+    inspect(original.replace('second source case', 'first source case')),
     describeChanges(inventory, paths.slice(1), read),
     describeChanges(inventory, paths, (path) =>
       path === inventory.files[3].source ? `${read(path)}\nconst changedHelper = true;` : read(path),
@@ -152,13 +177,20 @@ test('the real CLI refuses uncommitted source, then writes an idempotent registe
       registerPath,
       script,
       'bin/playwright/check-migration.mjs',
+      'bin/playwright/check-migration.test.mjs',
       'bin/playwright/migration-source.mjs',
     ]) {
       const target = resolve(fixture, path);
       mkdirSync(dirname(target), { recursive: true });
       copyFileSync(path, target);
     }
+    writeFileSync(resolve(fixture, file.source), original);
     git('init', '-q', '-b', 'reconciliation-test');
+    commit();
+    const fixtureInventory = structuredClone(inventory);
+    fixtureInventory.revision = git('rev-parse', 'HEAD');
+    for (const entry of fixtureInventory.files) delete entry.sourceRevision;
+    writeFileSync(resolve(fixture, registerPath), JSON.stringify(fixtureInventory, null, 2));
     commit();
     const baseline = readFileSync(resolve(fixture, registerPath), 'utf8');
     assert.equal(cli().status, 0);
@@ -183,6 +215,11 @@ test('the real CLI refuses uncommitted source, then writes an idempotent registe
     assert.equal(cli().status, 0);
     assert.equal(cli(...args).status, 0);
     assert.equal(readFileSync(resolve(fixture, registerPath), 'utf8'), updatedText);
+    const checkerTests = spawnSync(process.execPath, ['--test', 'bin/playwright/check-migration.test.mjs'], {
+      cwd: fixture,
+      encoding: 'utf8',
+    });
+    assert.equal(checkerTests.status, 0, checkerTests.stdout + checkerTests.stderr);
   } finally {
     rmSync(fixture, { recursive: true });
   }
