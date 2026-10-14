@@ -1,6 +1,57 @@
 import assert from 'node:assert/strict';
 import { test } from 'vitest';
+import { validatePlan } from './render/validate-plan.mjs';
 import { makePlan, render } from './test-helpers.mjs';
+
+test('keeps approved scope covered or explicitly deferred with user approval', () => {
+  const plan = makePlan(false);
+  plan.integrations = [];
+  plan.testCases[0].integrationIds = [];
+  plan.scope.approvedBehaviorIds = ['B-01', 'B-02'];
+  plan.behaviorAnalysis.push({ ...structuredClone(plan.behaviorAnalysis[0]), id: 'B-02' });
+  assert.throws(() => validatePlan(plan), /approved behavior B-02 requires a test case or a user-approved deferral/);
+  plan.scope.notCoveredByTests.push({
+    area: 'Deferred behavior',
+    reason: 'Needs a different setup',
+    behaviorIds: ['B-02'],
+  });
+  assert.throws(() => validatePlan(plan), /approved behavior B-02 requires/);
+  plan.scope.notCoveredByTests[1].approvedDeferral = true;
+  assert.doesNotThrow(() => validatePlan(plan));
+});
+
+test('does not let a missing matrix entry erase an approved behavior', () => {
+  const plan = makePlan(false);
+  plan.scope.approvedBehaviorIds = ['B-01', 'B-02'];
+  assert.throws(() => validatePlan(plan), /approvedBehaviorIds references unknown behavior B-02/);
+});
+
+test('checks approved-scope and coverage-gap references', () => {
+  const plan = makePlan(false);
+  plan.scope.approvedBehaviorIds = ['B-01', 'B-01'];
+  assert.throws(() => validatePlan(plan), /duplicate behavior B-01/);
+  delete plan.scope.approvedBehaviorIds;
+  plan.scope.notCoveredByTests[0].behaviorIds = ['B-99'];
+  assert.throws(() => validatePlan(plan), /notCoveredByTests\[0\].behaviorIds references unknown behavior B-99/);
+});
+
+test('validates related PR identity and uniqueness', () => {
+  const plan = makePlan(false);
+  const related = {
+    number: 42,
+    url: 'https://github.com/navikt/skjemabygging-formio/pull/42',
+    ref: 'feature/earlier',
+    commitSha: 'b'.repeat(40),
+  };
+  plan.source.relatedPullRequests = [related];
+  assert.doesNotThrow(() => validatePlan(plan));
+  plan.source.relatedPullRequests.push({ ...related });
+  assert.throws(() => validatePlan(plan), /duplicates a source pull request/);
+  plan.source.relatedPullRequests = [{ ...related, number: plan.source.number, url: plan.source.url }];
+  assert.throws(() => validatePlan(plan), /duplicates a source pull request/);
+  plan.source.relatedPullRequests = [{ ...related, url: 'https://github.com/another/repository/pull/42' }];
+  assert.throws(() => validatePlan(plan), /must identify its pull request in source.repository/);
+});
 
 test('accepts matching Bygger ingresses', () => {
   const plan = makePlan(false);

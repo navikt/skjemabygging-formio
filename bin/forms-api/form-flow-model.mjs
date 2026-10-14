@@ -399,6 +399,28 @@ const resolveFill = (model, fill) => {
   return { node: resolved.node, subPath: resolved.subPath, rows, rawPath };
 };
 
+const checkStaticOptions = ({ node, subPath, fill }) => {
+  const { component, type } = node;
+  if (isEmpty(fill.value) || (subPath && subPath !== 'value')) return undefined;
+  const isSelect = type === 'select';
+  const isRadio = type === 'radio' || type === 'radiopanel';
+  const isSelectboxes = type === 'selectboxes';
+  if (!isSelect && !isRadio && !isSelectboxes) return undefined;
+  if (isSelect && component.dataSrc && component.dataSrc !== 'values') return undefined;
+  const options = isSelect ? (component.data?.values ?? component.values) : component.values;
+  if (!Array.isArray(options) || options.some((option) => !option || !Object.hasOwn(option, 'value'))) {
+    return undefined;
+  }
+  const allowed = new Set(options.map((option) => String(option.value)));
+  const values =
+    isSelectboxes && typeof fill.value === 'object' && !Array.isArray(fill.value)
+      ? Object.keys(fill.value)
+      : [fill.value].flat().map((value) => (isSelect && value && typeof value === 'object' ? value.value : value));
+  return values.some((value) => !allowed.has(String(value)))
+    ? 'value is not one of the declared static options; use an option value, not its label'
+    : undefined;
+};
+
 const checkFillSequence = (model, { fills = [], assume = {}, leaveEmpty = [], reachesSummary = false } = {}) => {
   const errors = [];
   const warnings = [];
@@ -409,6 +431,11 @@ const checkFillSequence = (model, { fills = [], assume = {}, leaveEmpty = [], re
   resolvedFills.forEach((entry, index) => {
     if (entry.error) {
       errors.push(`Fill ${index + 1}: ${entry.error}.`);
+      return;
+    }
+    const optionError = checkStaticOptions(entry);
+    if (optionError) {
+      errors.push(`Fill ${index + 1} ${nodeName(entry.node, entry.rows)}: ${optionError}.`);
     }
   });
   if (errors.length) {
@@ -424,7 +451,7 @@ const checkFillSequence = (model, { fills = [], assume = {}, leaveEmpty = [], re
   resolvedFills.forEach((entry, index) => {
     const { node, rows, subPath, fill } = entry;
     const label = `Fill ${index + 1} ${nodeName(node, rows)}`;
-    const step = { index: index + 1, node, rows, fill, page: node.page };
+    const step = { index: index + 1, node, rows, subPath, fill, page: node.page };
 
     for (const conditional of getConditionals(model, node)) {
       for (const dependency of conditional.dependencies ?? []) {

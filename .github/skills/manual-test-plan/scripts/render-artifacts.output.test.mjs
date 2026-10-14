@@ -2,6 +2,50 @@ import assert from 'node:assert/strict';
 import { test } from 'vitest';
 import { makePlan, render } from './test-helpers.mjs';
 
+test.each([false, true])('renders every analyzed PR and exact revision (collaboration: %s)', (collaboration) => {
+  const plan = makePlan(collaboration);
+  plan.source.relatedPullRequests = [
+    {
+      number: 42,
+      url: 'https://github.com/navikt/skjemabygging-formio/pull/42',
+      ref: 'feature/earlier',
+      commitSha: 'b'.repeat(40),
+    },
+  ];
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const output = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    assert.match(output, /Også analysert/);
+    assert.ok(output.includes(plan.source.relatedPullRequests[0].url));
+    assert.ok(output.includes('feature/earlier'));
+    assert.ok(output.includes('b'.repeat(40)));
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each([false, true])('escapes related PR branch names in public output (collaboration: %s)', (collaboration) => {
+  const plan = makePlan(collaboration);
+  plan.source.relatedPullRequests = [
+    {
+      number: 42,
+      url: 'https://github.com/navikt/skjemabygging-formio/pull/42',
+      ref: 'feature/`<earlier>',
+      commitSha: 'b'.repeat(40),
+    },
+  ];
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const output = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    assert.doesNotMatch(output, /<earlier>/);
+    assert.ok(output.includes(collaboration ? '`&lt;earlier&gt;' : '\\`&lt;earlier\\>'));
+  } finally {
+    run.cleanup();
+  }
+});
+
 test.each([false, true])(
   'renders optional arrays without leaking internal instructions (collaboration: %s)',
   (collaboration) => {

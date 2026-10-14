@@ -22,11 +22,15 @@ directory before rerendering; the script refuses to delete it silently.
 Ask the user to review the printed PDF page by page, including long cases and
 links. Check that no section or step disappears at a page break. Do not claim
 that a PDF was produced by the renderer, or that a stale PDF matches new HTML.
-Share only the reviewed PDF alongside a Trello task through an approved
-channel, after explicit approval. Do not assume Trello access: attach the
-PDF only if access is actually available and approved; otherwise give the
-reviewed PDF to the user to distribute alongside the task. Do not publish
-HTML to GitHub Pages or create a GitHub issue for this path.
+Deliver the HTML and these instructions, then stop. The user owns printing,
+page-by-page PDF review and distribution alongside a Trello task. Trello
+creation, updates and attachments are manual tasks, not skill actions.
+
+Do not ask for a PDF path, confirmation checkbox or sharing approval to finish
+the HTML handoff. A PDF path is useful only if the user separately asks the
+assistant to inspect the saved PDF. Do not claim that the user's review, PDF
+creation or distribution has happened unless the user confirms it. Do not
+publish HTML to GitHub Pages or create a GitHub issue for this path.
 
 ## Without non-developers
 
@@ -49,8 +53,8 @@ Just before creating the issue, ask whether the user wants a GitHub issue,
 HTML for printing to PDF, or both (see the developer path in SKILL.md). For
 HTML, rerender with `--format html` or `--format both` and follow the print
 and review rules in "With non-developers". The HTML omits the no-access
-handoff, like the issue. Hand the reviewed PDF to the user for distribution
-instead of publishing it.
+handoff, like the issue. PDF review and distribution remain manual user tasks;
+do not block delivery on a saved PDF path.
 
 ## Review before sharing
 

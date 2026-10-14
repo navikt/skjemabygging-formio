@@ -16,6 +16,13 @@ or write a route from the preprod variant when it differs from production.
 
 1. Inspect the published production definition in `navikt/skjemautfylling-formio`
    or production Forms API metadata, and decide whether it covers the case.
+   Distinguish the published snapshot from the latest production Forms API
+   draft. Bygger's production import can copy the latest draft, which need not
+   be the published definition. Before asking for an overwrite, compare the
+   import source with the published reference. If they differ or the source
+   cannot be confirmed, explain this and agree on a different form, a generated
+   substitute or an explicitly approved reference revision. Never imply that
+   importing guarantees a published-production match.
 2. Check whether the form exists in preprod Forms API and inspect its current
    revision. Also search preprod for forms that have no production variant,
    such as earlier `MANUALTEST-` forms, that already cover the case. Use the helper without exposing the token or full form definition:
@@ -81,6 +88,20 @@ does not prove it works on both deployments.
 Generate a form only when no suitable form already exists in preprod or a small
 test form makes the changed behavior substantially easier to isolate.
 
+Before designing a form that requires local browser validation, check the
+repository-pinned runtime, installed runner/dependencies and available checkout
+at the analyzed commit. Prefer an existing prepared checkout. If isolation is
+needed, leave the user's checkout unchanged and record the exact source commit.
+Do not assume an archive or worktree has usable dependencies, or that workspace
+package-manager commands are read-only: they can trigger installation.
+
+Do not install or restore dependencies, change registry configuration or request
+credentials automatically during planning. If the preflight fails, report the
+specific blocker and ask once whether the user will prepare the runtime or
+whether to use an existing suitable form. A generated definition can remain an
+unimported artifact while validation is blocked. Do not import it or claim its
+branches were exercised until the local validation below succeeds.
+
 - Use the existing helpers in `mocks/mocks/form-builder` as read-only
   references. Keep the generated definition and any temporary generator in
   the session artifact directory, not the repository.
@@ -91,6 +112,8 @@ test form makes the changed behavior substantially easier to isolate.
   (loaded in workflow step 9) after validating the definition.
   Never replace an existing form without explicit user approval.
 - Enable only required submission methods.
+- Remove editorial identity metadata before saving snapshots or definitions.
+  Preserve fields needed for form behavior and revision comparison.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the
   conditional form remains valid, organized, and easy to understand.

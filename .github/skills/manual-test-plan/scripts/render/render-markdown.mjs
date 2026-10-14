@@ -167,6 +167,7 @@ ${issueBehaviors}
 ---
 
 Pull request: ${plan.source.url}
+${(plan.source.relatedPullRequests ?? []).map((pr) => `Også analysert: ${pr.url} (${escapeMarkdown(pr.ref)}, ${escapeMarkdown(pr.commitSha)})`).join('\n')}
 ${plan.source.issue ? `Sak: ${plan.source.issue.url}` : ''}
 `;
 

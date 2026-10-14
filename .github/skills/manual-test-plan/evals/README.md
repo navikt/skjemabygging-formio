@@ -13,6 +13,8 @@ the transcript against `expected_behavior`.
 - `eval-pr-without-linked-issue.json`: a PR target with no linked issue.
 - `eval-non-developer-outbound-integration.json`: a non-developer plan that
   touches an outbound integration.
+- `eval-combined-prs-and-import-mismatch.json`: related PRs, oversized diffs,
+  published/draft mismatches, local runtime blockers and manual PDF handoff.
 
 When a scenario reveals a gap, fix SKILL.md or the affected reference file,
 then rerun the scenario to confirm.

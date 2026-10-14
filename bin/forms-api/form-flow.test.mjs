@@ -61,6 +61,68 @@ const model = buildModel(form);
 const check = (fills, options = {}) => checkFillSequence(model, { fills, ...options });
 
 describe('checkFillSequence', () => {
+  test.each(['radio', 'radiopanel', 'select', 'selectboxes'])('checks declared static %s options', (type) => {
+    const options = [
+      { value: 'yes', label: 'Yes label' },
+      { value: 'no', label: 'No label' },
+    ];
+    const node = field('option', {
+      type,
+      ...(type === 'select' ? { dataSrc: 'values', data: { values: options } } : { values: options }),
+    });
+    const optionsModel = buildModel({ components: [panel('options', [node])] });
+    const optionCheck = (value, extra = {}) =>
+      checkFillSequence(optionsModel, { fills: [{ path: 'option', value, ...extra }] });
+    const valid =
+      type === 'selectboxes'
+        ? { yes: true, no: false }
+        : type === 'select'
+          ? { value: 'yes', label: 'Yes label' }
+          : 'yes';
+    assert.deepEqual(optionCheck(valid).errors, []);
+    const invalid = type === 'selectboxes' ? { typo: true } : 'Yes label';
+    assert.match(optionCheck(invalid).errors.join('\n'), /not one of the declared static options/);
+    assert.match(optionCheck(invalid, { prefilled: true }).errors.join('\n'), /not one of the declared static options/);
+    assert.deepEqual(optionCheck('').errors, []);
+  });
+
+  test('checks every selected value without treating option storage shape as verified', () => {
+    const selectModel = buildModel({
+      components: [
+        panel('options', [
+          field('option', {
+            type: 'select',
+            multiple: true,
+            data: {
+              values: [
+                { value: 1, label: 'One' },
+                { value: 2, label: 'Two' },
+              ],
+            },
+          }),
+        ]),
+      ],
+    });
+    const optionCheck = (value) => checkFillSequence(selectModel, { fills: [{ path: 'option', value }] });
+    assert.deepEqual(optionCheck(['1', { value: 2, label: 'Two' }]).errors, []);
+    assert.match(optionCheck([{ value: 1 }, { value: 3 }]).errors.join('\n'), /not one of the declared static options/);
+  });
+
+  test('does not claim to check options loaded from an external source', () => {
+    const dynamicModel = buildModel({
+      components: [
+        panel('options', [
+          field('option', {
+            type: 'select',
+            dataSrc: 'url',
+            data: { values: [{ value: 'old', label: 'Old' }] },
+          }),
+        ]),
+      ],
+    });
+    assert.deepEqual(checkFillSequence(dynamicModel, { fills: [{ path: 'option', value: 'dynamic' }] }).errors, []);
+  });
+
   test('accepts fills in form order with their controlling fields first', () => {
     const result = check(
       [
@@ -72,6 +134,55 @@ describe('checkFillSequence', () => {
       { assume: {} },
     );
     assert.deepEqual(result.errors, []);
+  });
+
+  test('the CLI emits reusable JSON routes, preserves sub-paths and reports invalid option values', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'form-flow-json-test-'));
+    try {
+      const formFile = join(directory, 'form.json');
+      const fillsFile = join(directory, 'fills.json');
+      writeFileSync(
+        formFile,
+        JSON.stringify({
+          path: 'test-form',
+          revision: 7,
+          components: [
+            panel('start', [field('identity', { type: 'identity' })]),
+            panel('empty', []),
+            panel('end', [radio('choice', { values: [{ value: 'yes', label: 'Yes' }] })]),
+          ],
+        }),
+      );
+      const fills = [
+        { path: 'identity.birthdate', value: '1980-01-01' },
+        { path: 'choice', value: 'yes' },
+      ];
+      writeFileSync(fillsFile, JSON.stringify({ fills }));
+      const script = resolve(import.meta.dirname, 'form-flow.mjs');
+      const invoke = (...args) =>
+        spawnSync(process.execPath, [script, '--form', formFile, '--json', ...args], { encoding: 'utf8' });
+      assert.match(invoke().stderr, /--json requires --fills/);
+      const result = invoke('--fills', fillsFile);
+      assert.equal(result.status, 0, result.stderr);
+      const report = JSON.parse(result.stdout);
+      assert.deepEqual(report.form, { path: 'test-form', revision: 7 });
+      assert.deepEqual(
+        report.pages.map((page) => page.key),
+        ['start', 'empty', 'end'],
+      );
+      assert.equal(report.steps[0].path, 'identity.birthdate');
+      assert.equal(report.steps[0].value, '1980-01-01');
+      assert.equal(report.steps[1].label, 'choice');
+      assert.equal(report.steps[1].pageTitle, 'end');
+      assert.deepEqual(report.errors, []);
+      fills[1].value = 'missing';
+      writeFileSync(fillsFile, JSON.stringify({ fills }));
+      const invalid = invoke('--fills', fillsFile);
+      assert.equal(invalid.status, 1);
+      assert.match(JSON.parse(invalid.stdout).errors[0], /not one of the declared static options/);
+    } finally {
+      rmSync(directory, { recursive: true });
+    }
   });
 
   test('rejects a conditional field filled before its controlling field', () => {

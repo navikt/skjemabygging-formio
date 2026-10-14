@@ -16,6 +16,21 @@ const validatePlan = (plan) => {
   ) {
     fail('source.url must match source.repository and source.number');
   }
+  const sourceNumbers = new Set([plan.source.number]);
+  for (const [index, related] of (plan.source.relatedPullRequests ?? []).entries()) {
+    const prefix = `source.relatedPullRequests[${index}]`;
+    const url = new URL(asHttpUrl(related.url, `${prefix}.url`));
+    if (
+      url.hostname !== 'github.com' ||
+      url.pathname.replace(/\/$/, '') !== `/${sourceRepository}/pull/${related.number}`
+    ) {
+      fail(`${prefix}.url must identify its pull request in source.repository`);
+    }
+    if (sourceNumbers.has(related.number)) {
+      fail(`${prefix}.number duplicates a source pull request`);
+    }
+    sourceNumbers.add(related.number);
+  }
   if (plan.source.issue !== undefined) {
     const issueUrl = new URL(asHttpUrl(plan.source.issue.url, 'source.issue.url'));
     if (
@@ -111,6 +126,7 @@ const validatePlan = (plan) => {
   }
 
   const caseIds = new Set();
+  const coveredBehaviorIds = new Set();
   const referencedIntegrationIds = new Set();
   for (const [index, testCase] of plan.testCases.entries()) {
     const prefix = `testCases[${index}]`;
@@ -130,6 +146,7 @@ const validatePlan = (plan) => {
       if (!behavior) {
         fail(`${prefix}.behaviorIds references unknown behavior ${behaviorId}`);
       }
+      coveredBehaviorIds.add(behaviorId);
       return behavior;
     });
     if (
@@ -157,6 +174,30 @@ const validatePlan = (plan) => {
   for (const integrationId of integrations.keys()) {
     if (!referencedIntegrationIds.has(integrationId)) {
       fail(`integration ${integrationId} is not referenced by a test case`);
+    }
+  }
+  const deferredBehaviorIds = new Set();
+  for (const [index, gap] of plan.scope.notCoveredByTests.entries()) {
+    for (const behaviorId of gap.behaviorIds ?? []) {
+      if (!behaviors.has(behaviorId)) {
+        fail(`scope.notCoveredByTests[${index}].behaviorIds references unknown behavior ${behaviorId}`);
+      }
+      if (gap.approvedDeferral === true) {
+        deferredBehaviorIds.add(behaviorId);
+      }
+    }
+  }
+  const approvedBehaviorIds = new Set();
+  for (const behaviorId of plan.scope.approvedBehaviorIds ?? []) {
+    if (!behaviors.has(behaviorId)) {
+      fail(`scope.approvedBehaviorIds references unknown behavior ${behaviorId}`);
+    }
+    if (approvedBehaviorIds.has(behaviorId)) {
+      fail(`scope.approvedBehaviorIds contains duplicate behavior ${behaviorId}`);
+    }
+    approvedBehaviorIds.add(behaviorId);
+    if (!coveredBehaviorIds.has(behaviorId) && !deferredBehaviorIds.has(behaviorId)) {
+      fail(`approved behavior ${behaviorId} requires a test case or a user-approved deferral`);
     }
   }
 

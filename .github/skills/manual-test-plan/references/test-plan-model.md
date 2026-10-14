@@ -18,6 +18,7 @@ holds the example and the rules a schema cannot express.
     "title": "Manuell testplan: avsender og bruker",
     "summary": "Kontroller at oppsummeringen skiller mellom avsender og bruker.",
     "scope": {
+        "approvedBehaviorIds": ["B-01"],
         "included": [
             "FyllUt viser avsender og bruker som ulike personer i oppsummeringen.",
             "Hvilke personer mottakeren registrerer, kontrolleres i teamloggene eller Joark når en med tilgang følger opp innsendingen."
@@ -202,6 +203,13 @@ holds the example and the rules a schema cannot express.
 - `scope.notCoveredByTests` lists in-scope behavior or edge cases without a
   manual case, each with a concrete `area` and `reason`. Use an empty array
   when nothing is omitted. Do not use `scope.excluded` for test coverage gaps.
+- Record the confirmed scope in `scope.approvedBehaviorIds` for new plans and
+  preserve these IDs when revising the matrix. Every approved ID must still
+  exist and be referenced by a case or an explicitly accepted deferral.
+  A deferred entry in `scope.notCoveredByTests` names its `behaviorIds` and sets
+  `approvedDeferral: true` only after user approval. A reason without that
+  approval is not enough to remove an agreed check. These fields are optional
+  for existing schema-version-4 plans.
 - `source.commitSha` must be the exact 40-character commit the plan was
   analyzed against. It is shown as background, not used as the tester's
   preflight.
@@ -211,6 +219,13 @@ holds the example and the rules a schema cannot express.
 - `source.type` must be `pull-request`. `source.number` and `source.url` must
   identify the implementation pull request, even when the skill started from an
   issue.
+- For combined PRs, `source` identifies the deployable head and
+  `source.relatedPullRequests` records the other analyzed PRs in the same
+  repository. Each entry has `number`, `url`, `ref` and `commitSha`. Numbers are
+  unique, including the primary PR. Record an analyzed merge revision when a
+  squash/rebase means the original head is not an ancestor. Rendering with
+  `--source-repo` checks ancestry; unrelated deployments need separate plans or
+  user clarification, not invented combined coverage.
 - Include `source.issue` when the pull request implements an issue, whichever
   one the skill started from. Omit it when no issue is linked.
 - `environment.name` is `preprod` or `preprod-alt`, selected from the PR's
@@ -284,10 +299,20 @@ holds the example and the rules a schema cannot express.
   Metadata, schema checks, a similar form's Cypress test, and HTTP 200
   alone do not map or verify a route. Compare all rendered HTML or
   issue steps with that case's source map or trace.
+- Use committed citations such as `packages/example.ts:10-18,25` or
+  `packages/example.ts:10-18 (<40-character SHA>)` in behavior and journey
+  evidence. An omitted SHA uses `source.commitSha`. Run
+  `render-artifacts.mjs --source-repo <checkout>` to validate every such
+  reference before delivery. Each source-mapped route needs at least one
+  committed citation; a browser-observed route can instead cite its observation.
+  The check never reads source from the working tree and cannot prove the
+  semantic correctness of a cited transition.
 - Fill steps follow the route order printed by `bin/forms-api/form-flow.mjs`
   for the case's fills, with no errors left. Never fill a field before the
   field that controls it, or while it is hidden. `evidence` names the checker
   run, and `note` records each assumption about a custom conditional.
+  Use its `--fills <file> --json` report to reuse checked labels, values, field
+  paths and page order. Keep one authored fill sequence per case.
 - The exploratory case above illustrates an unresolved route. A source-mapped
   verification case uses `"mode": "verification"` and
   `"journeyCheck": {"status": "source-mapped", ...}` with the actual form

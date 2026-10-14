@@ -27,6 +27,9 @@ its type. Only if `ARGUMENTS` and the user's message contain no target, ask
 for an issue or pull request. A pull request needs no issue, but the skill
 checks for one. Do not infer the
 target solely from the current branch.
+Accept several targets in one invocation. Follow the combined-PR and large-diff
+rules in [analysis-workflow.md](references/analysis-workflow.md); do not silently
+discard all but one target.
 
 ## Terms
 
@@ -62,12 +65,12 @@ Test plan progress:
 - [ ] 6. Ask the collaboration question (branch point)
 - [ ] 7. Identify behavior, risk, integrations, evidence
 - [ ] 8. Record the head commit and target environment
-- [ ] 9. Select or create forms
+- [ ] 9. Select forms, preflight local validation, then create/import and read back
 - [ ] 10. Map case routes
 - [ ] 11. Write the plan
 - [ ] 12. Render the plan artifacts
-- [ ] 13. Read back any imported/created form before finalizing cases
-- [ ] 14. Follow the chosen path's delivery steps below
+- [ ] 13. Reconcile approved scope and verify committed-source citations
+- [ ] 14. Deliver through the chosen path below
 ```
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
@@ -95,6 +98,8 @@ Test plan progress:
    cases. Without an issue or approved specification, also confirm inferred
    intent. If the PR description and committed code disagree, ask for a
    decision. Follow [analysis-workflow.md](references/analysis-workflow.md).
+   Record the approved behavior IDs in `scope.approvedBehaviorIds`. Preserve
+   these IDs across later revisions; obtain approval for material deferrals.
 6. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
    Use the choices "Yes" and "No". Do not infer the answer from case count or
    risk. This choice selects the path you follow below: "Yes" is the
@@ -129,14 +134,17 @@ Test plan progress:
    which forms will be reused, imported, created, or need updating. Create
    `MANUALTEST-` forms only as described in
    [forms-api-import.md](references/forms-api-import.md), following the
-   create/update rules in Safety below. A failed lookup is not
-   proof that a form is absent.
+   create/update rules in Safety below. Preflight the correct local runtime and
+   installed dependencies before committing to generated-form validation. A
+   failed lookup is not proof that a form is absent. Read back every imported or
+   created form before mapping its cases, not after drafting the plan.
 10. Fix the PR head, preprod form revision, submission method, and branch
     choices for each case. Derive its steps with
     [route-source-mapping.md](references/route-source-mapping.md), which also
     covers digital submission without login. Write fill steps in the order
     `bin/forms-api/form-flow.mjs` prints for the case's fills, after it reports
-    no errors.
+    no errors. Use its `--json` route report to reuse field labels, values and
+    page order rather than maintaining a second handwritten fill sequence.
 11. Write the plan following the Language rules above and
     [test-plan-model.md](references/test-plan-model.md).
 12. Generate the canonical plan JSON and run:
@@ -144,7 +152,8 @@ Test plan progress:
     ```bash
     node .github/skills/manual-test-plan/scripts/render-artifacts.mjs \
       --plan <plan.json> \
-      --out <artifact-directory>
+      --out <artifact-directory> \
+      --source-repo <repository-checkout>
     ```
 
     This writes `github-issue.md` on the developer path, or `index.html` on
@@ -154,12 +163,13 @@ Test plan progress:
     use it only after the delivery choice below. See the delivery steps for
     your path below for how to turn this output into a shared artifact.
 
-13. After a confirmed import or the user importing a required production
-    form, read back its stored path, revision, components,
-    submission methods, and conditional choices before finalizing cases.
-    Update only the local plan and rendered artifacts if they differ.
-    If the form or PR disagrees with the approved intent, report the
-    inconsistency; do not edit the source to make it match the plan.
+13. Reconcile every approved behavior with a test case or a user-approved
+    deferral in `scope.notCoveredByTests`. Listing a gap does not approve a scope
+    reduction. Generate citations from inspected files and run the renderer with
+    `--source-repo` to check file paths and line ranges against the recorded
+    commits. Fetch missing committed objects read-only; do not substitute the
+    current working tree. Report source/form inconsistencies without editing
+    them to match the plan.
 14. Review the rendered output before delivery, on either path:
     - **Sensitive content:** redact or omit it before sharing. Keep `internal`
       setup and evidence only in `internal-instructions.md`; never substitute
@@ -209,11 +219,11 @@ non-developers" and "Review before sharing").
     3. Share the test-plan issue URL only after it has been created.
 4. For HTML ("HTML for printing to PDF" or "Both"), follow steps 1 and 2 of
    the non-developer path: give the `file://` URL with `?print=1` and ask the
-   user to review every page of the printed PDF. Hand the reviewed PDF to the
-   user for distribution. Do not publish it to GitHub Pages.
+   user to review every page of the printed PDF. Printing and distribution are
+   manual tasks for the user. Do not publish it to GitHub Pages.
 5. Give the user local links to the generated files and the canonical plan.
 
-### Non-developer path: printed PDF
+### Non-developer path: HTML handoff for manual PDF printing
 
 Read [collaborative-output.md](references/collaborative-output.md) ("With
 non-developers" and "Review before sharing").
@@ -225,11 +235,12 @@ non-developers" and "Review before sharing").
 2. Ask the user to review every page of the printed PDF, including long
    cases, links, and page breaks. Do not claim a PDF exists merely because
    the HTML was rendered.
-3. Request explicit approval before sharing. Share only the reviewed PDF
-   alongside a Trello task for ownership and progress tracking, through an
-   approved channel. Only attach it to Trello if Trello access is actually
-   available and the user approves the attachment; otherwise hand the
-   reviewed PDF to the user for distribution.
+3. End the run after delivering the reviewed HTML and printing/review
+   instructions. The user prints, reviews and distributes the PDF alongside a
+   manually maintained Trello task. Do not request a saved PDF path, review
+   checkbox or sharing approval as a completion gate. Ask for a PDF path only
+   when the user explicitly requests inspection of that file. Do not create or
+   edit Trello tasks, attach files or distribute the PDF in this workflow.
 4. Never create a GitHub issue or publish anything to GitHub Pages for this
    path. Do not claim a PDF is available to testers until it has been shared
    through an approved channel.
@@ -239,12 +250,13 @@ non-developers" and "Review before sharing").
 
 These scripts are executed, not read for logic:
 
-- `scripts/render-artifacts.mjs --plan <plan.json> --out <dir> [--format <issue|html|both>]`:
+- `scripts/render-artifacts.mjs --plan <plan.json> --out <dir> [--format <issue|html|both>] [--source-repo <checkout>]`:
   validates the canonical plan against `plan.schema.json`, then writes
   `github-issue.md`, `index.html`, or both (see step 12), plus
   `internal-instructions.md` and `manifest.json`. The format defaults to
   `html` with non-developers and `issue` otherwise; plans with non-developers
-  accept only `html`.
+  accept only `html`. With `--source-repo`, validates committed file/line
+  citations and combined-PR ancestry before writing artifacts.
 - `scripts/create-issue.mjs --repo <owner/name> --title <title> --body <path>`:
   dry run by default; add `--apply --confirm '<token from the dry run>'` to
   create the test-plan issue. Developer path only.
@@ -254,10 +266,11 @@ These scripts are executed, not read for logic:
 - `bin/forms-api/import-form.mjs --form <form.json>`: dry run by default; add
   `--apply --confirm '<operation>'` to create, or `--replace-existing` first
   to update. See [forms-api-import.md](references/forms-api-import.md).
-- `bin/forms-api/form-flow.mjs --path '<form-path>' [--fills <fills.json>]`
+- `bin/forms-api/form-flow.mjs --path '<form-path>' [--fills <fills.json>] [--json]`
   (or `--form <file>`): prints pages, fields, and conditionals, or checks a
-  case's fill sequence against form order and conditionals. Exits 1 when the
-  sequence has errors. See [route-source-mapping.md](references/route-source-mapping.md).
+  case's fill sequence against form order, static option values and conditionals.
+  `--json` requires `--fills` and emits a reusable route report. Exits 1 when
+  the sequence has errors. See [route-source-mapping.md](references/route-source-mapping.md).
 - `pnpm test:skills`: runs this skill's and the Forms API tools' own tests.
   Run it after changing any script in this skill; CI runs it in
   `build-and-test.yaml`.
@@ -306,9 +319,8 @@ for outbound payloads.
   source content, or security-sensitive details in generated artifacts.
 - This repository is public. Follow the review gate in
   [collaborative-output.md](references/collaborative-output.md). Create the
-  test-plan issue, or share the PDF, only as described in the delivery path
-  sections above; never do either without the explicit confirmation they
-  require.
+  test-plan issue only after its explicit approval gate. PDF distribution and
+  Trello updates belong to the user, outside this workflow.
 - Never put full generated form definitions in HTML, a PDF, or GitHub issue.
   Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the user

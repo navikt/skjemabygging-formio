@@ -6,20 +6,23 @@ import { createFormsApiClient } from './client.mjs';
 import { fail, getArgument, getToken } from './common.mjs';
 import {
   buildModel,
-  groupTypes,
   checkFillSequence,
   concretePath,
   describeConditional,
   describeForm,
+  groupTypes,
 } from './form-flow-model.mjs';
 
 const helpText = `Usage:
-  node form-flow.mjs (--form <form.json> | --path <form-path>) [--fills <fills.json>] [--env-file <path>]
+  node form-flow.mjs (--form <form.json> | --path <form-path>) [--fills <fills.json>] [--json] [--env-file <path>]
 
 Without --fills, prints the form's pages and fields in rendering order with
 their conditionals. With --fills, checks a planned fill sequence against that
-order and the conditionals, then prints the resulting route. Exits with 1 when
-the sequence has errors.
+order, static radio/select/selectboxes options and the conditionals, then prints
+the resulting route. Exits with 1 when the sequence has errors.
+
+--json requires --fills and emits a structured route report for reusing the
+checked page order, labels and values when writing test steps.
 
 --form reads a local form definition. --path reads the current revision from
 preprod Forms API.
@@ -42,7 +45,8 @@ Required fields are checked on every shown page up to the last fill. Set
 pages are checked too.
 
 Custom JavaScript conditionals are never executed. Read the expression and
-record whether it shows the component in "assume".
+record whether it shows the component in "assume". Dynamic options, value
+storage shapes and application validation are not verified by this checker.
 `;
 
 const readJson = (path, description) => {
@@ -124,7 +128,7 @@ const printRoute = (model, result) => {
     }
     const flags = [step.fill.prefilled ? 'prefilled' : '', step.fill.revisit ? 'revisit' : ''].filter(Boolean);
     lines.push(
-      `    ${step.index}. "${step.node.label}" (${concretePath(step.node, step.rows)})${formatValue(step.fill.value)}${flags.length ? ` [${flags.join(', ')}]` : ''}`,
+      `    ${step.index}. "${step.node.label}" (${concretePath(step.node, step.rows, step.subPath)})${formatValue(step.fill.value)}${flags.length ? ` [${flags.join(', ')}]` : ''}`,
     );
   }
   return lines.join('\n');
@@ -135,6 +139,9 @@ const main = async () => {
     process.stdout.write(helpText);
     return;
   }
+  const fillsFile = getArgument('--fills');
+  const json = process.argv.includes('--json');
+  if (json && !fillsFile) fail('--json requires --fills');
   const form = await loadForm();
   if (!Array.isArray(form.components)) {
     fail('form definition has no components array');
@@ -143,9 +150,8 @@ const main = async () => {
   const header = [form.title, form.skjemanummer, form.revision === undefined ? '' : `revision ${form.revision}`]
     .filter((value) => value !== undefined && value !== '')
     .join(', ');
-  process.stdout.write(`Form: ${header || '(untitled)'}\n\n`);
+  if (!json) process.stdout.write(`Form: ${header || '(untitled)'}\n\n`);
 
-  const fillsFile = getArgument('--fills');
   if (!fillsFile) {
     process.stdout.write(`${printStructure(model)}\n`);
     return;
@@ -160,6 +166,36 @@ const main = async () => {
     leaveEmpty: fills.leaveEmpty ?? [],
     reachesSummary: fills.reachesSummary === true,
   });
+  if (json) {
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          form: { title: form.title, path: form.path, skjemanummer: form.skjemanummer, revision: form.revision },
+          pages: (result.pagesVisited ?? []).map(({ page, uncertain }) => ({
+            key: page.key,
+            title: page.title,
+            uncertain,
+          })),
+          steps: result.steps.map(({ index, node, rows, subPath, fill, page }) => ({
+            index,
+            pageKey: page.key,
+            pageTitle: page.title,
+            path: concretePath(node, rows, subPath),
+            label: node.label,
+            value: fill.value,
+            prefilled: fill.prefilled === true,
+            revisit: fill.revisit === true,
+          })),
+          errors: result.errors,
+          warnings: result.warnings,
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    process.exitCode = result.errors.length ? 1 : 0;
+    return;
+  }
   if (result.steps.length) {
     process.stdout.write(`${printRoute(model, result)}\n`);
   }

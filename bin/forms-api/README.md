@@ -9,7 +9,7 @@ node bin/forms-api/inspect-preprod-forms.mjs --query '<form-number-or-title>'
 node bin/forms-api/inspect-preprod-forms.mjs --path '<form-path>'
 node bin/forms-api/import-form.mjs --form <generated-form.json>
 node bin/forms-api/form-flow.mjs --path '<form-path>' [--fills <fills.json>]
-node bin/forms-api/form-flow.mjs --form <form.json> [--fills <fills.json>]
+node bin/forms-api/form-flow.mjs --form <form.json> [--fills <fills.json>] [--json]
 ```
 
 `form-flow.mjs` is read-only. Without `--fills` it prints each page's fields
@@ -17,9 +17,14 @@ in form order, with required flags and conditionals and the fields that
 control them. With `--fills` it checks an ordered fill sequence: a field is
 filled only after its controlling fields and only while shown, the order
 never goes back without `"revisit": true`, and required fields on the pages
-passed are filled. It exits 1 on errors. Custom JavaScript conditionals are
+passed are filled. Static radio/select/selectboxes values must belong to the
+declared options. It exits 1 on errors. Custom JavaScript conditionals are
 never executed; give their visibility in `assume`. `--help` documents the
-fills format.
+fills format. With `--fills --json`, the tool emits a machine-readable report
+with pages, ordered steps, field paths/labels/values, errors and warnings.
+Reuse it when writing manual instructions instead of duplicating fill data.
+This checks option membership, not select storage shape or dynamic option
+sources, and does not execute application validation.
 
 The token comes from `FORMS_API_ACCESS_TOKEN` or
 `packages/bygger-backend/.env`. Obtain it with `pnpm get-tokens forms-api`;

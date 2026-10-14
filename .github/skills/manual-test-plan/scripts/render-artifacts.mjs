@@ -7,19 +7,24 @@ import { RenderError, fail } from './render/errors.mjs';
 import { renderHtml } from './render/render-html.mjs';
 import { renderInternalInstructions, renderIssue } from './render/render-markdown.mjs';
 import { validatePlan } from './render/validate-plan.mjs';
+import { validateSources } from './render/validate-sources.mjs';
 import { collectGeneratedArtifacts, writeArtifacts } from './render/write-artifacts.mjs';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const skillDirectory = resolve(scriptDirectory, '..');
 
 const helpText = `Usage:
-  node render-artifacts.mjs --plan <plan.json> --out <directory> [--format <issue|html|both>]
+  node render-artifacts.mjs --plan <plan.json> --out <directory> [--format <issue|html|both>] [--source-repo <checkout>]
 
 Generates local index.html for manual printing, github-issue.md, or both,
 plus manifest.json and any generated form files. No PDF is generated.
 
 --format defaults to html when the plan collaborates with non-developers and
 to issue otherwise. Plans that collaborate with non-developers only support html.
+
+--source-repo checks file/line citations against committed Git objects, requires
+a citation for each source-mapped route, and checks related PR ancestry.
+It never reads source files from the working tree or fetches missing commits.
 `;
 
 const formats = {
@@ -63,6 +68,13 @@ const main = () => {
 
   const ctx = validatePlan(readPlan(planPath));
   const { plan } = ctx;
+  const sourceRepo = getArgument('--source-repo');
+  if (process.argv.includes('--source-repo') && (!sourceRepo || sourceRepo.startsWith('--'))) {
+    fail('--source-repo requires a repository path');
+  }
+  if (sourceRepo) {
+    validateSources(plan, resolve(sourceRepo));
+  }
   const { withNonDevelopers } = plan.collaboration;
 
   const format = getArgument('--format') ?? (withNonDevelopers ? 'html' : 'issue');

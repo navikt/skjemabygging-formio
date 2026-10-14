@@ -16,6 +16,15 @@ message. Ask only if neither contains a target:
 
 > Provide the issue or pull request for the change.
 
+When several targets are supplied, resolve and inspect each. For related PRs,
+check whether their changes are included in one deployable head (for example,
+an earlier PR's head or merge commit is an ancestor of the later head). Use that
+deployed head as `source`; record the other PRs and their exact analyzed commits
+in `source.relatedPullRequests`. Record the commit actually analyzed; a squash
+or rebase merge may require its merge commit rather than the original PR head.
+If no single deployment includes the changes, ask whether to produce separate
+plans or which combined deployment is intended.
+
 Issues and pull requests share one number sequence. Resolve a bare number with
 `gh api repos/navikt/skjemabygging-formio/issues/<number> --jq 'has("pull_request")'`:
 `true` is a pull request, `false` an issue. Accept an issue or pull request
@@ -54,11 +63,26 @@ user which sources you checked. Only when none is found, continue from the PR
 alone: treat the PR description as unconfirmed intent and confirm the inferred
 intent with the user before writing verification cases.
 
+After scope confirmation, preserve the agreed behavior IDs in
+`scope.approvedBehaviorIds`. Do not rewrite the approved list to match the
+cases eventually produced. Before delivery, every approved behavior must be
+linked to a case or to a specific entry in `scope.notCoveredByTests` with its
+`behaviorIds`, a concrete reason and `approvedDeferral: true` only after the user
+accepts the material reduction. Batch unresolved scope decisions into one
+question; do not silently turn agreed checks into coverage gaps.
+
 Do not accept a local branch, working-tree diff, patch file, or commit range as
 the only input. Read the committed PR diff and any affected file content at
 its head commit through GitHub. The local checkout may be on another branch
 and may not contain the changed files; do not substitute its contents for the
 PR head.
+
+If GitHub refuses an oversized diff, fetch the PR's committed base and head
+objects read-only and use `git diff <base-sha> <head-sha> --` locally. Use
+`git show <head-sha>:<path>` for file contents. Do not switch branches, use the
+working-tree diff or treat a truncated API response as the full change. If the
+objects cannot be fetched, report that blocker instead of reconstructing the
+missing diff from descriptions.
 
 For the implementation pull request, read:
 

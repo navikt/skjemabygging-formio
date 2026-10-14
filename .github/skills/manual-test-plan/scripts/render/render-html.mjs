@@ -198,6 +198,7 @@ const renderHtml = (ctx, { generatedAt, templatePath }) => {
       <p><strong>Miljø:</strong> ${escapeHtml(plan.environment.name)}</p>
       <p><strong>Gren:</strong> <code>${escapeHtml(plan.source.ref)}</code></p>
       <p><strong>Analysert commit:</strong> <code>${escapeHtml(expectedCommit)}</code></p>
+      ${(plan.source.relatedPullRequests ?? []).map((pr) => `<p><strong>Også analysert:</strong> <a href="${escapeHtml(pr.url)}">#${pr.number}</a> (<code>${escapeHtml(pr.ref)}</code>, <code>${escapeHtml(pr.commitSha)}</code>)</p>`).join('')}
     </div>
   </details>`;
 

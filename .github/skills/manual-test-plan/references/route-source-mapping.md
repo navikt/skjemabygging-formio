@@ -52,15 +52,33 @@ each case:
 4. Run `node bin/forms-api/form-flow.mjs --path '<form-path>' --fills
 <fills.json>` and fix the fills until it reports no errors. Resolve each
    warning, or record why it does not apply.
+   Static radio/select/selectboxes values are checked against their declared
+   options; dynamic options require source or browser evidence.
 5. Write the steps in the printed route order. Each `Page` heading is a page
    transition, including pages with no fills, which the tester still passes
    through with `Neste steg`. Name fields by their printed labels. Cite the
    form revision and the checker run in `journeyCheck.evidence`.
 
+Use `--json` with `--fills` to obtain the same checked route as structured data.
+Reuse its step paths, labels, values and page names when writing case actions.
+Keep one authored fill sequence per case, not separate copies in a plan
+generator and a route generator. Expected results still come from intent, not
+from the generated route.
+
 The checker uses the stored form definition. It does not check renderer
 behavior, prefill sources, validation rules other than `required`, or
 JSON-logic conditionals; map those from source as described above. Rerun it
 after changing a case's values or order.
+
+Source citations use `path:start-end` (or comma-separated ranges), optionally
+followed by ` (<40-character commit SHA>)`. Without an explicit SHA, the
+reference uses `source.commitSha`. Obtain ranges from inspected committed
+files, not estimates. Run the renderer with `--source-repo <checkout>` before
+delivery: it verifies citation syntax, committed paths and line ranges, and
+requires a file/line citation for each source-mapped route. The checkout must
+contain the cited Git objects; its current branch and uncommitted contents are
+irrelevant. This check proves citation existence, not that the cited code
+supports the claimed behavior.
 
 ## Steps and evidence
 

@@ -35,6 +35,7 @@
       "properties": {
         "included": { "$ref": "#/definitions/strings" },
         "excluded": { "$ref": "#/definitions/strings" },
+        "approvedBehaviorIds": { "$ref": "#/definitions/nonEmptyStrings" },
         "notCoveredByTests": {
           "type": "array",
           "items": {
@@ -42,7 +43,9 @@
             "required": ["area", "reason"],
             "properties": {
               "area": { "$ref": "#/definitions/text" },
-              "reason": { "$ref": "#/definitions/text" }
+              "reason": { "$ref": "#/definitions/text" },
+              "behaviorIds": { "$ref": "#/definitions/nonEmptyStrings" },
+              "approvedDeferral": { "type": "boolean" }
             }
           }
         }
@@ -74,6 +77,19 @@
           "type": "string",
           "pattern": "^[0-9a-fA-F]{40}$",
           "x-message": "must be a 40-character Git commit SHA"
+        },
+        "relatedPullRequests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["number", "url", "ref", "commitSha"],
+            "properties": {
+              "number": { "$ref": "#/properties/source/properties/number" },
+              "url": { "$ref": "#/properties/source/properties/url" },
+              "ref": { "$ref": "#/properties/source/properties/ref" },
+              "commitSha": { "$ref": "#/properties/source/properties/commitSha" }
+            }
+          }
         },
         "issue": {
           "type": "object",
