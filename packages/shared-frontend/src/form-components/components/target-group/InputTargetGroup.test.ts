@@ -16,7 +16,7 @@ describe('InputTargetGroup helpers', () => {
     });
   });
 
-  it('keeps existing prefilled value instead of overwriting it', () => {
+  it('replaces a saved prefilled value with the latest prefill', () => {
     expect(
       calculateTargetGroupValue(
         {},
@@ -28,7 +28,16 @@ describe('InputTargetGroup helpers', () => {
       ),
     ).toEqual({
       calculated: { maalgruppetype: 'ANNET' },
-      prefilled: { maalgruppetype: 'MOTDAGPEN' },
+      prefilled,
+    });
+  });
+
+  it('keeps the saved prefilled value when there is no current prefill', () => {
+    const saved = { maalgruppetype: 'MOTDAGPEN' };
+
+    expect(calculateTargetGroupValue({}, { calculated: { maalgruppetype: 'ANNET' }, prefilled: saved })).toEqual({
+      calculated: { maalgruppetype: 'ANNET' },
+      prefilled: saved,
     });
   });
 

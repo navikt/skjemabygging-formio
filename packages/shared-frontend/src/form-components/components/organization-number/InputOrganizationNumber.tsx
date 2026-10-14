@@ -20,6 +20,7 @@ const InputOrganizationNumber = ({ component, submissionPath }: InputComponentPr
       required={isRequired(component)}
       fieldSize={resolveFieldSize(component) ?? 'small'}
       autoComplete={component.autocomplete}
+      readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       validation={validation}
     />

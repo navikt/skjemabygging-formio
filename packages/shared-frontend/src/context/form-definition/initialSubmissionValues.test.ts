@@ -109,18 +109,31 @@ describe('applyInitialValuesToSubmission', () => {
         customConditional: 'show = data.showExtra === true;',
       },
     ]);
-    const activeSubmission = { data: { showExtra: true, extra: 'User value' } };
+    const activeSubmission = { data: { showExtra: true, extra: 'Prefilled value' } };
     const hiddenSubmission = { data: { showExtra: false, extra: 'User value' } };
 
-    expect(applyInitialValuesToSubmission(form, activeSubmission, 'nb', { prefillMode: 'missing' })).toBe(
-      activeSubmission,
-    );
-    expect(applyInitialValuesToSubmission(form, hiddenSubmission, 'nb', { prefillMode: 'missing' })).toEqual({
+    expect(applyInitialValuesToSubmission(form, activeSubmission, 'nb')).toBe(activeSubmission);
+    expect(applyInitialValuesToSubmission(form, hiddenSubmission, 'nb')).toEqual({
       data: { showExtra: false },
     });
-    expect(
-      applyInitialValuesToSubmission(form, { data: { showExtra: true } }, 'nb', { prefillMode: 'missing' }),
-    ).toEqual({ data: { showExtra: true, extra: 'Prefilled value' } });
+    expect(applyInitialValuesToSubmission(form, { data: { showExtra: true } }, 'nb')).toEqual({
+      data: { showExtra: true, extra: 'Prefilled value' },
+    });
+  });
+
+  it('replaces a value from a saved draft with the current prefill', () => {
+    const form = createForm([{ key: 'name', type: 'textfield', input: true, prefillValue: 'Current name' }]);
+
+    expect(applyInitialValuesToSubmission(form, { data: { name: 'Saved name' } }, 'nb')).toEqual({
+      data: { name: 'Current name' },
+    });
+  });
+
+  it('keeps a saved value when there is no prefill', () => {
+    const form = createForm([{ key: 'name', type: 'textfield', input: true }]);
+    const submission = { data: { name: 'Saved name' } };
+
+    expect(applyInitialValuesToSubmission(form, submission, 'nb')).toBe(submission);
   });
 
   it('settles prefilled values that reveal another prefilled component', () => {
@@ -345,8 +358,6 @@ describe('applyInitialValuesToSubmission', () => {
     ]);
     const stableSubmission = { data: {} };
 
-    expect(applyInitialValuesToSubmission(form, stableSubmission, 'nb', { prefillMode: 'missing' })).toBe(
-      stableSubmission,
-    );
+    expect(applyInitialValuesToSubmission(form, stableSubmission, 'nb')).toBe(stableSubmission);
   });
 });
