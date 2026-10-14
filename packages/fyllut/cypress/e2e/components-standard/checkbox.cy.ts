@@ -44,7 +44,7 @@ describe('Checkbox', () => {
     it('should not be required', () => {
       const label = 'Avkryssingsboks ikke påkrevd';
       cy.clickNextStep();
-      cy.findByLabelOptional(label).should('exist');
+      cy.findByRole('checkbox', { name: `${label} (valgfritt)` }).should('exist');
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
   });
@@ -92,11 +92,13 @@ describe('Checkbox', () => {
     });
 
     it('should have english label and descriptions', () => {
-      cy.withinComponent('Avkryssingsboks med beskrivelse (en)', () => {
-        cy.contains('Dette er en beskrivelse (en)').should('exist');
-        cy.findByRole('button', { name: 'mer (en)' }).click();
-        cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
-      });
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks med beskrivelse (en)' })
+        .closest('[data-form-component]')
+        .within(() => {
+          cy.contains('Dette er en beskrivelse (en)').should('exist');
+          cy.findByRole('button', { name: 'mer (en)' }).click();
+          cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
+        });
     });
   });
 });
