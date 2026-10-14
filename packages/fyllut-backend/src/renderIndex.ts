@@ -89,6 +89,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
+        const isAllowlistedNewRenderForm =
+          config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath);
         const staticPdfRoute = isStaticPdfRoute(req);
         const invalidLanguageParam = req.query.lang !== undefined && qpLang === undefined;
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
@@ -112,7 +114,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             logger.debug('Static pdf', { formPath });
           } else if (submissionTypesUtils.containsMultipleStandardSubmissionTypes(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
-            if (req.baseUrl !== targetUrl) {
+            if (!isAllowlistedNewRenderForm && req.baseUrl !== targetUrl) {
               const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
               logger.info('Redirecting to intro page since submission query param is missing', logMeta);
               return res.redirect(

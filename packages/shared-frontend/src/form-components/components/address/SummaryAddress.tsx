@@ -1,8 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
 import { addressToString, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { AddressDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryAddress = (props: FormComponentProps) => {
+const SummaryAddress = (props: FormComponentProps<AddressDefinition>) => {
   const { component, submissionPath, submission, translate } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

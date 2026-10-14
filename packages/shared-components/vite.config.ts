@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
           '@navikt/ds-css',
           '@navikt/aksel-icons',
           '@navikt/ds-react',
+          '@navikt/skjemadigitalisering-shared-frontend',
         ],
       },
     },

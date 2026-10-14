@@ -41,14 +41,6 @@ const emailForm = () => {
               required: false,
             },
           }),
-          email({
-            label: 'E-post egendefinert',
-            key: 'epostegendefinert',
-            validate: {
-              required: false,
-              custom: 'valid = input.includes("nav") ? true : "E-postadressen må inneholde nav"',
-            },
-          }),
         ],
       }),
     ],

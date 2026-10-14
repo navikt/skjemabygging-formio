@@ -98,11 +98,15 @@ describe('Digital no login', () => {
     it('shows validation errors if no personal ID has been uploaded', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
       cy.clickNextStep();
-      cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('exist');
+      cy.findByRole('group', { name: TEXTS.statiske.uploadId.label }).within(() => {
+        cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('be.visible');
+      });
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.uploadId.label}` }).should('be.visible');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.title}`).should('not.exist');
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.uploadId.label}` }).should('not.exist');
       cy.clickNextStep();
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).click();
+      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('have.focus');
     });
 
     it('lets you upload a file when selecting a type of personal ID', () => {
@@ -119,6 +123,41 @@ describe('Digital no login', () => {
       cy.clickNextStep();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+    });
+
+    it('keeps the file selection button the same size when an upload error appears', () => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      return cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($button) => {
+        const { width, height } = $button[0].getBoundingClientRect();
+
+        cy.clickNextStep();
+        cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).should('be.visible');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should(($buttonWithError) => {
+          const errorRect = $buttonWithError[0].getBoundingClientRect();
+          expect(errorRect.width).to.equal(width);
+          expect(errorRect.height).to.equal(height);
+        });
+        cy.get('[data-cy="upload-button-personal-id"]').within(() => {
+          cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).then(($currentButton) => {
+            const buttonWidth = $currentButton[0].getBoundingClientRect().width;
+            cy.findByText(TEXTS.statiske.uploadId.missingUploadError)
+              .parent()
+              .should(($alert) => {
+                const alertWidth = $alert[0].getBoundingClientRect().width;
+                expect(alertWidth).to.be.greaterThan(buttonWidth);
+              });
+            cy.findByText(TEXTS.statiske.uploadId.missingUploadError)
+              .parent()
+              .then(($alert) => {
+                const alertBottom = $alert[0].getBoundingClientRect().bottom;
+                cy.findByText(TEXTS.statiske.uploadId.readMoreHeader).should(($readMore) => {
+                  const readMoreTop = $readMore[0].getBoundingClientRect().top;
+                  expect(readMoreTop - alertBottom).to.be.within(0, 24);
+                });
+              });
+          });
+        });
+      });
     });
 
     it('redirect user if we get 403 from ID upload', () => {
@@ -201,16 +240,43 @@ describe('Digital no login', () => {
     });
 
     it('allows uploading files after captcha is completed', () => {
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@captchaRequest').its('response.statusCode').should('equal', 200);
+      cy.wait('@uploadIdFile').its('response.statusCode').should('equal', 201);
+      cy.findByText('id-billy-bruker.jpg').should('be.visible');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
       cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).should('not.exist');
     });
 
     it('reuses the token on second upload without invoking captcha again', () => {
+      const uploadTokens: unknown[] = [];
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id', (request) => {
+        uploadTokens.push(request.headers.nologintoken);
+      }).as('uploadIdFile');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/personal-id/*').as('deleteIdFile');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@uploadIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(201);
+        expect(typeof request.headers.nologintoken).to.equal('string');
+      });
+      cy.get('@captchaRequest.all').should('have.length', 1);
       cy.findByRole('button', { name: 'Slett filen' }).click();
-      cy.uploadFile('small-file.txt', { verifyUpload: true });
+      cy.wait('@deleteIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(204);
+        expect(request.headers.nologintoken === uploadTokens[0]).to.equal(true);
+      });
+      cy.findByText('id-billy-bruker.jpg').should('not.exist');
+      cy.uploadFile('small-file.txt');
+      cy.wait('@uploadIdFile').should(({ request, response }) => {
+        expect(response?.statusCode).to.equal(201);
+        expect(uploadTokens.length).to.equal(2);
+        expect(request.headers.nologintoken === uploadTokens[0]).to.equal(true);
+      });
+      cy.findByText('small-file.txt').should('be.visible');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
       cy.get('@captchaRequest.all').should('have.length', 1);
     });
   });
