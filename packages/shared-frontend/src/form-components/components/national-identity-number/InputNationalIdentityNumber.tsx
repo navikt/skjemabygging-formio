@@ -21,8 +21,9 @@ const InputNationalIdentityNumber = ({
       label={component.label ?? TEXTS.statiske.identity.identityNumber}
       description={component.description}
       required={isRequired(component)}
-      fieldSize={resolveFieldSize(component)}
+      fieldSize={resolveFieldSize(component) ?? 'small'}
       readOnly={component.readOnly}
+      autoComplete={component.autocomplete}
       readMore={resolveReadMore(component)}
       validation={validation}
     />

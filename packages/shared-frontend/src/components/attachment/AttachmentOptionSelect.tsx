@@ -6,6 +6,7 @@ import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
+import FieldError from '../shared/FieldError';
 import TextArea from '../text-area/TextArea';
 import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
@@ -93,11 +94,7 @@ const AttachmentOptionSelect = ({
           <div className={styles.implicitChoice} id={inputId(statePath)} tabIndex={-1}>
             <Label>{title}</Label>
             <BodyShort>{description}</BodyShort>
-            {error && (
-              <Alert variant="error" inline>
-                {error}
-              </Alert>
-            )}
+            {error && <FieldError id={`${inputId(statePath)}-error`} error={error} />}
           </div>
         ) : values.length === 1 ? (
           <CheckboxGroup

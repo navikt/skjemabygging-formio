@@ -14,9 +14,9 @@ import { useValidationExternalError, useValidationFieldError } from '../../conte
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
 import { UnvalidatedFields, useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
-import Alert from '../alert/Alert';
 import FileList from '../file-upload/FileList';
 import UploadButton from '../file-upload/UploadButton';
+import FieldError from '../shared/FieldError';
 import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { toAttachmentFilesValidationFields } from './attachmentValidation';
@@ -185,9 +185,7 @@ const AttachmentItem = ({
         <VStack gap="space-16">
           {filesError && (
             <div id={inputId(filesPath)} tabIndex={-1}>
-              <Alert variant="error" inline marginBottom="space-0">
-                {translate(filesError, fileUploadErrorParams)}
-              </Alert>
+              <FieldError id={`${inputId(filesPath)}-error`} error={translate(filesError, fileUploadErrorParams)} />
             </div>
           )}
           {uploadReadMore}
