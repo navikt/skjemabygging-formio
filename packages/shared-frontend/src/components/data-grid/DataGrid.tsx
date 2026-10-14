@@ -23,7 +23,6 @@ const DataGrid = ({ addLabel, children, onAdd }: DataGridProps) => {
             className={styles.addButton}
             type="button"
             variant="secondary"
-            size="small"
             icon={<PlusIcon aria-hidden />}
             onClick={onAdd}
           >

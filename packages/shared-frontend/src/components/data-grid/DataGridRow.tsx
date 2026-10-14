@@ -9,7 +9,7 @@ interface DataGridRowProps {
   children: ReactNode;
   onRemove?: () => void;
   removeLabel?: string;
-  title: ReactNode;
+  title?: ReactNode;
 }
 
 const DataGridRow = ({ children, onRemove, removeLabel, title }: DataGridRowProps) => {
@@ -17,9 +17,11 @@ const DataGridRow = ({ children, onRemove, removeLabel, title }: DataGridRowProp
 
   return (
     <div className={styles.row}>
-      <Heading level="3" size="small" className={styles.rowHeading}>
-        {title}
-      </Heading>
+      {title && (
+        <Heading level="3" size="small" className={styles.rowHeading}>
+          {title}
+        </Heading>
+      )}
       <div className={styles.rowContent}>{children}</div>
       {onRemove && (
         <div className={styles.remove}>
