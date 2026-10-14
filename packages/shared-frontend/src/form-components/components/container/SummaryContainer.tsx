@@ -1,8 +1,9 @@
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ContainerDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
 
-const SummaryContainer = (props: FormComponentProps) => {
+const SummaryContainer = (props: FormComponentProps<ContainerDefinition>) => {
   const { submission, submissionPath, component } = props;
   const { components, navId } = component;
 

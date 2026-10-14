@@ -3,6 +3,7 @@ import {
   FormsApiTranslationMap,
   I18nTranslations,
   localizationUtils,
+  TEXTS,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
@@ -19,11 +20,16 @@ const getGlobalTranslationFilename = (lang: TranslationLang): string => {
 
 const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
   return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
-    accumulator[currentItem.key] = {
-      nb: currentItem.nb,
+    const validationFallback = TEXTS.validering[currentItem.key as keyof typeof TEXTS.validering];
+    const translation = {
+      nb: currentItem.nb ?? validationFallback,
       nn: currentItem.nn,
       en: currentItem.en,
     };
+    accumulator[currentItem.key] = translation;
+    if (validationFallback) {
+      accumulator[validationFallback] = translation;
+    }
     return accumulator;
   }, {} as FormsApiTranslationMap);
 };

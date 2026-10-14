@@ -1,0 +1,9 @@
+.image {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+.description {
+  margin-block-start: var(--ax-space-16);
+}

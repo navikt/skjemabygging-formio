@@ -1,0 +1,31 @@
+import { Box, Label } from '@navikt/ds-react';
+import TranslatedDescription from '../../../components/shared/TranslatedDescription';
+import { useLanguage } from '../../../context/language/LanguageContext';
+import { ContainerDefinition } from '../../component-types';
+import { InputComponentRegistry } from '../../inputComponentRegistry';
+import RenderInputForm from '../../RenderInputForm';
+
+interface InputContainerProps {
+  component: ContainerDefinition;
+  componentRegistry?: InputComponentRegistry;
+}
+
+const InputContainer = ({ component, componentRegistry }: InputContainerProps) => {
+  const { translate } = useLanguage();
+
+  if (!component.components?.length) {
+    return null;
+  }
+
+  const { label, hideLabel, description, components } = component;
+
+  return (
+    <Box marginBlock="space-0 space-40" data-cy="input-container">
+      {!hideLabel && label && <Label as="div">{translate(label)}</Label>}
+      {description && <TranslatedDescription translationKey={description} />}
+      <RenderInputForm components={components} componentRegistry={componentRegistry} />
+    </Box>
+  );
+};
+
+export default InputContainer;

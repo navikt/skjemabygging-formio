@@ -1,6 +1,25 @@
 import { localizationUtils } from './localizationUtils';
 
 describe('localization', () => {
+  describe('getSupportedLanguageCode', () => {
+    it.each([
+      ['nb', 'nb'],
+      ['nb-NO', 'nb'],
+      ['no', 'nb'],
+      ['NO', 'nb'],
+      ['nn', 'nn'],
+      ['nn-NO', 'nn'],
+      ['en', 'en'],
+    ])('maps %s to %s', (locale, languageCode) => {
+      expect(localizationUtils.getSupportedLanguageCode(locale)).toBe(languageCode);
+    });
+
+    it('does not treat unsupported languages as bokmal', () => {
+      expect(localizationUtils.getSupportedLanguageCode('pl')).toBeUndefined();
+      expect(localizationUtils.getLanguageCodeAsIso639_1('pl')).toBe('nb');
+    });
+  });
+
   describe('getLanguageCodeAsIso639_1', () => {
     it('maps nn-NO to nn', () => {
       expect(localizationUtils.getLanguageCodeAsIso639_1('nn-NO')).toBe('nn');

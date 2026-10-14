@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
-import type { StaticPdfPage } from './StaticPdfWrapper';
 import { useStaticPdf } from './StaticPdfContext';
 import StaticPdfDownloadPage from './StaticPdfDownloadPage';
 import StaticPdfInputPage from './StaticPdfInputPage';
+import type { StaticPdfPage } from './StaticPdfWrapper';
 import StaticPdfNavigation from './components/StaticPdfNavigation';
 import FormErrorSummary from './components/shared/form/FormErrorSummary';
 

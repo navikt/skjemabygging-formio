@@ -1,0 +1,7 @@
+.grey {
+  background-color: var(--ax-neutral-100);
+}
+
+.grey .grey {
+  background-color: var(--ax-bg-neutral-soft);
+}

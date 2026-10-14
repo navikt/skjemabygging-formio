@@ -1,0 +1,31 @@
+.text,
+.choice,
+.picker,
+.pickerRoot {
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
+/* Size the controls, not their labels, descriptions, errors or helper content. */
+.text > input,
+.text textarea {
+  inline-size: 100%;
+  max-inline-size: var(--field-max-inline-size, 100%);
+  min-inline-size: 0;
+}
+
+.choice > div:has(select, input[role='combobox']) {
+  max-inline-size: var(--field-max-inline-size, none);
+  min-inline-size: 0;
+}
+
+.picker > div:has(> input) {
+  inline-size: var(--field-max-inline-size, fit-content);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.picker > div > input {
+  inline-size: 100%;
+  min-inline-size: 0;
+}

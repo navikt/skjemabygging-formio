@@ -1,0 +1,10 @@
+.container {
+  inline-size: 19.5rem;
+  max-inline-size: 100%;
+}
+
+@media (max-width: 767px) {
+  .container {
+    inline-size: 100%;
+  }
+}

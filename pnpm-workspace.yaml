@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
   - 'mocks'
 allowBuilds:
+  '@scarf/scarf': false
   core-js: true
   cypress: true
   esbuild: true

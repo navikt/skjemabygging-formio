@@ -11,6 +11,7 @@ vi.mock('./dekorator', () => ({
 }));
 
 const { formsApiUrl } = config;
+const defaultNewRenderForms = [...config.newRenderForms];
 
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
   nock(formsApiUrl)
@@ -29,6 +30,8 @@ const authenticatedGet = (path: string) => request(createApp()).get(path).set('A
 
 describe('Fyllut backend :: query param sub', () => {
   afterEach(() => {
+    config.newRenderForms = [...defaultNewRenderForms];
+
     if (!nock.isDone()) {
       nock.cleanAll();
       throw new Error('Pending nock interceptors not used');
@@ -109,6 +112,21 @@ describe('Fyllut backend :: query param sub', () => {
       const res = await request(createApp()).get('/fyllut/testform103/oppsummering?lang=en').expect(302);
 
       expect(res.get('location')).toBe('/fyllut/testform103?lang=en');
+    });
+
+    it('redirects multi-submission forms from any nested route when sub is missing', async () => {
+      mockForm('testform103nested', ['PAPER', 'DIGITAL']);
+
+      const res = await request(createApp()).get('/fyllut/testform103nested/unknown?lang=en').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/testform103nested?lang=en');
+    });
+
+    it('renders nested routes without sub for allowlisted new-render forms', async () => {
+      config.newRenderForms = ['testform103newrender'];
+      mockForm('testform103newrender', ['PAPER', 'DIGITAL']);
+
+      await request(createApp()).get('/fyllut/testform103newrender/oppsummering?lang=en').expect(200);
     });
 
     it('renders the intro page for multi-submission forms when sub is missing', async () => {

@@ -1,8 +1,9 @@
 export { createActiveTaskService } from './active-task';
 export type { ActiveTask, ActiveTaskService } from './active-task';
-export { createApplicationService } from './application';
+export { createApplicationService, mapPartyToApplication } from './application';
 export type {
   ApplicationMetrics,
+  ApplicationPartyData,
   ApplicationService,
   ApplicationType,
   Attachment,
@@ -18,10 +19,12 @@ export { createApplicationActivitiesService } from './application-activities';
 export type { ApplicationActivitiesService } from './application-activities';
 export { createApplicationPdfService } from './application-pdf';
 export type { ApplicationPdfService } from './application-pdf';
+export { CAPTCHA_FAILURE_REASON, createCaptchaService } from './captcha';
+export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './captcha';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
 export { coverPageMapper, createCoverPageService } from './cover-page';
-export type { CoverPageService, ForstesideRequestBody } from './cover-page';
+export type { CoverPagePartyData, CoverPageService, ForstesideRequestBody } from './cover-page';
 export { createFormService } from './form';
 export type { FormService } from './form';
 export { createMergeFileService } from './merge-file';
@@ -37,6 +40,8 @@ export type {
 } from './metrics';
 export { createNavUnitService } from './nav-unit';
 export type { NavUnitService } from './nav-unit';
+export { createNologinTokenService } from './nologin';
+export type { CreateNologinTokenServiceProps, NologinTokenService } from './nologin';
 export { createPrefillService } from './prefill';
 export type { PrefillService } from './prefill';
 export { createRecipientService } from './recipient';

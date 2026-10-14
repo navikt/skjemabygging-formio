@@ -1,5 +1,6 @@
 import { SubmissionType } from '../form';
 import { Form } from '../forms-api-form';
+import { PartyAddress } from '../party';
 import { TranslationLang } from '../translation';
 
 type CoverPageType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
@@ -25,19 +26,7 @@ interface UnknownUser {
   organizationNumber?: never;
   firstName: string;
   surname: string;
-  address: {
-    co?: string;
-    postOfficeBox?: string;
-    streetAddress?: string;
-    building?: string;
-    postalCode?: string;
-    postalName?: string;
-    region?: string;
-    country?: {
-      value: string;
-      label: string;
-    };
-  };
+  address: PartyAddress;
 }
 
 type UserType = NationalIdentityNumberType | OrganizationNumberType | UnknownUser;

@@ -21,13 +21,15 @@ frontend work.
 - Put reusable UI, hooks, frontend services, and form behavior in
   `packages/shared-frontend`.
 - Keep `packages/shared-frontend/src/components` generic and independent of
-  form-definition and fyllut types. Bind reusable controls through generic state
-  paths and presentational props.
+  form-definition configuration and fyllut-specific flow, submission, routing,
+  or application code. Bind reusable controls through generic state paths and
+  presentational props.
 - Keep `packages/shared-frontend/src/form-components` for thin form-definition
-  adapters. Co-locate editable and summary adapters by component type and keep
-  their registries aligned.
+  adapters. Keep separate input, summary, and PDF adapters when that parallel
+  structure clarifies the mapping. Co-locate adapters by component type and
+  keep their registries aligned.
 - Keep `packages/shared-frontend/src/fyllut` for fyllut-specific orchestration,
-  routing, submission, wizard behavior, attachments, and host integration. Keep
+  routing, submission, wizard behavior, and host integration. Keep
   this flow hostable by both fyllut and bygger.
 - Dependencies may point from `fyllut` to generic `components`, never the
   reverse. Keep application-specific behavior in `packages/fyllut` or
@@ -36,6 +38,9 @@ frontend work.
   legacy flow that cannot reasonably be moved first.
 - Reuse shared behavior before adding another path. Keep form-definition
   adapters thin.
+- When composing shared-frontend UI, use the package's own
+  `src/components` abstractions rather than importing Aksel components
+  directly. Add or extend a generic shared component first when needed.
 
 ## Styling
 
@@ -77,12 +82,30 @@ intentionally changes them.
 
 - When adding or changing a form component, preserve parity across editable
   input, validation, summary, PDF, autosave, and submission behavior.
+- Every component exposes only its own narrow validation type; never inherit or
+  accept a broad `ValidationRules`/`FieldValidationProp`. `required` is always
+  a direct public prop, never a member of a validation object. Semantic
+  components own their intrinsic rules and formatting, while generic
+  components expose only their approved contextual/authored constraints.
+  `TextField` remains the established generic text component and supports only
+  approved text constraints, including `coverPageValue`, never unrelated rules
+  such as `postalCode`.
+- Keep intrinsic rule builders pure and colocated with their components. Both
+  the rendered input and `page-validation/validationFieldsRegistry.ts` must
+  call the same builder; adapters must not duplicate intrinsic rules.
+- Semantic components select a centralized `formatKey` for generic text inputs
+  when they own a non-default input/submission format. `TextField` applies the
+  selected formatter while typing, on blur, and when synchronizing state; it
+  must not infer formatting from validation rules.
 
 ## Host services, content, and logging
 
 - Give shared components HTTP and other host dependencies through adapters,
   context, or props. Do not add direct `fetch`, `window`, or hard-coded
   `/fyllut` dependencies. Existing cases are migration debt; do not extend them.
+- Load data intrinsic to a reusable component through `RuntimeServices`.
+  Keep form-definition-specific request parameters and submission metadata in
+  the corresponding `form-components` adapter.
 - Route user-facing form text through the shared language and translation
   context. Do not hard-code display text in reusable components.
 - Sanitize form-authored or translated HTML with the existing helper before
