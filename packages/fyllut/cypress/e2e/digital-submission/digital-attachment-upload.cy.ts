@@ -83,6 +83,30 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         });
     });
 
+    it('renders the description as formatted text before and after upload', () => {
+      const description = 'Har du noen annen dokumentasjon du ønsker å legge ved?';
+      cy.findAttachment(/Annen dokumentasjon/).within(() => {
+        cy.findByText(description).should('be.visible');
+        cy.contains('<p>').should('not.exist');
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Annet vedlegg 1');
+        cy.uploadFile('test.txt');
+        cy.findByText(description).should('be.visible');
+        cy.contains('<p>').should('not.exist');
+      });
+    });
+
+    it('keeps the upload read more close to the upload button', () => {
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).then(($button) => {
+          cy.findByRole('button', { name: TEXTS.statiske.attachment.sizeAndFormatHeader }).should(($readMore) => {
+            const gap = $readMore[0].getBoundingClientRect().top - $button[0].getBoundingClientRect().bottom;
+            expect(gap).to.be.within(0, 16);
+          });
+        });
+      });
+    });
+
     describe('uploading files', () => {
       beforeEach(() => {
         cy.findAttachment(/Vedlegg 1/).within(() => {
