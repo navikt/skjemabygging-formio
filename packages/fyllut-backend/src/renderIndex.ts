@@ -1,4 +1,4 @@
-import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { renderIndexHtml, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   isLanguageAllowedForForm,
   navFormUtils,
@@ -156,11 +156,11 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
-    res.setHeader('X-Robots-Tag', 'noindex');
-    res.status(httpStatusCode).render('index.html', {
-      ...decoratorFragments,
-      ...pageMeta,
-      ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
+    renderIndexHtml(res, {
+      decoratorFragments,
+      pageMeta,
+      statusCode: httpStatusCode,
+      umamiWebsiteId: config.umamiWebsiteId,
     });
   } catch (_) {
     next(new Error('Failed to return index file'));
