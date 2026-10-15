@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import http from './http';

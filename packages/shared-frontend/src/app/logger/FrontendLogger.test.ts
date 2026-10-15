@@ -1,6 +1,8 @@
+// @vitest-environment jsdom
+
 import nock from 'nock';
 import { afterAll, beforeAll } from 'vitest';
-import http from '../util/http/http';
+import http from '../http/http';
 import FrontendLogger, { LoggerConfig } from './FrontendLogger';
 
 const BASE_PATH = 'http://test.nav.no';

@@ -1,3 +1,12 @@
+import {
+  FormContainer,
+  FrontendLogger,
+  getAvailableLanguages,
+  getCurrentLanguage,
+  http,
+  resolveActiveLanguage,
+  SkeletonList,
+} from './app';
 import CountrySelect from './components/country-select/CountrySelect';
 import CurrencySelect from './components/currency-select/CurrencySelect';
 import FormErrorSummary from './components/error-summary/FormErrorSummary';
@@ -26,6 +35,7 @@ import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submi
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
+export type { FetchHeader, FetchOptions, LoggerConfig } from './app';
 export type { CountrySelectProps } from './components/country-select/CountrySelect';
 export type { CurrencySelectProps } from './components/currency-select/CurrencySelect';
 export type { NavUnitSelectProps } from './components/nav-unit-select/NavUnitSelect';
@@ -75,17 +85,24 @@ export {
   applyPrefillDataToForm,
   CountrySelect,
   CurrencySelect,
+  FormContainer,
   FormDefinitionProvider,
   FormErrorSummary,
+  FrontendLogger,
+  getAvailableLanguages,
+  getCurrentLanguage,
   getFormPrefillKeys,
+  http,
   initializeDigitalDraft,
   LanguageProvider,
   NavUnitSelect,
   RenderForm,
   RenderSummaryForm,
+  resolveActiveLanguage,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
   sharedFrontendPackageName,
+  SkeletonList,
   solvePow,
   StateStoreProvider,
   SubmissionStateProvider,
