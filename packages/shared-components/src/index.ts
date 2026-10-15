@@ -43,6 +43,7 @@ import i18nUtils from './util/i18n';
 import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
+import { umamiEventHandler } from './util/tracking/umami';
 import url from './util/url/url';
 
 jss.setup(preset());
@@ -84,6 +85,7 @@ export {
   SkeletonList,
   StaticPdfProvider,
   Styles,
+  umamiEventHandler,
   url,
   useAppConfig,
   useCurrentLanguage,
