@@ -19,6 +19,7 @@ interface HttpOptions {
   headers?: Record<string, string>;
   redirect?: RequestRedirect;
   responseType?: 'metadata' | 'stream';
+  signal?: AbortSignal;
 }
 
 type HttpMetadataResponse<T> = {
@@ -42,6 +43,7 @@ async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetad
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
     redirect: options?.redirect,
+    signal: options?.signal,
   });
 
   return handleResponse<T>(response, options);
@@ -60,6 +62,7 @@ async function post<T>(url: string, body?: object, options?: HttpOptions): Promi
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
+    signal: options?.signal,
   });
 
   return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
@@ -78,6 +81,7 @@ async function put<T>(url: string, body?: object, options?: HttpOptions): Promis
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
+    signal: options?.signal,
   });
 
   return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
@@ -96,6 +100,7 @@ async function httpDelete<T>(url: string, body?: object, options?: HttpOptions):
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
+    signal: options?.signal,
   });
 
   return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
@@ -120,6 +125,7 @@ async function postMultipart<T>(
     headers: createHeaders(optionsWithoutContentType),
     body,
     redirect: options?.redirect,
+    signal: options?.signal,
   });
 
   return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
@@ -165,7 +171,7 @@ const getHeaders = (response: Response) =>
 const isManualRedirectResponse = (response: Response, options?: HttpOptions) =>
   options?.redirect === 'manual' && response.status >= 300 && response.status < 400;
 
-const handleBody = async (response: Response) => {
+const handleBody = async (response: Response, signal?: AbortSignal) => {
   try {
     // TODO fjern når riktig header på merge kallet
     if (response.url.includes('merge')) {
@@ -182,6 +188,7 @@ const handleBody = async (response: Response) => {
       return response;
     }
   } catch (_) {
+    signal?.throwIfAborted();
     // This catch helps to handle UND_ERR_SOCKET errors that we can ignore.
   }
 };
@@ -203,14 +210,14 @@ const handleResponse = async <T>(
       return {
         status: response.status,
         headers: getHeaders(response),
-        body: response.ok ? await handleBody(response) : undefined,
+        body: response.ok ? await handleBody(response, options?.signal) : undefined,
       };
     }
 
-    return await handleBody(response);
+    return await handleBody(response, options?.signal);
   }
 
-  const errorBody = await handleBody(response);
+  const errorBody = await handleBody(response, options?.signal);
   const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
   const correlationId =
     typeof errorBody === 'string'

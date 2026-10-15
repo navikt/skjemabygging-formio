@@ -88,4 +88,27 @@ describe('http', () => {
     });
     expect(response.body).toBeInstanceOf(ReadableStream);
   });
+
+  it('propagates an abort while reading the response body', async () => {
+    const controller = new AbortController();
+    const timeoutError = new DOMException('Request timed out', 'TimeoutError');
+    const body = new ReadableStream({
+      start: (streamController) => {
+        controller.signal.addEventListener('abort', () => streamController.error(controller.signal.reason));
+      },
+    });
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(body, { headers: { 'Content-Type': 'application/json' } }),
+    );
+
+    const request = http.get('https://example.test/translations', { signal: controller.signal });
+    await Promise.resolve();
+    controller.abort(timeoutError);
+
+    await expect(request).rejects.toBe(timeoutError);
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://example.test/translations',
+      expect.objectContaining({ signal: controller.signal }),
+    );
+  });
 });
