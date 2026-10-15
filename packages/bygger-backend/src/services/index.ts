@@ -1,7 +1,8 @@
-import { createStaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { createFormClearService, createStaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { Backend } from '../Backend';
 import config from '../config';
 import { createCopyService } from './copy/CopyService';
+import { createFormClearPublishService } from './FormClearPublishService';
 import createFormPublicationsService from './formPublications/FormPublicationsService';
 import createFormsService from './forms/FormsService';
 import PublisherService from './PublisherService';
@@ -14,6 +15,8 @@ import createGlobalTranslationService from './translation/GlobalTranslationsServ
 const recipientService = new RecipientService(config.formsApi.url);
 
 const backendInstance = new Backend(config);
+const formClearService = createFormClearService(config.formsApi.url);
+const formClearPublishService = createFormClearPublishService(backendInstance);
 
 const publisherService = new PublisherService(backendInstance);
 
@@ -48,6 +51,8 @@ const copyService = prodFormsApiUrl
 export {
   backendInstance,
   copyService,
+  formClearPublishService,
+  formClearService,
   formPublicationsService,
   formsService,
   formTranslationsService,

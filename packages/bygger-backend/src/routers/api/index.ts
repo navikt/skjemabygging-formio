@@ -3,6 +3,7 @@ import { rateLimiter } from '../../middleware/ratelimit';
 import config from './config';
 import enhetsliste from './enhetsliste';
 import enhetstyper from './enhetstyper';
+import formClearRouter from './form-clear';
 import formPublicationsRouter from './form-publications';
 import formDiff from './formDiff';
 import formsRouter from './forms';
@@ -37,6 +38,7 @@ apiRouter.use('/form-publications', formPublicationsRouter);
 apiRouter.use('/recipients', formsApiAuthHandler, recipientsRouter);
 apiRouter.use('/translations', formsApiAuthHandler, formsApiGlobalTranslationsRouter);
 apiRouter.use('/import', formsApiAuthHandler, importRouter);
+apiRouter.use('/form-clear', formClearRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);

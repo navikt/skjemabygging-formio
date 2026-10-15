@@ -11,6 +11,7 @@ const octokitMocks = vi.hoisted(() => ({
   mockCreateRef: vi.fn(),
   mockDeleteRef: vi.fn(),
   mockGetTree: vi.fn(),
+  mockGetCommit: vi.fn(),
   mockCreateTree: vi.fn(),
   mockCreateCommit: vi.fn(),
   mockUpdateRef: vi.fn(),
@@ -30,6 +31,7 @@ const {
   mockGetContent,
   mockGetRef,
   mockGetTree,
+  mockGetCommit,
   mockMergePullRequest,
   mockUpdateRef,
 } = octokitMocks;
@@ -44,6 +46,7 @@ vi.mock('@octokit/rest', () => ({
         createRef: mockCreateRef,
         deleteRef: mockDeleteRef,
         getTree: mockGetTree,
+        getCommit: mockGetCommit,
         createTree: mockCreateTree,
         createCommit: mockCreateCommit,
         updateRef: mockUpdateRef,
@@ -76,6 +79,7 @@ describe('GitHubRepo', () => {
     mockCreateRef.mockClear();
     mockDeleteRef.mockClear();
     mockGetTree.mockClear();
+    mockGetCommit.mockClear();
     mockCreateTree.mockClear();
     mockCreateCommit.mockClear();
     mockUpdateRef.mockClear();
@@ -95,6 +99,44 @@ describe('GitHubRepo', () => {
       repo.getRef('main');
       expect(mockGetRef).toHaveBeenCalledTimes(1);
       expect(mockGetRef).toHaveBeenCalledWith({ owner, repo: repoName, ref: 'heads/main' });
+    });
+
+    describe('listFormPaths', () => {
+      it('lists nested published forms on the configured branch', async () => {
+        mockGetRef.mockResolvedValue({ data: { object: { sha: 'base-sha' } } });
+        mockGetCommit.mockResolvedValue({ data: { tree: { sha: 'tree-sha' } } });
+        mockGetTree.mockResolvedValue({
+          data: {
+            truncated: false,
+            tree: [
+              { type: 'blob', path: 'forms/nested/example.json' },
+              { type: 'blob', path: 'translations/nested/example.json' },
+              { type: 'blob', path: 'forms/another.json' },
+              { type: 'tree', path: 'forms/folder.json' },
+            ],
+          },
+        });
+        await expect(repo.listFormPaths('test-publishing')).resolves.toEqual(['nested/example', 'another']);
+        expect(mockGetRef).toHaveBeenCalledWith({
+          owner,
+          repo: repoName,
+          ref: 'heads/test-publishing',
+        });
+        expect(mockGetCommit).toHaveBeenCalledWith({ owner, repo: repoName, commit_sha: 'base-sha' });
+        expect(mockGetTree).toHaveBeenCalledWith({
+          owner,
+          repo: repoName,
+          tree_sha: 'tree-sha',
+          recursive: 'true',
+        });
+      });
+
+      it('refuses cleanup if GitHub truncates the tree', async () => {
+        mockGetRef.mockResolvedValue({ data: { object: { sha: 'base-sha' } } });
+        mockGetCommit.mockResolvedValue({ data: { tree: { sha: 'tree-sha' } } });
+        mockGetTree.mockResolvedValue({ data: { truncated: true, tree: [] } });
+        await expect(repo.listFormPaths('test-publishing')).rejects.toThrow('truncated');
+      });
     });
   });
 

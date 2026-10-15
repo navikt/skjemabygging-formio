@@ -75,6 +75,27 @@ export class GitHubRepo {
     });
   }
 
+  async listFormPaths(branch: string): Promise<string[]> {
+    const ref = await this.getRef(branch);
+    const commit = await this.octokit.rest.git.getCommit({
+      owner: this.owner,
+      repo: this.repo,
+      commit_sha: ref.data.object.sha,
+    });
+    const tree = await this.octokit.rest.git.getTree({
+      owner: this.owner,
+      repo: this.repo,
+      tree_sha: commit.data.tree.sha,
+      recursive: 'true',
+    });
+    if (tree.data.truncated) {
+      throw new Error('Publish repository tree is truncated; refusing partial cleanup');
+    }
+    return tree.data.tree
+      .filter((entry) => entry.type === 'blob' && /^forms\/.+\.json$/.test(entry.path ?? ''))
+      .map((entry) => entry.path!.slice('forms/'.length, -'.json'.length));
+  }
+
   createRef(branch, sha) {
     return this.octokit.rest.git.createRef({
       owner: this.owner,
@@ -97,6 +118,7 @@ export class GitHubRepo {
         logger.info(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
       } else {
         logger.error(`Failed to fetch file from Github repo ${this.repo}`, error);
+        throw error;
       }
     }
     return remoteFileContent;
