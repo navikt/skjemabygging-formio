@@ -1,9 +1,12 @@
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
+import { createServer as createHttpServer } from 'node:http';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { pathToFileURL } from 'node:url';
+import { describe, expect, it, vi } from 'vitest';
+import * as serverConfig from '../../../../bin/fyllut-server-config.mjs';
 import tc07 from '../../../../mocks/mocks/data/test-cases/tc07-pdf-body.json';
 import { checkRequestBodies, useRouteVariant } from './mock-client';
 import { startServers, stopProcess } from './servers';
@@ -51,6 +54,49 @@ describe('FyllUt Playwright server support', () => {
       rmSync(firstDir, { recursive: true });
       rmSync(secondDir, { recursive: true });
       expect(stops.filter((result) => result.status === 'rejected')).toEqual([]);
+    }
+  }, 90000);
+
+  it('does not accept a health response from another process during startup', async () => {
+    const directory = mkdtempSync(join(tmpdir(), 'fyllut-collision-'));
+    const impostor = createHttpServer((_, response) => response.end('another process'));
+    const original = serverConfig.createFyllutServerConfig;
+    let occupiedPort: number | undefined;
+    const config = vi.spyOn(serverConfig, 'createFyllutServerConfig').mockImplementation((options) => {
+      const plan = original(options);
+      if (occupiedPort === undefined) {
+        occupiedPort = options.ports[2];
+        impostor.listen(occupiedPort, '127.0.0.1');
+        const [command, args, env, cwd] = plan.commands[1];
+        plan.commands[1] = [
+          command,
+          [
+            '--input-type=module',
+            '--eval',
+            `setTimeout(() => import(${JSON.stringify(pathToFileURL(args[0]).href)}), 4000)`,
+          ],
+          env,
+          cwd,
+        ];
+      }
+      return plan;
+    });
+    let servers: Awaited<ReturnType<typeof startServers>> | undefined;
+    try {
+      servers = await startServers(directory, 'built');
+      expect(servers.ports).not.toContain(occupiedPort);
+      expect((await fetch(`${servers.backendURL}/fyllut/internal/isready`)).status).toBe(200);
+      servers.assertHealthy();
+      await servers.stop();
+      await expectPortsReleased(servers.ports);
+      expect(impostor.listening).toBe(true);
+      const response = await fetch(`http://127.0.0.1:${occupiedPort}/fyllut/internal/isready`);
+      expect(await response.text()).toBe('another process');
+    } finally {
+      config.mockRestore();
+      await servers?.stop();
+      await new Promise<void>((done, fail) => impostor.close((error) => (error ? fail(error) : done())));
+      rmSync(directory, { recursive: true });
     }
   }, 90000);
 

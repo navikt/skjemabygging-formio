@@ -6,19 +6,19 @@ These are representative tests, not a complete Cypress migration.
 
 ## Branch scope
 
-The slim pilot changes 35 files relative to its main-branch starting point.
-18 are new files and 17 are edits to existing files.
+The slim pilot changes 36 files relative to its main-branch starting point.
+19 are new files and 17 are edits to existing files.
 
-| Group                              | Files | Why they are included                                                                                  |
-| ---------------------------------- | ----: | ------------------------------------------------------------------------------------------------------ |
-| Playwright specs                   |     6 | The 46 representative cases.                                                                           |
-| Cypress source pointers            |     6 | Comments linking the original declarations to their replacements. No executable Cypress changes.       |
-| Test fixtures, helpers and startup |     7 | Five Playwright modules, one shared command recipe, and the existing launcher's import of that recipe. |
-| Support tests                      |     2 | Verify process isolation/cleanup and the existing body comparator.                                     |
-| Mock implementation                |     3 | The comparator and the two tc07 handlers record that the real backend bodies were checked.             |
-| Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.         |
-| Documentation                      |     2 | This guide and two command entries in the root README.                                                 |
-| Total                              |    35 |                                                                                                        |
+| Group                              | Files | Why they are included                                                                                 |
+| ---------------------------------- | ----: | ----------------------------------------------------------------------------------------------------- |
+| Playwright specs                   |     6 | The 46 representative cases.                                                                          |
+| Cypress source pointers            |     6 | Comments linking the original declarations to their replacements. No executable Cypress changes.      |
+| Test fixtures, helpers and startup |     8 | Six Playwright modules, one shared command recipe, and the existing launcher's import of that recipe. |
+| Support tests                      |     2 | Verify process isolation/cleanup and the existing body comparator.                                    |
+| Mock implementation                |     3 | The comparator and the two tc07 handlers record that the real backend bodies were checked.            |
+| Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.        |
+| Documentation                      |     2 | This guide and two command entries in the root README.                                                |
+| Total                              |    36 |                                                                                                       |
 
 The earlier pilot's CLI wrapper, migration register/hash gates, observation API,
 ownership protocol, benchmark commands and separate technical Playwright suite
@@ -52,6 +52,10 @@ These commands use the standard Playwright CLI. `--list`, `--headed`,
 `--debug`, `--ui` and test selection are available. Visible browser tools need
 a graphical display. The default is one worker, no retries and Chromium.
 
+If Vite exits with `EMFILE` while creating file watchers, use polling for that
+invocation: `CHOKIDAR_USEPOLLING=true pnpm playwright:fyllut`. This changes how
+Vite watches local files, not test readiness or retries.
+
 ## What starts, and why?
 
 ```text
@@ -71,6 +75,11 @@ startup errors fail the test instead of attaching to an existing server.
 If another process takes a selected port before startup finishes, the fixture
 stops its own processes and tries new ports, at most three attempts within the
 same startup deadline. It does not retry failed tests.
+Readiness requires both successful HTTP checks and confirmation that the
+expected child processes accepted connections on their assigned ports.
+`fixtures/server-readiness.mjs` records those connections through Node's native
+socket diagnostics. Another process returning HTTP 200 cannot make a test's
+servers appear ready. The observer does not replace `listen()` or add endpoints.
 
 Servers stop with SIGINT, the signal used by Ctrl+C in local development.
 This avoids the backend's production SIGTERM delay without changing production
@@ -79,8 +88,8 @@ test**, not a silently successful run. Playwright fixture teardown handles
 ordinary failure, timeout and interruption; forcibly killing the worker or
 machine bypasses that teardown.
 
-Mocks run with transpilation only during browser tests. CI separately checks
-their TypeScript types. There are no extra controller processes, IPC ownership
+Mocks run with transpilation only and file watching disabled during browser
+tests. CI separately checks their TypeScript types. There are no extra controller processes, IPC ownership
 protocols, manifest files, runtime-config rewrites or `prepare`/`existing` mode.
 `bin/start.mjs` only reuses the extracted FyllUt command recipe; its Bygger
 branch and process lifecycle are not rewritten.
@@ -145,6 +154,10 @@ They exercise real mock handlers, missing/wrong validation, body mismatch,
 concurrent independent server setups and cleanup. Comparator unit tests cover
 unchanged nested expectations and error propagation. These are ordinary
 Vitest tests, not nested deliberately failing Playwright runs.
+The startup regression deliberately occupies a selected port with another
+HTTP server before the owned backend starts. It verifies that startup rejects
+that server's health response, chooses new ports and leaves the other server
+running.
 
 The new workflow runs on push alongside unchanged Cypress jobs. It installs
 only Chromium and builds FyllUt once. It runs these support checks and the built
@@ -168,11 +181,12 @@ Shared builds across Cypress/Playwright jobs are not included here.
 | `tsconfig.json`                                    | Type-check the tests separately from application code.                                     |
 | `fixtures/test.ts`                                 | Bind server lifecycle, page setup and mock helpers to each test.                           |
 | `fixtures/servers.ts`                              | Select ports, start direct child processes, await HTTP readiness and stop owned processes. |
+| `fixtures/server-readiness.mjs`                    | Record which ports each child process actually serves, using Node socket diagnostics.      |
 | `fixtures/mock-client.ts`                          | Select/reset variants through the existing admin API and check the comparator log.         |
 | `helpers/form.ts`                                  | Reusable form actions and network assertions from Cypress.                                 |
 | `helpers/attachments.ts`                           | Reusable attachment actions with complete upload waits.                                    |
 | `fixtures/servers.test.ts`                         | Exercise server isolation, body-check wiring and cleanup.                                  |
-| `../../../bin/fyllut-server-config.mjs`            | The FyllUt process recipe shared with the existing developer launcher.                     |
+| `../../../bin/fyllut-server-config.mjs`            | The FyllUt server configuration shared with the existing developer launcher.               |
 | `../../../mocks/mocks/utils/testCaseUtils.test.ts` | Regression tests for the existing body comparator.                                         |
 
 The remaining changes are the six specs and six source pointers, dependencies,

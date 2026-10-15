@@ -52,7 +52,9 @@ const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', validationLog
           '--no-plugins.inquirerCli.enabled',
           `--server.port=${mockPort}`,
           `--plugins.adminApi.port=${mockAdminPort}`,
-          ...(validationLog ? ['--server.host=127.0.0.1', '--plugins.adminApi.host=127.0.0.1'] : []),
+          ...(validationLog
+            ? ['--server.host=127.0.0.1', '--plugins.adminApi.host=127.0.0.1', '--no-files.watch']
+            : []),
         ],
         {
           MOCKS_BODY_VERIFICATION_LOG: validationLog ?? '',

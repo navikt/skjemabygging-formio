@@ -70,6 +70,8 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
   }
   const validationLog = resolve(directory, 'body-verification.jsonl');
   const logPath = resolve(directory, `servers-${attempt}.log`);
+  const listenLog = resolve(directory, `listeners-${attempt}.log`);
+  const readinessModule = resolve(import.meta.dirname, 'server-readiness.mjs');
   const ports = await freePorts(built ? 3 : 4);
   const plan = createFyllutServerConfig({ repoRoot: root, ports, mode: built ? 'built' : 'dev', validationLog });
   const children: { child: ChildProcess; stopping: boolean }[] = [];
@@ -105,7 +107,12 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
       for (const [command, args, env, cwd] of plan.commands) {
         const child = spawn(command, args, {
           cwd,
-          env: { ...process.env, ...env },
+          env: {
+            ...process.env,
+            ...env,
+            FYLLUT_PLAYWRIGHT_LISTEN_LOG: listenLog,
+            NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --require="${readinessModule}"`,
+          },
           detached: process.platform !== 'win32',
           stdio: ['ignore', logFile, logFile],
         });
@@ -120,6 +127,8 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
       closeSync(logFile);
     }
     const pending = new Set(plan.healthURLs);
+    // The first process serves both mock ports; subsequent processes each serve one app port.
+    const ownedListeners = ports.map((port, index) => `${children[Math.max(0, index - 1)].child.pid}:${port}`);
     while (pending.size) {
       assertHealthy();
       if (Date.now() > deadline) throw new Error(`Servers not ready: ${[...pending].join(', ')}. See ${logPath}`);
@@ -135,6 +144,11 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
           }
         }),
       );
+      const listeners = existsSync(listenLog) ? new Set(readFileSync(listenLog, 'utf8').trim().split('\n')) : new Set();
+      for (const url of plan.healthURLs) {
+        const portIndex = ports.indexOf(Number(new URL(url).port));
+        if (!listeners.has(ownedListeners[portIndex])) pending.add(url);
+      }
       if (pending.size) await delay(100);
     }
     assertHealthy();
