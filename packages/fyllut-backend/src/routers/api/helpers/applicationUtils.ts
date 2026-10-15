@@ -41,6 +41,7 @@ const assembleSubmitApplicationRequest = (
   return {
     ...(bruker && { bruker }),
     ...(avsender && { avsender }),
+    ...(form.properties.grantUserDigitalAccess === true && { grantUserDigitalAccess: true }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
     tema: form.properties.tema,

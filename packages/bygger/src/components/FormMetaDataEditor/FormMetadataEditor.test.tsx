@@ -232,6 +232,38 @@ describe('FormMetadataEditor', () => {
       });
     });
 
+    describe('Digital access', () => {
+      const label = 'Gi bruker digitalt innsyn i innsendte dokumenter';
+
+      it('stores the selected value in properties', async () => {
+        const form = formMedProps({ grantUserDigitalAccess: undefined });
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const checkbox = screen.getByRole('checkbox', { name: label });
+        expect(checkbox).not.toBeChecked();
+        expect(
+          screen.getByText(
+            'Journalposten vises til bruker på nav.no selv når avsender er en annen enn bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes.',
+          ),
+        ).toBeVisible();
+
+        await userEvent.click(checkbox);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
+        expect(updatedForm.properties.grantUserDigitalAccess).toBe(true);
+      });
+
+      it('is read-only when the form is locked', () => {
+        const form = { ...formMedProps({ grantUserDigitalAccess: true }), lock: { reason: 'Locked' } } as Form;
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        expect(screen.getByRole('checkbox', { name: new RegExp(label) }).closest('.aksel-checkbox')).toHaveClass(
+          'aksel-checkbox--readonly',
+        );
+      });
+    });
+
     describe('mellomlagringDurationDays', () => {
       it('is saved in properties', async () => {
         const form = formMedProps({ mellomlagringDurationDays: undefined, subsequentSubmissionTypes: ['DIGITAL'] });

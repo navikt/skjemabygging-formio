@@ -44,6 +44,43 @@ const createSubmission = (attachment: SubmissionAttachment): Submission => ({
 });
 
 describe('assembleSubmitApplicationRequest', () => {
+  const createDigitalAccessForm = (grantUserDigitalAccess?: boolean): Form => ({
+    ...form,
+    components: [],
+    properties: {
+      ...form.properties,
+      ...(grantUserDigitalAccess !== undefined && { grantUserDigitalAccess }),
+    },
+  });
+
+  const submission = { data: { fodselsnummerDNummerSoker: '12345678911' } } as Submission;
+
+  it('includes grantUserDigitalAccess only when the form property is true', () => {
+    const request = assembleSubmitApplicationRequest(
+      'id',
+      createDigitalAccessForm(true),
+      submission,
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(request).toHaveProperty('grantUserDigitalAccess', true);
+  });
+
+  it.each([false, undefined])('omits grantUserDigitalAccess when the form property is %s', (grantUserDigitalAccess) => {
+    const request = assembleSubmitApplicationRequest(
+      'id',
+      createDigitalAccessForm(grantUserDigitalAccess),
+      submission,
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(request).not.toHaveProperty('grantUserDigitalAccess');
+  });
+
   it.each([
     ['leggerVedNaa', 'ettersender', 'SendSenere'],
     ['ettersender', 'leggerVedNaa', 'LastetOpp'],
