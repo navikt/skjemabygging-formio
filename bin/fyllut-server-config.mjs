@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
  * @returns {{baseURL: string, mockURL: string, adminURL: string, backendURL: string,
  *   commands: [string, string[], Record<string, string>, string][], healthURLs: string[]}}
  */
-const createFyllutMocks = ({ repoRoot, ports, mode = 'dev', validationLog }) => {
+const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', validationLog }) => {
   const [mockPort, mockAdminPort, backendPort, frontendPort] = ports;
   const mockURL = `http://127.0.0.1:${mockPort}`;
   const adminURL = `http://127.0.0.1:${mockAdminPort}`;
@@ -88,4 +88,4 @@ const createFyllutMocks = ({ repoRoot, ports, mode = 'dev', validationLog }) => 
   };
 };
 
-export { createFyllutMocks };
+export { createFyllutServerConfig };

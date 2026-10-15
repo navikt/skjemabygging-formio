@@ -25,7 +25,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { connect, createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { createFyllutMocks } from './fyllut-mocks.mjs';
+import { createFyllutServerConfig } from './fyllut-server-config.mjs';
 
 const isPortFree = (port) =>
   new Promise((resolve) => {
@@ -98,7 +98,7 @@ const configs = {
     const backendUrl = `http://127.0.0.1:${backendPort}`;
     const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
     return {
-      ...createFyllutMocks({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
+      ...createFyllutServerConfig({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
       ports: [mockPort, mockAdminPort, backendPort, frontendPort],
       summaryLines: [
         `FYLLUT_MOCK_URL=${mockUrl}`,

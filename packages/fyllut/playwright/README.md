@@ -58,7 +58,7 @@ a graphical display. The default is one worker, no retries and Chromium.
 Playwright config
   -> spec imports fixtures/test.ts
     -> fixtures/servers.ts starts mocks and backend, plus Vite frontend in dev
-      -> bin/fyllut-mocks.mjs supplies the shared FyllUt commands and environment
+      -> bin/fyllut-server-config.mjs supplies the shared FyllUt commands and environment
     -> browser actions and assertions
     -> close browser, stop app, stop mocks, check any late body failures
 ```
@@ -172,7 +172,7 @@ Shared builds across Cypress/Playwright jobs are not included here.
 | `helpers/form.ts`                                  | Reusable form actions and network assertions from Cypress.                                 |
 | `helpers/attachments.ts`                           | Reusable attachment actions with complete upload waits.                                    |
 | `fixtures/servers.test.ts`                         | Exercise server isolation, body-check wiring and cleanup.                                  |
-| `../../../bin/fyllut-mocks.mjs`                    | The FyllUt process recipe shared with the existing developer launcher.                     |
+| `../../../bin/fyllut-server-config.mjs`            | The FyllUt process recipe shared with the existing developer launcher.                     |
 | `../../../mocks/mocks/utils/testCaseUtils.test.ts` | Regression tests for the existing body comparator.                                         |
 
 The remaining changes are the six specs and six source pointers, dependencies,

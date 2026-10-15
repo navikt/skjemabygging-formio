@@ -38,7 +38,7 @@ jobs:
           pnpm exec tsc --project mocks/tsconfig.json --noEmit
       - name: Lint test support
         run: |
-          pnpm exec eslint bin/fyllut-mocks.mjs packages/fyllut/playwright.config.ts \
+          pnpm exec eslint bin/fyllut-server-config.mjs packages/fyllut/playwright.config.ts \
             packages/fyllut/playwright mocks/mocks/utils/testCaseUtils.ts \
             mocks/mocks/utils/testCaseUtils.test.ts
       - run: pnpm build:fyllut

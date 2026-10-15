@@ -3,7 +3,7 @@ import { closeSync, existsSync, openSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
-import { createFyllutMocks } from '../../../../bin/fyllut-mocks.mjs';
+import { createFyllutServerConfig } from '../../../../bin/fyllut-server-config.mjs';
 
 const root = resolve(import.meta.dirname, '../../../..');
 
@@ -71,7 +71,7 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
   const validationLog = resolve(directory, 'body-verification.jsonl');
   const logPath = resolve(directory, `servers-${attempt}.log`);
   const ports = await freePorts(built ? 3 : 4);
-  const plan = createFyllutMocks({ repoRoot: root, ports, mode: built ? 'built' : 'dev', validationLog });
+  const plan = createFyllutServerConfig({ repoRoot: root, ports, mode: built ? 'built' : 'dev', validationLog });
   const children: { child: ChildProcess; stopping: boolean }[] = [];
   const failures: Error[] = [];
   let stopped: Promise<void> | undefined;
