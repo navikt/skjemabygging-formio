@@ -143,3 +143,16 @@ jobs:
       contents: 'read'
       id-token: 'write'
       packages: 'read'
+
+  deploy-sendinn-to-preprod:
+    name: 'Sendinn'
+    if: ${{ !failure() && !cancelled() && github.event.inputs.environment == 'preprod' }}
+    uses: ./.github/workflows/deploy-sendinn.yaml
+    with:
+      git_sha: ${{ github.sha }}
+      environment: ${{ github.event.inputs.environment }}
+    secrets: inherit
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
