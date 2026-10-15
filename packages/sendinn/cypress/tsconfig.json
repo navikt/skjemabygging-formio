@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["cypress", "@testing-library/cypress"],
+    "paths": {
+      "@navikt/skjemadigitalisering-shared-domain": ["../../shared-domain/src"]
+    }
+  },
+  "include": ["**/*.ts"]
+}

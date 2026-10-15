@@ -12,6 +12,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
+    "preview": "cross-env NODE_ENV=development NO_DECORATOR=true SENDINN_BUILD_DIR=../sendinn/dist FORMS_API_URL=http://127.0.0.1:3300/forms-api PORT=3003 node dist/server.mjs",
     "check-types": "tsc",
     "clean": "rimraf dist coverage node_modules",
     "test": "vitest --run",
