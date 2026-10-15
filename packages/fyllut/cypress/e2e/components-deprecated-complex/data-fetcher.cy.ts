@@ -29,6 +29,7 @@ describe('Data fetcher', () => {
           });
       });
 
+      // Playwright: F029-T002 | packages/fyllut/playwright/e2e/components-deprecated-complex/data-fetcher.spec.ts | Data fetcher > Rendering > dataFetcher outside container > should not render component when data is empty
       it('should not render component when data is empty', () => {
         cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
         cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
