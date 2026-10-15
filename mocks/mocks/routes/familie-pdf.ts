@@ -16,9 +16,10 @@ import tc17 from '../data/test-cases/tc17-pdf-signature-old-default.json';
 import tc18 from '../data/test-cases/tc18-pdf-signatures-english.json';
 import tc19 from '../data/test-cases/tc19-pdf-attachment-with-comment.json';
 import tc20 from '../data/test-cases/tc20-pdf-data-fetcher-activity.json';
+import { observeRoute } from '../utils/playwrightEvidence';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
-export default [
+const routes = [
   {
     id: 'post-familie-pdf',
     url: '/api/pdf/v3/opprett-pdf',
@@ -243,3 +244,5 @@ export default [
     ],
   },
 ];
+
+export default routes.map(observeRoute);

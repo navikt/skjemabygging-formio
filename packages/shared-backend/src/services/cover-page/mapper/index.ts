@@ -8,5 +8,5 @@ const coverPageMapper = {
   mapPartyToCoverPage,
 };
 
-export { coverPageMapper };
 export type { CoverPagePartyData } from './coverPagePartyMapper';
+export { coverPageMapper };

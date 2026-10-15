@@ -64,6 +64,14 @@ export default [
         type: 'middleware',
         options: {
           middleware: (req: any, res: any) => {
+            if (
+              process.env.FYLLUT_PLAYWRIGHT_EPOCH &&
+              process.env.FYLLUT_PLAYWRIGHT_TEST_FAULT === 'missing-static-form' &&
+              req.params.formPath === 'pdfstatic'
+            ) {
+              res.status(404).send({ message: 'Controlled static form not found' });
+              return;
+            }
             res.redirect(`/formio-api/form?path=${req.params.formPath}&single=true`);
           },
         },
