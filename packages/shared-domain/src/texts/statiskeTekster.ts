@@ -348,6 +348,11 @@ export const statiske = {
       buttonText: 'Start på nytt',
     },
     alreadySubmitted: 'Søknaden er allerede sendt inn',
+    loggedOut: {
+      title: 'Du er logget ut',
+      message: 'Du har vært inaktiv for lenge og er logget ut. Logg inn på nytt for å fortsette.',
+      login: 'Logg inn på nytt',
+    },
   },
   phoneNumber: {
     areaCodeLabel: 'Landskode',
