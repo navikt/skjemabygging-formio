@@ -381,9 +381,7 @@ describe('applyInitialValuesToSubmission', () => {
     const settledSubmission = { data: { showExtra: false } };
     vi.mocked(getActivePanels).mockClear();
 
-    expect(applyInitialValuesToSubmission(form, settledSubmission, 'nb', { prefillMode: 'missing' })).toBe(
-      settledSubmission,
-    );
+    expect(applyInitialValuesToSubmission(form, settledSubmission, 'nb')).toBe(settledSubmission);
     // One reconciliation pass and the final clearing, instead of one pass per default.
     expect(getActivePanels).toHaveBeenCalledTimes(3);
   });
