@@ -108,4 +108,18 @@ export default tseslint.config(
       'vitest/valid-expect': 'off', // Cypress uses Chai assertions, e.g. expect(x).to.be.closeTo(...)
     },
   },
+  {
+    files: ['packages/fyllut/playwright/**/*.ts', 'packages/fyllut/playwright.config.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './packages/fyllut/playwright/tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'vitest/valid-title': 'off',
+      '@typescript-eslint/no-floating-promises': 'error',
+    },
+  },
 );
