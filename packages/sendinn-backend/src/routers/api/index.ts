@@ -1,6 +1,7 @@
 import {
   createFrontendLogHandler,
   createSharedFrontendConfig,
+  rateLimiter,
   requestUtil,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
@@ -35,6 +36,7 @@ apiRouter.get('/global-translations/:lang', async (req, res) => {
   res.json(await publishedTranslationService.getGlobalTranslations(language));
 });
 
-apiRouter.post('/log/:level', createFrontendLogHandler(logger));
+// Same limit as fyllut's frontend log endpoint
+apiRouter.post('/log/:level', rateLimiter(60 * 1000, 60), createFrontendLogHandler(logger));
 
 export default apiRouter;

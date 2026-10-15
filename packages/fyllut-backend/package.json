@@ -29,7 +29,6 @@
     "csp-header": "^6.3.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.5.2",
     "glob": "^13.0.6",
     "html-react-parser": "^5.2.15",
     "jose": "^6.2.3",

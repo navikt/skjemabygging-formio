@@ -99,6 +99,15 @@ describe('sendinn-backend app', () => {
     it('accepts frontend log entries', async () => {
       await request(createApp()).post('/sendinn/api/log/info').send({ message: 'hello' }).expect(200);
     });
+
+    // Runs last in this block: the log limiter belongs to the shared api router and keeps its count between tests
+    it('rate limits frontend log entries', async () => {
+      const app = createApp();
+      const responses = await Promise.all(
+        Array.from({ length: 61 }, () => request(app).post('/sendinn/api/log/info').send({ message: 'hello' })),
+      );
+      expect(responses.some((response) => response.status === 429)).toBe(true);
+    });
   });
 
   describe('internal', () => {
