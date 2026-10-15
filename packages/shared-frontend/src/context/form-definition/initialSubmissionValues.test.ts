@@ -1,5 +1,11 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { getActivePanels } from './formDefinitionUtils';
 import { applyInitialValuesToSubmission } from './initialSubmissionValues';
+
+vi.mock('./formDefinitionUtils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./formDefinitionUtils')>();
+  return { ...actual, getActivePanels: vi.fn(actual.getActivePanels) };
+});
 
 const createForm = (components: object[]): Form =>
   ({
@@ -359,5 +365,26 @@ describe('applyInitialValuesToSubmission', () => {
     const stableSubmission = { data: {} };
 
     expect(applyInitialValuesToSubmission(form, stableSubmission, 'nb')).toBe(stableSubmission);
+  });
+
+  it('stops reconciling once a pass only re-adds and clears hidden defaults', () => {
+    const form = createForm([
+      { key: 'showExtra', type: 'navCheckbox', input: true },
+      ...['first', 'second', 'third', 'fourth'].map((key) => ({
+        key,
+        type: 'number',
+        input: true,
+        defaultValue: '0',
+        customConditional: 'show = data.showExtra === true;',
+      })),
+    ]);
+    const settledSubmission = { data: { showExtra: false } };
+    vi.mocked(getActivePanels).mockClear();
+
+    expect(applyInitialValuesToSubmission(form, settledSubmission, 'nb', { prefillMode: 'missing' })).toBe(
+      settledSubmission,
+    );
+    // One reconciliation pass and the final clearing, instead of one pass per default.
+    expect(getActivePanels).toHaveBeenCalledTimes(3);
   });
 });

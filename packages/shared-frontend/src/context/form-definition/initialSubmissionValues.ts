@@ -93,14 +93,14 @@ const clearInactiveSubmissionValues = (
 /**
  * Performs one reconciliation pass. In the mounted flow, updating the submission causes the form
  * definition provider to calculate active components and invoke this again when necessary.
+ * Expects a form already enriched with base submission paths.
  */
 const reconcileSubmissionValues = (
-  form: Form,
+  formWithBaseSubmissionPath: Form,
   submission: Submission | undefined,
   currentLanguage: string,
   { submissionMethod }: ApplyInitialValuesOptions = {},
 ): Submission | undefined => {
-  const formWithBaseSubmissionPath = enrichFormWithBaseSubmissionPath(form);
   const { componentsWithInitialValues } = collectActiveComponentsWithInitialValues(
     formWithBaseSubmissionPath,
     submission,
@@ -147,6 +147,10 @@ const reconcileSubmissionValues = (
 /**
  * Settles prefills and defaults to a stable state before the submission is published. The mounted
  * form also uses this function so cyclic conditionals cannot trigger alternating state updates.
+ *
+ * A pass that only re-adds and clears the defaults of hidden components returns a new object with
+ * the same values. Since a pass depends only on submission values, such a pass is a fixed point and
+ * further passes cannot change anything, so the loop stops there instead of running every pass.
  */
 const applyInitialValuesToSubmission = (
   form: Form,
@@ -173,13 +177,15 @@ const applyInitialValuesToSubmission = (
     if (nextSubmission === currentSubmission) {
       return currentSubmission;
     }
+    const isFixedPoint = isSameSubmissionValue(nextSubmission, currentSubmission);
     currentSubmission = nextSubmission;
+    if (isFixedPoint) {
+      break;
+    }
   }
 
-  const { activeComponents } = collectActiveComponentsWithInitialValues(
-    formWithBaseSubmissionPath,
-    currentSubmission,
-    options.submissionMethod,
+  const activeComponents = toComponentDefinitions(
+    getActivePanels(formWithBaseSubmissionPath, currentSubmission, { submissionMethod: options.submissionMethod }),
   );
   const settledSubmission = clearInactiveSubmissionValues(
     formWithBaseSubmissionPath,
