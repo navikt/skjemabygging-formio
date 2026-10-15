@@ -1,0 +1,17 @@
+{
+  "skills": ["manual-test-plan"],
+  "query": "/manual-test-plan https://github.com/navikt/skjemabygging-formio/pull/2210",
+  "files": [],
+  "expected_behavior": [
+    "Treats the target as a pull request directly rather than assuming it needs an issue",
+    "Searches for an issue the PR implements using closing references, issue numbers and URLs in the title/body/branch/commits/review comments, and the issue timeline, in that order, before concluding none exists",
+    "Does not conclude 'no issue' merely because the PR body does not mention one",
+    "When no issue is found, continues from the PR alone and explicitly confirms the inferred intent with the user via ask_user before writing verification cases, rather than silently treating the PR description as confirmed intent",
+    "Does not use an uncommitted or local-only diff as the source for the plan, even if the local checkout is on a different branch",
+    "Presents the proposed testing scope, including which parts are inferred rather than confirmed, before selecting forms or writing cases",
+    "Asks the collaboration question before proceeding to delivery-path-specific steps",
+    "Builds journeyCheck entries with a 'verified' or 'source-mapped' status backed by cited sources, never claiming a route is tested in preprod without a browser observation",
+    "Runs bin/forms-api/form-flow.mjs with each case's fills until it reports no errors, and writes fill steps in its route order so no field is filled before its controlling field or while hidden",
+    "Includes a short coverage section naming what the cases do not test and why, separate from functionality explicitly outside the PR"
+  ]
+}
