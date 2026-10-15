@@ -1,6 +1,8 @@
 import { validate as isUuid } from 'uuid';
 import { validatorUtils } from '../form/validatorUtils';
 
+const BASE_PATH = '/sendinn';
+const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
 const STANDALONE_SEGMENT = 'lospost';
 const TASK_SEGMENT = 'oppgave';
 const SUBMISSION_ID_PARAM = 'innsendingsId';
@@ -65,7 +67,21 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
 
 const requiresLogin = (entry: SendinnEntry): boolean => entry.journey === 'formWithTask' || entry.journey === 'task';
 
+const isSendinnPath = (path: string) =>
+  (path === BASE_PATH || path.startsWith(`${BASE_PATH}/`) || path.startsWith(`${BASE_PATH}?`)) && !path.includes('\\');
+
+/**
+ * Wonderwall sign-in URL that returns to the given path. The return path must stay under the sendinn base path,
+ * otherwise the user returns to the base path.
+ *
+ * @param returnPath absolute path including query, for example `/sendinn/oppgave?innsendingsId=...`
+ */
+const createLoginUrl = (returnPath: string): string =>
+  `${LOGIN_PATH}?redirect=${encodeURIComponent(isSendinnPath(returnPath) ? returnPath : BASE_PATH)}`;
+
 const sendinnEntryUtils = {
+  basePath: BASE_PATH,
+  createLoginUrl,
   resolveEntry,
   requiresLogin,
 };

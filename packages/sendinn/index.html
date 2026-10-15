@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="nb-NO">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex" />
+        <title>Send inn - www.nav.no</title>
+        <link rel="icon" href="/sendinn/favicon.ico" />
+        <% if (process.env.NODE_ENV !== 'development') { %> {{{DECORATOR_HEAD_ASSETS}}} {{{DECORATOR_STYLES}}} <% } %>
+        <% if (process.env.NODE_ENV !== 'development') { %>
+        {{#umamiWebsiteId}}
+        <script defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js" data-host-url="https://umami.nav.no" data-website-id="{{umamiWebsiteId}}"></script>
+        {{/umamiWebsiteId}}
+        <% } %>
+    </head>
+    <body>
+        <% if (process.env.NODE_ENV !== 'development') { %> {{{DECORATOR_HEADER}}} <% } %>
+        <main id="root"></main>
+        <% if (process.env.NODE_ENV !== 'development') { %> {{{DECORATOR_FOOTER}}} {{{DECORATOR_SCRIPTS}}} <% } %>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

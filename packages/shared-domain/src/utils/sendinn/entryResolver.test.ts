@@ -122,3 +122,18 @@ describe('sendinnEntryUtils', () => {
     });
   });
 });
+
+describe('createLoginUrl', () => {
+  it('encodes a return path under the base path', () => {
+    expect(sendinnEntryUtils.createLoginUrl(`/sendinn/oppgave?innsendingsId=${submissionId}&lang=en`)).toBe(
+      `/sendinn/oauth2/login?redirect=${encodeURIComponent(`/sendinn/oppgave?innsendingsId=${submissionId}&lang=en`)}`,
+    );
+  });
+
+  it.each(['https://evil.example/sendinn', '//evil.example/sendinn', '/sendinnx', '/fyllut/nav123', '/sendinn\\evil'])(
+    'falls back to the base path for %s',
+    (returnPath) => {
+      expect(sendinnEntryUtils.createLoginUrl(returnPath)).toBe('/sendinn/oauth2/login?redirect=%2Fsendinn');
+    },
+  );
+});

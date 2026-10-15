@@ -1,10 +1,12 @@
 import {
+  AppConfigProvider,
   ErrorBoundary,
   ErrorPage,
   ErrorPageLayout,
   FormContainer,
   FrontendLogger,
   FrontPageButton,
+  getAkselLocale,
   getAvailableLanguages,
   getCurrentLanguage,
   http,
@@ -17,6 +19,8 @@ import {
   SessionExpiredMessage,
   SkeletonList,
   UnavailablePage,
+  UrlLanguageSelector,
+  useAppConfig,
 } from './app';
 import CountrySelect from './components/country-select/CountrySelect';
 import CurrencySelect from './components/currency-select/CurrencySelect';
@@ -43,10 +47,11 @@ import { ValidationProvider } from './context/validation/ValidationContext';
 import { RenderSummaryForm } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
+import { SendinnApp } from './sendinn';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
-export type { ErrorContentProps, FetchHeader, FetchOptions, LoggerConfig } from './app';
+export type { AppConfigContextValue, ErrorContentProps, FetchHeader, FetchOptions, LoggerConfig } from './app';
 export type { CountrySelectProps } from './components/country-select/CountrySelect';
 export type { CurrencySelectProps } from './components/currency-select/CurrencySelect';
 export type { NavUnitSelectProps } from './components/nav-unit-select/NavUnitSelect';
@@ -91,6 +96,7 @@ export type {
   RenderFormProps,
 } from './fyllut';
 export {
+  AppConfigProvider,
   ApplicationProvider,
   applyInitialValuesToSubmission,
   applyPrefillDataToForm,
@@ -104,6 +110,7 @@ export {
   FormErrorSummary,
   FrontendLogger,
   FrontPageButton,
+  getAkselLocale,
   getAvailableLanguages,
   getCurrentLanguage,
   getFormPrefillKeys,
@@ -120,6 +127,7 @@ export {
   resolveActiveLanguage,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
+  SendinnApp,
   ServerErrorContent,
   SessionExpiredMessage,
   sharedFrontendPackageName,
@@ -128,6 +136,8 @@ export {
   StateStoreProvider,
   SubmissionStateProvider,
   UnavailablePage,
+  UrlLanguageSelector,
+  useAppConfig,
   useApplication,
   useFormDefinition,
   useFormDefinitionComponents,
