@@ -7,6 +7,7 @@
   background-color: var(--ax-bg-brand-blue-soft);
   border-radius: var(--ax-radius-12);
   padding: var(--ax-space-16);
+  padding-block-end: var(--ax-space-24);
 }
 
 .rowHeading {

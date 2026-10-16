@@ -147,10 +147,11 @@ const AttachmentItem = ({
       {(showButton || filesError || uploadReadMore) && (
         <div>
           {showButton && (
-            <VStack gap="space-32">
+            <VStack gap="space-16">
               {requireAttachmentTitle && (
                 <UnvalidatedFields>
                   <TextField
+                    marginBottom="space-0"
                     statePath={attachmentTitlePath}
                     label={translate(TEXTS.statiske.attachment.attachmentTitle)}
                     maxLength={50}
