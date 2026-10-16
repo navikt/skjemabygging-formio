@@ -16,7 +16,7 @@ const DataGridRow = ({ children, onRemove, removeLabel, title }: DataGridRowProp
   const { translate } = useLanguage();
 
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row}${onRemove ? ` ${styles.rowWithRemove}` : ''}`}>
       {title && (
         <Heading level="3" size="small" className={styles.rowHeading}>
           {title}
