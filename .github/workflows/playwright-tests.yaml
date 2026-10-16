@@ -1,0 +1,58 @@
+name: Playwright pilot in FyllUt
+
+on: push
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: playwright-fyllut-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: Europe/Oslo
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CYPRESS_INSTALL_BINARY: '0'
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest-8-cores
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+      - name: Check Playwright and mock types
+        run: |
+          pnpm exec tsc --project packages/fyllut/playwright/tsconfig.json --noEmit
+          pnpm exec tsc --project mocks/tsconfig.json --noEmit
+      - name: Lint test support
+        run: |
+          pnpm exec eslint bin/fyllut-server-config.mjs packages/fyllut/playwright.config.ts \
+            packages/fyllut/playwright mocks/mocks/utils/testCaseUtils.ts \
+            mocks/mocks/utils/testCaseUtils.test.ts
+      - run: pnpm build:fyllut
+      - name: Check body verification and server cleanup
+        run: pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts mocks/mocks/utils/testCaseUtils.test.ts
+      - name: Run the built pilot
+        run: pnpm playwright:fyllut:built --workers=2
+      - name: Upload Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fyllut-playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            packages/fyllut/.runtime/playwright/*/html/
+            packages/fyllut/.runtime/playwright/*/results.json
