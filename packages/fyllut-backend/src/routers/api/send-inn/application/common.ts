@@ -73,6 +73,7 @@ export const generatePdfAndSubmit = async (
     language,
     Array.from(applicationPdf),
     translate,
+    submissionMethod,
   );
   const submitResponse = await applicationService.submitApplication({
     accessToken,
