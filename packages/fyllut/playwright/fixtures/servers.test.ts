@@ -73,7 +73,8 @@ describe('FyllUt Playwright server support', () => {
           [
             '--input-type=module',
             '--eval',
-            `setTimeout(() => import(${JSON.stringify(pathToFileURL(args[0]).href)}), 4000)`,
+            'setTimeout(() => import(process.argv[1]), 4000)',
+            pathToFileURL(args[0]).href,
           ],
           env,
           cwd,
