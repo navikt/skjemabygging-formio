@@ -10,6 +10,10 @@
   padding-block-end: var(--ax-space-24);
 }
 
+.rowWithRemove {
+  padding-block-end: 0;
+}
+
 .rowHeading {
   margin-block-end: var(--ax-space-16);
 }
@@ -23,7 +27,7 @@
 }
 
 .remove {
-  margin-block-start: var(--ax-space-8);
+  padding-block: var(--ax-space-8);
 }
 
 .add {
