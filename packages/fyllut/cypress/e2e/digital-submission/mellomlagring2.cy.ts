@@ -248,6 +248,7 @@ describe('Mellomlagring v2', () => {
       cy.clickStart();
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.url().should('include', '/valgfrieOpplysninger');
+      cy.findByText(new RegExp(`^${TEXTS.grensesnitt.mostRecentSave} \\d{2}\\.\\d{2}\\.\\d{4}`)).shouldBeVisible();
     });
 
     it('renders translated intro page texts when opening a draft', () => {
@@ -378,6 +379,8 @@ describe('Mellomlagring v2', () => {
           );
 
           openSummaryInStepper();
+          cy.findByText(TEXTS.statiske.summaryPage.description).shouldBeVisible();
+          cy.findByText(new RegExp(`^${TEXTS.grensesnitt.mostRecentSave} \\d{2}\\.\\d{2}\\.\\d{4}`)).shouldBeVisible();
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
           cy.clickSendNav();
           cy.wait('@submitApplication');
