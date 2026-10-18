@@ -129,7 +129,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
       <Checkbox
         className="mb"
         checked={!!grantUserDigitalAccess}
-        description="Journalposten vises til bruker på nav.no selv når avsender er en annen enn bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes."
+        description="Journalposten vises til berørt bruker på nav.no selv når avsender er en annen enn berørt bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes. Ikke bruk på skjema hvor uinnlogget digital innsending er tilgjengelig."
         readOnly={isLockedForm}
         onChange={(event) =>
           onChange({
@@ -138,7 +138,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           })
         }
       >
-        {'Gi bruker digitalt innsyn i innsendte dokumenter'}
+        {'Gi berørt bruker digitalt innsyn i innsendte dokumenter'}
       </Checkbox>
     </>
   );

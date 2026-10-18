@@ -233,7 +233,7 @@ describe('FormMetadataEditor', () => {
     });
 
     describe('Digital access', () => {
-      const label = 'Gi bruker digitalt innsyn i innsendte dokumenter';
+      const label = 'Gi berørt bruker digitalt innsyn i innsendte dokumenter';
 
       it('stores the selected value in properties', async () => {
         const form = formMedProps({ grantUserDigitalAccess: undefined });
@@ -243,7 +243,7 @@ describe('FormMetadataEditor', () => {
         expect(checkbox).not.toBeChecked();
         expect(
           screen.getByText(
-            'Journalposten vises til bruker på nav.no selv når avsender er en annen enn bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes.',
+            'Journalposten vises til berørt bruker på nav.no selv når avsender er en annen enn berørt bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes. Ikke bruk på skjema hvor uinnlogget digital innsending er tilgjengelig.',
           ),
         ).toBeVisible();
 
