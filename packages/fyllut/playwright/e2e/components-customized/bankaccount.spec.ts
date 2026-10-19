@@ -60,7 +60,7 @@ test.describe('BankAccount', () => {
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
       await page.getByRole('link', { name: error }).click();
       await expect(account).toBeFocused();
-      await account.fill('');
+      await account.clear();
       await account.fill('01234567892');
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });
