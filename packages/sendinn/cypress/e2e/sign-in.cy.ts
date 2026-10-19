@@ -34,8 +34,10 @@ describe('Sign-in', () => {
       });
     });
 
-    it('serves the unavailable page with 404', () => {
-      cy.requestEntry('/sendinn/oppgave').its('status').should('eq', 404);
+    ['/sendinn/oppgave', '/sendinn/404'].forEach((url) => {
+      it(`serves ${url} with 404 without sign-in`, () => {
+        cy.requestEntry(url).its('status').should('eq', 404);
+      });
     });
   });
 

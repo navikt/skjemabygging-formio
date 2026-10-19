@@ -1,7 +1,7 @@
 describe('Error pages', () => {
   describe('Unavailable page', () => {
     it('shows content, links, title and focuses the heading', () => {
-      cy.visit('/sendinn', { failOnStatusCode: false });
+      cy.visit('/sendinn/404', { failOnStatusCode: false });
 
       cy.findByRole('heading', { level: 1, name: 'Beklager, fant ikke siden' }).should('be.focused');
       cy.title().should('eq', 'Beklager, fant ikke siden');
@@ -11,7 +11,7 @@ describe('Error pages', () => {
     });
 
     it('uses the language from the lang parameter', () => {
-      cy.visit('/sendinn?lang=en', { failOnStatusCode: false });
+      cy.visit('/sendinn/404?lang=en', { failOnStatusCode: false });
 
       cy.findByRole('heading', { level: 1, name: 'Sorry, we could not find the page' }).should('be.focused');
       cy.findByRole('button', { name: 'Go to the front page' }).should('have.attr', 'href', 'https://www.nav.no/en');
