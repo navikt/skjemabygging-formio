@@ -1,5 +1,5 @@
 import { expect, test } from '../../fixtures/test';
-import { downloadApplication, nextStep, visitForm } from '../../helpers/form';
+import { downloadApplication, expectVisibleToUser, nextStep, visitForm } from '../../helpers/form';
 
 test.describe('BankAccount', () => {
   test.describe('Display', () => {
@@ -10,8 +10,7 @@ test.describe('BankAccount', () => {
     test('should be visible and interactable', async ({ readyPage: page }) => {
       await expect(page.getByRole('textbox', { name: 'Kontonummer', exact: true })).toHaveCount(1);
       const account = page.getByLabel('Kontonummer', { exact: true });
-      await expect(account).toBeVisible();
-      await expect(account).not.toHaveClass(/\baksel-sr-only\b/);
+      await expectVisibleToUser(account);
       await expect(account).toBeEnabled();
       await expect(account).not.toHaveAttribute('readonly');
     });
@@ -27,8 +26,7 @@ test.describe('BankAccount', () => {
       await expect(extendedDescription).toHaveCount(1);
       await expect(extendedDescription).not.toBeVisible();
       await component.getByRole('button', { name: 'mer', exact: true }).click();
-      await expect(extendedDescription).toBeVisible();
-      await expect(extendedDescription).not.toHaveClass(/\baksel-sr-only\b/);
+      await expectVisibleToUser(extendedDescription);
     });
   });
 

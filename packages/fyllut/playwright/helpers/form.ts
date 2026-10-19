@@ -1,4 +1,9 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
+
+const expectVisibleToUser = async (locator: Locator) => {
+  await expect(locator).toBeVisible();
+  await expect(locator).not.toHaveClass(/\baksel-sr-only\b/);
+};
 
 const visitForm = async (page: Page, path: string) => {
   const config = page.waitForResponse(
@@ -74,4 +79,12 @@ const visitStaticPdfForm = async (page: Page) => {
   await expect(page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })).toBeVisible();
 };
 
-export { downloadApplication, nextStep, saveAndContinue, showAllSteps, visitForm, visitStaticPdfForm };
+export {
+  downloadApplication,
+  expectVisibleToUser,
+  nextStep,
+  saveAndContinue,
+  showAllSteps,
+  visitForm,
+  visitStaticPdfForm,
+};

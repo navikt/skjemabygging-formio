@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures/test';
-import { nextStep, visitForm } from '../../helpers/form';
+import { expectVisibleToUser, nextStep, visitForm } from '../../helpers/form';
 
 const componentFor = (page: Page, label: string) =>
   page
@@ -33,8 +33,7 @@ test.describe('DatePicker', () => {
     test('should be visible and interactable', async ({ readyPage: page }) => {
       const date = page.getByLabel('Dato (dd.mm.åååå)', { exact: true });
       await expect(date).toHaveCount(1);
-      await expect(date).toBeVisible();
-      await expect(date).not.toHaveClass(/\baksel-sr-only\b/);
+      await expectVisibleToUser(date);
       await expect(date).toBeEnabled();
       await expect(date).not.toHaveAttribute('readonly');
     });
