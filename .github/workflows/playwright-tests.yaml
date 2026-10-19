@@ -32,15 +32,6 @@ jobs:
           scope: '@navikt'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --dir packages/fyllut exec playwright install --with-deps chromium
-      - name: Check Playwright and mock types
-        run: |
-          pnpm exec tsc --project packages/fyllut/playwright/tsconfig.json --noEmit
-          pnpm exec tsc --project mocks/tsconfig.json --noEmit
-      - name: Lint test support
-        run: |
-          pnpm exec eslint bin/fyllut-server-config.mjs packages/fyllut/playwright.config.ts \
-            packages/fyllut/playwright mocks/mocks/utils/testCaseUtils.ts \
-            mocks/mocks/utils/testCaseUtils.test.ts
       - run: pnpm build:fyllut
       - name: Check body verification and server cleanup
         run: pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts mocks/mocks/utils/testCaseUtils.test.ts

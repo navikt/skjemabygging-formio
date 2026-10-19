@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "check-types": "tsc",
+    "check-types": "tsc && tsc --project playwright/tsconfig.json",
     "clean": "rimraf dist coverage node_modules .runtime .cypress-home cypress/screenshots cypress/downloads",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
