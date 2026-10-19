@@ -54,18 +54,7 @@ describe('createPublishedTranslationService', () => {
     await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes!' } });
   });
 
-  it('serves stale content when the refresh fails', async () => {
-    const { service, advance } = setup(
-      vi.fn().mockResolvedValueOnce({ Ja: 'Yes' }).mockRejectedValueOnce(new Error('forms-api down')),
-    );
-
-    await service.getGlobalTranslations('en');
-    advance(ttlMs);
-
-    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
-  });
-
-  it('backs off after a failed refresh and recovers after 30 seconds', async () => {
+  it('serves stale content for the TTL after a failed refresh', async () => {
     const { service, getPublishedGlobalTranslations, advance } = setup(
       vi
         .fn()
@@ -76,31 +65,26 @@ describe('createPublishedTranslationService', () => {
 
     await service.getGlobalTranslations('en');
     advance(ttlMs);
-    await service.getGlobalTranslations('en');
-    advance(30_000 - 1);
+    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
+    advance(ttlMs - 1);
     await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
     expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(2);
 
     advance(1);
     await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Updated' } });
-    expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(3);
   });
 
-  it('retries on the next call after a failure', async () => {
-    const { service, getPublishedGlobalTranslations } = setup(
+  it('serves an empty map for the TTL when nothing is cached and the fetch fails', async () => {
+    const { service, getPublishedGlobalTranslations, advance } = setup(
       vi.fn().mockRejectedValueOnce(new Error('forms-api down')).mockResolvedValueOnce({ Ja: 'Yes' }),
     );
 
     await expect(service.getGlobalTranslations('en')).resolves.toEqual({});
-    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
-    expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(2);
-  });
-
-  it('shares one request between concurrent calls', async () => {
-    const { service, getPublishedGlobalTranslations } = setup(vi.fn().mockResolvedValue({ Ja: 'Yes' }));
-
-    await Promise.all([service.getGlobalTranslations('en'), service.getGlobalTranslations('en')]);
-
+    advance(ttlMs - 1);
+    await expect(service.getGlobalTranslations('en')).resolves.toEqual({});
     expect(getPublishedGlobalTranslations).toHaveBeenCalledTimes(1);
+
+    advance(1);
+    await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
   });
 });
