@@ -1,7 +1,7 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction, RequestHandler } from 'express';
 import texasClient from '../services/texas/texasClient';
-import type { AuthHandlerLogger } from './authHandlerLogger';
+import { type AuthHandlerLogger, getRequestLogContext } from './authHandlerLogger';
 
 type EntraIdHandlerType = 'M2M' | 'OBO';
 
@@ -14,7 +14,12 @@ type CreateEntraIdHandlerOptions = {
   logger: EntraIdHandlerLogger;
 };
 
-const introspectBearerToken = async (token: string, introspectionEndpoint: string, fetchImpl: typeof fetch) => {
+type IntrospectionOptions = {
+  fetchImpl: typeof fetch;
+  introspectionEndpoint: string;
+};
+
+const introspectBearerToken = async (token: string, { fetchImpl, introspectionEndpoint }: IntrospectionOptions) => {
   const payload = await texasClient.introspect({
     endpoint: introspectionEndpoint,
     fetchImpl,
@@ -33,10 +38,7 @@ const createEntraIdHandler = (
 ): RequestHandler => {
   if (isBypassed) {
     return async (req: ExpressRequest, _res: ExpressResponse, next: NextFunction) => {
-      const requestContext = {
-        method: req.method,
-        path: req.path,
-      };
+      const requestContext = getRequestLogContext(req);
 
       logger.debug(`Skipping Entra ID ${handlerType} auth check`, requestContext);
       next();
@@ -48,10 +50,7 @@ const createEntraIdHandler = (
   }
 
   return async (req: ExpressRequest, _res: ExpressResponse, next: NextFunction) => {
-    const requestContext = {
-      method: req.method,
-      path: req.path,
-    };
+    const requestContext = getRequestLogContext(req);
 
     const authHeader = req.header('Authorization');
 
@@ -63,7 +62,10 @@ const createEntraIdHandler = (
 
     try {
       logger.debug(`Validating Entra ID ${handlerType} bearer token`, requestContext);
-      await introspectBearerToken(authHeader.slice('Bearer '.length).trim(), introspectionEndpoint, fetchImpl);
+      await introspectBearerToken(authHeader.slice('Bearer '.length).trim(), {
+        fetchImpl,
+        introspectionEndpoint,
+      });
       logger.info(`Accepted request with active Entra ID ${handlerType} bearer token`, requestContext);
       next();
     } catch (error: unknown) {

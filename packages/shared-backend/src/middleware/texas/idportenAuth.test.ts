@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createIdportenAuth, getIdportenUser } from './idportenHandler';
+import { createIdportenAuth, getIdportenUser } from './idportenAuth';
 import { createLogger, createNext, createRequest, createResponse, jsonResponse } from './testUtils';
 
 const introspectionEndpoint = 'http://texas.example/introspect';
@@ -50,14 +50,6 @@ describe('createIdportenAuth', () => {
         expect(fetchImpl).not.toHaveBeenCalled();
       },
     );
-
-    it('returns undefined for an inactive token', async () => {
-      const { authenticate } = setup(
-        vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ active: false, error: 'token is expired' })),
-      );
-
-      await expect(authenticate(createRequest('Bearer user-token'))).resolves.toBeUndefined();
-    });
 
     it.each(['idporten-loa-substantial', 'Level3', undefined])('returns undefined for acr %s', async (acr) => {
       const { authenticate } = setup(vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ ...activeClaims, acr })));

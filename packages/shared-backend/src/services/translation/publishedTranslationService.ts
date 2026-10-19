@@ -4,6 +4,7 @@ import translationClient from './translationClient';
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
 const RETRY_DELAY_MS = 30 * 1000;
+const FETCH_TIMEOUT_MS = 5 * 1000;
 
 type PublishedTranslationClient = Pick<typeof translationClient, 'getPublishedGlobalTranslations'>;
 
@@ -28,11 +29,11 @@ type PublishedTranslationService = {
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
 };
 
-const toTranslationMap = (languageCode: TranslationLang, translations: Record<string, string> | undefined) =>
-  Object.entries(translations ?? {}).reduce<FormsApiTranslationMap>((accumulator, [key, value]) => {
-    accumulator[key] = { [languageCode]: value };
-    return accumulator;
-  }, {});
+const toTranslationMap = (
+  languageCode: TranslationLang,
+  translations: Record<string, string> | undefined,
+): FormsApiTranslationMap =>
+  Object.fromEntries(Object.entries(translations ?? {}).map(([key, value]) => [key, { [languageCode]: value }]));
 
 const createPublishedTranslationService = ({
   baseUrl,
@@ -45,16 +46,18 @@ const createPublishedTranslationService = ({
 
   const refresh = async (languageCode: TranslationLang): Promise<FormsApiTranslationMap> => {
     try {
-      const translations = toTranslationMap(
+      const response = await client.getPublishedGlobalTranslations({
+        baseUrl,
         languageCode,
-        await client.getPublishedGlobalTranslations({ baseUrl, languageCode }),
-      );
+        timeoutMs: FETCH_TIMEOUT_MS,
+      });
+      const translations = toTranslationMap(languageCode, response);
       cache.set(languageCode, { translations, expiresAt: now() + ttlMs });
       return translations;
     } catch (error) {
       const stale = cache.get(languageCode);
       if (stale) {
-        stale.expiresAt = now() + RETRY_DELAY_MS;
+        cache.set(languageCode, { ...stale, expiresAt: now() + RETRY_DELAY_MS });
       }
       logger.warn('Failed to fetch published global translations', {
         languageCode,
@@ -62,8 +65,6 @@ const createPublishedTranslationService = ({
         message: error instanceof Error ? error.message : 'Unknown error',
       });
       return stale?.translations ?? {};
-    } finally {
-      pending.delete(languageCode);
     }
   };
 
@@ -78,7 +79,7 @@ const createPublishedTranslationService = ({
       return inFlight;
     }
 
-    const request = refresh(languageCode);
+    const request = refresh(languageCode).finally(() => pending.delete(languageCode));
     pending.set(languageCode, request);
     return request;
   };
