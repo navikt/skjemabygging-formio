@@ -16,16 +16,13 @@ test.describe('BankAccount', () => {
     });
 
     test('should have description', async ({ readyPage: page }) => {
-      const component = page
-        .getByLabel('Kontonummer med beskrivelse', { exact: true })
-        .locator(
-          'xpath=ancestor::*[@data-form-component or contains(concat(" ", normalize-space(@class), " "), " form-group ")][1]',
-        );
-      await expect(component.getByText('Dette er en beskrivelse', { exact: true })).toHaveCount(1);
-      const extendedDescription = component.getByText('Dette er utvidet beskrivelse', { exact: true });
+      const account = page.getByLabel('Kontonummer med beskrivelse', { exact: true });
+      await expect(account).toHaveAccessibleDescription('Dette er en beskrivelse');
+      await expect(page.getByText('Dette er en beskrivelse', { exact: true })).toBeVisible();
+      const extendedDescription = page.getByText('Dette er utvidet beskrivelse', { exact: true });
       await expect(extendedDescription).toHaveCount(1);
       await expect(extendedDescription).not.toBeVisible();
-      await component.getByRole('button', { name: 'mer', exact: true }).click();
+      await page.getByRole('button', { name: 'mer', exact: true }).click();
       await expectVisibleToUser(extendedDescription);
     });
   });
@@ -109,12 +106,9 @@ test.describe('BankAccount', () => {
     });
 
     test('should have english label and description', async ({ readyPage: page }) => {
-      const component = page
-        .getByLabel('Kontonummer med beskrivelse (en)', { exact: true })
-        .locator(
-          'xpath=ancestor::*[@data-form-component or contains(concat(" ", normalize-space(@class), " "), " form-group ")][1]',
-        );
-      await expect(component.getByText('Dette er en beskrivelse (en)', { exact: true })).toHaveCount(1);
+      const account = page.getByLabel('Kontonummer med beskrivelse (en)', { exact: true });
+      await expect(account).toHaveAccessibleDescription('Dette er en beskrivelse (en)');
+      await expect(page.getByText('Dette er en beskrivelse (en)', { exact: true })).toBeVisible();
     });
   });
 });

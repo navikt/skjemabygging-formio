@@ -1,13 +1,5 @@
-import type { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures/test';
 import { expectVisibleToUser, nextStep, visitForm } from '../../helpers/form';
-
-const componentFor = (page: Page, label: string) =>
-  page
-    .getByLabel(label, { exact: true })
-    .locator(
-      'xpath=ancestor::*[@data-form-component or contains(concat(" ", normalize-space(@class), " "), " form-group ")][1]',
-    );
 
 test.describe('DatePicker', () => {
   test.beforeEach(async ({ readyPage: page }) => {
@@ -45,17 +37,18 @@ test.describe('DatePicker', () => {
     });
 
     test('should have description', async ({ readyPage: page }) => {
-      const component = componentFor(page, 'Dato med beskrivelse');
-      await expect(component.getByText('Velg ønsket dato', { exact: true })).toBeVisible();
+      const date = page.getByLabel('Dato med beskrivelse', { exact: true });
+      await expect(date).toHaveAccessibleDescription('Velg ønsket dato');
+      await expect(page.getByText('Velg ønsket dato', { exact: true })).toBeVisible();
     });
 
     test('should have additionalDescription', async ({ readyPage: page }) => {
-      const component = componentFor(page, 'Dato med tilleggsbeskrivelse');
-      await expect(component.getByText('Mer informasjon', { exact: true })).toHaveCount(1);
-      const extendedDescription = component.getByText('Utvidet informasjon om dato', { exact: true });
+      await expect(page.getByLabel('Dato med tilleggsbeskrivelse', { exact: true })).toBeVisible();
+      await expect(page.getByText('Mer informasjon', { exact: true })).toHaveCount(1);
+      const extendedDescription = page.getByText('Utvidet informasjon om dato', { exact: true });
       await expect(extendedDescription).toHaveCount(1);
       await expect(extendedDescription).not.toBeVisible();
-      await component.getByRole('button', { name: 'Mer informasjon', exact: true }).click();
+      await page.getByRole('button', { name: 'Mer informasjon', exact: true }).click();
       await expect(extendedDescription).toBeVisible();
     });
   });
@@ -115,8 +108,9 @@ test.describe('DatePicker', () => {
     });
 
     test('should translate description', async ({ readyPage: page }) => {
-      const component = componentFor(page, 'Dato med beskrivelse (en)');
-      await expect(component.getByText('Velg ønsket dato (en)', { exact: true })).toBeVisible();
+      const date = page.getByLabel('Dato med beskrivelse (en)', { exact: true });
+      await expect(date).toHaveAccessibleDescription('Velg ønsket dato (en)');
+      await expect(page.getByText('Velg ønsket dato (en)', { exact: true })).toBeVisible();
     });
   });
 });

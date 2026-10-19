@@ -33,8 +33,8 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
       }
       await summary.getByRole('link', { name: errors[0] }).click();
       const attachment = page
-        .getByRole('group', { name: /Vedlegg 1/ })
-        .locator('xpath=ancestor::*[@data-cy="attachment-upload"][1]');
+        .getByTestId('attachment-upload')
+        .filter({ has: page.getByRole('group', { name: /Vedlegg 1/ }) });
       await expect(attachment.getByRole('button', { name: 'Velg fil' })).toBeFocused();
     });
     test('renders attachments together with regular components without attachment-panel metadata', async ({
@@ -46,8 +46,8 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
       await showAllSteps(page);
       await page.getByRole('link', { name: 'Oppsummering', exact: true }).click();
       const panel = page
-        .getByRole('heading', { level: 3, name: /^Vedlegg/ })
-        .locator('xpath=ancestor::*[@data-cy="form-summary-panel"][1]');
+        .getByTestId('form-summary-panel')
+        .filter({ has: page.getByRole('heading', { level: 3, name: /^Vedlegg/ }) });
       await expect(panel.getByText('Kommentar til vedlegg', { exact: true })).toBeVisible();
       await expect(panel.getByText('Relevant kommentar', { exact: true })).toBeVisible();
     });
@@ -56,7 +56,7 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
         await prepareAttachmentSubmission(page);
         const heading = page.getByRole('heading', { level: 3, name: 'Vedlegg', exact: true });
         await expect(heading).toBeVisible();
-        const panel = heading.locator('xpath=ancestor::*[@data-cy="form-summary-panel"][1]');
+        const panel = page.getByTestId('form-summary-panel').filter({ has: heading });
         for (const name of ['Vedlegg 1', 'Vedlegg 2', 'Vedlegg upload-only', 'Annet vedlegg 1'])
           await expect(panel.getByText(name, { exact: true })).toBeVisible();
       });
