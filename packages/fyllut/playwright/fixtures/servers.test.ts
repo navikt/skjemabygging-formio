@@ -7,8 +7,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
 import * as serverConfig from '../../../../bin/fyllut-server-config.mjs';
-import tc07 from '../../../../mocks/mocks/data/test-cases/tc07-pdf-body.json';
-import { useRouteVariant } from './mock-client';
+import { restoreRouteVariants, useRouteVariant } from './mock-client';
 import { startServers, stopProcess } from './servers';
 
 const expectPortsReleased = async (ports: number[]) => {
@@ -37,7 +36,7 @@ describe('FyllUt Playwright server support', () => {
       }
       const [first, second] = stacks;
       expect(first.ports.some((port) => second.ports.includes(port))).toBe(false);
-      await useRouteVariant(first.adminURL, 'post-familie-pdf:success-tc07');
+      await useRouteVariant(first.adminURL, 'get-register-data-activities:success-empty');
       const variants = await (await fetch(`${second.adminURL}/api/mock/custom-route-variants`)).json();
       expect(variants).toEqual([]);
       await first.stop();
@@ -101,27 +100,15 @@ describe('FyllUt Playwright server support', () => {
     }
   }, 90000);
 
-  it('rejects unknown variants and mismatched bodies with real mocks', async () => {
+  it('rejects unknown variants and restores selected variants with real mocks', async () => {
     const directory = mkdtempSync(join(tmpdir(), 'fyllut-validation-'));
     const servers = await startServers(directory, 'built');
-    const id = 'post-familie-pdf:success-tc07';
     try {
-      await expect(useRouteVariant(servers.adminURL, 'post-familie-pdf:does-not-exist')).rejects.toThrow();
-      const send = (body: unknown) =>
-        fetch(`${servers.mockURL}/api/pdf/v3/opprett-pdf`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(body),
-        });
-      await useRouteVariant(servers.adminURL, id);
-      const valid = await send(tc07);
-      await valid.body?.cancel();
-      expect(valid.status).toBe(200);
-      const invalid = await send({ ...tc07, bunntekst: { ...tc07.bunntekst, lowerMiddle: 'wrong' } });
-      expect(invalid.status).toBe(400);
-      expect(await invalid.json()).toMatchObject({
-        mismatches: [expect.objectContaining({ path: 'bunntekst.lowerMiddle' })],
-      });
+      await expect(useRouteVariant(servers.adminURL, 'get-register-data-activities:does-not-exist')).rejects.toThrow();
+      await useRouteVariant(servers.adminURL, 'get-register-data-activities:success-empty');
+      await restoreRouteVariants(servers.adminURL);
+      const variants = await (await fetch(`${servers.adminURL}/api/mock/custom-route-variants`)).json();
+      expect(variants).toEqual([]);
     } finally {
       await servers.stop();
       await expectPortsReleased(servers.ports);

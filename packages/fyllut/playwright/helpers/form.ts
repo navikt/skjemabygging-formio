@@ -45,13 +45,6 @@ const nextStep = async (page: Page) => {
     .click();
 };
 
-const saveAndContinue = async (page: Page) => {
-  await page
-    .getByRole('button', { name: /^(Lagre og fortsett|Save and continue)$/ })
-    .or(page.getByRole('link', { name: /^(Lagre og fortsett|Save and continue)$/ }))
-    .click();
-};
-
 const showAllSteps = async (page: Page) => {
   await page.getByRole('button', { name: /Vis alle steg|Show all steps/ }).click();
   await expect(page.locator('.aksel-form-progress__collapsible')).toHaveAttribute('data-state', 'open');
@@ -99,7 +92,6 @@ export {
   expectSummaryGroup,
   expectVisibleToUser,
   nextStep,
-  saveAndContinue,
   showAllSteps,
   visitForm,
   visitStaticPdfForm,

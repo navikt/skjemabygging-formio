@@ -1,24 +1,24 @@
 # FyllUt Playwright pilot
 
-Six files cover 46 cases. Cypress remains active, including the migrated
+Five files cover 38 cases. Cypress remains active, including the migrated
 tests. Bygger's launcher and Cypress workflow keep their existing behavior.
 These are representative tests, not a complete Cypress migration.
 
 ## Branch scope
 
-The slim pilot changes 33 files relative to its main-branch starting point.
-18 are new files and 15 are edits to existing files.
+The slim pilot changes 31 files relative to its main-branch starting point.
+16 are new files and 15 are edits to existing files.
 
-| Group                              | Files | Why they are included                                                                                 |
-| ---------------------------------- | ----: | ----------------------------------------------------------------------------------------------------- |
-| Playwright specs                   |     6 | The 46 representative cases.                                                                          |
-| Cypress source pointers            |     6 | Comments linking the original declarations to their replacements. No executable Cypress changes.      |
-| Test fixtures, helpers and startup |     8 | Six Playwright modules, one shared command recipe, and the existing launcher's import of that recipe. |
-| Support tests                      |     1 | Verify process isolation/cleanup and body-check wiring.                                               |
-| Mock implementation                |     1 | Prevent expected fixture mutation, log only mismatch paths and forward asynchronous handler errors.   |
-| Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.        |
-| Documentation                      |     2 | This guide and two command entries in the root README.                                                |
-| Total                              |    33 |                                                                                                       |
+| Group                              | Files | Why they are included                                                                                           |
+| ---------------------------------- | ----: | --------------------------------------------------------------------------------------------------------------- |
+| Playwright specs                   |     5 | The 38 representative cases.                                                                                    |
+| Cypress comments                   |     6 | Counterpart pointers in five files and a deferred-migration note in the attachment file. No executable changes. |
+| Test fixtures, helpers and startup |     7 | Five Playwright modules, one shared command recipe, and the existing launcher's import of that recipe.          |
+| Support tests                      |     1 | Verify process isolation/cleanup and mock variant selection/reset.                                              |
+| Mock implementation                |     1 | Prevent expected fixture mutation, log only mismatch paths and forward asynchronous handler errors.             |
+| Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.                  |
+| Documentation                      |     2 | This guide and two command entries in the root README.                                                          |
+| Total                              |    31 |                                                                                                                 |
 
 The earlier pilot's CLI wrapper, migration register/hash gates, observation API,
 ownership protocol, benchmark commands and separate technical Playwright suite
@@ -38,14 +38,14 @@ mock server. Do not start separate servers first.
 
 ```sh
 pnpm playwright:fyllut
-pnpm playwright:fyllut digital-submission/digital-attachment-upload.spec.ts --grep "submits attachments"
+pnpm playwright:fyllut components-customized/bankaccount.spec.ts --grep "should have description"
 
 pnpm build:fyllut
 pnpm playwright:fyllut:built
 ```
 
 Development mode uses Vite and skips one built-routing case. Built mode uses
-the compiled backend and frontend and runs all 46 cases. Rebuild after
+the compiled backend and frontend and runs all 38 cases. Rebuild after
 application changes; the command does not rebuild for you.
 
 These commands use the standard Playwright CLI. `--list`, `--headed`,
@@ -94,36 +94,32 @@ protocols, manifest files, runtime-config rewrites or `prepare`/`existing` mode.
 `bin/start.mjs` only reuses the extracted FyllUt command recipe; its Bygger
 branch and process lifecycle are not rewritten.
 
-## Backend request bodies
+## Shared mock fixes
 
-The attachment submission test selects the existing tc07 variants.
-`compareBodyMiddleware` still compares backend bodies with the same JSON
-fixtures and the same excluded fields as Cypress.
-
-The selected mocks return HTTP 400 for mismatched bodies. The test checks
-successful submission and the expected attachments on the receipt, following
-the existing Cypress pattern. There is no separate assertion that both
-external mock handlers were called, and no file-based verification mechanism.
-
-The comparator copies nested expected data before excluding variable fields,
-logs only mismatch paths and forwards asynchronous response-handler errors
-to Express.
+The existing mock body comparator remains in use by Cypress and other mock
+routes. It copies nested expected data before excluding variable fields, logs
+only mismatch paths and forwards asynchronous response-handler errors to
+Express. These shared fixes are retained independently of the deferred
+attachment migration.
 
 ## Coverage and review
 
-| Playwright file                                        | Cases |
-| ------------------------------------------------------ | ----: |
-| `components-customized/bankaccount.spec.ts`            |     7 |
-| `components-date/datePicker.spec.ts`                   |    11 |
-| `components-deprecated-complex/data-fetcher.spec.ts`   |     1 |
-| `digital-submission/digital-attachment-upload.spec.ts` |     8 |
-| `other/a11y-axe.spec.ts`                               |     8 |
-| `pdf/static-pdf.spec.ts`                               |    11 |
-| Total                                                  |    46 |
+| Playwright file                                      | Cases |
+| ---------------------------------------------------- | ----: |
+| `components-customized/bankaccount.spec.ts`          |     7 |
+| `components-date/datePicker.spec.ts`                 |    11 |
+| `components-deprecated-complex/data-fetcher.spec.ts` |     1 |
+| `other/a11y-axe.spec.ts`                             |     8 |
+| `pdf/static-pdf.spec.ts`                             |    11 |
+| Total                                                |    38 |
 
 Each migrated Cypress declaration has a comment with the target file and title.
-One attachment declaration expands into four cases, so 43 source declarations become 46 cases.
+The pilot covers 38 source declarations and 38 runtime cases.
 Only one data-fetcher test is migrated; that entire Cypress file is not covered.
+
+The digital attachment upload suite remains in Cypress. Its Playwright
+migration is deferred for manual review and rework; the eight attachment
+cases are not part of this pilot.
 
 During review, compare assertions, setup hooks and shared helpers in each pair.
 Keep focus checks, language variants, request checks and negative assertions.
@@ -147,7 +143,7 @@ Run the focused support checks after building:
 pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts
 ```
 
-They exercise real mock handlers, unknown variants, body mismatch,
+They exercise mock variant selection/reset and rejection of unknown variants,
 concurrent independent server setups and cleanup. These are ordinary Vitest
 tests, not nested deliberately failing Playwright runs.
 The startup regression deliberately occupies a selected port with another
@@ -181,10 +177,9 @@ Shared builds across Cypress/Playwright jobs are not included here.
 | `fixtures/server-readiness.mjs`         | Record which ports each child process actually serves, using Node socket diagnostics.      |
 | `fixtures/mock-client.ts`               | Select/reset variants through the existing admin API.                                      |
 | `helpers/form.ts`                       | Reusable form actions and network assertions from Cypress.                                 |
-| `helpers/attachments.ts`                | Reusable attachment actions with complete upload waits.                                    |
-| `fixtures/servers.test.ts`              | Exercise server isolation, body-check wiring and cleanup.                                  |
+| `fixtures/servers.test.ts`              | Exercise server isolation, mock variant selection/reset and cleanup.                       |
 | `../../../bin/fyllut-server-config.mjs` | The FyllUt server configuration shared with the existing developer launcher.               |
 
-The remaining changes are the six specs and six source pointers, dependencies,
+The remaining changes are the five specs and Cypress comments, dependencies,
 mock comparator fixes, lint configuration and CI.
 There is no `bin/playwright` framework or separate technical Playwright suite.

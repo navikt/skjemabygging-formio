@@ -1,5 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+// TODO: Revisit these tests and migrate them to Playwright manually in a separate follow-up.
 describe('Digital submission with attachments uploaded in Fyllut', () => {
   const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
 
@@ -34,7 +35,6 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     });
 
-    // Playwright: packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > shows validation errors when files are not uploaded
     it('shows validation errors when files are not uploaded', () => {
       cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
@@ -69,7 +69,6 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       });
     });
 
-    // Playwright: packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > renders attachments together with regular components without attachment-panel metadata
     it('renders attachments together with regular components without attachment-panel metadata', () => {
       cy.findByText('Kontroller at vedleggene er riktige før du fortsetter.').should('be.visible');
       cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Relevant kommentar');
@@ -108,7 +107,6 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       });
 
-      // Playwright: packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > shows uploaded attachments on summary page
       it('shows uploaded attachments on summary page', () => {
         cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
           .should('exist')
@@ -124,7 +122,6 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       ['upload', 'delete'].forEach((operation) => {
         ['success', 'failure'].forEach((outcome) => {
           // The intercept stays pending while the test edits, navigates and attempts submission.
-          // Playwright: packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > `blocks submission during a pending ${operation} and recovers after ${outcome}`
           it(
             `blocks submission during a pending ${operation} and recovers after ${outcome}`,
             { defaultCommandTimeout: 30000 },
@@ -226,7 +223,6 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         });
       });
 
-      // Playwright: packages/fyllut/playwright/e2e/digital-submission/digital-attachment-upload.spec.ts | Digital submission with attachments uploaded in Fyllut > Form with attachments > uploading files > submits attachments with the form
       it('submits attachments with the form', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');
