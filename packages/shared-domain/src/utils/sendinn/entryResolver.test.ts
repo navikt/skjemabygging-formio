@@ -1,6 +1,6 @@
 import { sendinnEntryUtils } from './entryResolver';
 
-const { resolveEntry, requiresLogin } = sendinnEntryUtils;
+const { createNotFoundPath, resolveEntry, requiresLogin } = sendinnEntryUtils;
 
 const submissionId = '3f2a9c4e-8b1d-4e6f-9a7c-2d5b8e1f0c3a';
 const query = (value = '') => new URLSearchParams(value);
@@ -101,12 +101,35 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
       });
 
+      it.each(['/404', '/404/'])('returns unavailable for the reserved not found segment %s', (path) => {
+        expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
+        expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });
+      });
+
       it.each(['/nav123456/extra', '/oppgave/nav123456', '/lospost/nav123456'])(
         'returns unavailable for more than one segment %s',
         (path) => {
           expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });
         },
       );
+    });
+  });
+
+  describe('createNotFoundPath', () => {
+    it('returns the not found path without query parameters', () => {
+      expect(createNotFoundPath(query())).toBe('/404');
+    });
+
+    it('keeps only the language parameter', () => {
+      expect(createNotFoundPath(query(`lang=nn&innsendingsId=${submissionId}&sub=digital`))).toBe('/404?lang=nn');
+    });
+
+    it('encodes the language parameter', () => {
+      expect(createNotFoundPath(query('lang=a%26b'))).toBe('/404?lang=a%26b');
+    });
+
+    it('ignores an empty language parameter', () => {
+      expect(createNotFoundPath(query('lang='))).toBe('/404');
     });
   });
 
