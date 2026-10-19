@@ -36,7 +36,7 @@ jobs:
       - name: Check body verification and server cleanup
         run: pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts mocks/mocks/utils/testCaseUtils.test.ts
       - name: Run the built pilot
-        run: pnpm playwright:fyllut:built --workers=2
+        run: pnpm playwright:fyllut:built
       - name: Upload Playwright reports
         if: always()
         uses: actions/upload-artifact@v7

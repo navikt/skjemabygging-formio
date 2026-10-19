@@ -161,7 +161,7 @@ running.
 
 The new workflow runs on push alongside unchanged Cypress jobs. It installs
 only Chromium and builds FyllUt once. It runs these support checks and the built
-pilot with two independent workers, then uploads reports for seven days.
+pilot with one worker, then uploads reports for seven days.
 It does not run a repeated benchmark.
 
 ## Remaining work
