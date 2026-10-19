@@ -5,7 +5,10 @@ const BASE_PATH = '/sendinn';
 const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
 const STANDALONE_SEGMENT = 'lospost';
 const TASK_SEGMENT = 'oppgave';
+const NOT_FOUND_SEGMENT = '404';
+const NOT_FOUND_PATH = `/${NOT_FOUND_SEGMENT}`;
 const SUBMISSION_ID_PARAM = 'innsendingsId';
+const LANGUAGE_PARAM = 'lang';
 
 type SendinnEntry =
   | { journey: 'lospost' }
@@ -43,6 +46,10 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
   }
 
   const [segment] = segments;
+  if (segment === NOT_FOUND_SEGMENT) {
+    return unavailable;
+  }
+
   if (segment === STANDALONE_SEGMENT) {
     return { journey: 'lospost' };
   }
@@ -65,6 +72,14 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
     : { journey: 'form', formPath: segment };
 };
 
+/**
+ * Path to the not found page, relative to the app base path. Keeps only the language parameter.
+ */
+const createNotFoundPath = (searchParams: URLSearchParams): string => {
+  const language = searchParams.get(LANGUAGE_PARAM);
+  return language ? `${NOT_FOUND_PATH}?${new URLSearchParams({ [LANGUAGE_PARAM]: language })}` : NOT_FOUND_PATH;
+};
+
 const requiresLogin = (entry: SendinnEntry): boolean => entry.journey === 'formWithTask' || entry.journey === 'task';
 
 const isSendinnPath = (path: string) =>
@@ -81,7 +96,9 @@ const createLoginUrl = (returnPath: string): string =>
 
 const sendinnEntryUtils = {
   basePath: BASE_PATH,
+  notFoundPath: NOT_FOUND_PATH,
   createLoginUrl,
+  createNotFoundPath,
   resolveEntry,
   requiresLogin,
 };

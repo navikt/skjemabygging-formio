@@ -1,19 +1,19 @@
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { useLocation } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import { UnavailablePage } from '../app/error/UnavailablePage';
 import { JourneyPlaceholder } from './JourneyPlaceholder';
 
 // Expects a router with basename /sendinn, so the pathname is relative to the sendinn base path.
 const SendinnRoutes = () => {
   const { pathname, search } = useLocation();
-  const entry = useMemo(
-    () => sendinnEntryUtils.resolveEntry(pathname, new URLSearchParams(search)),
-    [pathname, search],
-  );
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+  const entry = useMemo(() => sendinnEntryUtils.resolveEntry(pathname, searchParams), [pathname, searchParams]);
 
   if (entry.journey === 'unavailable') {
-    return <UnavailablePage />;
+    const notFoundPath = sendinnEntryUtils.createNotFoundPath(searchParams);
+    // The backend has already answered 404 for the original URL, so the SPA only moves the user to the canonical route.
+    return `${pathname}${search}` === notFoundPath ? <UnavailablePage /> : <Navigate to={notFoundPath} replace />;
   }
 
   return <JourneyPlaceholder journey={entry.journey} />;
