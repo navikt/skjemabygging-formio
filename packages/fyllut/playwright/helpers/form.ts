@@ -5,6 +5,21 @@ const expectVisibleToUser = async (locator: Locator) => {
   await expect(locator).not.toHaveClass(/\baksel-sr-only\b/);
 };
 
+const expectSummaryGroup = async (
+  page: Page,
+  heading: string,
+  answers: ReadonlyArray<{ label: string; value: string }>,
+) => {
+  const group = page
+    .getByTestId('form-summary-panel')
+    .filter({ has: page.getByRole('heading', { level: 3, name: heading, exact: true }) });
+  await expect(group).toHaveCount(1);
+  for (const [index, { label, value }] of answers.entries()) {
+    await expect(group.getByRole('term').nth(index)).toContainText(label);
+    await expect(group.getByRole('definition').nth(index)).toContainText(value);
+  }
+};
+
 const visitForm = async (page: Page, path: string) => {
   const config = page.waitForResponse(
     (response) => response.url().includes('/fyllut/api/config') && response.request().method() === 'GET',
@@ -81,6 +96,7 @@ const visitStaticPdfForm = async (page: Page) => {
 
 export {
   downloadApplication,
+  expectSummaryGroup,
   expectVisibleToUser,
   nextStep,
   saveAndContinue,

@@ -21,6 +21,7 @@ export default defineConfig({
   ],
   use: {
     ...devices['Desktop Chrome'],
+    testIdAttribute: 'data-cy',
     viewport: { width: 1280, height: 1000 },
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',

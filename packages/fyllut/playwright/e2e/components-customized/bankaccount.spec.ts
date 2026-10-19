@@ -1,5 +1,5 @@
 import { expect, test } from '../../fixtures/test';
-import { downloadApplication, expectVisibleToUser, nextStep, visitForm } from '../../helpers/form';
+import { downloadApplication, expectSummaryGroup, expectVisibleToUser, nextStep, visitForm } from '../../helpers/form';
 
 test.describe('BankAccount', () => {
   test.describe('Display', () => {
@@ -86,18 +86,14 @@ test.describe('BankAccount', () => {
       await nextStep(page);
 
       await expect(page.getByRole('heading', { name: 'Oppsummering' })).toBeVisible();
-      for (const [heading, labels] of [
-        ['Visning', ['Kontonummer', 'Kontonummer med beskrivelse']],
-        ['Validering', ['Kontonummer påkrevd', 'Kontonummer ikke påkrevd']],
-      ] as const) {
-        const group = page
-          .locator('.aksel-form-summary')
-          .filter({ has: page.getByRole('heading', { level: 3, name: heading, exact: true }) });
-        for (const [index, label] of labels.entries()) {
-          await expect(group.locator('dt').nth(index)).toContainText(label);
-          await expect(group.locator('dd').nth(index)).toContainText('0123 45 67892');
-        }
-      }
+      await expectSummaryGroup(page, 'Visning', [
+        { label: 'Kontonummer', value: '0123 45 67892' },
+        { label: 'Kontonummer med beskrivelse', value: '0123 45 67892' },
+      ]);
+      await expectSummaryGroup(page, 'Validering', [
+        { label: 'Kontonummer påkrevd', value: '0123 45 67892' },
+        { label: 'Kontonummer ikke påkrevd', value: '0123 45 67892' },
+      ]);
       await page
         .getByRole('button', { name: 'Instruksjoner for innsending' })
         .or(page.getByRole('link', { name: 'Instruksjoner for innsending' }))
