@@ -1,4 +1,4 @@
-import { sendinnEntryUtils } from './entryResolver';
+import { sendinnEntryUtils } from './sendinnEntryUtils';
 
 const { createNotFoundPath, resolveEntry, requiresLogin } = sendinnEntryUtils;
 
