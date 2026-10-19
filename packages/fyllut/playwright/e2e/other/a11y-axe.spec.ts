@@ -24,17 +24,11 @@ const scanTab = async (page: Page, title: string) => {
 
 test.describe('Axe: Accessibility testing', () => {
   test.describe('Test on the intro page', () => {
-    test(
-      'Static intro page',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await visitForm(page, '/fyllut/cypressaxe');
-        await expect(page.getByText('Axe testing i Cypress')).toBeVisible();
-        await scanPage(page);
-      },
-    );
+    test('Static intro page', async ({ readyPage: page }) => {
+      await visitForm(page, '/fyllut/cypressaxe');
+      await expect(page.getByText('Axe testing i Cypress')).toBeVisible();
+      await scanPage(page);
+    });
   });
 
   test.describe('Simple test for all tabs in one run', () => {
@@ -45,75 +39,33 @@ test.describe('Axe: Accessibility testing', () => {
       await expect(page.getByRole('heading', { name: 'Person', exact: true })).toBeVisible();
     });
 
-    test(
-      'Person',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await expect(page.getByRole('heading', { name: 'Person', exact: true })).toBeVisible();
-        await scanPage(page);
-      },
-    );
+    test('Person', async ({ readyPage: page }) => {
+      await expect(page.getByRole('heading', { name: 'Person', exact: true })).toBeVisible();
+      await scanPage(page);
+    });
 
-    test(
-      'Penger og konto',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Penger og konto');
-      },
-    );
+    test('Penger og konto', async ({ readyPage: page }) => {
+      await scanTab(page, 'Penger og konto');
+    });
 
-    test(
-      'Bedrift / organisasjon',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Bedrift / organisasjon');
-      },
-    );
+    test('Bedrift / organisasjon', async ({ readyPage: page }) => {
+      await scanTab(page, 'Bedrift / organisasjon');
+    });
 
-    test(
-      'Dato og tid',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Dato og tid');
-      },
-    );
+    test('Dato og tid', async ({ readyPage: page }) => {
+      await scanTab(page, 'Dato og tid');
+    });
 
-    test(
-      'Standard felter',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Standard felter');
-      },
-    );
+    test('Standard felter', async ({ readyPage: page }) => {
+      await scanTab(page, 'Standard felter');
+    });
 
-    test(
-      'Layout',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Layout');
-      },
-    );
+    test('Layout', async ({ readyPage: page }) => {
+      await scanTab(page, 'Layout');
+    });
 
-    test(
-      'Data',
-      {
-        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
-      },
-      async ({ readyPage: page }) => {
-        await scanTab(page, 'Data');
-      },
-    );
+    test('Data', async ({ readyPage: page }) => {
+      await scanTab(page, 'Data');
+    });
   });
 });

@@ -122,8 +122,7 @@ to Express.
 | Total                                                  |    46 |
 
 Each migrated Cypress declaration has a comment with the target file and title.
-The Playwright test has a source-file annotation. One attachment
-declaration expands into four cases, so 43 source declarations become 46 cases.
+One attachment declaration expands into four cases, so 43 source declarations become 46 cases.
 Only one data-fetcher test is migrated; that entire Cypress file is not covered.
 
 During review, compare assertions, setup hooks and shared helpers in each pair.
