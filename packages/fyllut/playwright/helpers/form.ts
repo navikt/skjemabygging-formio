@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 const expectVisibleToUser = async (locator: Locator) => {
   await expect(locator).toBeVisible();
-  await expect(locator).not.toHaveClass(/\baksel-sr-only\b/);
+  await expect(locator).not.toContainClass('aksel-sr-only');
 };
 
 const expectSummaryGroup = async (
