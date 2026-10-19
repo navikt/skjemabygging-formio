@@ -11,7 +11,6 @@ test.describe('BankAccount', () => {
       'should be visible and interactable',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T001' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -32,7 +31,6 @@ test.describe('BankAccount', () => {
       'should have description',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T002' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -65,7 +63,6 @@ test.describe('BankAccount', () => {
       'should validate with required',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T003' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -88,7 +85,6 @@ test.describe('BankAccount', () => {
       'should not be required',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T004' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -106,7 +102,6 @@ test.describe('BankAccount', () => {
       'should validate invalid account number',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T005' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -137,7 +132,6 @@ test.describe('BankAccount', () => {
       'should test filling out a full form',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T006' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',
@@ -192,7 +186,6 @@ test.describe('BankAccount', () => {
       'should have english label and description',
       {
         annotation: [
-          { type: 'migration-id', description: 'F004-T007' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/components-customized/bankaccount.cy.ts',

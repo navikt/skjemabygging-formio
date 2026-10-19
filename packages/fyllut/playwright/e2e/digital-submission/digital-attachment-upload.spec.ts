@@ -11,10 +11,7 @@ import {
 import { saveAndContinue, showAllSteps } from '../../helpers/form';
 
 const source = 'packages/fyllut/cypress/e2e/digital-submission/digital-attachment-upload.cy.ts';
-const annotation = (id: string) => [
-  { type: 'migration-id', description: id },
-  { type: 'cypress-source', description: source },
-];
+const annotation = [{ type: 'cypress-source', description: source }];
 
 test.describe('Digital submission with attachments uploaded in Fyllut', () => {
   test.describe('Form with attachments', () => {
@@ -22,7 +19,6 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
       'shows validation errors when files are not uploaded',
       {
         annotation: [
-          { type: 'migration-id', description: 'F061-T001' },
           {
             type: 'cypress-source',
             description: 'packages/fyllut/cypress/e2e/digital-submission/digital-attachment-upload.cy.ts',
@@ -57,7 +53,7 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
     );
     test(
       'renders attachments together with regular components without attachment-panel metadata',
-      { annotation: annotation('F061-T002') },
+      { annotation },
       async ({ readyPage: page }) => {
         await visitAttachments(page);
         await expect(page.getByText('Kontroller at vedleggene er riktige før du fortsetter.')).toBeVisible();
@@ -72,25 +68,20 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
       },
     );
     test.describe('uploading files', () => {
-      test(
-        'shows uploaded attachments on summary page',
-        { annotation: annotation('F061-T003') },
-        async ({ readyPage: page }) => {
-          await prepareAttachmentSubmission(page);
-          const heading = page.getByRole('heading', { level: 3, name: 'Vedlegg', exact: true });
-          await expect(heading).toBeVisible();
-          const panel = heading.locator('xpath=ancestor::*[@data-cy="form-summary-panel"][1]');
-          for (const name of ['Vedlegg 1', 'Vedlegg 2', 'Vedlegg upload-only', 'Annet vedlegg 1'])
-            await expect(panel.getByText(name, { exact: true })).toBeVisible();
-        },
-      );
+      test('shows uploaded attachments on summary page', { annotation }, async ({ readyPage: page }) => {
+        await prepareAttachmentSubmission(page);
+        const heading = page.getByRole('heading', { level: 3, name: 'Vedlegg', exact: true });
+        await expect(heading).toBeVisible();
+        const panel = heading.locator('xpath=ancestor::*[@data-cy="form-summary-panel"][1]');
+        for (const name of ['Vedlegg 1', 'Vedlegg 2', 'Vedlegg upload-only', 'Annet vedlegg 1'])
+          await expect(panel.getByText(name, { exact: true })).toBeVisible();
+      });
 
-      for (const [operationIndex, operation] of ['upload', 'delete'].entries()) {
-        for (const [outcomeIndex, outcome] of ['success', 'failure'].entries()) {
-          const caseId = `F061-T005-C${String(operationIndex * 2 + outcomeIndex + 1).padStart(3, '0')}`;
+      for (const operation of ['upload', 'delete']) {
+        for (const outcome of ['success', 'failure']) {
           test(
             `blocks submission during a pending ${operation} and recovers after ${outcome}`,
-            { annotation: annotation(caseId) },
+            { annotation },
             async ({ readyPage: page }) => {
               await prepareAttachmentSubmission(page);
               let submissions = 0;
@@ -199,7 +190,6 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
         'submits attachments with the form',
         {
           annotation: [
-            { type: 'migration-id', description: 'F061-T004' },
             {
               type: 'cypress-source',
               description: 'packages/fyllut/cypress/e2e/digital-submission/digital-attachment-upload.cy.ts',

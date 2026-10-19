@@ -121,8 +121,8 @@ to Express.
 | `pdf/static-pdf.spec.ts`                               |    11 |
 | Total                                                  |    46 |
 
-Each migrated Cypress declaration has a comment with the target file, title
-and stable ID. The Playwright test has matching annotations. One attachment
+Each migrated Cypress declaration has a comment with the target file and title.
+The Playwright test has a source-file annotation. One attachment
 declaration expands into four cases, so 43 source declarations become 46 cases.
 Only one data-fetcher test is migrated; that entire Cypress file is not covered.
 

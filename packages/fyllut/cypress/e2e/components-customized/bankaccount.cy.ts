@@ -9,7 +9,7 @@ describe('BankAccount', () => {
       cy.defaultWaits();
     });
 
-    // Playwright: F004-T001 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Display > should be visible and interactable
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Display > should be visible and interactable
     it('should be visible and interactable', () => {
       const label = 'Kontonummer';
       cy.findByRole('textbox', { name: label }).should('exist');
@@ -18,7 +18,7 @@ describe('BankAccount', () => {
       cy.findByLabelText(label).should('not.have.attr', 'readonly');
     });
 
-    // Playwright: F004-T002 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Display > should have description
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Display > should have description
     it('should have description', () => {
       const label = 'Kontonummer med beskrivelse';
       cy.withinComponent(label, () => {
@@ -36,7 +36,7 @@ describe('BankAccount', () => {
       cy.defaultWaits();
     });
 
-    // Playwright: F004-T003 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should validate with required
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should validate with required
     it('should validate with required', () => {
       const label = 'Kontonummer påkrevd';
       cy.clickNextStep();
@@ -47,7 +47,7 @@ describe('BankAccount', () => {
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
-    // Playwright: F004-T004 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should not be required
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should not be required
     it('should not be required', () => {
       const label = 'Kontonummer ikke påkrevd';
       cy.clickNextStep();
@@ -55,7 +55,7 @@ describe('BankAccount', () => {
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
-    // Playwright: F004-T005 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should validate invalid account number
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should validate invalid account number
     it('should validate invalid account number', () => {
       const label = 'Kontonummer ikke påkrevd';
       const errorMessage = 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.';
@@ -76,7 +76,7 @@ describe('BankAccount', () => {
       cy.defaultWaits();
     });
 
-    // Playwright: F004-T006 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Form > should test filling out a full form
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Form > should test filling out a full form
     it('should test filling out a full form', () => {
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -117,7 +117,7 @@ describe('BankAccount', () => {
       cy.defaultWaits();
     });
 
-    // Playwright: F004-T007 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Translation > should have english label and description
+    // Playwright: packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Translation > should have english label and description
     it('should have english label and description', () => {
       cy.withinComponent('Kontonummer med beskrivelse (en)', () => {
         cy.contains('Dette er en beskrivelse (en)').should('exist');

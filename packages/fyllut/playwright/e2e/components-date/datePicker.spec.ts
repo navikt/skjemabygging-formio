@@ -18,7 +18,6 @@ test.describe('DatePicker', () => {
     'should preserve the natural date width despite legacy input--xxl sizing',
     {
       annotation: [
-        { type: 'migration-id', description: 'F017-T011' },
         { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
       ],
     },
@@ -43,7 +42,6 @@ test.describe('DatePicker', () => {
       'should be visible and interactable',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T001' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -61,7 +59,6 @@ test.describe('DatePicker', () => {
       'should accept a valid date',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T002' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -76,7 +73,6 @@ test.describe('DatePicker', () => {
       'should have description',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T003' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -90,7 +86,6 @@ test.describe('DatePicker', () => {
       'should have additionalDescription',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T004' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -115,7 +110,6 @@ test.describe('DatePicker', () => {
       'should validate required',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T005' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -134,7 +128,6 @@ test.describe('DatePicker', () => {
       'should not be required',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T006' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -148,7 +141,6 @@ test.describe('DatePicker', () => {
       'should validate specificEarliestAllowedDate',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T007' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -169,7 +161,6 @@ test.describe('DatePicker', () => {
       'should validate specificLatestAllowedDate',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T008' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -196,7 +187,6 @@ test.describe('DatePicker', () => {
       'should translate label',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T009' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },
@@ -209,7 +199,6 @@ test.describe('DatePicker', () => {
       'should translate description',
       {
         annotation: [
-          { type: 'migration-id', description: 'F017-T010' },
           { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/components-date/datePicker.cy.ts' },
         ],
       },

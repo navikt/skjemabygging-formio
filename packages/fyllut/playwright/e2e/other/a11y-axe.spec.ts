@@ -27,10 +27,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Static intro page',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T001' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await visitForm(page, '/fyllut/cypressaxe');
@@ -51,10 +48,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Person',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T002' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await expect(page.getByRole('heading', { name: 'Person', exact: true })).toBeVisible();
@@ -65,10 +59,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Penger og konto',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T003' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Penger og konto');
@@ -78,10 +69,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Bedrift / organisasjon',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T004' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Bedrift / organisasjon');
@@ -91,10 +79,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Dato og tid',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T005' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Dato og tid');
@@ -104,10 +89,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Standard felter',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T006' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Standard felter');
@@ -117,10 +99,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Layout',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T007' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Layout');
@@ -130,10 +109,7 @@ test.describe('Axe: Accessibility testing', () => {
     test(
       'Data',
       {
-        annotation: [
-          { type: 'migration-id', description: 'F073-T008' },
-          { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' },
-        ],
+        annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/other/a11y-axe.cy.ts' }],
       },
       async ({ readyPage: page }) => {
         await scanTab(page, 'Data');

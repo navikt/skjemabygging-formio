@@ -38,7 +38,6 @@ test.describe('Static PDF', () => {
     'returns 404 for normal fill-in routes when the form only supports static pdf',
     {
       annotation: [
-        { type: 'migration-id', description: 'F086-T002' },
         { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
         { type: 'build-only', description: 'Requires compiled backend routing; Vite dev serves an SPA fallback.' },
       ],
@@ -51,10 +50,7 @@ test.describe('Static PDF', () => {
   test(
     'should be possible to download pdf with social security number',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T001' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page);
@@ -75,10 +71,7 @@ test.describe('Static PDF', () => {
   test(
     'should be possible to download pdf with name and address',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T003' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page);
@@ -116,10 +109,7 @@ test.describe('Static PDF', () => {
   test(
     'should be possible to continue and download pdf without selecting attachments',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T004' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page);
@@ -139,10 +129,7 @@ test.describe('Static PDF', () => {
   test(
     'shows all attachments when filter is empty',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T005' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?filter=');
@@ -154,10 +141,7 @@ test.describe('Static PDF', () => {
   test(
     'shows only the matching attachment for a single filter code',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T006' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?filter=R4');
@@ -169,10 +153,7 @@ test.describe('Static PDF', () => {
   test(
     'shows all matching attachments for multiple filter codes and ignores whitespace',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T007' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?filter=%20R4%20,%20,%20K2%20');
@@ -184,10 +165,7 @@ test.describe('Static PDF', () => {
   test(
     'ignores unknown filter codes',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T008' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?filter=R4,ZZ');
@@ -199,10 +177,7 @@ test.describe('Static PDF', () => {
   test(
     'downloads static pdf when no attachments match the filter',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T009' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?filter=ZZ');
@@ -219,10 +194,7 @@ test.describe('Static PDF', () => {
   test(
     'supports ettersending after selecting an attachment',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T010' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page, useRouteVariant }) => {
       await useRouteVariant('foersteside:success-tc08c-static-pdf-ettersending');
@@ -243,10 +215,7 @@ test.describe('Static PDF', () => {
   test(
     'returns 404 for ettersending when no attachment is selectable',
     {
-      annotation: [
-        { type: 'migration-id', description: 'F086-T011' },
-        { type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' },
-      ],
+      annotation: [{ type: 'cypress-source', description: 'packages/fyllut/cypress/e2e/pdf/static-pdf.cy.ts' }],
     },
     async ({ readyPage: page }) => {
       await visitStaticPdfPage(page, '?type=ettersending&filter=ZZ');

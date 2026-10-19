@@ -8,7 +8,6 @@ test.describe('Data fetcher', () => {
         'should not render component when data is empty',
         {
           annotation: [
-            { type: 'migration-id', description: 'F029-T002' },
             {
               type: 'cypress-source',
               description: 'packages/fyllut/cypress/e2e/components-deprecated-complex/data-fetcher.cy.ts',
