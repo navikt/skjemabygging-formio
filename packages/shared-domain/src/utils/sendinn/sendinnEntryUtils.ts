@@ -4,7 +4,7 @@ import { validatorUtils } from '../form/validatorUtils';
 const NOT_FOUND_PATH = '/404';
 
 type SendinnEntry =
-  | { journey: 'lospost' }
+  | { journey: 'standalone' }
   | { journey: 'form'; formPath: string }
   | { journey: 'formWithTask'; formPath: string; submissionId: string }
   | { journey: 'task'; submissionId: string }
@@ -62,8 +62,8 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
   const [segment] = segments;
   switch (segment) {
     case 'lospost':
-      // Løspost does not use innsendingsId, so the query is ignored.
-      return { journey: 'lospost' };
+      // The standalone journey (løspost) does not use innsendingsId, so the query is ignored.
+      return { journey: 'standalone' };
     case 'oppgave':
       return resolveTask(searchParams);
     case '404':
