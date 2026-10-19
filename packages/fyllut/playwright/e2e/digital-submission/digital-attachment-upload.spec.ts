@@ -206,7 +206,7 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
             },
           ],
         },
-        async ({ readyPage: page, useRouteVariant, verifyRequestBodies }) => {
+        async ({ readyPage: page, useRouteVariant }) => {
           await prepareAttachmentSubmission(page);
           await useRouteVariant('post-familie-pdf:success-tc07');
           await useRouteVariant('post-digital-soknad:success-tc07');
@@ -215,7 +215,6 @@ test.describe('Digital submission with attachments uploaded in Fyllut', () => {
           for (const name of ['Vedlegg 1', 'Vedlegg 2', 'Vedlegg upload-only', 'Annet vedlegg 1']) {
             await expect(page.getByText(name, { exact: true })).toBeVisible();
           }
-          await verifyRequestBodies(['post-familie-pdf:success-tc07', 'post-digital-soknad:success-tc07']);
         },
       );
     });

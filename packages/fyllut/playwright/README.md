@@ -6,8 +6,8 @@ These are representative tests, not a complete Cypress migration.
 
 ## Branch scope
 
-The slim pilot changes 35 files relative to its main-branch starting point.
-18 are new files and 17 are edits to existing files.
+The slim pilot changes 33 files relative to its main-branch starting point.
+18 are new files and 15 are edits to existing files.
 
 | Group                              | Files | Why they are included                                                                                 |
 | ---------------------------------- | ----: | ----------------------------------------------------------------------------------------------------- |
@@ -15,10 +15,10 @@ The slim pilot changes 35 files relative to its main-branch starting point.
 | Cypress source pointers            |     6 | Comments linking the original declarations to their replacements. No executable Cypress changes.      |
 | Test fixtures, helpers and startup |     8 | Six Playwright modules, one shared command recipe, and the existing launcher's import of that recipe. |
 | Support tests                      |     1 | Verify process isolation/cleanup and body-check wiring.                                               |
-| Mock implementation                |     3 | The comparator and the two tc07 handlers record that the real backend bodies were checked.            |
+| Mock implementation                |     1 | Prevent expected fixture mutation, log only mismatch paths and forward asynchronous handler errors.   |
 | Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.        |
 | Documentation                      |     2 | This guide and two command entries in the root README.                                                |
-| Total                              |    35 |                                                                                                       |
+| Total                              |    33 |                                                                                                       |
 
 The earlier pilot's CLI wrapper, migration register/hash gates, observation API,
 ownership protocol, benchmark commands and separate technical Playwright suite
@@ -64,7 +64,7 @@ Playwright config
     -> fixtures/servers.ts starts mocks and backend, plus Vite frontend in dev
       -> bin/fyllut-server-config.mjs supplies the shared FyllUt commands and environment
     -> browser actions and assertions
-    -> close browser, stop app, stop mocks, check any late body failures
+    -> close browser, stop app, stop mocks
 ```
 
 Each test has fresh processes, mock state and a fresh browser context.
@@ -100,16 +100,14 @@ The attachment submission test selects the existing tc07 variants.
 `compareBodyMiddleware` still compares backend bodies with the same JSON
 fixtures and the same excluded fields as Cypress.
 
-When the test launcher supplies `MOCKS_BODY_VERIFICATION_LOG`, the two tc07
-handlers append their verification ID and mismatch paths to a per-test file.
-No request bodies or tokens are written to that file. A missing handler record
-fails `verifyRequestBodies`, so choosing a variant without actually using it
-is not sufficient. A wrong variant that returns 200 is not sufficient either.
-After stopping the servers, the fixture checks the log again for late failures.
+The selected mocks return HTTP 400 for mismatched bodies. The test checks
+successful submission and the expected attachments on the receipt, following
+the existing Cypress pattern. There is no separate assertion that both
+external mock handlers were called, and no file-based verification mechanism.
 
-This replaces the earlier pilot's observation API and route wrappers. The
-comparator also copies nested expected data before excluding variable fields
-and forwards asynchronous response-handler errors to Express.
+The comparator copies nested expected data before excluding variable fields,
+logs only mismatch paths and forwards asynchronous response-handler errors
+to Express.
 
 ## Coverage and review
 
@@ -140,8 +138,8 @@ Open its `html/index.html` with Playwright's `show-report` command.
 The HTML report includes failure traces and screenshots. `results.json` is
 the standard machine-readable result.
 
-Failed tests retain `servers/servers-1.log` and `servers/body-verification.jsonl` in
-their test output directory. Raw server logs are local only, not uploaded by CI.
+Failed tests retain `servers/servers-1.log` in their test output directory.
+Raw server logs are local only, not uploaded by CI.
 Startup retries have separate numbered server logs.
 
 Run the focused support checks after building:
@@ -150,7 +148,7 @@ Run the focused support checks after building:
 pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts
 ```
 
-They exercise real mock handlers, missing/wrong validation, body mismatch,
+They exercise real mock handlers, unknown variants, body mismatch,
 concurrent independent server setups and cleanup. These are ordinary Vitest
 tests, not nested deliberately failing Playwright runs.
 The startup regression deliberately occupies a selected port with another
@@ -182,12 +180,12 @@ Shared builds across Cypress/Playwright jobs are not included here.
 | `fixtures/test.ts`                      | Bind server lifecycle, page setup and mock helpers to each test.                           |
 | `fixtures/servers.ts`                   | Select ports, start direct child processes, await HTTP readiness and stop owned processes. |
 | `fixtures/server-readiness.mjs`         | Record which ports each child process actually serves, using Node socket diagnostics.      |
-| `fixtures/mock-client.ts`               | Select/reset variants through the existing admin API and check the comparator log.         |
+| `fixtures/mock-client.ts`               | Select/reset variants through the existing admin API.                                      |
 | `helpers/form.ts`                       | Reusable form actions and network assertions from Cypress.                                 |
 | `helpers/attachments.ts`                | Reusable attachment actions with complete upload waits.                                    |
 | `fixtures/servers.test.ts`              | Exercise server isolation, body-check wiring and cleanup.                                  |
 | `../../../bin/fyllut-server-config.mjs` | The FyllUt server configuration shared with the existing developer launcher.               |
 
 The remaining changes are the six specs and six source pointers, dependencies,
-the two tc07 verification labels, comparator logging, lint configuration and CI.
+mock comparator fixes, lint configuration and CI.
 There is no `bin/playwright` framework or separate technical Playwright suite.

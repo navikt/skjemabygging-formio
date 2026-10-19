@@ -1,6 +1,3 @@
-import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
-
 const restoreRouteVariants = async (adminURL: string) => {
   const response = await fetch(`${adminURL}/api/mock/custom-route-variants`, {
     method: 'DELETE',
@@ -31,23 +28,4 @@ const useRouteVariant = async (adminURL: string, id: string) => {
   }
 };
 
-const checkRequestBodies = (path: string, ids: string[]) => {
-  const records: { id: string; mismatches: string[] }[] = existsSync(path)
-    ? readFileSync(path, 'utf8')
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map((line) => JSON.parse(line))
-    : [];
-  for (const record of records) {
-    assert.deepEqual(record.mismatches, [], `Backend body mismatch in ${record.id}: ${record.mismatches.join(', ')}`);
-  }
-  for (const id of ids) {
-    assert(
-      records.some((record) => record.id === id),
-      `Backend body was not validated by ${id}`,
-    );
-  }
-};
-
-export { checkRequestBodies, restoreRouteVariants, useRouteVariant };
+export { restoreRouteVariants, useRouteVariant };

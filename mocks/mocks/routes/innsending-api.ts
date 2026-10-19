@@ -745,7 +745,6 @@ export default [
             tc07,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             okResponseHandlerNologinSubmission,
-            'post-digital-soknad:success-tc07',
           ),
         },
       },

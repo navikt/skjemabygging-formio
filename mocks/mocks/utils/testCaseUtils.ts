@@ -1,5 +1,3 @@
-import { appendFileSync } from 'node:fs';
-
 const filterKeys = (obj, excludeKeys) => {
   if (!obj || typeof obj !== 'object') return obj;
   const filtered = Array.isArray(obj) ? [...obj] : { ...obj };
@@ -81,17 +79,10 @@ const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
   return findMismatches(filteredActual, filteredExpected) || [];
 };
 
-const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess, verificationId?: string) => {
+const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
   return async (req, res, next) => {
     try {
       const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
-      const logPath = process.env.MOCKS_BODY_VERIFICATION_LOG;
-      if (logPath && verificationId) {
-        appendFileSync(
-          logPath,
-          `${JSON.stringify({ id: verificationId, mismatches: mismatches.map(({ path }) => path) })}\n`,
-        );
-      }
       if (mismatches.length) {
         console.error(`Unexpected request body - mismatch paths: ${mismatches.map(({ path }) => path).join(', ')}`);
         res.status(400);

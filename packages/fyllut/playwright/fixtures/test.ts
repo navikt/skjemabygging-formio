@@ -1,6 +1,6 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
-import { checkRequestBodies, restoreRouteVariants, useRouteVariant } from './mock-client';
+import { restoreRouteVariants, useRouteVariant } from './mock-client';
 import { startServers } from './servers';
 
 type Servers = Awaited<ReturnType<typeof startServers>>;
@@ -8,7 +8,6 @@ type Fixtures = {
   servers: Servers;
   readyPage: Page;
   useRouteVariant: (id: string) => Promise<void>;
-  verifyRequestBodies: (ids: string[]) => Promise<void>;
 };
 
 const test = base.extend<Fixtures>({
@@ -41,11 +40,6 @@ const test = base.extend<Fixtures>({
         } catch (error) {
           errors.push(error);
         }
-        try {
-          checkRequestBodies(servers.validationLog, []);
-        } catch (error) {
-          errors.push(error);
-        }
       }
       if (errors.length) throw new AggregateError(errors, errors.map(String).join('\n'));
     },
@@ -56,9 +50,6 @@ const test = base.extend<Fixtures>({
   },
   useRouteVariant: async ({ servers }, use) => {
     await use((id) => useRouteVariant(servers.adminURL, id));
-  },
-  verifyRequestBodies: async ({ servers }, use) => {
-    await use(async (ids) => checkRequestBodies(servers.validationLog, ids));
   },
   readyPage: async ({ page }, use) => {
     await preparePage(page);

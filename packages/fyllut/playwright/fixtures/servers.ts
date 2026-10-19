@@ -68,12 +68,11 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
       if (!existsSync(resolve(root, path))) throw new Error(`Missing ${path}. Run pnpm build:fyllut first.`);
     }
   }
-  const validationLog = resolve(directory, 'body-verification.jsonl');
   const logPath = resolve(directory, `servers-${attempt}.log`);
   const listenLog = resolve(directory, `listeners-${attempt}.log`);
   const readinessModule = resolve(import.meta.dirname, 'server-readiness.mjs');
   const ports = await freePorts(built ? 3 : 4);
-  const plan = createFyllutServerConfig({ repoRoot: root, ports, mode: built ? 'built' : 'dev', validationLog });
+  const plan = createFyllutServerConfig({ repoRoot: root, ports, mode: built ? 'built' : 'dev', testMode: true });
   const children: { child: ChildProcess; stopping: boolean }[] = [];
   const failures: Error[] = [];
   let stopped: Promise<void> | undefined;
@@ -152,7 +151,7 @@ const launchServers = async (directory: string, mode: 'dev' | 'built', attempt: 
       if (pending.size) await delay(100);
     }
     assertHealthy();
-    return { ...plan, ports, validationLog, logPath, assertHealthy, stop };
+    return { ...plan, ports, logPath, assertHealthy, stop };
   } catch (error) {
     try {
       await stop();

@@ -93,16 +93,11 @@ export default [
         id: 'success-tc07',
         type: 'middleware',
         options: {
-          middleware: compareBodyMiddleware(
-            tc07,
-            ['bunntekst.upperMiddle'],
-            (_, res) => {
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send({ content: 'pdf' });
-            },
-            'post-familie-pdf:success-tc07',
-          ),
+          middleware: compareBodyMiddleware(tc07, ['bunntekst.upperMiddle'], (_, res) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send({ content: 'pdf' });
+          }),
         },
       },
       {

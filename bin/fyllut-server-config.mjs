@@ -1,11 +1,11 @@
 import { resolve } from 'node:path';
 
 /**
- * @param {{repoRoot: string, ports: number[], mode?: 'dev' | 'built', validationLog?: string}} options
+ * @param {{repoRoot: string, ports: number[], mode?: 'dev' | 'built', testMode?: boolean}} options
  * @returns {{baseURL: string, mockURL: string, adminURL: string, backendURL: string,
  *   commands: [string, string[], Record<string, string>, string][], healthURLs: string[]}}
  */
-const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', validationLog }) => {
+const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', testMode = false }) => {
   const [mockPort, mockAdminPort, backendPort, frontendPort] = ports;
   const mockURL = `http://127.0.0.1:${mockPort}`;
   const adminURL = `http://127.0.0.1:${mockAdminPort}`;
@@ -25,7 +25,7 @@ const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', validationLog
     TOKEN_X_WELL_KNOWN_URL: `${mockURL}/tokenx/.well-known`,
     FAMILIE_PDF_GENERATOR_URL: mockURL,
     TEAM_LOGS_URL: `${mockURL}/team-logs`,
-    ...(validationLog
+    ...(testMode
       ? {
           NO_DECORATOR: 'true',
           FEATURE_NEW_RENDER_FORMS: '*',
@@ -52,14 +52,9 @@ const createFyllutServerConfig = ({ repoRoot, ports, mode = 'dev', validationLog
           '--no-plugins.inquirerCli.enabled',
           `--server.port=${mockPort}`,
           `--plugins.adminApi.port=${mockAdminPort}`,
-          ...(validationLog
-            ? ['--server.host=127.0.0.1', '--plugins.adminApi.host=127.0.0.1', '--no-files.watch']
-            : []),
+          ...(testMode ? ['--server.host=127.0.0.1', '--plugins.adminApi.host=127.0.0.1', '--no-files.watch'] : []),
         ],
-        {
-          MOCKS_BODY_VERIFICATION_LOG: validationLog ?? '',
-          ...(validationLog ? { TS_NODE_TRANSPILE_ONLY: 'true' } : {}),
-        },
+        testMode ? { TS_NODE_TRANSPILE_ONLY: 'true' } : {},
         resolve(repoRoot, 'mocks'),
       ],
       [

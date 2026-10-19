@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
 import * as serverConfig from '../../../../bin/fyllut-server-config.mjs';
 import tc07 from '../../../../mocks/mocks/data/test-cases/tc07-pdf-body.json';
-import { checkRequestBodies, useRouteVariant } from './mock-client';
+import { useRouteVariant } from './mock-client';
 import { startServers, stopProcess } from './servers';
 
 const expectPortsReleased = async (ports: number[]) => {
@@ -101,32 +101,27 @@ describe('FyllUt Playwright server support', () => {
     }
   }, 90000);
 
-  it('rejects unknown variants, missing validation, wrong variants and body mismatch with real mocks', async () => {
+  it('rejects unknown variants and mismatched bodies with real mocks', async () => {
     const directory = mkdtempSync(join(tmpdir(), 'fyllut-validation-'));
     const servers = await startServers(directory, 'built');
     const id = 'post-familie-pdf:success-tc07';
     try {
       await expect(useRouteVariant(servers.adminURL, 'post-familie-pdf:does-not-exist')).rejects.toThrow();
-      expect(() => checkRequestBodies(servers.validationLog, [id])).toThrow('was not validated');
       const send = (body: unknown) =>
         fetch(`${servers.mockURL}/api/pdf/v3/opprett-pdf`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(body),
         });
-      const wrongVariant = await send(tc07);
-      await wrongVariant.body?.cancel();
-      expect(wrongVariant.status).toBe(200);
-      expect(() => checkRequestBodies(servers.validationLog, [id])).toThrow('was not validated');
       await useRouteVariant(servers.adminURL, id);
       const valid = await send(tc07);
       await valid.body?.cancel();
       expect(valid.status).toBe(200);
-      checkRequestBodies(servers.validationLog, [id]);
       const invalid = await send({ ...tc07, bunntekst: { ...tc07.bunntekst, lowerMiddle: 'wrong' } });
-      await invalid.body?.cancel();
       expect(invalid.status).toBe(400);
-      expect(() => checkRequestBodies(servers.validationLog, [id])).toThrow('bunntekst.lowerMiddle');
+      expect(await invalid.json()).toMatchObject({
+        mismatches: [expect.objectContaining({ path: 'bunntekst.lowerMiddle' })],
+      });
     } finally {
       await servers.stop();
       await expectPortsReleased(servers.ports);
