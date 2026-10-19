@@ -40,7 +40,7 @@ test.describe('DatePicker', () => {
 
     test('should accept a valid date', async ({ readyPage: page }) => {
       const date = page.getByLabel('Dato (dd.mm.åååå)', { exact: true });
-      await date.pressSequentially('15.01.2025');
+      await date.fill('15.01.2025');
       await expect(date).toHaveValue('15.01.2025');
     });
 
@@ -66,11 +66,13 @@ test.describe('DatePicker', () => {
     });
 
     test('should validate required', async ({ readyPage: page }) => {
+      const date = page.getByLabel('Dato påkrevd', { exact: true });
       const error = 'Du må fylle ut: Dato påkrevd';
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
       await page.getByRole('link', { name: error, exact: true }).click();
-      await page.locator(':focus').pressSequentially('15.01.2025');
+      await expect(date).toBeFocused();
+      await date.fill('15.01.2025');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });
@@ -83,11 +85,10 @@ test.describe('DatePicker', () => {
     test('should validate specificEarliestAllowedDate', async ({ readyPage: page }) => {
       const date = page.getByLabel('Dato fra og med 10.01.2025');
       const error = 'Datoen kan ikke være tidligere enn 10.01.2025';
-      await date.pressSequentially('05.01.2025');
+      await date.fill('05.01.2025');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
-      await date.press('ControlOrMeta+A');
-      await date.pressSequentially('10.01.2025');
+      await date.fill('10.01.2025');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });
@@ -95,11 +96,10 @@ test.describe('DatePicker', () => {
     test('should validate specificLatestAllowedDate', async ({ readyPage: page }) => {
       const date = page.getByLabel('Dato til og med 20.01.2025', { exact: true });
       const error = 'Datoen kan ikke være senere enn 20.01.2025';
-      await date.pressSequentially('25.01.2025');
+      await date.fill('25.01.2025');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
-      await date.press('ControlOrMeta+A');
-      await date.pressSequentially('15.01.2025');
+      await date.fill('15.01.2025');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });

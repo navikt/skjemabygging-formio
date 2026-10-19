@@ -42,7 +42,7 @@ test.describe('BankAccount', () => {
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
       await page.getByRole('link', { name: error, exact: true }).click();
       await expect(account).toBeFocused();
-      await account.pressSequentially('01234567892');
+      await account.fill('01234567892');
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });
 
@@ -55,13 +55,13 @@ test.describe('BankAccount', () => {
     test('should validate invalid account number', async ({ readyPage: page }) => {
       const account = page.getByLabel('Kontonummer ikke påkrevd (valgfritt)');
       const error = 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.';
-      await account.pressSequentially('12345678901');
+      await account.fill('12345678901');
       await nextStep(page);
       await expect(page.getByText(error, { exact: true })).toHaveCount(2);
       await page.getByRole('link', { name: error }).click();
       await expect(account).toBeFocused();
       await account.fill('');
-      await account.pressSequentially('01234567892');
+      await account.fill('01234567892');
       await expect(page.getByText(error, { exact: true })).toHaveCount(0);
     });
   });
@@ -76,15 +76,13 @@ test.describe('BankAccount', () => {
       await nextStep(page);
 
       await expect(page.getByRole('heading', { name: 'Visning' })).toBeVisible();
-      await page.getByRole('textbox', { name: 'Kontonummer', exact: true }).pressSequentially('01234567892');
-      await page.getByRole('textbox', { name: 'Kontonummer med beskrivelse' }).pressSequentially('01234567892');
+      await page.getByRole('textbox', { name: 'Kontonummer', exact: true }).fill('01234567892');
+      await page.getByRole('textbox', { name: 'Kontonummer med beskrivelse' }).fill('01234567892');
       await nextStep(page);
 
       await expect(page.getByRole('heading', { name: 'Validering' })).toBeVisible();
-      await page.getByRole('textbox', { name: 'Kontonummer påkrevd' }).pressSequentially('01234567892');
-      await page
-        .getByRole('textbox', { name: 'Kontonummer ikke påkrevd (valgfritt)' })
-        .pressSequentially('01234567892');
+      await page.getByRole('textbox', { name: 'Kontonummer påkrevd' }).fill('01234567892');
+      await page.getByRole('textbox', { name: 'Kontonummer ikke påkrevd (valgfritt)' }).fill('01234567892');
       await nextStep(page);
 
       await expect(page.getByRole('heading', { name: 'Oppsummering' })).toBeVisible();

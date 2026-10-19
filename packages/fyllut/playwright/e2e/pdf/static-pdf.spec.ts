@@ -49,7 +49,7 @@ test.describe('Static PDF', () => {
   test('should be possible to download pdf with social security number', async ({ readyPage: page }) => {
     await visitStaticPdfPage(page);
 
-    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).pressSequentially('22015614475');
+    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).fill('22015614475');
     await page.getByRole('checkbox', { name: /Vedlegg 1/ }).check();
     await page.getByRole('link', { name: /Fortsett/ }).click();
     const request = await downloadStaticPdf(page);
@@ -71,7 +71,7 @@ test.describe('Static PDF', () => {
       ['Postnummer', '0661'],
       ['Poststed', 'Oslo'],
     ]) {
-      await page.getByRole('textbox', { name: label }).pressSequentially(value);
+      await page.getByRole('textbox', { name: label }).fill(value);
     }
     await page.getByRole('checkbox', { name: /Vedlegg 1/ }).check();
     await page.getByRole('checkbox', { name: /Vedlegg 2/ }).check();
@@ -95,7 +95,7 @@ test.describe('Static PDF', () => {
 
   test('should be possible to continue and download pdf without selecting attachments', async ({ readyPage: page }) => {
     await visitStaticPdfPage(page);
-    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).pressSequentially('22015614475');
+    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).fill('22015614475');
     await expect(page.getByRole('checkbox', { name: /Vedlegg 1/ })).toBeVisible();
     await expect(page.getByRole('checkbox', { name: /Vedlegg 2/ })).toBeVisible();
     await page.getByRole('link', { name: /Fortsett/ }).click();
@@ -135,7 +135,7 @@ test.describe('Static PDF', () => {
 
   test('downloads static pdf when no attachments match the filter', async ({ readyPage: page }) => {
     await visitStaticPdfPage(page, '?filter=ZZ');
-    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).pressSequentially('22015614475');
+    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).fill('22015614475');
     await expect(page.getByRole('checkbox', { name: /Vedlegg 1/ })).toHaveCount(0);
     await expect(page.getByRole('checkbox', { name: /Vedlegg 2/ })).toHaveCount(0);
     await page.getByRole('link', { name: /Fortsett/ }).click();
@@ -148,7 +148,7 @@ test.describe('Static PDF', () => {
     await useRouteVariant('foersteside:success-tc08c-static-pdf-ettersending');
     await visitStaticPdfPage(page, '?type=ettersending');
     await expect(page.getByRole('heading', { name: 'Ettersend dokumentasjon', level: 2 })).toBeVisible();
-    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).pressSequentially('22015614475');
+    await page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).fill('22015614475');
     await page.getByRole('link', { name: /Fortsett/ }).click();
     await expect(page.getByRole('link', { name: 'Du må fylle ut: Vedlegg' })).toBeVisible();
     await expect(page.getByText('Du må fylle ut: Vedlegg', { exact: true })).toHaveCount(2);
