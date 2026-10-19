@@ -43,7 +43,7 @@ describe('Static PDF', () => {
     });
   });
 
-  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > returns 404 for normal fill-in routes when the form only supports static pdf
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF backend routing > returns 404 for normal fill-in routes when the form only supports static pdf
   it('returns 404 for normal fill-in routes when the form only supports static pdf', () => {
     cy.skipIfNoIncludeDistTests();
 

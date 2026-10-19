@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { expect, test } from '../../fixtures/test';
+import { expect, skipUnlessBuilt, test } from '../../fixtures/test';
 import { visitForm, visitStaticPdfForm } from '../../helpers/form';
 
 const visitStaticPdfPage = async (page: Page, search = '') => {
@@ -29,23 +29,20 @@ const downloadStaticPdf = async (page: Page) => {
   return response.request().postDataJSON() as { attachments?: string[] };
 };
 
+test.describe('Static PDF backend routing', () => {
+  test.beforeEach(skipUnlessBuilt);
+
+  test('returns 404 for normal fill-in routes when the form only supports static pdf', async ({ request }) => {
+    const response = await request.get('/fyllut/pdfstatic');
+    expect(response.status()).toBe(404);
+  });
+});
+
 test.describe('Static PDF', () => {
   test.beforeEach(async ({ readyPage: page }) => {
     await visitStaticPdfForm(page);
   });
 
-  (process.env.FYLLUT_PLAYWRIGHT_MODE === 'built' ? test : test.skip)(
-    'returns 404 for normal fill-in routes when the form only supports static pdf',
-    {
-      annotation: [
-        { type: 'build-only', description: 'Requires compiled backend routing; Vite dev serves an SPA fallback.' },
-      ],
-    },
-    async ({ request }) => {
-      const response = await request.get('/fyllut/pdfstatic');
-      expect(response.status()).toBe(404);
-    },
-  );
   test('should be possible to download pdf with social security number', async ({ readyPage: page }) => {
     await visitStaticPdfPage(page);
 

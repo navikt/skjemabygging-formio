@@ -76,4 +76,11 @@ const preparePage = async (page: Page) => {
   });
 };
 
-export { expect, test };
+const skipUnlessBuilt = () => {
+  test.skip(
+    process.env.FYLLUT_PLAYWRIGHT_MODE !== 'built',
+    'Requires compiled backend routing; Vite dev serves an SPA fallback.',
+  );
+};
+
+export { expect, skipUnlessBuilt, test };
