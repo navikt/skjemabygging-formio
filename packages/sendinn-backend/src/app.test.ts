@@ -46,8 +46,12 @@ describe('sendinn-backend app', () => {
       '/sendinn/nav123456/extra',
       '/sendinn/NAV-123',
       '/sendinn/nav123456?innsendingsId=not-a-uuid',
+      '/sendinn/404',
+      `/sendinn/404?innsendingsId=${submissionId}&lang=nn`,
     ])('renders %s with 404', async (url) => {
-      await request(createApp()).get(url).expect(404);
+      const response = await request(createApp()).get(url).expect(404);
+
+      expect(response.text).toContain('<header>decorator</header>');
       expect(authenticateMock).not.toHaveBeenCalled();
     });
 
