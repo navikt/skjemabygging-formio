@@ -7,7 +7,6 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node"],
     "ignoreDeprecations": "6.0",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
