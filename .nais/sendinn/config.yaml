@@ -62,8 +62,6 @@ spec:
           cluster: {{this.cluster}}
       {{/each}}
   env:
-    - name: PORT
-      value: "8080"
     - name: FORMS_API_URL
       value: {{forms-api-url}}
     - name: INNSENDING_API_AUDIENCE
