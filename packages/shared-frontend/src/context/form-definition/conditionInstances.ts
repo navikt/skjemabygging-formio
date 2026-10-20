@@ -1,24 +1,22 @@
 import {
-  checkCondition,
   Component,
+  ConditionComponent,
+  EvaluateFunction,
   Form,
   navFormioUtils,
   SubmissionMethod,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-type ConditionInstance = NonNullable<Parameters<typeof checkCondition>[4]>;
-type EvaluateFunction = NonNullable<ConditionInstance['evaluate']>;
-
 // The same sanitizing evaluate that checkCondition gives the instances it creates itself.
 const evaluate: EvaluateFunction = navFormioUtils.evaluate;
 
-const conditionComponentIndexes = new WeakMap<Form, Map<string, ConditionInstance>>();
+const conditionComponentIndexes = new WeakMap<Form, Map<string, ConditionComponent>>();
 
 const indexConditionComponents = (
   components: Component[] | undefined,
-  index: Map<string, ConditionInstance>,
-  parent?: ConditionInstance,
+  index: Map<string, ConditionComponent>,
+  parent?: ConditionComponent,
 ) => {
   (components ?? []).forEach((component) => {
     const { components: childComponents, ...rest } = component;
@@ -36,7 +34,7 @@ const indexConditionComponents = (
  * resolves when it creates an instance itself. The first component in depth-first order wins when
  * navIds repeat, like in checkCondition's own search.
  */
-const getConditionComponentIndex = (form: Form): Map<string, ConditionInstance> => {
+const getConditionComponentIndex = (form: Form): Map<string, ConditionComponent> => {
   let index = conditionComponentIndexes.get(form);
   if (!index) {
     index = new Map();
@@ -67,7 +65,7 @@ const getConditionInstance = (
   component: Component,
   form: Form,
   submissionMethod?: SubmissionMethod,
-): ConditionInstance | undefined => {
+): ConditionComponent | undefined => {
   const { navId } = component;
   if (!navId || !(component.customConditional || component.conditional?.when)) {
     return undefined;
@@ -79,7 +77,7 @@ const getConditionInstance = (
   }
 
   const resolvedSubmissionMethod = inferSubmissionMethod(form, submissionMethod);
-  const instance: ConditionInstance = {
+  const instance: ConditionComponent = {
     ...resolvedComponent,
     isSubmissionPaper: () => resolvedSubmissionMethod === 'paper' || !resolvedSubmissionMethod,
     isSubmissionDigital: () => resolvedSubmissionMethod === 'digital',
