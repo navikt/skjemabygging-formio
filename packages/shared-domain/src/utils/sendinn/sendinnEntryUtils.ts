@@ -8,6 +8,7 @@ type SendinnEntry =
   | { journey: 'form'; formPath: string }
   | { journey: 'formWithTask'; formPath: string; submissionId: string }
   | { journey: 'task'; submissionId: string }
+  | { journey: 'taskLink'; submissionId: string }
   | { journey: 'unavailable' };
 
 const unavailable: SendinnEntry = { journey: 'unavailable' };
@@ -59,6 +60,10 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
       // The app's own not found page. Without this case, 404 would pass as a form path.
       return unavailable;
     default:
+      if (validatorUtils.isValidUuid(segment)) {
+        // Task link from a notification. A later slice looks up the task to choose the journey.
+        return { journey: 'taskLink', submissionId: segment };
+      }
       return resolveForm(segment, searchParams);
   }
 };
@@ -74,7 +79,8 @@ const createNotFoundPath = (searchParams: URLSearchParams): string => {
   return `${NOT_FOUND_PATH}?${new URLSearchParams({ lang: language })}`;
 };
 
-const requiresLogin = (entry: SendinnEntry): boolean => entry.journey === 'formWithTask' || entry.journey === 'task';
+const requiresLogin = (entry: SendinnEntry): boolean =>
+  entry.journey === 'formWithTask' || entry.journey === 'task' || entry.journey === 'taskLink';
 
 const sendinnEntryUtils = {
   createNotFoundPath,
