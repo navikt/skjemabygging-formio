@@ -27,6 +27,7 @@ import accordion from './standard/accordion';
 import alert from './standard/alert';
 import checkbox from './standard/checkbox';
 import htmlElement from './standard/htmlElement';
+import image from './standard/image';
 import navSelect from './standard/navSelect';
 import number from './standard/number';
 import radio from './standard/radio';
@@ -62,6 +63,7 @@ export {
   htmlElement,
   iban,
   identity,
+  image,
   maalgruppe,
   monthPicker,
   nationalIdentityNumber,

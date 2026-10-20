@@ -44,6 +44,43 @@ const createSubmission = (attachment: SubmissionAttachment): Submission => ({
 });
 
 describe('assembleSubmitApplicationRequest', () => {
+  const createDigitalAccessForm = (grantUserDigitalAccess?: boolean): Form => ({
+    ...form,
+    components: [],
+    properties: {
+      ...form.properties,
+      ...(grantUserDigitalAccess !== undefined && { grantUserDigitalAccess }),
+    },
+  });
+
+  const submission = { data: { fodselsnummerDNummerSoker: '12345678911' } } as Submission;
+
+  it('includes grantUserDigitalAccess only when the form property is true', () => {
+    const request = assembleSubmitApplicationRequest(
+      'id',
+      createDigitalAccessForm(true),
+      submission,
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(request).toHaveProperty('grantUserDigitalAccess', true);
+  });
+
+  it.each([false, undefined])('omits grantUserDigitalAccess when the form property is %s', (grantUserDigitalAccess) => {
+    const request = assembleSubmitApplicationRequest(
+      'id',
+      createDigitalAccessForm(grantUserDigitalAccess),
+      submission,
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(request).not.toHaveProperty('grantUserDigitalAccess');
+  });
+
   it.each([
     ['leggerVedNaa', 'ettersender', 'SendSenere'],
     ['ettersender', 'leggerVedNaa', 'LastetOpp'],
@@ -238,5 +275,40 @@ describe('assembleSubmitApplicationRequest', () => {
     );
 
     expect(request.attachments.map(({ label }) => label)).toEqual(['First upload', 'Second upload']);
+  });
+
+  it('evaluates submission method conditionals with the given submission method', () => {
+    const digitalOnlyForm = {
+      ...form,
+      properties: { ...form.properties, submissionTypes: ['PAPER', 'DIGITAL'] },
+      components: [
+        {
+          key: 'application',
+          label: 'Application',
+          type: 'panel',
+          components: [{ ...attachmentComponent, customConditional: 'show = instance.isSubmissionDigital();' }],
+        },
+      ],
+    } as Form;
+    const attachment: SubmissionAttachment = {
+      attachmentId: 'legacy-attachment-id',
+      navId: 'legacy-attachment-id',
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    };
+    const assemble = (method?: 'digital' | 'paper') =>
+      assembleSubmitApplicationRequest(
+        'submission-1',
+        digitalOnlyForm,
+        createSubmission(attachment),
+        'nb',
+        [1],
+        (text) => text,
+        method,
+      );
+
+    expect(assemble('digital').attachments).toHaveLength(1);
+    expect(assemble('paper').attachments).toHaveLength(0);
   });
 });

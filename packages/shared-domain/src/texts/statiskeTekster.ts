@@ -350,7 +350,7 @@ export const statiske = {
     alreadySubmitted: 'Søknaden er allerede sendt inn',
     loggedOut: {
       title: 'Du er logget ut',
-      message: 'Du har vært inaktiv for lenge og er logget ut. Logg inn på nytt for å fortsette.',
+      message: 'Du er logget ut. Logg inn på nytt for å fortsette.',
       login: 'Logg inn på nytt',
     },
   },

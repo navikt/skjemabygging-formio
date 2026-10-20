@@ -21,6 +21,7 @@ describe('Static PDF', () => {
     cy.wait('@getStaticPdf');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > should be possible to download pdf with social security number
   it('should be possible to download pdf with social security number', () => {
     visitStaticPdfPage();
 
@@ -42,12 +43,14 @@ describe('Static PDF', () => {
     });
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF backend routing > returns 404 for normal fill-in routes when the form only supports static pdf
   it('returns 404 for normal fill-in routes when the form only supports static pdf', () => {
     cy.skipIfNoIncludeDistTests();
 
     cy.request({ url: '/fyllut/pdfstatic', failOnStatusCode: false }).its('status').should('eq', 404);
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > should be possible to download pdf with name and address
   it('should be possible to download pdf with name and address', () => {
     visitStaticPdfPage();
 
@@ -83,6 +86,7 @@ describe('Static PDF', () => {
     });
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > should be possible to continue and download pdf without selecting attachments
   it('should be possible to continue and download pdf without selecting attachments', () => {
     visitStaticPdfPage();
 
@@ -103,6 +107,7 @@ describe('Static PDF', () => {
     });
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > shows all attachments when filter is empty
   it('shows all attachments when filter is empty', () => {
     visitStaticPdfPage('?filter=');
 
@@ -110,6 +115,7 @@ describe('Static PDF', () => {
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > shows only the matching attachment for a single filter code
   it('shows only the matching attachment for a single filter code', () => {
     visitStaticPdfPage('?filter=R4');
 
@@ -117,6 +123,7 @@ describe('Static PDF', () => {
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > shows all matching attachments for multiple filter codes and ignores whitespace
   it('shows all matching attachments for multiple filter codes and ignores whitespace', () => {
     visitStaticPdfPage('?filter=%20R4%20,%20,%20K2%20');
 
@@ -124,6 +131,7 @@ describe('Static PDF', () => {
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > ignores unknown filter codes
   it('ignores unknown filter codes', () => {
     visitStaticPdfPage('?filter=R4,ZZ');
 
@@ -131,6 +139,7 @@ describe('Static PDF', () => {
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > downloads static pdf when no attachments match the filter
   it('downloads static pdf when no attachments match the filter', () => {
     visitStaticPdfPage('?filter=ZZ');
 
@@ -150,6 +159,7 @@ describe('Static PDF', () => {
     });
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > supports ettersending after selecting an attachment
   it('supports ettersending after selecting an attachment', () => {
     cy.mocksUseRouteVariant('foersteside:success-tc08c-static-pdf-ettersending');
     visitStaticPdfPage('?type=ettersending');
@@ -172,6 +182,7 @@ describe('Static PDF', () => {
     cy.findByText(/Fyll ut skjema. Husk å signere til slutt./).should('not.exist');
   });
 
+  // Playwright: packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > returns 404 for ettersending when no attachment is selectable
   it('returns 404 for ettersending when no attachment is selectable', () => {
     visitStaticPdfPage('?type=ettersending&filter=ZZ');
 
