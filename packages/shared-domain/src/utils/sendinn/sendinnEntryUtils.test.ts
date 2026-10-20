@@ -96,6 +96,23 @@ describe('sendinnEntryUtils', () => {
       });
     });
 
+    describe('taskLink', () => {
+      it('resolves a UUID segment to a task link', () => {
+        expect(resolveEntry(`/${submissionId}`, query())).toEqual({ journey: 'taskLink', submissionId });
+      });
+
+      it('ignores innsendingsId', () => {
+        expect(resolveEntry(`/${submissionId}`, query('innsendingsId=invalid'))).toEqual({
+          journey: 'taskLink',
+          submissionId,
+        });
+      });
+
+      it('returns unavailable for more than one segment', () => {
+        expect(resolveEntry(`/${submissionId}/extra`, query())).toEqual({ journey: 'unavailable' });
+      });
+    });
+
     describe('unavailable', () => {
       it.each(['', '/', '//'])('returns unavailable for the root path %j', (path) => {
         expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
@@ -137,6 +154,7 @@ describe('sendinnEntryUtils', () => {
     it.each([
       [{ journey: 'formWithTask', formPath: 'nav123456', submissionId } as const, true],
       [{ journey: 'task', submissionId } as const, true],
+      [{ journey: 'taskLink', submissionId } as const, true],
       [{ journey: 'form', formPath: 'nav123456' } as const, false],
       [{ journey: 'standalone' } as const, false],
       [{ journey: 'unavailable' } as const, false],
