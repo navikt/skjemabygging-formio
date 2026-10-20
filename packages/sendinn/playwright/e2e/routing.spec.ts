@@ -19,6 +19,11 @@ test.describe('Entry routing', () => {
       url: `/sendinn/oppgave?innsendingsId=${submissionId}`,
       heading: 'Send inn etterspurt dokumentasjon',
     },
+    {
+      name: 'task link',
+      url: `/sendinn/${submissionId}`,
+      heading: 'Send inn etterspurt dokumentasjon fra varsel',
+    },
   ];
 
   for (const { name, url, heading } of journeys) {
