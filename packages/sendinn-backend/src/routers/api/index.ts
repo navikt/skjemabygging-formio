@@ -4,16 +4,12 @@ import {
   rateLimiter,
   requestUtil,
 } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import express from 'express';
 import { config } from '../../config';
+import { isSupportedLanguage } from '../../language';
 import { logger } from '../../logger';
 import { publishedTranslationService } from '../../services';
-
-const supportedLanguages: TranslationLang[] = ['nb', 'nn', 'en'];
-
-const isSupportedLanguage = (language: string): language is TranslationLang =>
-  supportedLanguages.includes(language as TranslationLang);
 
 const frontendConfig = createSharedFrontendConfig({
   naisClusterName: config.naisClusterName,

@@ -7,6 +7,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { collectDefaultMetrics, Registry } from 'prom-client';
 import { config } from '../config';
+import { supportedLanguages } from '../language';
 import { logger } from '../logger';
 
 const metricsRegister = new Registry();
@@ -32,6 +33,8 @@ const decorator = createDecorator({
     level: 'Level4',
     simple: true,
     logoutWarning: true,
+    // The SPA updates lang when the user selects a language in the decorator's menu.
+    availableLanguages: supportedLanguages.map((locale) => ({ locale, handleInApp: true })),
   },
 });
 

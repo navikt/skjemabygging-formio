@@ -2,6 +2,7 @@ import { renderIndexHtml } from '@navikt/skjemadigitalisering-shared-backend';
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from './config';
+import { getSelectedLanguage } from './language';
 import { decorator, idportenAuth } from './services';
 
 const getQuery = (url: string) => {
@@ -16,7 +17,8 @@ const getPublicUrl = (req: Request, returnPath: string) =>
 const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const query = getQuery(req.url);
-    const entry = sendinnEntryUtils.resolveEntry(req.path, new URLSearchParams(query));
+    const searchParams = new URLSearchParams(query);
+    const entry = sendinnEntryUtils.resolveEntry(req.path, searchParams);
     const returnPath = `${config.basePath}${req.path === '/' ? '' : req.path}${query}`;
 
     if (sendinnEntryUtils.requiresLogin(entry) && !(await idportenAuth.authenticate(req))) {
@@ -24,7 +26,10 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     renderIndexHtml(res, {
-      decoratorFragments: await decorator.getDecorator({ redirectToUrl: getPublicUrl(req, returnPath) }),
+      decoratorFragments: await decorator.getDecorator({
+        redirectToUrl: getPublicUrl(req, returnPath),
+        language: getSelectedLanguage(searchParams),
+      }),
       statusCode: entry.journey === 'unavailable' ? 404 : 200,
       umamiWebsiteId: config.umamiWebsiteId,
     });

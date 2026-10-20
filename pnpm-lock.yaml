@@ -772,6 +772,9 @@ importers:
       '@navikt/ds-react':
         specifier: ^8.2.2
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/nav-dekoratoren-moduler':
+        specifier: ^3.6.3
+        version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@29.1.1(@noble/hashes@1.8.0))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
         version: link:../shared-domain
