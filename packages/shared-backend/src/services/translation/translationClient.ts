@@ -18,7 +18,7 @@ interface GetFormTranslationsProps {
 const getFormTranslations = async (props: GetFormTranslationsProps) => {
   const { baseUrl, formPath, languageCodes } = props;
   const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/translations${buildLanguageCodesParam(languageCodes)}`;
-  logger.info('Getting form translations', { formPath, languageCodes, targetUrl });
+  logger.debug('Getting form translations', { formPath, languageCodes, targetUrl });
 
   return await http.get<FormsApiTranslation[]>(targetUrl);
 };
@@ -30,7 +30,7 @@ interface GetGlobalTranslationsProps {
 const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
   const { baseUrl, languageCodes } = props;
   const targetUrl = `${baseUrl}/${globalTranslationUrl}${buildLanguageCodesParam(languageCodes)}`;
-  logger.info('Getting global translations', { languageCodes, targetUrl });
+  logger.debug('Getting global translations', { languageCodes, targetUrl });
 
   return await http.get<FormsApiTranslation[]>(targetUrl);
 };
@@ -46,7 +46,7 @@ const getPublishedGlobalTranslations = async ({
   timeoutMs,
 }: GetPublishedGlobalTranslationsProps) => {
   const targetUrl = `${baseUrl}/${publishedGlobalTranslationUrl}/${languageCode}`;
-  logger.info('Getting published global translations', { languageCode, targetUrl });
+  logger.debug('Getting published global translations', { languageCode, targetUrl });
 
   return await http.get<Record<string, string>>(targetUrl, {
     signal: AbortSignal.timeout(timeoutMs),
