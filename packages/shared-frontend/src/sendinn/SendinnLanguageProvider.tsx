@@ -5,7 +5,7 @@ import {
   sendinnEntryUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { SessionExpiredMessage } from '../app/error/SessionExpiredMessage';
 import http from '../app/http/http';
@@ -64,19 +64,14 @@ const SendinnLanguageProvider = ({ children, loadGlobalTranslations, onLoadError
     };
   }, [currentLanguage, loadGlobalTranslations, onLoadError]);
 
+  // Keeps the previous language until the translations for the new one have loaded.
+  const language = state.status === 'loaded' ? state.language : currentLanguage;
   const translations = state.status === 'loaded' ? state.translations : {};
-  const loginUrl = useMemo(
-    () => sendinnEntryUtils.createLoginUrl(`${sendinnEntryUtils.basePath}${pathname}${search}`),
-    [pathname, search],
-  );
+  const loginUrl = sendinnEntryUtils.createLoginUrl(`${sendinnEntryUtils.basePath}${pathname}${search}`);
 
   return (
-    <LanguageProvider
-      translations={translations}
-      currentLanguage={currentLanguage}
-      availableLanguages={availableLanguages}
-    >
-      <AkselProvider locale={getAkselLocale(currentLanguage)}>
+    <LanguageProvider translations={translations} currentLanguage={language} availableLanguages={availableLanguages}>
+      <AkselProvider locale={getAkselLocale(language)}>
         {state.status === 'loading' && <SkeletonList size={3} />}
         {state.status === 'sessionExpired' && <SessionExpiredMessage loginUrl={loginUrl} />}
         {state.status === 'loaded' && children}

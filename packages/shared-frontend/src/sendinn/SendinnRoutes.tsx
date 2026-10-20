@@ -1,5 +1,4 @@
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import { UnavailablePage } from '../app/error/UnavailablePage';
 import { JourneyPlaceholder } from './JourneyPlaceholder';
@@ -7,8 +6,8 @@ import { JourneyPlaceholder } from './JourneyPlaceholder';
 // Expects a router with basename /sendinn, so the pathname is relative to the sendinn base path.
 const SendinnRoutes = () => {
   const { pathname, search } = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const entry = useMemo(() => sendinnEntryUtils.resolveEntry(pathname, searchParams), [pathname, searchParams]);
+  const searchParams = new URLSearchParams(search);
+  const entry = sendinnEntryUtils.resolveEntry(pathname, searchParams);
 
   if (entry.journey === 'unavailable') {
     const notFoundPath = sendinnEntryUtils.createNotFoundPath(searchParams);
