@@ -3,7 +3,7 @@ import { logger } from '../../shared/logger/logger';
 import translationClient from './translationClient';
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
-const RETRY_DELAY_MS = 30 * 1000;
+const FETCH_TIMEOUT_MS = 5 * 1000;
 
 type PublishedTranslationClient = Pick<typeof translationClient, 'getPublishedGlobalTranslations'>;
 
@@ -21,18 +21,19 @@ interface CreatePublishedTranslationServiceProps {
 
 type PublishedTranslationService = {
   /**
-   * Published global translations for one language, cached per language.
+   * Published global translations for one language, cached per language for 5 minutes.
    * Never throws: on failure it serves stale content, or an empty map so the UI falls back to nb.
-   * Fetches time out after 5 seconds; failed refreshes keep stale content for 30 seconds before retrying.
+   * A failed fetch is cached like a successful one, so the next attempt happens after 5 minutes.
+   * Fetches time out after 5 seconds.
    */
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
 };
 
-const toTranslationMap = (languageCode: TranslationLang, translations: Record<string, string> | undefined) =>
-  Object.entries(translations ?? {}).reduce<FormsApiTranslationMap>((accumulator, [key, value]) => {
-    accumulator[key] = { [languageCode]: value };
-    return accumulator;
-  }, {});
+const toTranslationMap = (
+  languageCode: TranslationLang,
+  translations: Record<string, string> | undefined,
+): FormsApiTranslationMap =>
+  Object.fromEntries(Object.entries(translations ?? {}).map(([key, value]) => [key, { [languageCode]: value }]));
 
 const createPublishedTranslationService = ({
   baseUrl,
@@ -41,46 +42,35 @@ const createPublishedTranslationService = ({
   now = Date.now,
 }: CreatePublishedTranslationServiceProps): PublishedTranslationService => {
   const cache = new Map<TranslationLang, CacheEntry>();
-  const pending = new Map<TranslationLang, Promise<FormsApiTranslationMap>>();
 
-  const refresh = async (languageCode: TranslationLang): Promise<FormsApiTranslationMap> => {
+  const fetchTranslations = async (languageCode: TranslationLang): Promise<FormsApiTranslationMap> => {
     try {
-      const translations = toTranslationMap(
+      const response = await client.getPublishedGlobalTranslations({
+        baseUrl,
         languageCode,
-        await client.getPublishedGlobalTranslations({ baseUrl, languageCode }),
-      );
-      cache.set(languageCode, { translations, expiresAt: now() + ttlMs });
-      return translations;
+        timeoutMs: FETCH_TIMEOUT_MS,
+      });
+      return toTranslationMap(languageCode, response);
     } catch (error) {
       const stale = cache.get(languageCode);
-      if (stale) {
-        stale.expiresAt = now() + RETRY_DELAY_MS;
-      }
       logger.warn('Failed to fetch published global translations', {
         languageCode,
         servingStale: !!stale,
         message: error instanceof Error ? error.message : 'Unknown error',
       });
       return stale?.translations ?? {};
-    } finally {
-      pending.delete(languageCode);
     }
   };
 
-  const getGlobalTranslations = (languageCode: TranslationLang): Promise<FormsApiTranslationMap> => {
+  const getGlobalTranslations = async (languageCode: TranslationLang): Promise<FormsApiTranslationMap> => {
     const cached = cache.get(languageCode);
     if (cached && cached.expiresAt > now()) {
-      return Promise.resolve(cached.translations);
+      return cached.translations;
     }
 
-    const inFlight = pending.get(languageCode);
-    if (inFlight) {
-      return inFlight;
-    }
-
-    const request = refresh(languageCode);
-    pending.set(languageCode, request);
-    return request;
+    const translations = await fetchTranslations(languageCode);
+    cache.set(languageCode, { translations, expiresAt: now() + ttlMs });
+    return translations;
   };
 
   return { getGlobalTranslations };
