@@ -15,7 +15,6 @@ import {
 import http from './http/http';
 import { getAkselLocale } from './language/akselLocale';
 import { getAvailableLanguages, getCurrentLanguage, resolveActiveLanguage } from './language/languageUtils';
-import { UrlLanguageSelector } from './language/UrlLanguageSelector';
 import { FormContainer } from './layout/FormContainer';
 import SkeletonList from './loading/SkeletonList';
 import FrontendLogger from './logger/FrontendLogger';
@@ -45,6 +44,5 @@ export {
   SessionExpiredMessage,
   SkeletonList,
   UnavailablePage,
-  UrlLanguageSelector,
   useAppConfig,
 };
