@@ -30,14 +30,6 @@ const test = base.extend<TestOptions & Fixtures>({
 
 const preparePage = async (page: Page) => {
   await page.route('**/fyllut/api/log*', (route) => route.fulfill({ status: 200, body: 'ok' }));
-  await page.route('**/fyllut/api/config*', async (route) => {
-    const { 'if-none-match': _etag, 'if-modified-since': _modified, ...headers } = route.request().headers();
-    const response = await route.fetch({ headers: { ...headers, 'accept-encoding': 'identity' } });
-    expect(response.ok(), 'FyllUt config request').toBe(true);
-    const config: unknown = await response.json();
-    if (!config || typeof config !== 'object' || Array.isArray(config)) throw new Error('Invalid FyllUt config');
-    await route.fulfill({ response, json: { ...config, newRenderForms: ['*'] } });
-  });
 };
 
 const skipUnlessBuilt = () => {
