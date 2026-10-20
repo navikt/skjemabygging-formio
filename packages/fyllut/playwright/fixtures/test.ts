@@ -1,55 +1,26 @@
 import { test as base, expect, type Page } from '@playwright/test';
-import { mkdirSync } from 'node:fs';
 import { restoreRouteVariants, useRouteVariant } from './mock-client';
-import { startServers } from './servers';
 
-type Servers = Awaited<ReturnType<typeof startServers>>;
+type TestOptions = {
+  mockAdminURL: string;
+};
 type Fixtures = {
-  servers: Servers;
+  resetMocks: void;
   readyPage: Page;
   useRouteVariant: (id: string) => Promise<void>;
 };
 
-const test = base.extend<Fixtures>({
-  servers: [
-    async ({ browser }, use, testInfo) => {
-      const directory = testInfo.outputPath('servers');
-      mkdirSync(directory, { recursive: true });
-      const servers = await startServers(directory);
-      const errors: unknown[] = [];
-      try {
-        await restoreRouteVariants(servers.adminURL);
-        await use(servers);
-      } catch (error) {
-        errors.push(error);
-      } finally {
-        for (const context of browser.contexts()) {
-          try {
-            await context.close();
-          } catch (error) {
-            errors.push(error);
-          }
-        }
-        try {
-          servers.assertHealthy();
-        } catch (error) {
-          errors.push(error);
-        }
-        try {
-          await servers.stop();
-        } catch (error) {
-          errors.push(error);
-        }
-      }
-      if (errors.length) throw new AggregateError(errors, errors.map(String).join('\n'));
+const test = base.extend<TestOptions & Fixtures>({
+  mockAdminURL: ['', { option: true }],
+  resetMocks: [
+    async ({ mockAdminURL }, use) => {
+      await restoreRouteVariants(mockAdminURL);
+      await use();
     },
-    { timeout: 90000 },
+    { auto: true },
   ],
-  baseURL: async ({ servers }, use) => {
-    await use(servers.baseURL);
-  },
-  useRouteVariant: async ({ servers }, use) => {
-    await use((id) => useRouteVariant(servers.adminURL, id));
+  useRouteVariant: async ({ mockAdminURL }, use) => {
+    await use((id) => useRouteVariant(mockAdminURL, id));
   },
   readyPage: async ({ page }, use) => {
     await preparePage(page);
@@ -84,3 +55,4 @@ const skipUnlessBuilt = () => {
 };
 
 export { expect, skipUnlessBuilt, test };
+export type { TestOptions };

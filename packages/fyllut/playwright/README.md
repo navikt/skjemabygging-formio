@@ -6,19 +6,18 @@ These are representative tests, not a complete Cypress migration.
 
 ## Branch scope
 
-The slim pilot changes 31 files relative to its main-branch starting point.
-16 are new files and 15 are edits to existing files.
+The slim pilot changes 28 files relative to its main-branch starting point.
+13 are new files and 15 are edits to existing files.
 
 | Group                              | Files | Why they are included                                                                                           |
 | ---------------------------------- | ----: | --------------------------------------------------------------------------------------------------------------- |
 | Playwright specs                   |     5 | The 38 representative cases.                                                                                    |
 | Cypress comments                   |     6 | Counterpart pointers in five files and a deferred-migration note in the attachment file. No executable changes. |
-| Test fixtures, helpers and startup |     7 | Five Playwright modules, one shared command recipe, and the existing launcher's import of that recipe.          |
-| Support tests                      |     1 | Verify process isolation/cleanup and mock variant selection/reset.                                              |
+| Test fixtures, helpers and startup |     5 | Three Playwright modules, one shared command recipe, and the existing launcher's import of that recipe.         |
 | Mock implementation                |     1 | Prevent expected fixture mutation, log only mismatch paths and forward asynchronous handler errors.             |
 | Configuration, dependencies and CI |     9 | Runner config, two TypeScript configs, ESLint, three package manifests, lockfile and workflow.                  |
 | Documentation                      |     2 | This guide and two command entries in the root README.                                                          |
-| Total                              |    31 |                                                                                                                 |
+| Total                              |    28 |                                                                                                                 |
 
 The earlier pilot's CLI wrapper, migration register/hash gates, observation API,
 ownership protocol, benchmark commands and separate technical Playwright suite
@@ -60,39 +59,37 @@ Vite watches local files, not test readiness or retries.
 
 ```text
 Playwright config
-  -> spec imports fixtures/test.ts
-    -> fixtures/servers.ts starts mocks and backend, plus Vite frontend in dev
-      -> bin/fyllut-server-config.mjs supplies the shared FyllUt commands and environment
-    -> browser actions and assertions
-    -> close browser, stop app, stop mocks
+  -> bin/fyllut-server-config.mjs supplies the same command recipe as start:fyllut:mocks
+  -> Playwright webServer starts mocks and backend, plus Vite frontend in dev
+  -> each test gets a fresh browser context and reset mock variants
+  -> Playwright webServer stops the processes after the run
 ```
 
-Each test has fresh processes, mock state and a fresh browser context.
-Tests cannot inherit pending backend work from the previous test.
-Ports are selected from 3440 through 3499. Separate runs and worktrees use
-their own processes, ports and output directories. Occupied ports are skipped;
-startup errors fail the test instead of attaching to an existing server.
-If another process takes a selected port before startup finishes, the fixture
-stops its own processes and tries new ports, at most three attempts within the
-same startup deadline. It does not retry failed tests.
-Readiness requires both successful HTTP checks and confirmation that the
-expected child processes accepted connections on their assigned ports.
-`fixtures/server-readiness.mjs` records those connections through Node's native
-socket diagnostics. Another process returning HTTP 200 cannot make a test's
-servers appear ready. The observer does not replace `listen()` or add endpoints.
+Each run shares one app/mock environment across its tests. Keep one worker:
+mock route variants are server-wide and must not be changed by parallel tests.
+An automatic fixture resets variants before every test, including request-only
+tests. Browser cookies and storage are isolated by Playwright's browser contexts.
+Backend caches and in-flight work are not reset between tests; tests must await
+the operations they start rather than rely on process termination.
 
-Servers stop with SIGINT, the signal used by Ctrl+C in local development.
-This avoids the backend's production SIGTERM delay without changing production
-code. Failure to stop within five seconds causes forced cleanup **and a failing
-test**, not a silently successful run. Playwright fixture teardown handles
-ordinary failure, timeout and interruption; forcibly killing the worker or
-machine bypasses that teardown.
+The OS allocates available loopback ports at startup. The config passes these
+ports to worker processes through `FYLLUT_PLAYWRIGHT_PORTS`, an internal run
+variable. Separate CLI invocations/worktrees get separate ports and reports.
+Playwright checks each server's HTTP readiness with `reuseExistingServer: false`;
+it does not intentionally attach to an existing environment. Port allocation
+does not reserve ports until startup, so a collision can fail the run. There is
+no custom collision retry or process-ownership observer.
 
-Mocks run with transpilation only and file watching disabled during browser
-tests. CI separately checks their TypeScript types. There are no extra controller processes, IPC ownership
-protocols, manifest files, runtime-config rewrites or `prepare`/`existing` mode.
-`bin/start.mjs` only reuses the extracted FyllUt command recipe; its Bygger
-branch and process lifecycle are not rewritten.
+Playwright owns startup and teardown through its standard `webServer` option.
+It sends SIGINT and allows five seconds for shutdown before forcing termination
+on platforms supporting signals. Unlike the removed controller, a forced stop
+does not itself fail the test. There are no per-test server processes or
+custom process-lifecycle tests.
+
+Mocks run with transpilation only and file watching disabled. CI separately
+checks their TypeScript types. No Cypress runtime config is written.
+`pnpm start:fyllut:mocks` remains the interactive development/Cypress launcher;
+it shares the command recipe, not the test runner's lifecycle.
 
 ## Shared mock fixes
 
@@ -126,59 +123,40 @@ Keep focus checks, language variants, request checks and negative assertions.
 Do not infer equivalent coverage from a matching count or a green run.
 There is no generated migration register or source-hash gate in this pilot.
 
-## Reports and support checks
+## Reports
 
 Each invocation writes to `packages/fyllut/.runtime/playwright/<run>/`.
 Open its `html/index.html` with Playwright's `show-report` command.
 The HTML report includes failure traces and screenshots. `results.json` is
 the standard machine-readable result.
 
-Failed tests retain `servers/servers-1.log` in their test output directory.
-Raw server logs are local only, not uploaded by CI.
-Startup retries have separate numbered server logs.
-
-Run the focused support checks after building:
-
-```sh
-pnpm exec vitest run packages/fyllut/playwright/fixtures/servers.test.ts
-```
-
-They exercise mock variant selection/reset and rejection of unknown variants,
-concurrent independent server setups and cleanup. These are ordinary Vitest
-tests, not nested deliberately failing Playwright runs.
-The startup regression deliberately occupies a selected port with another
-HTTP server before the owned backend starts. It verifies that startup rejects
-that server's health response, chooses new ports and leaves the other server
-running.
+Server stderr is reported by Playwright in the terminal. For startup diagnostics,
+run with `DEBUG=pw:webserver`. There are no per-test server log files.
 
 The new workflow runs on push alongside unchanged Cypress jobs. It installs
-only Chromium and builds FyllUt once. It runs these support checks and the built
+only Chromium and builds FyllUt once. It runs the built
 pilot with one worker. Reports are uploaded only on failure and retained for
 seven days.
 It does not run a repeated benchmark.
 
 ## Remaining work
 
-The fresh-process-per-test policy is intentionally conservative and still
-costs startup time. Measure complete comparable runs before claiming faster CI.
-Evaluate safe server reuse and further parallelism before expanding the full
-migration, without weakening body validation or allowing late work to leak
-between tests.
+Measure complete comparable runs before claiming faster CI. Parallel workers
+would need isolated mock state and are outside this pilot. New tests that leave
+backend work pending need a separate design, not extra lifecycle machinery
+added to the common fixture.
 Shared builds across Cypress/Playwright jobs are not included here.
 
 ## Support files to review
 
-| File                                    | Job                                                                                        |
-| --------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `../playwright.config.ts`               | Standard runner options and report locations.                                              |
-| `tsconfig.json`                         | Type-check the tests separately from application code.                                     |
-| `fixtures/test.ts`                      | Bind server lifecycle, page setup and mock helpers to each test.                           |
-| `fixtures/servers.ts`                   | Select ports, start direct child processes, await HTTP readiness and stop owned processes. |
-| `fixtures/server-readiness.mjs`         | Record which ports each child process actually serves, using Node socket diagnostics.      |
-| `fixtures/mock-client.ts`               | Select/reset variants through the existing admin API.                                      |
-| `helpers/form.ts`                       | Reusable form actions and network assertions from Cypress.                                 |
-| `fixtures/servers.test.ts`              | Exercise server isolation, mock variant selection/reset and cleanup.                       |
-| `../../../bin/fyllut-server-config.mjs` | The FyllUt server configuration shared with the existing developer launcher.               |
+| File                                    | Job                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------- |
+| `../playwright.config.ts`               | Port allocation, native webServer lifecycle, runner options and reports.     |
+| `tsconfig.json`                         | Type-check the tests separately from application code.                       |
+| `fixtures/test.ts`                      | Reset mock variants per test, prepare pages and expose mock helpers.         |
+| `fixtures/mock-client.ts`               | Select/reset variants through the existing admin API.                        |
+| `helpers/form.ts`                       | Reusable form actions and network assertions from Cypress.                   |
+| `../../../bin/fyllut-server-config.mjs` | The FyllUt server configuration shared with the existing developer launcher. |
 
 The remaining changes are the five specs and Cypress comments, dependencies,
 mock comparator fixes, lint configuration and CI.

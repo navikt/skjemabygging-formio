@@ -1,12 +1,43 @@
 import { defineConfig, devices } from '@playwright/test';
+import { createServer } from 'node:net';
 import { resolve } from 'node:path';
+import { createFyllutServerConfig } from '../../bin/fyllut-server-config.mjs';
+import type { TestOptions } from './playwright/fixtures/test';
 
 const mode = process.env.FYLLUT_PLAYWRIGHT_MODE ?? 'dev';
-if (!['dev', 'built'].includes(mode)) throw new Error(`Unsupported Playwright mode: ${mode}`);
+if (mode !== 'dev' && mode !== 'built') throw new Error(`Unsupported Playwright mode: ${mode}`);
 const runId = (process.env.FYLLUT_PLAYWRIGHT_RUN_ID ??= `${Date.now()}-${process.pid}`);
 const output = resolve(import.meta.dirname, '.runtime/playwright', runId);
 
-export default defineConfig({
+const allocatePort = async () => {
+  const server = createServer();
+  await new Promise<void>((done, fail) => {
+    server.once('error', fail);
+    server.listen(0, '127.0.0.1', done);
+  });
+  const address = server.address();
+  await new Promise<void>((done, fail) => server.close((error) => (error ? fail(error) : done())));
+  if (!address || typeof address === 'string') throw new Error('Could not allocate a test server port');
+  return address.port;
+};
+
+// Workers reload this config; inherit the run's ports rather than allocating another environment.
+process.env.FYLLUT_PLAYWRIGHT_PORTS ??= (await Promise.all(Array.from({ length: 4 }, allocatePort))).join(',');
+const ports = process.env.FYLLUT_PLAYWRIGHT_PORTS.split(',').map(Number);
+if (
+  ports.length !== 4 ||
+  new Set(ports).size !== 4 ||
+  ports.some((port) => !Number.isInteger(port) || port < 1 || port > 65535)
+)
+  throw new Error('Invalid FYLLUT_PLAYWRIGHT_PORTS');
+const plan = createFyllutServerConfig({
+  repoRoot: resolve(import.meta.dirname, '../..'),
+  ports,
+  mode,
+  testMode: true,
+});
+
+export default defineConfig<TestOptions>({
   testDir: './playwright/e2e',
   workers: 1,
   retries: 0,
@@ -19,8 +50,20 @@ export default defineConfig({
     ['json', { outputFile: resolve(output, 'results.json') }],
     ['html', { open: 'never', outputFolder: resolve(output, 'html') }],
   ],
+  webServer: plan.commands.map(([command, args, env, cwd], index) => ({
+    name: ['Mocks', 'FyllUt backend', 'FyllUt frontend'][index],
+    command: [command, ...args].map((argument) => `"${argument}"`).join(' '),
+    cwd,
+    env,
+    url: [plan.healthURLs[0], `${plan.backendURL}/fyllut/internal/isready`, `${plan.baseURL}/fyllut/`][index],
+    reuseExistingServer: false,
+    gracefulShutdown: { signal: 'SIGINT', timeout: 5000 },
+    timeout: 60000,
+  })),
   use: {
     ...devices['Desktop Chrome'],
+    baseURL: plan.baseURL,
+    mockAdminURL: plan.adminURL,
     testIdAttribute: 'data-cy',
     viewport: { width: 1280, height: 1000 },
     trace: 'retain-on-failure',
