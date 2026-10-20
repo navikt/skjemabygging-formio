@@ -29,13 +29,6 @@ const test = base.extend<TestOptions & Fixtures>({
 });
 
 const preparePage = async (page: Page) => {
-  await page.route(/^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'text/html',
-      body: '<!doctype html><html><body>redirected to nav.no</body></html>',
-    }),
-  );
   await page.route('**/fyllut/api/log*', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.route('**/fyllut/api/config*', async (route) => {
     const { 'if-none-match': _etag, 'if-modified-since': _modified, ...headers } = route.request().headers();
