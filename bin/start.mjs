@@ -28,6 +28,7 @@ import { connect, createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { createFyllutServerConfig } from './fyllut-server-config.mjs';
+import { createSendinnServerConfig } from './sendinn-server-config.mjs';
 
 const isPortFree = (port) =>
   new Promise((resolve) => {
@@ -88,7 +89,6 @@ const nodeExecutable = process.execPath;
 const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
 const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
-const sendinnCypressRuntimePath = resolve(repoRoot, 'packages/sendinn/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
 const normalizedArgs = args.filter((arg) => arg !== '--');
 const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
@@ -182,41 +182,8 @@ const configs = {
     const mockUrl = `http://127.0.0.1:${mockPort}`;
     const backendUrl = `http://127.0.0.1:${backendPort}/sendinn`;
     const frontendUrl = `http://127.0.0.1:${frontendPort}/sendinn`;
-    const sendinnBackendEnv = {
-      NODE_ENV: 'development',
-      NO_DECORATOR: 'true',
-      FORMS_API_URL: `${mockUrl}/forms-api`,
-      NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockUrl}/texas/introspect`,
-      NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockUrl}/texas/exchange`,
-    };
     return {
-      commands: [
-        [
-          nodeExecutable,
-          [
-            mocksTsNodeCliPath,
-            'mocks/server.ts',
-            '--no-plugins.inquirerCli.enabled',
-            '--mock.collections.selected=sendinn-base',
-            `--server.port=${mockPort}`,
-            `--plugins.adminApi.port=${mockAdminPort}`,
-          ],
-          {},
-          resolve(repoRoot, 'mocks'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(backendPort)],
-          sendinnBackendEnv,
-          resolve(repoRoot, 'packages/sendinn-backend'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(frontendPort)],
-          { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
-          resolve(repoRoot, 'packages/sendinn'),
-        ],
-      ],
+      ...createSendinnServerConfig({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
       ports: [mockPort, mockAdminPort, backendPort, frontendPort],
       summaryLines: [
         `SENDINN_MOCK_URL=${mockUrl}`,
@@ -224,23 +191,6 @@ const configs = {
         `SENDINN_BACKEND_URL=${backendUrl}`,
         `SENDINN_FRONTEND_URL=${frontendUrl}`,
       ],
-      onReady: shouldWriteRuntimeConfig
-        ? () => {
-            mkdirSync(resolve(repoRoot, 'packages/sendinn/.runtime'), { recursive: true });
-            writeFileSync(
-              sendinnCypressRuntimePath,
-              JSON.stringify(
-                {
-                  baseUrl: `http://127.0.0.1:${frontendPort}`,
-                  env: { MOCKS_ADMIN_PORT: String(mockAdminPort) },
-                },
-                null,
-                2,
-              ),
-            );
-          }
-        : undefined,
-      onCleanup: shouldWriteRuntimeConfig ? () => rmSync(sendinnCypressRuntimePath, { force: true }) : undefined,
     };
   },
 };
