@@ -1,5 +1,5 @@
 import { StaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
-import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormPublicationsService } from '../formPublications/types';
 import { FormsService } from '../forms/types';
 import RecipientService from '../RecipientService';
@@ -15,7 +15,7 @@ const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
 const formatSubmissionTypes = (types: SubmissionType[]) =>
   types.length ? `[${types.map((type) => JSON.stringify(type)).join(', ')}]` : '';
 const formatReportTimestamp = (timestamp?: string) =>
-  timestamp ? new Date(timestamp).toISOString().slice(0, 19).replace('T', ', ') : undefined;
+  timestamp ? dateUtils.toJSDate(timestamp).toISOString().slice(0, 19).replace('T', ', ') : undefined;
 
 export { formatReportTimestamp, formatSubmissionTypes, isNotTestForm };
 export type { ReportDependencies };
