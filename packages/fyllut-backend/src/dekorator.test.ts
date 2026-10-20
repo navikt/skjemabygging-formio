@@ -32,7 +32,7 @@ describe('dekorator', () => {
     const { getDecorator } = await import('./dekorator');
 
     fetchDecoratorHtmlMock.mockResolvedValue({});
-    await getDecorator('https://example.nav.no/fyllut/nav123');
+    await getDecorator({ redirectToUrl: 'https://example.nav.no/fyllut/nav123' });
 
     expect(fetchDecoratorHtmlMock).toHaveBeenCalledWith({
       env: 'dev',
@@ -55,7 +55,7 @@ describe('dekorator', () => {
     }));
     const { getDecorator } = await import('./dekorator');
 
-    const result = await getDecorator('https://example.nav.no/fyllut/nav123');
+    const result = await getDecorator({ redirectToUrl: 'https://example.nav.no/fyllut/nav123' });
 
     expect(result).toEqual({});
     expect(fetchDecoratorHtmlMock).not.toHaveBeenCalled();

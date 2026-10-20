@@ -1,41 +1,37 @@
-import type { AppLogger } from '../types';
+import type { Logger } from '../../shared/logger/types';
 
 type DecoratorEnv = 'prod' | 'dev';
+type DecoratorParams = Record<string, unknown>;
+type DecoratorFragments = Record<string, string>;
 
-interface DecoratorFetchProps<Params> {
-  env: DecoratorEnv;
-  params: Params;
-}
-
-interface CreateDecoratorOptions<Params extends { redirectToUrl?: string }, Fragments> {
+interface CreateDecoratorOptions {
   enabled: boolean;
   env: DecoratorEnv;
-  fetchDecoratorHtml: (props: DecoratorFetchProps<Params>) => Promise<Fragments>;
-  logger: Pick<AppLogger, 'debug'>;
-  params: Omit<Params, 'redirectToUrl'>;
+  fetchDecoratorHtml: (props: { env: DecoratorEnv; params: DecoratorParams }) => Promise<DecoratorFragments>;
+  logger: Pick<Logger, 'debug'>;
+  params: DecoratorParams;
+}
+
+interface GetDecoratorOptions {
+  redirectToUrl: string;
+  language?: string;
 }
 
 /**
  * The decorator fetcher is injected so shared-backend does not depend on @navikt/nav-dekoratoren-moduler.
  * https://github.com/navikt/nav-dekoratoren
  */
-const createDecorator = <Params extends { redirectToUrl?: string }, Fragments>({
-  enabled,
-  env,
-  fetchDecoratorHtml,
-  logger,
-  params,
-}: CreateDecoratorOptions<Params, Fragments>) => {
-  const getDecorator = async (redirectToUrl: string): Promise<Fragments | Record<string, never>> => {
+const createDecorator = ({ enabled, env, fetchDecoratorHtml, logger, params }: CreateDecoratorOptions) => {
+  const getDecorator = async ({ redirectToUrl, language }: GetDecoratorOptions): Promise<DecoratorFragments> => {
     if (!enabled) {
       logger.debug('Skipping decorator');
       return {};
     }
-    return fetchDecoratorHtml({ env, params: { ...params, redirectToUrl } as Params });
+    return fetchDecoratorHtml({ env, params: { ...params, redirectToUrl, ...(language && { language }) } });
   };
 
   return { getDecorator };
 };
 
 export { createDecorator };
-export type { CreateDecoratorOptions, DecoratorEnv, DecoratorFetchProps };
+export type { CreateDecoratorOptions, DecoratorEnv, GetDecoratorOptions };

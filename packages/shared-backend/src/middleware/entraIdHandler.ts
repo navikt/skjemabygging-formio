@@ -1,11 +1,12 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction, RequestHandler } from 'express';
 import texasClient from '../services/texas/texasClient';
-import { type AuthHandlerLogger, getRequestLogContext } from './authHandlerLogger';
+import type { Logger } from '../shared/logger/types';
+import { getRequestLogContext } from './requestLogContext';
 
 type EntraIdHandlerType = 'M2M' | 'OBO';
 
-type EntraIdHandlerLogger = AuthHandlerLogger;
+type EntraIdHandlerLogger = Logger;
 
 type CreateEntraIdHandlerOptions = {
   fetchImpl?: typeof fetch;

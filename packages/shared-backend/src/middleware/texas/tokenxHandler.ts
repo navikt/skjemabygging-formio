@@ -1,7 +1,8 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import texasClient from '../../services/texas/texasClient';
-import { type AuthHandlerLogger, getRequestLogContext } from '../authHandlerLogger';
+import type { Logger } from '../../shared/logger/types';
+import { getRequestLogContext } from '../requestLogContext';
 import { getIdportenUser } from './idportenAuth';
 
 const TOKENX_TOKENS_KEY = 'tokenxTokens';
@@ -10,7 +11,7 @@ interface CreateTokenxHandlerOptions {
   exchangeEndpoint: string;
   /** The target application, `<cluster>:<namespace>:<app>` */
   audience: string;
-  logger: AuthHandlerLogger;
+  logger: Logger;
   fetchImpl?: typeof fetch;
 }
 
