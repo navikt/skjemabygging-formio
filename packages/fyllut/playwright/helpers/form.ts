@@ -39,10 +39,7 @@ const visitForm = async (page: Page, path: string) => {
 };
 
 const nextStep = async (page: Page) => {
-  await page
-    .getByRole('button', { name: /^(Neste steg|Next step)$/ })
-    .or(page.getByRole('link', { name: /^(Neste steg|Next step)$/ }))
-    .click();
+  await page.getByRole('button', { name: /^(Neste steg|Next step)$/ }).click();
 };
 
 const showAllSteps = async (page: Page) => {

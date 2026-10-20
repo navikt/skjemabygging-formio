@@ -91,10 +91,7 @@ test.describe('BankAccount', () => {
         { label: 'Kontonummer påkrevd', value: '0123 45 67892' },
         { label: 'Kontonummer ikke påkrevd', value: '0123 45 67892' },
       ]);
-      await page
-        .getByRole('button', { name: 'Instruksjoner for innsending' })
-        .or(page.getByRole('link', { name: 'Instruksjoner for innsending' }))
-        .click();
+      await page.getByRole('button', { name: 'Instruksjoner for innsending' }).click();
       await expect(page.getByRole('heading', { name: 'Skjemaet er ikke sendt ennå' })).toBeVisible();
       await downloadApplication(page);
     });
