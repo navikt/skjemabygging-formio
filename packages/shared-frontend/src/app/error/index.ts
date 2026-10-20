@@ -1,4 +1,6 @@
-import { FrontPageButton, MyPageLink, ReportBugLink } from './ErrorActions';
+import { FrontPageButton } from './actions/FrontPageButton';
+import { MyPageLink } from './actions/MyPageLink';
+import { ReportBugLink } from './actions/ReportBugLink';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ErrorPage } from './ErrorPage';
 import { ErrorPageLayout } from './ErrorPageLayout';

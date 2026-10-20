@@ -42,8 +42,11 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const { attachmentPageEnabled, http, baseUrl, submissionMethod } = useAppConfig();
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission),
-    [form, submission],
+    () =>
+      navFormUtils.getActiveComponentsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission, {
+        submissionMethod,
+      }),
+    [form, submission, submissionMethod],
   );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
