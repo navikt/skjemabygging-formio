@@ -155,7 +155,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
+    const decoratorFragments = await getDecorator({ redirectToUrl: createRedirectUrl(req, res) });
     renderIndexHtml(res, {
       decoratorFragments,
       pageMeta,

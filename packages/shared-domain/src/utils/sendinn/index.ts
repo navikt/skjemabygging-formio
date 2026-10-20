@@ -1,1 +1,1 @@
-export * from './entryResolver';
+export * from './sendinnEntryUtils';

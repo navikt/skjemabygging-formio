@@ -17,9 +17,11 @@ const publishedTranslationService = createPublishedTranslationService({ baseUrl:
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
 // Configured for innsending-api. No route mounts it until a journey calls innsending-api.
-const tokenxForInnsendingApi = createTokenxHandler({ exchangeEndpoint: config.texas.exchangeEndpoint, logger })(
-  config.innsendingApi.audience,
-);
+const tokenxForInnsendingApi = createTokenxHandler({
+  exchangeEndpoint: config.texas.exchangeEndpoint,
+  audience: config.innsendingApi.audience,
+  logger,
+});
 
 const decorator = createDecorator({
   enabled: !config.noDecorator,

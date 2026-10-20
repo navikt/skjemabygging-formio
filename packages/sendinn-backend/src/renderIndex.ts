@@ -24,7 +24,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     renderIndexHtml(res, {
-      decoratorFragments: await decorator.getDecorator(getPublicUrl(req, returnPath)),
+      decoratorFragments: await decorator.getDecorator({ redirectToUrl: getPublicUrl(req, returnPath) }),
       statusCode: entry.journey === 'unavailable' ? 404 : 200,
       umamiWebsiteId: config.umamiWebsiteId,
     });

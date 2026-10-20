@@ -188,8 +188,9 @@ const handleBody = async (response: Response, signal?: AbortSignal) => {
       return response;
     }
   } catch (_) {
-    signal?.throwIfAborted();
     // This catch helps to handle UND_ERR_SOCKET errors that we can ignore.
+    // An aborted request, for example a timeout, must still reject.
+    signal?.throwIfAborted();
   }
 };
 

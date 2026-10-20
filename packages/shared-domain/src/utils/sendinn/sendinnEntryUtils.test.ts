@@ -1,4 +1,4 @@
-import { sendinnEntryUtils } from './entryResolver';
+import { sendinnEntryUtils } from './sendinnEntryUtils';
 
 const { createNotFoundPath, resolveEntry, requiresLogin } = sendinnEntryUtils;
 
@@ -7,14 +7,14 @@ const query = (value = '') => new URLSearchParams(value);
 
 describe('sendinnEntryUtils', () => {
   describe('resolveEntry', () => {
-    describe('lospost', () => {
-      it('resolves the reserved lospost segment', () => {
-        expect(resolveEntry('/lospost', query())).toEqual({ journey: 'lospost' });
+    describe('standalone', () => {
+      it('resolves the reserved lospost segment to standalone', () => {
+        expect(resolveEntry('/lospost', query())).toEqual({ journey: 'standalone' });
       });
 
       it('ignores innsendingsId', () => {
-        expect(resolveEntry('/lospost', query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'lospost' });
-        expect(resolveEntry('/lospost', query('innsendingsId=invalid'))).toEqual({ journey: 'lospost' });
+        expect(resolveEntry('/lospost', query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'standalone' });
+        expect(resolveEntry('/lospost', query('innsendingsId=invalid'))).toEqual({ journey: 'standalone' });
       });
     });
 
@@ -138,7 +138,7 @@ describe('sendinnEntryUtils', () => {
       [{ journey: 'formWithTask', formPath: 'nav123456', submissionId } as const, true],
       [{ journey: 'task', submissionId } as const, true],
       [{ journey: 'form', formPath: 'nav123456' } as const, false],
-      [{ journey: 'lospost' } as const, false],
+      [{ journey: 'standalone' } as const, false],
       [{ journey: 'unavailable' } as const, false],
     ])('%j requires login: %s', (entry, expected) => {
       expect(requiresLogin(entry)).toBe(expected);
