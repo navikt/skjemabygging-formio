@@ -1,53 +1,59 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import texasClient from '../../services/texas/texasClient';
-import type { AuthHandlerLogger } from '../authHandlerLogger';
-import { getIdportenUser } from './idportenHandler';
+import type { Logger } from '../../shared/logger/types';
+import { getRequestLogContext } from '../requestLogContext';
+import { getIdportenUser } from './idportenAuth';
 
 const TOKENX_TOKENS_KEY = 'tokenxTokens';
 
 interface CreateTokenxHandlerOptions {
   exchangeEndpoint: string;
-  logger: AuthHandlerLogger;
+  /** The target application, `<cluster>:<namespace>:<app>` */
+  audience: string;
+  logger: Logger;
   fetchImpl?: typeof fetch;
 }
 
 type TokenxTokens = Record<string, string>;
 
 /**
- * Creates a factory for middleware that exchanges the ID-porten token for a TokenX token.
+ * Creates middleware that exchanges the ID-porten token for a TokenX token for the audience.
  * Runs after requireIdporten. Read the token with getTokenxToken(res, audience).
- *
- * @returns (audience) => middleware, where audience is `<cluster>:<namespace>:<app>`
  */
-const createTokenxHandler = ({ exchangeEndpoint, logger, fetchImpl }: CreateTokenxHandlerOptions) => {
+const createTokenxHandler = ({
+  exchangeEndpoint,
+  audience,
+  logger,
+  fetchImpl,
+}: CreateTokenxHandlerOptions): RequestHandler => {
   if (!exchangeEndpoint) {
     throw new ResponseError('INTERNAL_SERVER_ERROR', 'Missing TokenX exchange endpoint configuration');
   }
 
-  return (audience: string): RequestHandler =>
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { token } = getIdportenUser(res);
-        const accessToken = await texasClient.exchange({
-          endpoint: exchangeEndpoint,
-          fetchImpl,
-          identityProvider: 'tokenx',
-          target: audience,
-          userToken: token,
-        });
-        res.locals[TOKENX_TOKENS_KEY] = { ...(res.locals[TOKENX_TOKENS_KEY] as TokenxTokens), [audience]: accessToken };
-        next();
-      } catch (error) {
-        logger.warn('TokenX exchange failed', {
-          method: req.method,
-          path: req.path,
-          audience,
-          message: error instanceof Error ? error.message : 'Unknown error',
-        });
-        next(error);
-      }
-    };
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { token } = getIdportenUser(res);
+      const accessToken = await texasClient.exchange({
+        endpoint: exchangeEndpoint,
+        fetchImpl,
+        identityProvider: 'tokenx',
+        target: audience,
+        userToken: token,
+      });
+
+      const existingTokens = res.locals[TOKENX_TOKENS_KEY] as TokenxTokens | undefined;
+      res.locals[TOKENX_TOKENS_KEY] = { ...existingTokens, [audience]: accessToken };
+      next();
+    } catch (error) {
+      logger.warn('TokenX exchange failed', {
+        ...getRequestLogContext(req),
+        audience,
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+      next(error);
+    }
+  };
 };
 
 const getTokenxToken = (res: Response, audience: string): string => {

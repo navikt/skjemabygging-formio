@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { vi } from 'vitest';
-import type { AuthHandlerLogger } from '../authHandlerLogger';
+import type { Logger } from '../../shared/logger/types';
 
 const createRequest = (authorization?: string) =>
   ({
@@ -17,7 +17,7 @@ const createNext = () => {
   return { next, spy };
 };
 
-const createLogger = (): AuthHandlerLogger => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn() });
+const createLogger = (): Logger => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() });
 
 const jsonResponse = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });

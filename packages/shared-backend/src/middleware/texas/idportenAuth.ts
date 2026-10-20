@@ -1,8 +1,10 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import texasClient from '../../services/texas/texasClient';
-import type { AuthHandlerLogger } from '../authHandlerLogger';
+import type { Logger } from '../../shared/logger/types';
+import { getRequestLogContext } from '../requestLogContext';
 
+// Level4 is the legacy name for idporten-loa-high.
 const ACCEPTED_ACR_VALUES = ['idporten-loa-high', 'Level4'];
 const IDPORTEN_USER_KEY = 'idportenUser';
 
@@ -13,7 +15,7 @@ interface IdportenUser {
 
 interface CreateIdportenAuthOptions {
   introspectionEndpoint: string;
-  logger: AuthHandlerLogger;
+  logger: Logger;
   fetchImpl?: typeof fetch;
 }
 
@@ -38,7 +40,7 @@ const createIdportenAuth = ({ introspectionEndpoint, logger, fetchImpl }: Create
   }
 
   const authenticate = async (req: Request): Promise<IdportenUser | undefined> => {
-    const requestContext = { method: req.method, path: req.path };
+    const requestContext = getRequestLogContext(req);
     const token = getBearerToken(req);
     if (!token) {
       logger.debug('No ID-porten bearer token on request', requestContext);
@@ -81,8 +83,7 @@ const createIdportenAuth = ({ introspectionEndpoint, logger, fetchImpl }: Create
       next();
     } catch (error) {
       logger.warn('ID-porten authentication failed', {
-        method: req.method,
-        path: req.path,
+        ...getRequestLogContext(req),
         message: error instanceof Error ? error.message : 'Unknown error',
       });
       next(error);

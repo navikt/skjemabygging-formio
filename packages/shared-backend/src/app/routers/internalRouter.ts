@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import type { Registry } from 'prom-client';
 
 interface CreateInternalRouterOptions {
@@ -12,14 +12,10 @@ const createInternalRouter = ({ register }: CreateInternalRouterOptions) => {
     res.sendStatus(200);
   });
 
-  internalRouter.get('/metrics', async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-      res.set('Content-Type', register.contentType);
-      res.end(await register.metrics());
-    } catch (err: any) {
-      res.status(500).end(err.message);
-      next(err);
-    }
+  // Express 5 passes a rejected promise to the error handler.
+  internalRouter.get('/metrics', async (_req: Request, res: Response) => {
+    const metrics = await register.metrics();
+    res.set('Content-Type', register.contentType).end(metrics);
   });
 
   return internalRouter;

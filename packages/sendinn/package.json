@@ -18,6 +18,7 @@
     "@navikt/aksel-icons": "^8.2.0",
     "@navikt/ds-css": "^8.2.0",
     "@navikt/ds-react": "^8.2.2",
+    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
     "react": "^18.3.1",

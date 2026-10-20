@@ -19,7 +19,6 @@ import {
   SessionExpiredMessage,
   SkeletonList,
   UnavailablePage,
-  UrlLanguageSelector,
   useAppConfig,
 } from './app';
 import CountrySelect from './components/country-select/CountrySelect';
@@ -136,7 +135,6 @@ export {
   StateStoreProvider,
   SubmissionStateProvider,
   UnavailablePage,
-  UrlLanguageSelector,
   useAppConfig,
   useApplication,
   useFormDefinition,

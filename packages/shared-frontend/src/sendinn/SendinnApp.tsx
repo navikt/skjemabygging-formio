@@ -2,7 +2,6 @@ import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalis
 import { ErrorInfo, useCallback } from 'react';
 import { useAppConfig } from '../app/config/AppConfigProvider';
 import { ErrorBoundary } from '../app/error/ErrorBoundary';
-import { UrlLanguageSelector } from '../app/language/UrlLanguageSelector';
 import { FormContainer } from '../app/layout/FormContainer';
 import { SendinnLanguageProvider } from './SendinnLanguageProvider';
 import { SendinnRoutes } from './SendinnRoutes';
@@ -30,7 +29,6 @@ const SendinnApp = () => {
     <SendinnLanguageProvider loadGlobalTranslations={loadGlobalTranslations} onLoadError={logLoadError}>
       <ErrorBoundary onError={logRenderError}>
         <FormContainer>
-          <UrlLanguageSelector />
           <SendinnRoutes />
         </FormContainer>
       </ErrorBoundary>

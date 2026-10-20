@@ -5,7 +5,6 @@ import paramValidation from './error/paramValidation';
 import { rateLimiter } from './rateLimiter';
 import { createIdportenAuth, createTokenxHandler, getIdportenUser, getTokenxToken } from './texas';
 
-export type { AuthHandlerLogger } from './authHandlerLogger';
 export type { CreateEntraIdHandlerOptions, EntraIdHandlerLogger } from './entraIdHandler';
 export type { CreateIdportenAuthOptions, CreateTokenxHandlerOptions, IdportenAuth, IdportenUser } from './texas';
 export {

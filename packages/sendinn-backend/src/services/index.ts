@@ -7,6 +7,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { collectDefaultMetrics, Registry } from 'prom-client';
 import { config } from '../config';
+import { supportedLanguages } from '../language';
 import { logger } from '../logger';
 
 const metricsRegister = new Registry();
@@ -17,9 +18,11 @@ const publishedTranslationService = createPublishedTranslationService({ baseUrl:
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
 // Configured for innsending-api. No route mounts it until a journey calls innsending-api.
-const tokenxForInnsendingApi = createTokenxHandler({ exchangeEndpoint: config.texas.exchangeEndpoint, logger })(
-  config.innsendingApi.audience,
-);
+const tokenxForInnsendingApi = createTokenxHandler({
+  exchangeEndpoint: config.texas.exchangeEndpoint,
+  audience: config.innsendingApi.audience,
+  logger,
+});
 
 const decorator = createDecorator({
   enabled: !config.noDecorator,
@@ -30,6 +33,8 @@ const decorator = createDecorator({
     level: 'Level4',
     simple: true,
     logoutWarning: true,
+    // The SPA updates lang when the user selects a language in the decorator's menu.
+    availableLanguages: supportedLanguages.map((locale) => ({ locale, handleInApp: true })),
   },
 });
 

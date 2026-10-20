@@ -102,6 +102,7 @@ describe('http', () => {
     );
 
     const request = http.get('https://example.test/translations', { signal: controller.signal });
+    // Let fetch resolve so the abort happens while the body is being read.
     await Promise.resolve();
     controller.abort(timeoutError);
 
