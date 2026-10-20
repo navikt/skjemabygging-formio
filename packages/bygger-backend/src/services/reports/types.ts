@@ -1,5 +1,6 @@
 import { StaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
-import { dateUtils, Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { DateTime } from 'luxon';
 import { FormPublicationsService } from '../formPublications/types';
 import { FormsService } from '../forms/types';
 import RecipientService from '../RecipientService';
@@ -14,8 +15,12 @@ type ReportDependencies = {
 const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
 const formatSubmissionTypes = (types: SubmissionType[]) =>
   types.length ? `[${types.map((type) => JSON.stringify(type)).join(', ')}]` : '';
-const formatReportTimestamp = (timestamp?: string) =>
-  timestamp ? dateUtils.toJSDate(timestamp).toISOString().slice(0, 16).replace('T', ', ') : undefined;
+const formatReportTimestamp = (timestamp?: string) => {
+  if (!timestamp) return undefined;
+  const date = DateTime.fromISO(timestamp).toUTC();
+  if (!date.isValid) throw new RangeError('Invalid report timestamp');
+  return date.toFormat('yyyy-MM-dd, HH:mm');
+};
 
 export { formatReportTimestamp, formatSubmissionTypes, isNotTestForm };
 export type { ReportDependencies };
