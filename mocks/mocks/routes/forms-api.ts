@@ -55,13 +55,6 @@ export default [
           },
         },
       },
-      {
-        id: 'error',
-        type: 'status',
-        options: {
-          status: 500,
-        },
-      },
     ],
   },
   {
