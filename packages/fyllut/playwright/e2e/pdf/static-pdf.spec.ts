@@ -1,6 +1,20 @@
 import type { Page } from '@playwright/test';
 import { expect, skipUnlessBuilt, test } from '../../fixtures/test';
-import { visitForm, visitStaticPdfForm } from '../../helpers/form';
+import { visitForm } from '../../helpers/form';
+
+const visitStaticPdfForm = async (page: Page) => {
+  const available = await page.request.get('/fyllut/pdfstatic/pdf');
+  expect(available.status(), 'STATIC_PDF_PAGE_REQUIRED').toBe(200);
+  const staticPdf = page.waitForResponse(
+    (response) =>
+      response.url().includes('/fyllut/api/forms/pdfstatic/static-pdfs') && response.request().method() === 'GET',
+  );
+  await Promise.all([
+    visitForm(page, '/fyllut/pdfstatic/pdf'),
+    staticPdf.then((response) => expect(response.ok(), 'STATIC_PDF_LIST_REQUIRED').toBeTruthy()),
+  ]);
+  await expect(page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })).toBeVisible();
+};
 
 const visitStaticPdfPage = async (page: Page, search = '') => {
   const staticPdf = page.waitForResponse(

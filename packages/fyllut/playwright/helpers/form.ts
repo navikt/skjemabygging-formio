@@ -70,26 +70,4 @@ const downloadApplication = async (page: Page) => {
   if (error) throw new Error('PDF_DOWNLOAD_RESPONSE_INCOMPLETE', { cause: error });
 };
 
-const visitStaticPdfForm = async (page: Page) => {
-  const available = await page.request.get('/fyllut/pdfstatic/pdf');
-  expect(available.status(), 'STATIC_PDF_PAGE_REQUIRED').toBe(200);
-  const staticPdf = page.waitForResponse(
-    (response) =>
-      response.url().includes('/fyllut/api/forms/pdfstatic/static-pdfs') && response.request().method() === 'GET',
-  );
-  await Promise.all([
-    visitForm(page, '/fyllut/pdfstatic/pdf'),
-    staticPdf.then((response) => expect(response.ok(), 'STATIC_PDF_LIST_REQUIRED').toBeTruthy()),
-  ]);
-  await expect(page.getByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })).toBeVisible();
-};
-
-export {
-  downloadApplication,
-  expectSummaryGroup,
-  expectVisibleToUser,
-  nextStep,
-  showAllSteps,
-  visitForm,
-  visitStaticPdfForm,
-};
+export { downloadApplication, expectSummaryGroup, expectVisibleToUser, nextStep, showAllSteps, visitForm };
