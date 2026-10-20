@@ -10,6 +10,7 @@ import {
   formGroup,
   htmlElement,
   iban,
+  image,
   nationalIdentityNumber,
   navSelect,
   number,
@@ -325,6 +326,11 @@ const a11yAxeForm = () =>
           htmlElement({
             key: 'html',
             content: 'HTML element',
+          }),
+          image({
+            key: 'image',
+            label: 'Bilde',
+            altText: 'Bilde',
           }),
           alert({
             content: 'Info',
