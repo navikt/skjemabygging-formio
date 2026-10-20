@@ -146,4 +146,18 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'error',
     },
   },
+  {
+    files: ['packages/sendinn/playwright/**/*.ts', 'packages/sendinn/playwright.config.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './packages/sendinn/playwright/tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // Playwright's use() and useRouteVariant() are fixture helpers, not React hooks.
+      'react-hooks/rules-of-hooks': 'off',
+      '@typescript-eslint/no-floating-promises': 'error',
+    },
+  },
 );
