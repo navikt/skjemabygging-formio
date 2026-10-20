@@ -8,7 +8,7 @@ describe('DatePicker', () => {
     cy.defaultIntercepts();
   });
 
-  // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > should preserve the natural date width despite legacy input--xxl sizing
+  // TODO: Reassess whether this width-only test is useful before migrating it to Playwright.
   it('should preserve the natural date width despite legacy input--xxl sizing', () => {
     cy.visit('/fyllut/components/datoogtid?sub=paper');
     cy.defaultWaits();

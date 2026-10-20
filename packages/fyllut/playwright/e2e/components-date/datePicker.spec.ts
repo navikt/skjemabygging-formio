@@ -6,17 +6,6 @@ test.describe('DatePicker', () => {
     await page.clock.setFixedTime(new Date('2025-01-15'));
   });
 
-  test('should preserve the natural date width despite legacy input--xxl sizing', async ({ readyPage: page }) => {
-    await visitForm(page, '/fyllut/components/datoogtid?sub=paper');
-    const time = page.getByRole('textbox', { name: /Klokkeslett/ });
-    await expect
-      .poll(async () => Math.abs((await time.evaluate((element) => element.getBoundingClientRect().width)) - 420))
-      .toBeLessThanOrEqual(1);
-    const date = page.getByRole('textbox', { name: /Dato \(dd\.mm/ });
-    await expect.poll(() => date.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(0);
-    await expect.poll(() => date.evaluate((element) => element.getBoundingClientRect().width)).toBeLessThan(420);
-  });
-
   test.describe('Display', () => {
     test.beforeEach(async ({ readyPage: page }) => {
       await visitForm(page, '/fyllut/datepicker/visning?sub=paper');
