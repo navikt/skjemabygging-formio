@@ -30,7 +30,7 @@ test.describe('Entry routing', () => {
     test(`shows the ${name} journey`, async ({ readyPage: page }) => {
       await page.goto(url);
       await expect(page.getByRole('heading', { level: 1, name: heading, exact: true })).toBeVisible();
-      if (name === 'standalone') await expect(page).toHaveTitle(heading);
+      await expect(page).toHaveTitle(heading);
     });
   }
 
