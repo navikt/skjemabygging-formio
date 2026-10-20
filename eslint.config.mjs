@@ -117,8 +117,8 @@ export default tseslint.config(
       },
     },
     rules: {
+      // Playwright's use() and useRouteVariant() are fixture helpers, not React hooks.
       'react-hooks/rules-of-hooks': 'off',
-      'vitest/valid-title': 'off',
       '@typescript-eslint/no-floating-promises': 'error',
     },
   },
