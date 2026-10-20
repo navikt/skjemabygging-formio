@@ -11,6 +11,7 @@ import {
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
+import { DecoratorLanguageSync } from './DecoratorLanguageSync';
 
 const baseUrl = '/sendinn';
 const root = createRoot(document.getElementById('root')!);
@@ -20,6 +21,7 @@ const renderApp = (config: SharedFrontendConfig) =>
     <StrictMode>
       <Theme theme="light">
         <BrowserRouter basename={baseUrl}>
+          <DecoratorLanguageSync />
           <AppConfigProvider baseUrl={baseUrl} config={config}>
             <SendinnApp />
           </AppConfigProvider>

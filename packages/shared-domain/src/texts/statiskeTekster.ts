@@ -350,7 +350,7 @@ export const statiske = {
     alreadySubmitted: 'Søknaden er allerede sendt inn',
     loggedOut: {
       title: 'Du er logget ut',
-      message: 'Du har vært inaktiv for lenge og er logget ut. Logg inn på nytt for å fortsette.',
+      message: 'Du er logget ut. Logg inn på nytt for å fortsette.',
       login: 'Logg inn på nytt',
     },
   },
@@ -396,7 +396,7 @@ export const statiske = {
   loading: 'Laster',
   sendinn: {
     journey: {
-      lospost: 'Send dokumenter til Nav',
+      standalone: 'Send dokumenter til Nav',
       form: 'Send inn dokumentasjon til skjema',
       formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
       task: 'Send inn etterspurt dokumentasjon',

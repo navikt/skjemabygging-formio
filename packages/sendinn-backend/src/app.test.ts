@@ -71,6 +71,17 @@ describe('sendinn-backend app', () => {
 
       await request(createApp()).get(`/sendinn/oppgave?innsendingsId=${submissionId}`).expect(200);
     });
+
+    it.each([
+      ['/sendinn/nav123456', 'nb'],
+      ['/sendinn/nav123456?lang=en', 'en'],
+      ['/sendinn/nav123456?lang=nn-NO', 'nn'],
+      ['/sendinn/nav123456?lang=pl', 'nb'],
+    ])('renders the decorator for %s in %s', async (url, language) => {
+      await request(createApp()).get(url).expect(200);
+
+      expect(getDecoratorMock).toHaveBeenCalledWith(expect.objectContaining({ language }));
+    });
   });
 
   describe('api', () => {

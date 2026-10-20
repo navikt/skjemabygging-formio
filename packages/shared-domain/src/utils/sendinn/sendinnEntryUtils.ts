@@ -1,36 +1,41 @@
-import { validate as isUuid } from 'uuid';
 import { validatorUtils } from '../form/validatorUtils';
+import { submissionUtils } from '../submission/submissionUtils';
 
 const BASE_PATH = '/sendinn';
 const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
-const STANDALONE_SEGMENT = 'lospost';
-const TASK_SEGMENT = 'oppgave';
-const NOT_FOUND_SEGMENT = '404';
-const NOT_FOUND_PATH = `/${NOT_FOUND_SEGMENT}`;
-const SUBMISSION_ID_PARAM = 'innsendingsId';
-const LANGUAGE_PARAM = 'lang';
+const NOT_FOUND_PATH = '/404';
 
 type SendinnEntry =
-  | { journey: 'lospost' }
+  | { journey: 'standalone' }
   | { journey: 'form'; formPath: string }
   | { journey: 'formWithTask'; formPath: string; submissionId: string }
   | { journey: 'task'; submissionId: string }
   | { journey: 'unavailable' };
 
-type SendinnJourney = SendinnEntry['journey'];
-
 const unavailable: SendinnEntry = { journey: 'unavailable' };
 
-// Returns undefined when the parameter is missing, null when it is present but invalid.
-const getSubmissionId = (searchParams: URLSearchParams): string | undefined | null => {
-  const values = searchParams.getAll(SUBMISSION_ID_PARAM);
-  if (values.length === 0) {
-    return undefined;
+const resolveTask = (searchParams: URLSearchParams): SendinnEntry => {
+  const submissionId = submissionUtils.getValidSubmissionId(searchParams);
+  if (!submissionId) {
+    return unavailable;
   }
-  if (values.length > 1 || !isUuid(values[0])) {
-    return null;
+  return { journey: 'task', submissionId };
+};
+
+const resolveForm = (formPath: string, searchParams: URLSearchParams): SendinnEntry => {
+  if (!validatorUtils.isValidFormPath(formPath)) {
+    return unavailable;
   }
-  return values[0];
+
+  if (!searchParams.has('innsendingsId')) {
+    return { journey: 'form', formPath };
+  }
+
+  const submissionId = submissionUtils.getValidSubmissionId(searchParams);
+  if (!submissionId) {
+    return unavailable;
+  }
+  return { journey: 'formWithTask', formPath, submissionId };
 };
 
 /**
@@ -46,38 +51,29 @@ const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry
   }
 
   const [segment] = segments;
-  if (segment === NOT_FOUND_SEGMENT) {
-    return unavailable;
+  switch (segment) {
+    case 'lospost':
+      // The standalone journey (løspost) does not use innsendingsId, so the query is ignored.
+      return { journey: 'standalone' };
+    case 'oppgave':
+      return resolveTask(searchParams);
+    case '404':
+      // The app's own not found page. Without this case, 404 would pass as a form path.
+      return unavailable;
+    default:
+      return resolveForm(segment, searchParams);
   }
-
-  if (segment === STANDALONE_SEGMENT) {
-    return { journey: 'lospost' };
-  }
-
-  const submissionId = getSubmissionId(searchParams);
-  if (submissionId === null) {
-    return unavailable;
-  }
-
-  if (segment === TASK_SEGMENT) {
-    return submissionId ? { journey: 'task', submissionId } : unavailable;
-  }
-
-  if (!validatorUtils.isValidFormPath(segment)) {
-    return unavailable;
-  }
-
-  return submissionId
-    ? { journey: 'formWithTask', formPath: segment, submissionId }
-    : { journey: 'form', formPath: segment };
 };
 
 /**
  * Path to the not found page, relative to the app base path. Keeps only the language parameter.
  */
 const createNotFoundPath = (searchParams: URLSearchParams): string => {
-  const language = searchParams.get(LANGUAGE_PARAM);
-  return language ? `${NOT_FOUND_PATH}?${new URLSearchParams({ [LANGUAGE_PARAM]: language })}` : NOT_FOUND_PATH;
+  const language = searchParams.get('lang');
+  if (!language) {
+    return NOT_FOUND_PATH;
+  }
+  return `${NOT_FOUND_PATH}?${new URLSearchParams({ lang: language })}`;
 };
 
 const requiresLogin = (entry: SendinnEntry): boolean => entry.journey === 'formWithTask' || entry.journey === 'task';
@@ -96,7 +92,6 @@ const createLoginUrl = (returnPath: string): string =>
 
 const sendinnEntryUtils = {
   basePath: BASE_PATH,
-  notFoundPath: NOT_FOUND_PATH,
   createLoginUrl,
   createNotFoundPath,
   resolveEntry,
@@ -104,4 +99,4 @@ const sendinnEntryUtils = {
 };
 
 export { sendinnEntryUtils };
-export type { SendinnEntry, SendinnJourney };
+export type { SendinnEntry };

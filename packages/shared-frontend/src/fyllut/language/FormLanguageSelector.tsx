@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 import LanguageSelector from '../../components/language-selector/LanguageSelector';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { updateSearch } from '../../utils/searchParams';
-import styles from './UrlLanguageSelector.module.css';
+import styles from './FormLanguageSelector.module.css';
 
 const languagesInOriginalLanguage: Record<string, string> = {
   nb: 'Norsk bokmål',
@@ -12,7 +12,7 @@ const languagesInOriginalLanguage: Record<string, string> = {
   en: 'English',
   pl: 'Polskie',
 };
-const UrlLanguageSelector = () => {
+const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages, translate } = useLanguage();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
@@ -51,4 +51,4 @@ const UrlLanguageSelector = () => {
   );
 };
 
-export { UrlLanguageSelector };
+export default FormLanguageSelector;

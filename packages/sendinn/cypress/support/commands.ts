@@ -22,6 +22,14 @@ Cypress.Commands.add('signIn', () => {
   });
 });
 
+// The decorator is disabled in tests, so post the message its language menu sends.
+Cypress.Commands.add('selectDecoratorLanguage', (locale: string) => {
+  cy.window().then((win) => {
+    const data = { source: 'decorator', event: 'languageSelect', payload: { locale, handleInApp: true } };
+    win.dispatchEvent(new win.MessageEvent('message', { data, origin: win.location.origin, source: win }));
+  });
+});
+
 Cypress.Commands.add('requestEntry', (url: string, options: { signedIn?: boolean } = {}) =>
   cy.request({
     url,

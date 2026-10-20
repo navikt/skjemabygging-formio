@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { MyPageLink } from './ErrorActions';
+import { MyPageLink } from './actions/MyPageLink';
 import { ErrorPageLayout } from './ErrorPageLayout';
 import { ServerErrorContent } from './ServerErrorContent';
 import { useErrorPageFocus } from './useErrorPageFocus';

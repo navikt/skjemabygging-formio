@@ -133,4 +133,27 @@ describe('submissionUtils', () => {
       expect(submissionUtils.getComponentSubmissionPath(component, 'parent')).toBe('parent');
     });
   });
+
+  describe('getValidSubmissionId', () => {
+    const submissionId = 'b8e1f1b6-2c3d-4e5f-8a9b-0c1d2e3f4a5b';
+    const query = (value: string) => new URLSearchParams(value);
+
+    it('returns innsendingsId when it is a UUID', () => {
+      expect(submissionUtils.getValidSubmissionId(query(`innsendingsId=${submissionId}`))).toBe(submissionId);
+    });
+
+    it('returns undefined when innsendingsId is missing', () => {
+      expect(submissionUtils.getValidSubmissionId(query('lang=en'))).toBeUndefined();
+    });
+
+    it('returns undefined when innsendingsId is not a UUID', () => {
+      expect(submissionUtils.getValidSubmissionId(query('innsendingsId=not-a-uuid'))).toBeUndefined();
+    });
+
+    it('returns undefined when innsendingsId occurs more than once', () => {
+      expect(
+        submissionUtils.getValidSubmissionId(query(`innsendingsId=${submissionId}&innsendingsId=${submissionId}`)),
+      ).toBeUndefined();
+    });
+  });
 });
