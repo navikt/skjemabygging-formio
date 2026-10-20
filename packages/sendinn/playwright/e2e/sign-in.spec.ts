@@ -3,13 +3,14 @@ import { submissionId } from '../helpers/test-data';
 
 const taskUrl = `/sendinn/oppgave?innsendingsId=${submissionId}`;
 const formWithTaskUrl = `/sendinn/nav123456?innsendingsId=${submissionId}`;
+const taskLinkUrl = `/sendinn/${submissionId}`;
 const loginUrl = (returnPath: string) => `/sendinn/oauth2/login?redirect=${encodeURIComponent(returnPath)}`;
 
 test.describe('Sign-in', () => {
   test.beforeEach(() => skipUnlessBuilt());
 
   test.describe('without a session', () => {
-    for (const url of [taskUrl, formWithTaskUrl]) {
+    for (const url of [taskUrl, formWithTaskUrl, taskLinkUrl]) {
       test(`redirects ${url} to login with an encoded relative return path`, async ({ request }) => {
         const response = await request.get(url, { maxRedirects: 0 });
         expect(response.status()).toBe(302);

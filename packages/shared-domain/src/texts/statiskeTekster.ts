@@ -400,6 +400,7 @@ export const statiske = {
       form: 'Send inn dokumentasjon til skjema',
       formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
       task: 'Send inn etterspurt dokumentasjon',
+      taskLink: 'Send inn etterspurt dokumentasjon fra varsel',
     },
     comingSoon: 'Denne tjenesten er under utvikling.',
   },
