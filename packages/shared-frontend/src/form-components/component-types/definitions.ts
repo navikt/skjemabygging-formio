@@ -54,7 +54,7 @@ type CheckboxDefinition = BaseComponentDefinition & DefaultValueDefinition & { t
 type HtmlElementDefinition = BaseComponentDefinition & { content?: string; type: 'htmlelement' };
 type ImageDefinition = BaseComponentDefinition & {
   altText?: string;
-  image?: unknown;
+  image?: { url?: string }[];
   widthPercent?: number;
   type: 'image';
 };

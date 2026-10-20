@@ -1,5 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+// TODO: Revisit these tests and migrate them to Playwright manually in a separate follow-up.
 describe('Digital submission with attachments uploaded in Fyllut', () => {
   const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
 
@@ -222,7 +223,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         });
       });
 
-      it('submits attachments with the form', () => {
+      it('submits attachments and grants the user digital access', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
         cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');
         cy.clickSendNav();

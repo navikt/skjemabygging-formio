@@ -1,5 +1,5 @@
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import NavFormBuilder from './NavFormBuilder';
@@ -27,6 +27,16 @@ const DEFAULT_FORM_BUILDER_OPTIONS = {
   formConfig: {},
 };
 
+const FORMIO_SELECT_UPDATE_DELAY_MS = 100;
+
+const getFormioFormCount = () => Object.keys((NavFormioJs.Formio as any).forms).length;
+
+const waitForFormioCleanup = async () => {
+  await waitFor(() => expect(getFormioFormCount()).toBe(0));
+  // Formio delays Select item updates and does not cancel them when a form is destroyed.
+  await new Promise((resolve) => setTimeout(resolve, FORMIO_SELECT_UPDATE_DELAY_MS * 2));
+};
+
 describe('NavFormBuilder', () => {
   beforeAll(() => {
     new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
@@ -38,12 +48,7 @@ describe('NavFormBuilder', () => {
 
   afterEach(async () => {
     cleanup();
-    await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
-    // Formio select components schedule item loading with a 100ms debounce. Drain it here,
-    // otherwise it can resolve after the test environment is torn down and crash the test run.
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 250));
-    });
+    await waitForFormioCleanup();
     fetchMock.resetMocks();
     vi.restoreAllMocks();
   });
@@ -54,9 +59,9 @@ describe('NavFormBuilder', () => {
       const { unmount } = render(
         <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
       );
-      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length > 0);
+      await waitFor(() => expect(getFormioFormCount()).toBeGreaterThan(0));
       unmount();
-      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
+      await waitFor(() => expect(getFormioFormCount()).toBe(0));
     });
   });
 

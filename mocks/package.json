@@ -6,10 +6,12 @@
   "private": true,
   "devDependencies": {
     "@mocks-server/main": "^4.1.0",
+    "@types/node": "^24.12.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   },
   "scripts": {
+    "check-types": "tsc --noEmit",
     "mocks:fyllut": "pnpm exec ts-node mocks/server.ts",
     "mocks:fyllut:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled",
     "mocks:sendinn:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled --mock.collections.selected=sendinn-base"

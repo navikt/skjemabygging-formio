@@ -1,5 +1,5 @@
-import { validate as isUuid } from 'uuid';
 import { validatorUtils } from '../form/validatorUtils';
+import { submissionUtils } from '../submission/submissionUtils';
 
 const BASE_PATH = '/sendinn';
 const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
@@ -14,19 +14,8 @@ type SendinnEntry =
 
 const unavailable: SendinnEntry = { journey: 'unavailable' };
 
-/**
- * Returns innsendingsId when it occurs exactly once and is a UUID, otherwise undefined.
- */
-const getValidSubmissionId = (searchParams: URLSearchParams): string | undefined => {
-  const values = searchParams.getAll('innsendingsId');
-  if (values.length !== 1 || !isUuid(values[0])) {
-    return undefined;
-  }
-  return values[0];
-};
-
 const resolveTask = (searchParams: URLSearchParams): SendinnEntry => {
-  const submissionId = getValidSubmissionId(searchParams);
+  const submissionId = submissionUtils.getValidSubmissionId(searchParams);
   if (!submissionId) {
     return unavailable;
   }
@@ -42,7 +31,7 @@ const resolveForm = (formPath: string, searchParams: URLSearchParams): SendinnEn
     return { journey: 'form', formPath };
   }
 
-  const submissionId = getValidSubmissionId(searchParams);
+  const submissionId = submissionUtils.getValidSubmissionId(searchParams);
   if (!submissionId) {
     return unavailable;
   }

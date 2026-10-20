@@ -27,27 +27,47 @@ interface ExchangeProps extends TexasRequestOptions {
   userToken: string;
 }
 
+const MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 100;
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Texas runs as a sidecar, so network errors and 5xx responses are usually brief. Retries them a few times
+ * to avoid failing the request. Returns undefined when every attempt fails.
+ */
+const fetchWithRetry = async (fetchImpl: typeof fetch, endpoint: string, init: RequestInit) => {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetchImpl(endpoint, init);
+      if (response.status < 500) {
+        return response;
+      }
+    } catch {
+      // Retried below
+    }
+
+    if (attempt < MAX_ATTEMPTS) {
+      await delay(RETRY_DELAY_MS);
+    }
+  }
+};
+
 const postForm = async <T>(
   { endpoint, fetchImpl = fetch }: TexasRequestOptions,
   body: Record<string, string>,
   messages: { unavailable: string; invalidResponse: string },
 ): Promise<T> => {
-  let response: Response;
+  const response = await fetchWithRetry(fetchImpl, endpoint, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(body),
+  });
 
-  try {
-    response = await fetchImpl(endpoint, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams(body),
-    });
-  } catch {
-    throw new ResponseError('SERVICE_UNAVAILABLE', messages.unavailable);
-  }
-
-  if (!response.ok) {
+  if (!response?.ok) {
     throw new ResponseError('SERVICE_UNAVAILABLE', messages.unavailable);
   }
 

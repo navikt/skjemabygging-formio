@@ -46,7 +46,7 @@ async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetad
     signal: options?.signal,
   });
 
-  return handleResponse<T>(response, options);
+  return handleResponse<T>(response, url, options);
 }
 
 function post<T>(
@@ -65,7 +65,7 @@ async function post<T>(url: string, body?: object, options?: HttpOptions): Promi
     signal: options?.signal,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function put<T>(
@@ -84,7 +84,7 @@ async function put<T>(url: string, body?: object, options?: HttpOptions): Promis
     signal: options?.signal,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function httpDelete<T>(
@@ -103,7 +103,7 @@ async function httpDelete<T>(url: string, body?: object, options?: HttpOptions):
     signal: options?.signal,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 function postMultipart<T>(
@@ -128,7 +128,7 @@ async function postMultipart<T>(
     signal: options?.signal,
   });
 
-  return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
+  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
 
 const createHeaders = (options?: HttpOptions): HeadersInit => {
@@ -174,7 +174,7 @@ const isManualRedirectResponse = (response: Response, options?: HttpOptions) =>
 const handleBody = async (response: Response, signal?: AbortSignal) => {
   try {
     // TODO fjern når riktig header på merge kallet
-    if (response.url.includes('merge')) {
+    if (response.ok && response.url.includes('merge')) {
       return stringToBase64(await response.arrayBuffer());
     }
 
@@ -196,6 +196,7 @@ const handleBody = async (response: Response, signal?: AbortSignal) => {
 
 const handleResponse = async <T>(
   response: Response,
+  requestUrl: string,
   options?: HttpOptions,
 ): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> => {
   if (options?.responseType === 'stream' && response.ok) {
@@ -219,6 +220,7 @@ const handleResponse = async <T>(
   }
 
   const errorBody = await handleBody(response, options?.signal);
+  const responseUrl = new URL(response.url || requestUrl);
   const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
   const correlationId =
     typeof errorBody === 'string'
@@ -228,9 +230,15 @@ const handleResponse = async <T>(
         response.headers.get('x-correlation-id') ??
         undefined);
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
+  const upstreamErrorCode = errorBody?.errorCode;
 
-  logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
-    body: errorBody,
+  logger.warn('Http request failed', {
+    service: responseUrl.hostname,
+    endpoint: responseUrl.pathname,
+    upstream_status: response.status,
+    error_code: error.errorCode,
+    upstream_error_code: typeof upstreamErrorCode === 'string' ? upstreamErrorCode : undefined,
+    upstream_correlation_id: correlationId,
   });
 
   throw error;
