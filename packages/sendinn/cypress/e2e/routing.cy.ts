@@ -5,7 +5,7 @@ describe('Entry routing', () => {
     cy.signIn();
   });
 
-  it('shows the løspost journey', () => {
+  it('shows the standalone journey', () => {
     cy.visit('/sendinn/lospost');
     cy.findByRole('heading', { level: 1, name: 'Send dokumenter til Nav' }).should('exist');
     cy.title().should('eq', 'Send dokumenter til Nav');

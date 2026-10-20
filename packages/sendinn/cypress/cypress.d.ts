@@ -17,6 +17,11 @@ declare global {
       signIn(): Chainable<void>;
 
       /**
+       * Selects a language the way the decorator's language menu does.
+       */
+      selectDecoratorLanguage(locale: string): Chainable<void>;
+
+      /**
        * Requests an entry URL from sendinn-backend without following redirects.
        */
       requestEntry(url: string, options?: { signedIn?: boolean }): Chainable<Cypress.Response<string>>;

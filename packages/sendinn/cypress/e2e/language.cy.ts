@@ -8,20 +8,18 @@ describe('Language', () => {
   it('uses bokmål without a lang parameter', () => {
     cy.visit('/sendinn/lospost');
     cy.findByRole('heading', { level: 1, name: 'Send dokumenter til Nav' }).should('exist');
-    cy.findByRole('combobox', { name: 'Velg språk' }).should('have.value', 'nb');
   });
 
   it('selects texts from the lang parameter', () => {
     cy.visit('/sendinn/lospost?lang=en');
     cy.findByRole('heading', { level: 1, name: 'Send documents to Nav' }).should('exist');
-    cy.findByRole('combobox', { name: 'Select language' }).should('have.value', 'en');
   });
 
-  it('keeps the rest of the query when the language changes', () => {
+  it('keeps the rest of the query when a language is selected in the decorator', () => {
     cy.visit(`/sendinn/oppgave?innsendingsId=${submissionId}&lang=en`);
     cy.findByRole('heading', { level: 1, name: 'Submit requested documentation' }).should('exist');
 
-    cy.findByRole('combobox', { name: 'Select language' }).select('nn');
+    cy.selectDecoratorLanguage('nn');
 
     cy.findByRole('heading', { level: 1, name: 'Send inn etterspurd dokumentasjon' }).should('exist');
     cy.location('pathname').should('eq', '/sendinn/oppgave');

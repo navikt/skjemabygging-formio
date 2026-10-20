@@ -1,7 +1,6 @@
 // Published global translations keyed by bokmål text, as served by forms-api
 // GET /v1/published-global-translations/{languageCode}. Holds only the texts sendinn uses.
 const en: Record<string, string> = {
-  'Velg språk': 'Select language',
   'Send dokumenter til Nav': 'Send documents to Nav',
   'Send inn dokumentasjon til skjema': 'Submit documentation for a form',
   'Send inn etterspurt dokumentasjon til skjema': 'Submit requested documentation for a form',
@@ -12,7 +11,6 @@ const en: Record<string, string> = {
 };
 
 const nn: Record<string, string> = {
-  'Velg språk': 'Vel språk',
   'Send dokumenter til Nav': 'Send dokument til Nav',
   'Send inn dokumentasjon til skjema': 'Send inn dokumentasjon til skjema',
   'Send inn etterspurt dokumentasjon til skjema': 'Send inn etterspurd dokumentasjon til skjema',
