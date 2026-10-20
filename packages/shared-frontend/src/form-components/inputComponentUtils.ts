@@ -8,10 +8,11 @@ import { PatternRule } from '../validation/validators';
 import { ComponentDefinitionByType } from './component-types';
 
 /**
- * Component `type` literals handled by the input registry. `panel` is handled
- * by page/navigation, and `image` is no longer supported.
+ * Component `type` literals handled by the input registry. This is every
+ * `FormComponentType` except `panel`, which is handled by page/navigation
+ * rather than the input registry.
  */
-type InputComponentType = Exclude<FormComponentType, 'image' | 'panel'>;
+type InputComponentType = Exclude<FormComponentType, 'panel'>;
 
 /**
  * Props for an input adapter. Parameterized by the adapter's component

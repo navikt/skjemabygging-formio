@@ -270,3 +270,24 @@ describe('renderApplicationPdf attachment row scope', () => {
     });
   });
 });
+
+describe('renderApplicationPdf submission method conditionals', () => {
+  const digitalOnlyCheckbox: Component = {
+    key: 'onBehalfOfSelf',
+    label: 'On behalf of myself',
+    type: 'navCheckbox',
+    navId: 'on-behalf-nav-id',
+    input: true,
+    customConditional: 'show = instance.isSubmissionDigital();',
+  };
+  const submission: Submission = { data: { onBehalfOfSelf: true } };
+  const labels = (method: 'paper' | 'digital') => JSON.stringify(render([digitalOnlyCheckbox], submission, method));
+
+  it('includes digital-only components when submitting digitally', () => {
+    expect(labels('digital')).toContain('On behalf of myself');
+  });
+
+  it('excludes digital-only components when submitting on paper', () => {
+    expect(labels('paper')).not.toContain('On behalf of myself');
+  });
+});

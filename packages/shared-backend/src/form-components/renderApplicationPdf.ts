@@ -37,7 +37,7 @@ const renderApplicationPdf = ({
   const translate = formsApiTranslationUtils.createTranslate(translations, language);
 
   const normalizedSubmission = withResolvedSubmissionAttachments(form, submission);
-  const activeComponents = navFormUtils.getAllActivePanelsFromForm(form, normalizedSubmission);
+  const activeComponents = navFormUtils.getAllActivePanelsFromForm(form, normalizedSubmission, { submissionMethod });
 
   return renderPdfForm({
     activeComponents,

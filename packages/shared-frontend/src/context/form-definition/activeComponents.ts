@@ -9,6 +9,7 @@ import {
   type SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { isObjectRecord } from '../../utils/isObjectRecord';
+import { getConditionInstance } from './conditionInstances';
 
 const conditionallyTraversedTypes = new Set(['container', 'panel', 'fieldset', 'navSkjemagruppe']);
 
@@ -37,7 +38,19 @@ const resolveActiveComponents = (
   const activeComponents: Component[] = [];
 
   components.forEach((component) => {
-    if (evaluateConditionals && !checkCondition(component, row, data, form, undefined, submission, options)) {
+    const isActive =
+      !evaluateConditionals ||
+      checkCondition(
+        component,
+        row,
+        data,
+        form,
+        getConditionInstance(component, form, options?.submissionMethod),
+        submission,
+        options,
+      );
+
+    if (!isActive) {
       return;
     }
 
