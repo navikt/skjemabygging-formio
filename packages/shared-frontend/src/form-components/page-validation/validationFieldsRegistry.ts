@@ -84,6 +84,7 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
   accordion: noValidationFields,
   alertstripe: noValidationFields,
   htmlelement: noValidationFields,
+  image: noValidationFields,
   maalgruppe: noValidationFields,
 
   container: childValidationFields,

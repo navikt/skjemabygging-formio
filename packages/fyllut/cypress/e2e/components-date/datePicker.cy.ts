@@ -8,6 +8,7 @@ describe('DatePicker', () => {
     cy.defaultIntercepts();
   });
 
+  // TODO: Reassess whether this width-only test is useful before migrating it to Playwright.
   it('should preserve the natural date width despite legacy input--xxl sizing', () => {
     cy.visit('/fyllut/components/datoogtid?sub=paper');
     cy.defaultWaits();
@@ -28,6 +29,7 @@ describe('DatePicker', () => {
       cy.defaultWaits();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Display > should be visible and interactable
     it('should be visible and interactable', () => {
       const label = 'Dato (dd.mm.åååå)';
       cy.findByLabelText(label).should('exist');
@@ -36,18 +38,21 @@ describe('DatePicker', () => {
       cy.findByLabelText(label).should('not.have.attr', 'readonly');
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Display > should accept a valid date
     it('should accept a valid date', () => {
       const label = 'Dato (dd.mm.åååå)';
       cy.findByLabelText(label).type('15.01.2025');
       cy.findByLabelText(label).should('have.value', '15.01.2025');
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Display > should have description
     it('should have description', () => {
       cy.withinComponent('Dato med beskrivelse', () => {
         cy.contains('Velg ønsket dato').should('be.visible');
       });
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Display > should have additionalDescription
     it('should have additionalDescription', () => {
       cy.withinComponent('Dato med tilleggsbeskrivelse', () => {
         cy.contains('Mer informasjon').should('exist');
@@ -64,6 +69,7 @@ describe('DatePicker', () => {
       cy.defaultWaits();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Validation > should validate required
     it('should validate required', () => {
       const label = 'Dato påkrevd';
       cy.clickNextStep();
@@ -74,12 +80,14 @@ describe('DatePicker', () => {
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Validation > should not be required
     it('should not be required', () => {
       const label = 'Dato ikke påkrevd';
       cy.clickNextStep();
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Validation > should validate specificEarliestAllowedDate
     it('should validate specificEarliestAllowedDate', () => {
       const label = 'Dato fra og med 10.01.2025';
       const errorMessage = 'Datoen kan ikke være tidligere enn 10.01.2025';
@@ -91,6 +99,7 @@ describe('DatePicker', () => {
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Validation > should validate specificLatestAllowedDate
     it('should validate specificLatestAllowedDate', () => {
       const label = 'Dato til og med 20.01.2025';
       const errorMessage = 'Datoen kan ikke være senere enn 20.01.2025';
@@ -109,10 +118,12 @@ describe('DatePicker', () => {
       cy.defaultWaits();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Translation > should translate label
     it('should translate label', () => {
       cy.findByLabelText('Dato (dd.mm.åååå) (en)').should('exist');
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Translation > should translate description
     it('should translate description', () => {
       cy.withinComponent('Dato med beskrivelse (en)', () => {
         cy.contains('Velg ønsket dato (en)').should('be.visible');

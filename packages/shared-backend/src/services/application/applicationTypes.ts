@@ -35,6 +35,7 @@ export interface SubmitApplicationRequest {
   mainDocumentAlt: string;
   attachments: Attachment[];
   otherUploadAvailable: boolean;
+  grantUserDigitalAccess?: boolean;
 }
 
 export interface Attachment {

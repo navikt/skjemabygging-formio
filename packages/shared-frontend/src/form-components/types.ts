@@ -19,10 +19,10 @@ type HandleAttachmentDownloadFile = (
 
 /**
  * Component `type` literals handled by the summary registry: every
- * `FormComponentType` except the unsupported `image`. Unlike the input
- * registry, this includes `panel` (SummaryPanel).
+ * `FormComponentType`. Unlike the input registry, this INCLUDES `panel`
+ * (SummaryPanel).
  */
-type SummaryComponentType = Exclude<FormComponentType, 'image'>;
+type SummaryComponentType = FormComponentType;
 
 interface SummaryRendererConfig {
   submissionMethod?: SubmissionMethod;
