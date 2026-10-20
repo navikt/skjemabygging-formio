@@ -24,9 +24,4 @@ class CaptchaError extends Error {
   }
 }
 
-export {
-  CAPTCHA_FAILURE_REASON,
-  CAPTCHA_FAILURE_REASON_TEXT,
-  CaptchaError,
-  type CaptchaFailureReason,
-};
+export { CAPTCHA_FAILURE_REASON, CAPTCHA_FAILURE_REASON_TEXT, CaptchaError, type CaptchaFailureReason };

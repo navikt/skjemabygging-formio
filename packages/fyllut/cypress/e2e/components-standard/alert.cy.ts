@@ -3,6 +3,23 @@ describe('Alert', () => {
     cy.defaultIntercepts();
   });
 
+  it('should use the intended variants and align HTML content in the component showcase', () => {
+    cy.visit('/fyllut/components/standardfelter?sub=paper');
+    cy.defaultWaits();
+
+    [
+      { content: 'Alert info', variant: 'info' },
+      { content: 'Alert suksess', variant: 'success' },
+      { content: 'Alert error', variant: 'error' },
+    ].forEach(({ content, variant }) => {
+      cy.contains('p', content)
+        .should('have.css', 'margin-top', '0px')
+        .and('have.css', 'margin-bottom', '0px')
+        .closest('.aksel-alert')
+        .should('have.class', `aksel-alert--${variant}`);
+    });
+  });
+
   describe('Display', () => {
     beforeEach(() => {
       cy.visit('/fyllut/alert/visning?sub=paper');

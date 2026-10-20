@@ -1,0 +1,31 @@
+.field {
+  min-inline-size: 0;
+}
+
+.xxsmall {
+  --field-max-inline-size: 2.1875rem;
+}
+
+.xsmall {
+  --field-max-inline-size: 4.375rem;
+}
+
+.small {
+  --field-max-inline-size: 8.75rem;
+}
+
+.medium {
+  --field-max-inline-size: 13.125rem;
+}
+
+.large {
+  --field-max-inline-size: 17.5rem;
+}
+
+.xlarge {
+  --field-max-inline-size: 21.875rem;
+}
+
+.xxlarge {
+  --field-max-inline-size: 26.25rem;
+}

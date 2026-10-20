@@ -170,6 +170,34 @@ describe('createFormService', () => {
       expect(fetchSpy).not.toHaveBeenCalled();
     });
 
+    it('offers every language for forms-api forms without forwarding languages to forms-api', async () => {
+      const fetchSpy = mockFetchResponse(JSON.stringify(apiForm), 200, 'application/json');
+      const service = createService({ formsApiStaging: true });
+
+      await expect(service.getForm({ formPath: 'nav123456', select: ['title', 'languages'] })).resolves.toMatchObject({
+        languages: ['nb', 'nn', 'en'],
+      });
+      expectGetRequest(fetchSpy, `${baseUrl}/v1/forms/nav123456?select=title%2CpublishedLanguages%2Cstatus`);
+    });
+
+    it('offers only published languages for published forms-api forms', async () => {
+      mockFetchResponse(JSON.stringify({ ...apiForm, status: 'published' }), 200, 'application/json');
+      const service = createService({ formsApiStaging: true });
+
+      await expect(service.getForm({ formPath: 'nav123456', select: ['title', 'languages'] })).resolves.toMatchObject({
+        languages: ['nb'],
+      });
+    });
+
+    it('offers only published languages for forms from disk', async () => {
+      const formsLocation = writeFormsToTempDir(navForm);
+      const service = createService({ formsLocation });
+
+      await expect(service.getForm({ formPath: 'nav654321', select: ['title', 'languages'] })).resolves.toMatchObject({
+        languages: ['nb', 'nn'],
+      });
+    });
+
     it('throws not found when a disk-backed form does not exist', async () => {
       const formsLocation = writeFormsToTempDir(navForm);
       const service = createService({ formsLocation });

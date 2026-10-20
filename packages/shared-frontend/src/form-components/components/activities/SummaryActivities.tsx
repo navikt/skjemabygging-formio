@@ -1,8 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ActivitiesDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryActivities = (props: FormComponentProps) => {
+const SummaryActivities = (props: FormComponentProps<ActivitiesDefinition>) => {
   const { submission, submissionPath, component, translate } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

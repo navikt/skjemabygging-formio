@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "check-types": "tsc",
+    "check-types": "tsc && tsc --project playwright/tsconfig.json",
     "clean": "rimraf dist coverage node_modules .runtime .cypress-home cypress/screenshots cypress/downloads",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
@@ -21,6 +21,7 @@
     "@navikt/ds-css": "^8.2.0",
     "@navikt/ds-react": "^8.2.2",
     "@navikt/skjemadigitalisering-shared-components": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "axe-core": "^4.12.1",
     "luxon": "^3.7.2",
@@ -29,6 +30,8 @@
     "react-router": "^7.15.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@playwright/test": "1.63.0",
     "@mocks-server/cypress-commands": "^6.1.1",
     "@testing-library/cypress": "^10.1.3",
     "@testing-library/dom": "^10.4.1",

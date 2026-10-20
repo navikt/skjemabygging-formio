@@ -1,7 +1,131 @@
+import { TFunction } from 'i18next';
+import { Component, NavFormType, SubmissionAttachment } from '../../models';
 import { TEXTS } from '../../texts';
 import { attachmentUtils } from './attachmentUtils';
 
 describe('attachmentUtils', () => {
+  describe('arbitrary legacy choices', () => {
+    const value = 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed';
+    const label = 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.';
+    const component = {
+      key: 'documentation',
+      navId: 'doc',
+      type: 'attachment',
+      otherDocumentation: true,
+      values: [
+        { value: 'leggerVedNaa', label: 'Configured upload label' },
+        { value, label },
+      ],
+    } as Component;
+    it.each([value, { key: value, additionalDocumentation: 'Keep this explanation' }])(
+      'normalizes legacy choice %# without erasing it',
+      (answer) => {
+        expect(attachmentUtils.toSubmissionAttachments(answer, component)).toMatchObject([
+          {
+            attachmentId: 'doc',
+            navId: 'doc',
+            type: 'other',
+            value,
+            files: [],
+            ...(typeof answer === 'object' ? { additionalDocumentation: 'Keep this explanation' } : {}),
+          },
+        ]);
+      },
+    );
+    it.each(['paper', 'digital', 'digitalnologin'] as const)(
+      'retains configured labels in %s summaries',
+      (submissionMethod) => {
+        const canonical = attachmentUtils.toSubmissionAttachments(
+          { key: value, additionalDocumentation: 'Explanation' },
+          component,
+        );
+        expect(attachmentUtils.getAttachmentLabel(value, submissionMethod, component.values)).toBe(label);
+        expect(
+          attachmentUtils.mapToAttachmentSummary({
+            value: canonical,
+            component,
+            submissionMethod,
+            form: { properties: {} } as NavFormType,
+            translate: ((text: string) => text) as TFunction,
+          }),
+        ).toEqual({ description: label, additionalDocumentation: 'Explanation' });
+        expect(attachmentUtils.getImplicitValueKey(component.values, submissionMethod)).toBeUndefined();
+      },
+    );
+    it('preserves modern label translation instead of replacing it with configured legacy text', () => {
+      expect(attachmentUtils.getAttachmentLabel('leggerVedNaa', 'digital', component.values)).toBe(
+        TEXTS.statiske.attachment.uploadNow,
+      );
+      expect(attachmentUtils.getAttachmentLabel('leggerVedNaa', 'paper', component.values)).toBe(
+        TEXTS.statiske.attachment.leggerVedNaa,
+      );
+    });
+  });
+  describe.each(['paper', 'digital'] as const)('summary compatibility (%s)', (submissionMethod) => {
+    const canonical: SubmissionAttachment = {
+      attachmentId: 'doc',
+      navId: 'doc',
+      type: 'other',
+      value: 'ettersender',
+      additionalDocumentation: 'Explanation',
+      files: [],
+    };
+    it.each([canonical, [canonical], { key: 'ettersender' as const, additionalDocumentation: 'Explanation' }])(
+      'maps canonical and legacy answers to the existing summary contract %#',
+      (value) => {
+        expect(
+          attachmentUtils.mapToAttachmentSummary({
+            value,
+            submissionMethod,
+            translate: ((text: string) => text) as TFunction,
+            form: { properties: { ettersendelsesfrist: '14' } } as NavFormType,
+            component: {
+              attachmentValues: {
+                ettersender: {
+                  enabled: true,
+                  showDeadline: true,
+                  additionalDocumentation: { enabled: true, label: 'Why?', description: '' },
+                },
+              },
+            } as Component,
+          }),
+        ).toEqual({
+          description:
+            submissionMethod === 'paper'
+              ? TEXTS.statiske.attachment.ettersender
+              : TEXTS.statiske.attachment.uploadLater,
+          additionalDocumentation: 'Explanation',
+          additionalDocumentationLabel: 'Why?',
+          deadlineWarning: TEXTS.statiske.attachment.deadline,
+        });
+      },
+    );
+  });
+  describe('toSubmissionAttachments', () => {
+    const component = {
+      key: 'documentation',
+      navId: 'documentation-nav-id',
+      type: 'attachment',
+    } as Component;
+
+    it.each([
+      ['leggerVedNaa', undefined],
+      [{ key: 'ettersender', additionalDocumentation: 'Sent next week' }, 'Sent next week'],
+      [{ value: 'harIkke' }, undefined],
+    ])('normalizes legacy choice value %#', (value, additionalDocumentation) => {
+      expect(attachmentUtils.toSubmissionAttachments(value, component)).toEqual([
+        {
+          attachmentId: 'documentation-nav-id',
+          navId: 'documentation-nav-id',
+          type: 'default',
+          value: typeof value === 'string' ? value : 'key' in value ? value.key : value.value,
+          ...(additionalDocumentation ? { additionalDocumentation } : {}),
+          files: [],
+        },
+      ]);
+    });
+  });
+
   describe('resolveAttachmentLabelKey', () => {
     it('uses digital label keys for digital submission method', () => {
       expect(attachmentUtils.resolveAttachmentLabelKey('leggerVedNaa', 'digital')).toBe('uploadNow');
@@ -120,6 +244,28 @@ describe('attachmentUtils', () => {
         { value: 'nav', label: TEXTS.statiske.attachment.nav, upload: false },
       ]);
     });
+
+    it('preserves production-shaped legacy values arrays', () => {
+      const options = attachmentUtils.mapKeysToOptions(
+        [
+          { value: 'leggerVedNaa', label: 'Jeg legger det ved denne søknaden (anbefalt)' },
+          { value: 'ettersender', label: 'Jeg ettersender dokumentasjonen senere' },
+        ],
+        (text) => `${text} (translated)`,
+        'paper',
+      );
+
+      expect(options).toEqual([
+        {
+          value: 'leggerVedNaa',
+          label: 'Jeg legger det ved denne søknaden (anbefalt) (translated)',
+        },
+        {
+          value: 'ettersender',
+          label: 'Jeg ettersender dokumentasjonen senere (translated)',
+        },
+      ]);
+    });
   });
 
   describe('isSingleUploadOnlyOption', () => {
@@ -234,6 +380,158 @@ describe('attachmentUtils', () => {
 
     it('returns false when submission method is undefined', () => {
       expect(attachmentUtils.enableAttachmentDownload()).toBe(false);
+    });
+  });
+
+  describe('getAttachmentsForCoverPage', () => {
+    const createForm = (components) =>
+      ({
+        title: 'Test form',
+        components,
+        properties: {},
+      }) as unknown as NavFormType;
+
+    const createAttachmentComponent = (key, navId) =>
+      ({
+        key,
+        navId,
+        label: key,
+        type: 'attachment',
+        properties: { vedleggskode: 'N6', vedleggstittel: key },
+      }) as unknown as Component;
+
+    it.each([
+      ['leggerVedNaa', 'ettersender', false],
+      ['ettersender', 'leggerVedNaa', true],
+      ['leggerVedNaa', '', false],
+      ['leggerVedNaa', undefined, false],
+    ])('prefers legacy top-level choice %s -> %s', (dataValue, value, included) => {
+      const component = createAttachmentComponent('documentation', 'doc');
+      const form = createForm([component]);
+      for (const answer of [dataValue, { key: dataValue }]) {
+        expect(
+          attachmentUtils.getAttachmentsForCoverPage(
+            {
+              data: { documentation: answer },
+              attachments: [{ attachmentId: 'doc', navId: 'doc', type: 'default', value, files: [] }],
+            },
+            form,
+          ),
+        ).toEqual(included ? [component] : []);
+      }
+    });
+
+    it.each(['ettersender', '', undefined])('does not resurrect legacy uploads for canonical choice %s', (value) => {
+      const component = createAttachmentComponent('documentation', 'doc');
+      const canonical: SubmissionAttachment = {
+        attachmentId: 'canonical',
+        navId: 'doc',
+        type: 'default',
+        value,
+        files: [],
+      };
+      for (const answer of [canonical, [canonical]]) {
+        expect(
+          attachmentUtils.getAttachmentsForCoverPage(
+            {
+              data: { documentation: answer },
+              attachments: [
+                { attachmentId: 'legacy', navId: 'doc', type: 'default', value: 'leggerVedNaa', files: [] },
+              ],
+            },
+            createForm([component]),
+          ),
+        ).toEqual([]);
+      }
+    });
+
+    it('finds attachment answers stored directly in submission data', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [createAttachmentComponent('dokumentasjon', 'nav1')],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: { key: 'leggerVedNaa' } } }, form)
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: 'leggerVedNaa' } }, form)
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: { key: 'ettersender' } } }, form)
+          .map((component) => component.key),
+      ).toEqual([]);
+    });
+
+    it('finds attachment answers nested in containers and data grid rows', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [
+            {
+              key: 'vedleggContainer',
+              type: 'container',
+              input: true,
+              tree: true,
+              components: [createAttachmentComponent('nestedDokumentasjon', 'nav2')],
+            },
+            {
+              key: 'repeterende',
+              type: 'datagrid',
+              input: true,
+              components: [createAttachmentComponent('radDokumentasjon', 'nav3')],
+            },
+          ],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage(
+            {
+              data: {
+                vedleggContainer: { nestedDokumentasjon: { key: 'leggerVedNaa' } },
+                repeterende: [
+                  { radDokumentasjon: { key: 'ettersender' } },
+                  { radDokumentasjon: { key: 'leggerVedNaa' } },
+                ],
+              },
+            },
+            form,
+          )
+          .map((component) => component.key),
+      ).toEqual(['nestedDokumentasjon', 'radDokumentasjon']);
+    });
+
+    it('still finds uploaded attachments stored in submission.attachments', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [createAttachmentComponent('dokumentasjon', 'nav1')],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage(
+            {
+              data: {},
+              attachments: [{ attachmentId: 'nav1', navId: 'nav1', type: 'default', value: 'leggerVedNaa', files: [] }],
+            },
+            form,
+          )
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
     });
   });
 });

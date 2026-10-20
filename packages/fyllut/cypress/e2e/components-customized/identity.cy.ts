@@ -43,6 +43,11 @@ describe('Identity', () => {
       cy.findByLabelText('Ja').should('exist');
       cy.findByLabelText('Nei').should('exist');
     });
+
+    it('should use the custom question in required-error text', () => {
+      cy.clickNextStep();
+      cy.findByRole('link', { name: 'Du må fylle ut: Har du et gyldig identitetsdokument?' }).should('exist');
+    });
   });
 
   describe('Translation', () => {

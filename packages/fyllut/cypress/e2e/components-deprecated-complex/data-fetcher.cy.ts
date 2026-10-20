@@ -29,6 +29,7 @@ describe('Data fetcher', () => {
           });
       });
 
+      // Playwright: packages/fyllut/playwright/e2e/components-deprecated-complex/data-fetcher.spec.ts | Data fetcher > Rendering > dataFetcher outside container > should not render component when data is empty
       it('should not render component when data is empty', () => {
         cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
         cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
@@ -292,7 +293,8 @@ describe('Data fetcher', () => {
       cy.submitApplication((req) => {
         const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        expect(submission.attachments).to.have.length(2);
+        expect(submission.data.uttalelseFraLege.type).to.eq('default');
+        expect(submission.data.annenDokumentasjon).to.have.length(1);
       });
 
       cy.visit('/fyllut/datafetchercheckcondition?sub=digital');
@@ -338,7 +340,8 @@ describe('Data fetcher', () => {
       cy.submitApplication((req) => {
         const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        expect(submission.attachments).to.have.length(1);
+        expect(submission.data.uttalelseFraLege).to.be.undefined;
+        expect(submission.data.annenDokumentasjon).to.have.length(1);
       });
 
       cy.visit('/fyllut/datafetchercheckcondition?sub=digital');

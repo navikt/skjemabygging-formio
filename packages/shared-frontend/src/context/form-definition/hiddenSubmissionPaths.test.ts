@@ -1,0 +1,188 @@
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { describe, expect, it } from 'vitest';
+import { ComponentDefinition } from '../../form-components/component-types';
+import { getActivePanels } from './activeComponents';
+import { enrichFormWithBaseSubmissionPath, toComponentDefinitions } from './formDefinitionUtils';
+import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
+
+const createForm = (components: ComponentDefinition[]): Form =>
+  enrichFormWithBaseSubmissionPath({
+    title: 'Test',
+    path: 'test',
+    properties: { submissionTypes: ['PAPER'] },
+    components: [
+      {
+        key: 'panel',
+        title: 'Panel',
+        type: 'panel',
+        navId: 'panel',
+        components,
+      },
+    ],
+  } as unknown as Form);
+
+const dataGrid = {
+  key: 'kjoreliste',
+  label: 'Kjøreliste',
+  type: 'datagrid',
+  input: true,
+  tree: true,
+  navId: 'grid',
+  components: [
+    { key: 'harParkering', label: 'Har parkering', type: 'navCheckbox', input: true, navId: 'harParkering' },
+    {
+      key: 'parkeringsutgift',
+      label: 'Parkeringsutgift',
+      type: 'currency',
+      input: true,
+      navId: 'parkering',
+      customConditional: 'show = row.harParkering === true;',
+    },
+  ],
+} as unknown as ComponentDefinition;
+
+const collect = (form: Form, submission: Submission) => {
+  const activeComponents = toComponentDefinitions(getActivePanels(form, submission));
+
+  return collectHiddenSubmissionPaths({
+    form,
+    activeComponents,
+    submission,
+  });
+};
+
+describe('collectHiddenSubmissionPaths', () => {
+  it('clears hidden data grid fields per row using the indexed submission path', () => {
+    const form = createForm([dataGrid]);
+    const submission = {
+      data: {
+        kjoreliste: [
+          { harParkering: true, parkeringsutgift: 100 },
+          { harParkering: false, parkeringsutgift: 250 },
+        ],
+      },
+    };
+
+    expect(collect(form, submission)).toEqual(['kjoreliste[1].parkeringsutgift']);
+  });
+
+  it('ignores rows that are not objects', () => {
+    const form = createForm([dataGrid]);
+    const submission = { data: { kjoreliste: [null, { harParkering: false }] } } as unknown as Submission;
+
+    expect(collect(form, submission)).toEqual(['kjoreliste[1].parkeringsutgift']);
+  });
+
+  it('never clears the shared, non-indexed path of a data grid child', () => {
+    const form = createForm([dataGrid]);
+    const submission = { data: { kjoreliste: [{ harParkering: false }] } };
+
+    expect(collect(form, submission)).not.toContain('kjoreliste.parkeringsutgift');
+  });
+
+  it('keeps statically hidden data grid fields in their row scope', () => {
+    const form = createForm([
+      {
+        ...dataGrid,
+        components: [
+          { key: 'visible', label: 'Visible', type: 'textfield', input: true, navId: 'visible' },
+          { key: 'hidden', label: 'Hidden', type: 'textfield', input: true, navId: 'hidden', hidden: true },
+        ],
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: { kjoreliste: [{ visible: 'shown', hidden: 'stale' }] } };
+
+    expect(collect(form, submission)).toEqual([]);
+  });
+
+  it('keeps visible paths from duplicate data grids with the same submission path', () => {
+    const form = createForm([
+      {
+        key: 'grid',
+        label: 'First grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        navId: 'firstGrid',
+        components: [{ key: 'first', label: 'First', type: 'textfield', input: true, navId: 'first' }],
+      },
+      {
+        key: 'grid',
+        label: 'Second grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        navId: 'secondGrid',
+        components: [{ key: 'second', label: 'Second', type: 'textfield', input: true, navId: 'second' }],
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: { grid: [{ first: 'first value', second: 'second value' }] } };
+
+    expect(collect(form, submission)).toEqual([]);
+  });
+
+  it('clears hidden fields outside data grids', () => {
+    const form = createForm([
+      { key: 'synlig', label: 'Synlig', type: 'textfield', input: true, navId: 'synlig' },
+      { key: 'skjult', label: 'Skjult', type: 'textfield', input: true, navId: 'skjult' },
+    ] as ComponentDefinition[]);
+    const [panel] = form.components;
+    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as ComponentDefinition;
+
+    expect(
+      collectHiddenSubmissionPaths({
+        form,
+        activeComponents: [activePanel],
+        submission: { data: { synlig: 'ja', skjult: 'nei' } },
+      }),
+    ).toEqual(['skjult']);
+  });
+
+  it('clears the hidden production nav100754 service-dog experience answer', () => {
+    const form = createForm([
+      {
+        key: 'harDuHattServicehundTidligere',
+        label: 'Har du hatt servicehund tidligere?',
+        type: 'radiopanel',
+        input: true,
+        navId: 'hasHadServiceDog',
+      },
+      {
+        key: 'erfaringMedServicehund',
+        label: 'Erfaring med servicehund',
+        type: 'navSkjemagruppe',
+        input: false,
+        navId: 'serviceDogExperience',
+        conditional: {
+          show: true,
+          when: 'harDuHattServicehundTidligere',
+          eq: 'ja',
+        },
+        components: [
+          {
+            key: 'narHaddeDuServicehund2',
+            label: 'Når hadde du servicehund?',
+            type: 'textarea',
+            input: true,
+            navId: 'whenServiceDog',
+          },
+        ],
+      },
+    ] as ComponentDefinition[]);
+    const [panel] = form.components;
+    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as ComponentDefinition;
+
+    expect(
+      collectHiddenSubmissionPaths({
+        form,
+        activeComponents: [activePanel],
+        submission: {
+          data: {
+            harDuHattServicehundTidligere: 'nei',
+            narHaddeDuServicehund2: 'Tidligere svar',
+          },
+        },
+      }),
+    ).toEqual(['narHaddeDuServicehund2']);
+  });
+});

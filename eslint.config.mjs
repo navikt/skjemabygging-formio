@@ -105,6 +105,21 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unused-expressions': 'off',
       'mocha/no-exclusive-tests': 'error',
+      'vitest/valid-expect': 'off', // Cypress uses Chai assertions, e.g. expect(x).to.be.closeTo(...)
+    },
+  },
+  {
+    files: ['packages/fyllut/playwright/**/*.ts', 'packages/fyllut/playwright.config.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './packages/fyllut/playwright/tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // Playwright's use() and useRouteVariant() are fixture helpers, not React hooks.
+      'react-hooks/rules-of-hooks': 'off',
+      '@typescript-eslint/no-floating-promises': 'error',
     },
   },
 );

@@ -1,0 +1,41 @@
+.row {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: var(--ax-space-16);
+  flex-wrap: wrap;
+  margin-block-end: var(--ax-space-20);
+}
+
+.row > button,
+.row > a {
+  min-inline-size: 12rem;
+  flex-grow: 1;
+  max-inline-size: 19.5rem;
+}
+
+.center {
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .center {
+    justify-content: flex-end;
+  }
+
+  .row > button,
+  .row > a {
+    min-inline-size: 100%;
+    max-inline-size: 100%;
+  }
+}
+
+@media print {
+  .row {
+    display: none;
+  }
+}

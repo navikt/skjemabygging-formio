@@ -1,9 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { formatUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { AccountNumberDefinition } from '../../component-types';
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
-const SummaryAccountNumber = (props: FormComponentProps) => {
+const SummaryAccountNumber = (props: FormComponentProps<AccountNumberDefinition>) => {
   const { submission, submissionPath } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 

@@ -12,7 +12,8 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
+  const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes, grantUserDigitalAccess } =
+    form.properties;
   const isLockedForm = !!form.lock;
   const paperNoCoverPageWarning =
     submissionTypes?.includes('PAPER_NO_COVER_PAGE') &&
@@ -123,6 +124,21 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       >
         {'Skjul valg for hvem innsendingen gjelder i ettersendingsløsningen'}
+      </Checkbox>
+
+      <Checkbox
+        className="mb"
+        checked={!!grantUserDigitalAccess}
+        description="Journalposten vises til berørt bruker på nav.no selv når avsender er en annen enn berørt bruker. Innsyn gjelder hele journalposten — enkeltvedlegg kan ikke skjermes. Ikke bruk på skjema hvor uinnlogget digital innsending er tilgjengelig."
+        readOnly={isLockedForm}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, grantUserDigitalAccess: event.target.checked },
+          })
+        }
+      >
+        {'Gi berørt bruker digitalt innsyn i innsendte dokumenter'}
       </Checkbox>
     </>
   );

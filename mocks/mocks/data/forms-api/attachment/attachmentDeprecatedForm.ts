@@ -77,6 +77,24 @@ const attachmentDeprecatedForm = () =>
             key: 'oldAttachment',
             label: 'Gammel radio komponent',
           }),
+          {
+            ...attachment({
+              key: 'legacyValuesAttachment',
+              label: 'Legacy values array',
+              validate: { required: false },
+            }),
+            attachmentValues: undefined,
+            values: [
+              {
+                label: 'Jeg legger det ved denne søknaden (anbefalt)',
+                value: 'leggerVedNaa',
+              },
+              {
+                label: 'Jeg ettersender dokumentasjonen senere',
+                value: 'ettersender',
+              },
+            ],
+          },
         ],
       }),
     ],
