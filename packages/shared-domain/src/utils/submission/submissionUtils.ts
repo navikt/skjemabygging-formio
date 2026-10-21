@@ -11,7 +11,8 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
     const key = keys.shift();
 
     if (key) {
-      if (submissionData[key] !== undefined) {
+      // Stored drafts and external requests may contain null; treat it as no answer instead of descending into it.
+      if (submissionData[key] !== undefined && submissionData[key] !== null) {
         if (keys.length > 0) {
           return findValue(keys, submissionData[key] as SubmissionData);
         }
@@ -26,8 +27,9 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
         return submissionData[key] as SubmissionData;
       } else {
         const arrayKey = keyToArray(key);
-        if (arrayKey && submissionData[arrayKey.key][arrayKey.index]) {
-          return findValue(keys, submissionData[arrayKey.key][arrayKey.index] as SubmissionData);
+        const arrayValue = arrayKey ? submissionData[arrayKey.key] : undefined;
+        if (arrayKey && Array.isArray(arrayValue) && arrayValue[arrayKey.index]) {
+          return findValue(keys, arrayValue[arrayKey.index] as SubmissionData);
         }
       }
     } else {

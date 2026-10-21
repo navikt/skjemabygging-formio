@@ -1,0 +1,26 @@
+.container {
+  box-sizing: border-box;
+  inline-size: calc(100% - 2 * var(--ax-space-16));
+  max-inline-size: 640px;
+  min-inline-size: 0;
+  margin-inline: auto;
+  padding-block-start: var(--ax-space-16);
+}
+
+@media screen and (max-width: 640px) {
+  .container {
+    padding-block-start: var(--ax-space-12);
+  }
+}
+
+@media print {
+  :global(#decorator-footer),
+  :global(#decorator-header skip-link),
+  :global(#decorator-header user-menu) {
+    display: none !important;
+  }
+
+  :global(#decorator-header a)::after {
+    content: '' !important;
+  }
+}

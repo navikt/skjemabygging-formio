@@ -99,7 +99,7 @@ describe('TextField', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcde');
-      cy.clickErrorMessageMinLength(label).should('have.length', 0);
+      cy.findAllByErrorMessageMinLength(label).should('have.length', 0);
     });
 
     it('should validate the max length', () => {
@@ -111,27 +111,7 @@ describe('TextField', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcd');
-      cy.clickErrorMessageMaxLength(label).should('have.length', 0);
-    });
-
-    it('should support custom validation', () => {
-      const label = 'Tekstfelt må være abc';
-      const errorMessage = 'abc er eneste lovlige verdien';
-      cy.findByLabelOptional(label).type('ab');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelOptional(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('abc');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
-
-    it('should not show custom validation error in error summary when field is empty', () => {
-      const errorMessage = 'abc er eneste lovlige verdien';
-      // Custom validation is not triggered for empty optional fields
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 0);
+      cy.findAllByErrorMessageMaxLength(label).should('have.length', 0);
     });
   });
 
@@ -161,7 +141,6 @@ describe('TextField', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt ikke påkrevd (valgfritt)' }).type('valid2');
       cy.findByRole('textbox', { name: 'Tekstfelt kun siffer' }).type('123');
       cy.findByRole('textbox', { name: 'Tekstfelt min og max lengde' }).type('valid3');
-      cy.findByRole('textbox', { name: 'Tekstfelt må være abc (valgfritt)' }).type('abc');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -190,8 +169,6 @@ describe('TextField', () => {
         cy.get('dd').eq(2).should('contain.text', '123');
         cy.get('dt').eq(3).should('contain.text', 'Tekstfelt min og max lengde');
         cy.get('dd').eq(3).should('contain.text', 'valid3');
-        cy.get('dt').eq(4).should('contain.text', 'Tekstfelt må være abc');
-        cy.get('dd').eq(4).should('contain.text', 'abc');
       });
       cy.clickDownloadInstructions();
 

@@ -1,4 +1,5 @@
 import { Component, FormPropertiesType, IntroPage } from '../form';
+import { TranslationLang } from '../translation';
 
 type FormStatus = 'draft' | 'published' | 'pending' | 'unpublished' | 'unknown';
 
@@ -30,4 +31,11 @@ type Form = {
   firstPanelSlug?: string;
 };
 
-export type { Form, FormStatus };
+/**
+ * Computed by fyllut-backend when `languages` is included in `select`; it is never stored on the form.
+ */
+type FormWithLanguages = Form & {
+  languages?: TranslationLang[];
+};
+
+export type { Form, FormStatus, FormWithLanguages };

@@ -23,13 +23,11 @@ describe('Attachment', () => {
         cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
           cy.findByLabelText('Norsk pass').check(),
         );
-        cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
-        cy.findByRole('link', { name: 'Neste steg' }).click();
-        cy.url().then((currentUrl) => {
-          if (currentUrl.includes('/legitimasjon')) {
-            cy.findByRole('link', { name: 'Neste steg' }).click();
-          }
-        });
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
+        cy.uploadFile('id-billy-bruker.jpg');
+        cy.wait('@uploadIdFile').its('response.statusCode').should('eq', 201);
+        cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
+        cy.clickNextStep();
         cy.url().should('not.include', '/legitimasjon');
       }
     });

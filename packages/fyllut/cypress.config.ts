@@ -22,6 +22,7 @@ const mockAdminPort = Number(runtimeConfig.env?.MOCKS_ADMIN_PORT ?? 3310);
 
 export default defineConfig({
   video: false,
+  experimentalMemoryManagement: true,
   e2e: {
     baseUrl,
     viewportWidth: 1280,

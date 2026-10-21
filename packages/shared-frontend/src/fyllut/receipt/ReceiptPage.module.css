@@ -1,0 +1,48 @@
+.successIcon {
+  color: var(--ax-text-success-decoration);
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--ax-font-size-medium);
+  line-height: var(--ax-font-line-height-medium);
+}
+
+.downloadLinkIcon {
+  font-size: var(--ax-font-size-xlarge);
+}
+
+.printOnly {
+  display: none;
+}
+
+@media print {
+  .root {
+    color: #000;
+  }
+
+  .hideOnPrint,
+  .downloadLink {
+    display: none !important;
+  }
+
+  .printOnly {
+    display: block;
+    color: #000;
+    margin-block-end: var(--ax-space-40);
+  }
+
+  .printAlertHeading {
+    margin: 0;
+    color: #000;
+  }
+
+  .printList {
+    color: #000;
+  }
+
+  .successIcon {
+    color: #000;
+  }
+}

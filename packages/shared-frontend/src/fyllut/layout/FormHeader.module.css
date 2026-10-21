@@ -1,0 +1,26 @@
+.header {
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  inset-inline-start: -100px;
+  inset-block-start: var(--ax-space-8);
+}
+
+@media screen and (max-width: 1279px) {
+  .icon {
+    display: none;
+  }
+}
+
+@media print {
+  .icon {
+    display: none;
+  }
+}
+
+/* Aksel Heading has no font-weight prop — override the form title sub-heading */
+.formTitle {
+  font-weight: normal;
+}

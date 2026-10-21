@@ -12,6 +12,7 @@ import { FormContainer } from './components/form/container/FormContainer';
 import { FormTitle } from './components/form/form-title/FormTitle';
 import InnerHtml from './components/inner-html/InnerHtml';
 import Intro from './components/intro';
+import LetterUXSignals from './components/letter/ux-signals/LetterUXSignals';
 import LinkButton from './components/link-button/LinkButton';
 import LoadingComponent from './components/loading/LoadingComponent';
 import SkeletonList from './components/loading/SkeletonList';
@@ -65,6 +66,7 @@ export {
   Intro,
   LanguageSelector,
   LanguagesProvider,
+  LetterUXSignals,
   LinkButton,
   listSort,
   LoadingComponent,
