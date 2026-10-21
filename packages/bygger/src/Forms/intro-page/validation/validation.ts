@@ -101,31 +101,13 @@ export function validateIntroPage(
     return Object.keys(sectionErrors).length > 0 ? sectionErrors : undefined;
   };
 
-  const requiredSections: (keyof IntroPage['sections'])[] = [];
-  const optionalSections: (keyof IntroPage['sections'])[] = [
-    'prerequisites',
-    'scope',
-    'outOfScope',
-    'dataDisclosure',
-    'optional',
-    'automaticProcessing',
-  ];
-
-  const validateSections = (sectionKeys: (keyof IntroPage['sections'])[], optional = false) => {
-    for (const sectionKey of sectionKeys) {
-      const section = introPage.sections?.[sectionKey];
-      if (!optional || (optional && section)) {
-        const sectionErrors = validateSection(section, sectionKey);
-        if (sectionErrors) {
-          if (!errors.sections) errors.sections = {};
-          errors.sections[sectionKey] = sectionErrors;
-        }
-      }
+  supportedIntroPageSectionKeys.forEach((sectionKey) => {
+    const section = introPage.sections?.[sectionKey];
+    const sectionErrors = section && validateSection(section, sectionKey);
+    if (sectionErrors) {
+      errors.sections = { ...errors.sections, [sectionKey]: sectionErrors };
     }
-  };
-
-  validateSections(requiredSections);
-  validateSections(optionalSections, true);
+  });
 
   if (introPage.importantInformation) {
     const importantErrors: NonNullable<IntroPageError['importantInformation']> = {};
