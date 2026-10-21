@@ -56,27 +56,11 @@ const introPageTexts = {
 } as const satisfies Record<IntroPageTextGroup, Record<string, string | readonly string[]>>;
 
 type TextKeys<T> = T extends string ? T : T extends readonly (infer Item)[] ? TextKeys<Item> : TextKeys<T[keyof T]>;
-type IntroPageKey = TextKeys<typeof introPageTexts>;
-
-const introPage = Object.values(introPageTexts).flatMap((group) => Object.values(group).flat()) as IntroPageKey[];
-type ScopeTitle = (typeof introPageTexts.scope.titles)[number];
-type OutOfScopeTitle = (typeof introPageTexts.outOfScope.titles)[number];
-type PrerequisitesTitle = (typeof introPageTexts.prerequisites.titles)[number];
-type DataDisclosureTitle = (typeof introPageTexts.dataDisclosure.titles)[number];
-type SelfDeclarationDescription = (typeof introPageTexts.selfDeclaration.descriptions)[number];
-
-const keys = { introPage } as const;
-type Tkey = IntroPageKey;
+type Tkey = TextKeys<typeof introPageTexts>;
 type TElement = Tkey | { key: Tkey; params: Record<string, any> };
 
+const introPage = Object.values(introPageTexts).flatMap((group) => Object.values(group).flat()) as Tkey[];
+const keys = { introPage } as const;
+
 export { introPageTexts, keys };
-export type {
-  DataDisclosureTitle,
-  IntroPageKey,
-  OutOfScopeTitle,
-  PrerequisitesTitle,
-  ScopeTitle,
-  SelfDeclarationDescription,
-  TElement,
-  Tkey,
-};
+export type { TElement, Tkey };
