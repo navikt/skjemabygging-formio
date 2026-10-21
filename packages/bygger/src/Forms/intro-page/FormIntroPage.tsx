@@ -11,6 +11,7 @@ import { useEditFormTranslations } from '../../context/translations/EditFormTran
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import useKeyBasedText from '../../hooks/useKeyBasedText';
+import { getTextKeysFromForm } from '../../translations/utils/formTextsUtils';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
@@ -27,6 +28,7 @@ import { Prerequisites } from './sections/Prerequisites';
 import { Scope } from './sections/Scope';
 import { SectionsChecboxes } from './sections/SectionsChecboxes';
 import { SelfDeclaration } from './sections/SelfDeclaration';
+import { sanitizeIntroPage } from './utils/sanitizeIntroPage';
 import { useIntroPageRefs } from './validation/useIntroPageRefs';
 import { useScrollToFirstError } from './validation/useScrollToFirstError';
 import { IntroPageError, validateIntroPage } from './validation/validation';
@@ -98,8 +100,11 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
   const handleSave = async () => {
     try {
-      await saveChanges();
-      await saveForm(form);
+      if (!(await saveChanges(getTextKeysFromForm(form)))) {
+        setSaveErrorMessage('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.');
+        return;
+      }
+      await saveForm(form.introPage ? { ...form, introPage: sanitizeIntroPage(form.introPage) } : form);
     } catch (error: any) {
       logger?.debug(`Failed to save introPage: ${error.message}`, error);
     }

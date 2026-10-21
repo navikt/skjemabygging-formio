@@ -46,7 +46,18 @@ const validateTranslations = (translations: FormsApiTranslation[], validators: V
     .filter((validationError) => !!validationError);
 
 const validateFormTranslations = (translations: FormsApiTranslation[]): TranslationError[] => {
-  const validators: Validator[] = [createInputTooLongValidator(MAX_INPUT_LENGTH_FORM_TRANSLATION)];
+  const validators: Validator[] = [
+    (translation) => {
+      if (translation.tag === 'introPage' && !translation.nb?.trim()) {
+        return {
+          key: translation.key,
+          type: 'MISSING_BOKMAL_VALIDATION',
+          message: 'Legg til bokmålstekst før du lagrer oversettelsen',
+        };
+      }
+    },
+    createInputTooLongValidator(MAX_INPUT_LENGTH_FORM_TRANSLATION),
+  ];
   return validateTranslations(translations, validators);
 };
 

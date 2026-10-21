@@ -30,6 +30,74 @@ describe('Form translations', () => {
     });
   });
 
+  describe('Intro-page references', () => {
+    beforeEach(() => {
+      cy.fixture('form123456.json').then((form) => {
+        cy.intercept('GET', '/api/forms/tst123456', {
+          body: {
+            ...form,
+            components: [],
+            introPage: {
+              enabled: true,
+              introduction: 'active-key',
+              sections: {
+                prerequisites: {},
+                dataTreatment: { title: 'retired-title', description: 'retired-empty-key' },
+              },
+              selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+            },
+          },
+        });
+      });
+      cy.intercept('GET', '/api/forms/tst123456/translations', {
+        body: [
+          { id: 401, revision: 1, key: 'active-key', tag: 'introPage', nb: '' },
+          { id: 402, revision: 1, key: 'retired-empty-key', tag: 'introPage', nb: '' },
+          {
+            id: 403,
+            revision: 1,
+            key: 'retired-title',
+            tag: 'introPage',
+            nb: 'Retired text',
+            nn: 'Retired Nynorsk',
+            en: 'Retired English',
+          },
+        ],
+      }).as('getFormTranslations');
+      cy.visit('/forms/tst123456/oversettelser');
+      cy.wait('@getFormTranslations').its('response.statusCode').should('eq', 200);
+    });
+
+    it('moves retired translations to the unused list without losing their text', () => {
+      cy.findByText('Bokmålstekst mangler for nøkkel: active-key').should('be.visible');
+      cy.findByText('Bokmålstekst mangler for nøkkel: retired-empty-key').should('not.exist');
+      cy.findByRole('button', { name: 'Se alle ubrukte oversettelser (2)' }).click();
+      cy.findByText('Retired text').should('be.visible');
+      cy.findByText('Retired Nynorsk').should('be.visible');
+      cy.findByText('Retired English').should('be.visible');
+      cy.findAllByRole('button', { name: 'Slett' }).should('have.length', 2);
+    });
+
+    it('rejects empty Bokmål and allows saving after it has been corrected', () => {
+      const translationWrites: unknown[] = [];
+      cy.intercept('PUT', '/api/forms/tst123456/translations/401', (req) => {
+        translationWrites.push(req.body);
+        req.reply(200, { ...req.body, id: 401, key: 'active-key', tag: 'introPage', revision: 2 });
+      }).as('saveActiveTranslation');
+      cy.findByText('Bokmålstekst mangler for nøkkel: active-key').click();
+      cy.findByRole('textbox', { name: 'Nynorsk' }).type('Translated');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.contains('Legg til bokmålstekst før du lagrer oversettelsen').should('be.visible');
+      cy.then(() => expect(translationWrites).to.be.empty);
+      cy.findByRole('textbox', { name: 'Bokmål' }).type('Welcome');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@saveActiveTranslation').then(({ request, response }) => {
+        expect(response?.statusCode).to.equal(200);
+        expect(request.body).to.include({ nb: 'Welcome', nn: 'Translated' });
+      });
+    });
+  });
+
   describe('When there are no unsaved global translations translations', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/translations', (req) => req.reply([])).as('getGlobalTranslations');

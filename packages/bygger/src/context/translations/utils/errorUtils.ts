@@ -2,6 +2,7 @@ import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain'
 
 const translationErrorTypes = [
   'MISSING_KEY_VALIDATION',
+  'MISSING_BOKMAL_VALIDATION',
   'INPUT_TOO_LONG_VALIDATION',
   'CONFLICT',
   'OTHER_HTTP',

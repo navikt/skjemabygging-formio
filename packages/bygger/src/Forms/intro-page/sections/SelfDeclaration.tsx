@@ -1,6 +1,6 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
@@ -40,12 +40,12 @@ export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChan
             }}
             error={errors?.selfDeclaration}
           >
-            <Radio value="introPage.selfDeclaration.description.alt1" ref={ref}>
+            <Radio value={introPageTexts.selfDeclaration.descriptions[0]} ref={ref}>
               behandle henvendelsen din
             </Radio>
-            <Radio value="introPage.selfDeclaration.description.alt2">behandle søknaden din</Radio>
-            <Radio value="introPage.selfDeclaration.description.alt3">behandle saken din</Radio>
-            <Radio value="introPage.selfDeclaration.description.alt4">behandle meldingen din</Radio>
+            <Radio value={introPageTexts.selfDeclaration.descriptions[1]}>behandle søknaden din</Radio>
+            <Radio value={introPageTexts.selfDeclaration.descriptions[2]}>behandle saken din</Radio>
+            <Radio value={introPageTexts.selfDeclaration.descriptions[3]}>behandle meldingen din</Radio>
           </RadioGroup>
         </Box>
       }

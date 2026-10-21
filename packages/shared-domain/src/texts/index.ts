@@ -12,6 +12,15 @@ const TEXTS = {
   validering,
 };
 
+export { introPageTexts } from './externalStorage/keys';
+export type {
+  DataDisclosureTitle,
+  IntroPageKey,
+  OutOfScopeTitle,
+  PrerequisitesTitle,
+  ScopeTitle,
+  SelfDeclarationDescription,
+} from './externalStorage/keys';
 export { externalStorageTexts, TEXTS };
 
 export type { TElement, Tkey };

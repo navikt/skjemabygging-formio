@@ -62,17 +62,51 @@ const initialSavedTranslations = [
   })),
 ];
 
-const setupSavedIntroPage = () => {
+const setupSavedIntroPage = ({ includeRetiredSections = false, enabled = true } = {}) => {
   const state = {
     savedForms: [] as Array<{ introPage: typeof savedIntroPage }>,
     translationPosts: [] as Array<{ key: string; nb: string; tag: string }>,
     translationPuts: [] as Array<{ id: number; key: string; nb: string }>,
-    translations: structuredClone(initialSavedTranslations),
+    translations: [
+      ...structuredClone(initialSavedTranslations),
+      ...(includeRetiredSections
+        ? [
+            {
+              id: 301,
+              revision: 1,
+              key: 'retired-key',
+              tag: 'introPage',
+              nb: 'Retired text',
+              nn: 'Retired Nynorsk',
+              en: 'Retired English',
+            },
+          ]
+        : []),
+    ],
   };
 
   cy.fixture('getForm.json').then((form) => {
     cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/forms/cypresssettings', { body: { ...form, introPage: savedIntroPage } }).as('getForm');
+    cy.intercept('GET', '/api/forms/cypresssettings', {
+      body: {
+        ...form,
+        introPage: {
+          ...savedIntroPage,
+          enabled,
+          sections: {
+            ...savedIntroPage.sections,
+            ...(includeRetiredSections
+              ? {
+                  dataTreatment: { description: 'retired-key' },
+                  unknownSection: { title: 'unknown-key' },
+                  beAwareOf: { description: 'fixed-awareness-key' },
+                  dataStorage: { description: 'fixed-storage-key' },
+                }
+              : {}),
+          },
+        },
+      },
+    }).as('getForm');
     cy.intercept('GET', '/api/forms/cypresssettings/translations', (req) => req.reply(state.translations)).as(
       'getFormTranslations',
     );
@@ -314,6 +348,96 @@ describe('FormSettingsPage', () => {
   });
 
   describe('Saved intro-page translations', () => {
+    [true, false].forEach((enabled) => {
+      it(`removes unsupported sections only on manual save (enabled: ${enabled})`, () => {
+        const state = setupSavedIntroPage({ includeRetiredSections: true, enabled });
+        const originalTranslations = structuredClone(state.translations);
+        cy.findByRole('heading', { name: 'Standard introside' }).should('be.visible');
+        cy.then(() => expect(state.savedForms).to.be.empty);
+
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        cy.wait('@saveForm').then(({ request, response }) => {
+          expect(response?.statusCode).to.equal(200);
+          expect(request.body.introPage).to.deep.equal({ ...savedIntroPage, enabled });
+        });
+        cy.then(() => {
+          expect(state.translationPosts).to.be.empty;
+          expect(state.translationPuts).to.be.empty;
+          expect(state.translations).to.deep.equal(originalTranslations);
+        });
+      });
+    });
+
+    it('does not count retired references when choosing publication languages', () => {
+      setupSavedIntroPage({ includeRetiredSections: true });
+      cy.fixture('getForm.json').then((form) => {
+        cy.intercept('GET', '/api/forms/cypresssettings', {
+          body: {
+            ...form,
+            title: 'Intro form',
+            components: [],
+            properties: {
+              ...form.properties,
+              signatures: undefined,
+              downloadPdfButtonText: undefined,
+              descriptionOfSignatures: undefined,
+            },
+            introPage: {
+              ...savedIntroPage,
+              sections: { ...savedIntroPage.sections, dataTreatment: { description: 'retired-key' } },
+            },
+          },
+        });
+        cy.intercept('GET', '/api/forms/cypresssettings/translations', {
+          body: [
+            ...initialSavedTranslations.map((translation) => ({ ...translation, nn: 'Translated', en: 'Translated' })),
+            { id: 300, key: 'Intro form', nb: 'Intro form', nn: 'Translated', en: 'Translated' },
+            { id: 301, key: 'retired-key', tag: 'introPage', nb: '' },
+          ],
+        });
+        cy.reload();
+      });
+      cy.findByRole('button', { name: 'Publiser' }).click();
+      cy.findByRole('dialog', { name: 'Publiseringsinnstillinger' }).within(() => {
+        cy.findByRole('checkbox', { name: 'Norsk nynorsk (NN)' }).should('be.enabled').and('be.checked');
+        cy.findByRole('checkbox', { name: 'Engelsk (EN)' }).should('be.enabled').and('be.checked');
+      });
+    });
+
+    it('does not save a disabled intro page when a changed key-based text has no Bokmål', () => {
+      const state = setupSavedIntroPage({ enabled: false });
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+        });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByText('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.').should('be.visible');
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.savedForms).to.be.empty;
+      });
+    });
+
+    it('allows saving after removing an empty unsaved text reference', () => {
+      const state = setupSavedIntroPage();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).check();
+      cy.findByTestId('importantInformation').within(() => {
+        cy.get('.rsw-editor [contenteditable="true"]').type('Temporary text');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+        cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+      });
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).uncheck();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@saveForm').its('response.statusCode').should('eq', 200);
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.translationPuts).to.be.empty;
+      });
+    });
+
     it('does not save translations when editors are unchanged or edits are reverted', () => {
       const state = setupSavedIntroPage();
 
