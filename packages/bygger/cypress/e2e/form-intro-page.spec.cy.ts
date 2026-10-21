@@ -16,6 +16,9 @@ function checkAllOptionalFields() {
   });
 }
 
+const fieldErrorMessage =
+  'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.';
+
 const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 
 function typeAndBlur(index: number, text: string) {
@@ -404,7 +407,7 @@ describe('FormSettingsPage', () => {
       });
     });
 
-    it('does not save a disabled intro page when a changed key-based text has no Bokmål', () => {
+    it('shows a field error and saves after recovery when a disabled intro page has empty text', () => {
       const state = setupSavedIntroPage({ enabled: false });
       cy.contains('Velkomstmelding')
         .parent()
@@ -413,11 +416,60 @@ describe('FormSettingsPage', () => {
           cy.get('.rsw-editor [contenteditable="true"]').blur();
         });
       cy.findByRole('button', { name: 'Lagre' }).click();
-      cy.findByText('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.').should('be.visible');
+      cy.findByText('Velkomstmelding må fylles ut').should('be.visible');
+      cy.findByText(fieldErrorMessage).should('be.visible');
       cy.then(() => {
         expect(state.translationPosts).to.be.empty;
         expect(state.savedForms).to.be.empty;
       });
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type('Ny velkomst');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+        });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait(['@saveTranslation', '@saveForm']).spread((translation, form) => {
+        expect(translation.request.body).to.include({ nb: '<p>Ny velkomst</p>', tag: 'introPage' });
+        expect(form.request.body.introPage.introduction).to.equal(translation.request.body.key);
+      });
+      cy.findByText('Velkomstmelding må fylles ut').should('not.exist');
+      cy.findByText(fieldErrorMessage).should('not.exist');
+    });
+
+    it('shows a field error and saves after recovery when an optional important information title is emptied', () => {
+      const state = setupSavedIntroPage();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).check();
+      cy.findByTestId('importantInformation').within(() => {
+        cy.findByRole('button', { name: 'Legg til overskrift' }).click();
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('Midlertidig');
+        cy.findByRole('textbox', { name: 'Overskrift' }).clear();
+        cy.get('.rsw-editor [contenteditable="true"]').type('Viktig tekst');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+      });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByTestId('importantInformation').findByText('Overskrift må fylles ut').should('be.visible');
+      cy.findByText(fieldErrorMessage).should('be.visible');
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.savedForms).to.be.empty;
+      });
+
+      cy.findByTestId('importantInformation').within(() => {
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('Viktig');
+      });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait(['@saveTranslation', '@saveTranslation', '@saveForm']).then(() => {
+        const [savedForm] = state.savedForms;
+        const keyFor = (nb: string) => state.translationPosts.find((translation) => translation.nb === nb)?.key;
+        expect(state.translationPosts.map(({ nb }) => nb)).to.have.members(['Viktig', 'Viktig tekst']);
+        expect(savedForm.introPage).to.have.deep.property('importantInformation', {
+          title: keyFor('Viktig'),
+          description: keyFor('Viktig tekst'),
+        });
+      });
+      cy.findByText(fieldErrorMessage).should('not.exist');
     });
 
     it('allows saving after removing an empty unsaved text reference', () => {
@@ -992,9 +1044,7 @@ describe('FormSettingsPage', () => {
         block: 'center',
       });
       cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${submitData.title}`);
-      cy.contains(
-        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
-      );
+      cy.contains(fieldErrorMessage);
       cy.contains('Velkomstmelding må fylles ut').then(assertInViewport);
       cy.contains('Egenerklæring må fylles ut').then(assertBelowViewport);
 
@@ -1016,9 +1066,7 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.contains(
-        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
-      ).should('not.exist');
+      cy.contains(fieldErrorMessage).should('not.exist');
     });
   });
 });

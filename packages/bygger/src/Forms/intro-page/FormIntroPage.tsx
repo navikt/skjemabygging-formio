@@ -31,14 +31,17 @@ import { SelfDeclaration } from './sections/SelfDeclaration';
 import { sanitizeIntroPage } from './utils/sanitizeIntroPage';
 import { useIntroPageRefs } from './validation/useIntroPageRefs';
 import { useScrollToFirstError } from './validation/useScrollToFirstError';
-import { IntroPageError, validateIntroPage } from './validation/validation';
+import { getMissingTextErrors, IntroPageError, validateIntroPage } from './validation/validation';
+
+const fieldErrorMessage =
+  'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.';
 
 export default function FormIntroPage({ form }: { form: Form }) {
   const { logger } = useAppConfig();
   const { changeForm, saveForm } = useForm();
   const { isReady: formTranslationsReady } = useFormTranslations();
   const { isReady: globalTranslationsReady } = useGlobalTranslations();
-  const { saveChanges } = useEditFormTranslations();
+  const { saveChanges, validateChanges } = useEditFormTranslations();
   const { getKeyBasedText } = useKeyBasedText();
 
   const { sections, importantInformation } = form.introPage ?? {
@@ -73,34 +76,49 @@ export default function FormIntroPage({ form }: { form: Form }) {
     };
   }, []);
 
+  const hasErrors = (validationErrors: IntroPageError) => Object.keys(validationErrors).length > 0;
+
+  const clearErrors = () => {
+    setErrors(undefined);
+    setSaveErrorMessage(undefined);
+  };
+
+  const showErrors = (validationErrors: IntroPageError, message?: string) => {
+    setErrors(validationErrors);
+    setSaveErrorMessage(message);
+    if (scrollAnimationFrameRef.current) {
+      window.cancelAnimationFrame(scrollAnimationFrameRef.current);
+    }
+    scrollAnimationFrameRef.current = window.requestAnimationFrame(() => {
+      scrollToFirstError(validationErrors);
+      scrollAnimationFrameRef.current = undefined;
+    });
+  };
+
   function handleValidation(onSuccess: () => void) {
     const validationErrors = validateIntroPage(form.introPage, getKeyBasedText);
-    const hasErrors = validationErrors && Object.keys(validationErrors).length > 0;
 
-    if (hasErrors) {
-      setErrors(validationErrors);
-      if (form.introPage?.enabled) {
-        setSaveErrorMessage(
-          'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
-        );
-      }
-      if (scrollAnimationFrameRef.current) {
-        window.cancelAnimationFrame(scrollAnimationFrameRef.current);
-      }
-      scrollAnimationFrameRef.current = window.requestAnimationFrame(() => {
-        scrollToFirstError(validationErrors);
-        scrollAnimationFrameRef.current = undefined;
-      });
-    } else {
-      onSuccess();
-      setErrors(undefined);
-      setSaveErrorMessage(undefined);
+    if (hasErrors(validationErrors)) {
+      showErrors(validationErrors, form.introPage?.enabled ? fieldErrorMessage : undefined);
+      return;
     }
+    clearErrors();
+    onSuccess();
   }
 
   const handleSave = async () => {
+    const activeKeys = getTextKeysFromForm(form);
+    const missingTextKeys = validateChanges(activeKeys)
+      .filter((error) => error.type === 'MISSING_BOKMAL_VALIDATION')
+      .map((error) => error.key);
+    const missingTextErrors = getMissingTextErrors(form.introPage, missingTextKeys);
+    if (hasErrors(missingTextErrors)) {
+      showErrors(missingTextErrors, fieldErrorMessage);
+      return;
+    }
+
     try {
-      if (!(await saveChanges(getTextKeysFromForm(form)))) {
+      if (!(await saveChanges(activeKeys))) {
         setSaveErrorMessage('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.');
         return;
       }
@@ -111,13 +129,13 @@ export default function FormIntroPage({ form }: { form: Form }) {
   };
 
   async function handleSubmit() {
-    if (!form.introPage?.enabled) {
-      setSaveErrorMessage(undefined);
-      await handleSave();
+    if (form.introPage?.enabled) {
+      handleValidation(handleSave);
       return;
     }
 
-    handleValidation(async () => await handleSave());
+    clearErrors();
+    await handleSave();
   }
 
   function validateAndOpenPublishSettingModal() {

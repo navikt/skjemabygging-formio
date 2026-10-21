@@ -1,5 +1,5 @@
 import { IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
-import { validateIntroPage } from './validation';
+import { getMissingTextErrors, validateIntroPage } from './validation';
 
 const createIntroPage = (): IntroPage => ({
   enabled: true,
@@ -50,5 +50,38 @@ describe('validateIntroPage', () => {
     };
 
     expect(validateIntroPage(introPage)).toEqual({});
+  });
+});
+
+describe('getMissingTextErrors', () => {
+  it('maps missing text keys to the fields that reference them', () => {
+    const introPage: IntroPage = {
+      ...createIntroPage(),
+      importantInformation: { title: 'important-title', description: 'important-description' },
+      sections: {
+        prerequisites: { description: 'prerequisites-description', bulletPoints: ['bullet-1', 'bullet-2'] },
+        optional: { title: 'optional-title' },
+      },
+    };
+
+    expect(
+      getMissingTextErrors(introPage, ['Velkommen', 'important-title', 'bullet-2', 'optional-title', 'unknown']),
+    ).toEqual({
+      introduction: 'Velkomstmelding må fylles ut',
+      importantInformation: { title: 'Overskrift må fylles ut' },
+      sections: {
+        prerequisites: { bulletPoints: { 1: 'Kulepunktet må fylles ut' } },
+        optional: { title: 'Overskrift må fylles ut' },
+      },
+    });
+  });
+
+  it('ignores keys referenced only by unsupported sections', () => {
+    const introPage = {
+      ...createIntroPage(),
+      sections: { ...createIntroPage().sections, dataTreatment: { description: 'retired-key' } },
+    } as IntroPage;
+
+    expect(getMissingTextErrors(introPage, ['retired-key'])).toEqual({});
   });
 });
