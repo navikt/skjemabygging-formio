@@ -30,7 +30,7 @@ describe('intro-page text definitions', () => {
     const source = directories
       .flatMap((directory) => {
         const root = fileURLToPath(new URL(`../../../../${directory}/`, import.meta.url));
-        return readdirSync(root, { recursive: true })
+        return readdirSync(root, { encoding: 'utf8', recursive: true })
           .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
           .map((file) => readFileSync(join(root, file), 'utf8'));
       })
