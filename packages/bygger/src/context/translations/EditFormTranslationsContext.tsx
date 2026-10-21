@@ -103,8 +103,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
     if (translations.length === 0) {
       if (Object.keys(state.changes).length > 0) {
-        dispatch({ type: 'SAVE_STARTED' });
-        dispatch({ type: 'SAVE_FINISHED', payload: { errors: [] } });
+        dispatch({ type: 'CLEAR_CHANGES' });
       }
       feedbackEmit.success('Ingen endringer oppdaget. Oversettelser ble ikke lagret.');
       return true;
