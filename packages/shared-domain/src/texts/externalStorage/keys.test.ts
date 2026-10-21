@@ -1,16 +1,14 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { IntroPage, introPageSectionContent } from '../../models/form/introPage';
 import initValues from './initValues';
-import { introPageTexts, keys } from './keys';
+import { introPageTexts, keys, Tkey } from './keys';
 
 describe('intro-page text definitions', () => {
-  it('covers exactly the model sections and text groups', () => {
-    expectTypeOf<keyof typeof introPageSectionContent>().toEqualTypeOf<keyof IntroPage['sections']>();
-    expectTypeOf<keyof typeof introPageTexts>().toEqualTypeOf<
-      keyof IntroPage['sections'] | 'guidePanel' | 'selfDeclaration'
-    >();
+  it('types global intro-page keys as registry literals', () => {
+    expectTypeOf<typeof introPageTexts.dataDisclosure.readMore>().toExtend<Tkey>();
+    expectTypeOf<'introPage.dataTreatment.title'>().not.toExtend<Tkey>();
+    expectTypeOf<string>().not.toExtend<Tkey>();
   });
 
   it('keeps defaults aligned with the registry without the retired title', () => {

@@ -55,8 +55,10 @@ const introPageTexts = {
   },
 } as const satisfies Record<IntroPageTextGroup, Record<string, string | readonly string[]>>;
 
-const introPage = Object.values(introPageTexts).flatMap((group) => Object.values(group).flat());
-type IntroPageKey = (typeof introPage)[number];
+type TextKeys<T> = T extends string ? T : T extends readonly (infer Item)[] ? TextKeys<Item> : TextKeys<T[keyof T]>;
+type IntroPageKey = TextKeys<typeof introPageTexts>;
+
+const introPage = Object.values(introPageTexts).flatMap((group) => Object.values(group).flat()) as IntroPageKey[];
 type ScopeTitle = (typeof introPageTexts.scope.titles)[number];
 type OutOfScopeTitle = (typeof introPageTexts.outOfScope.titles)[number];
 type PrerequisitesTitle = (typeof introPageTexts.prerequisites.titles)[number];
