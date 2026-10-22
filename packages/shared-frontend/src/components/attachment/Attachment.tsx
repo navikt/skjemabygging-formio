@@ -13,9 +13,9 @@ import { useValidationExternalError, useValidationFieldError } from '../../conte
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
 import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
-import Alert from '../alert/Alert';
 import FileUploadReadMore from '../file-upload/FileUploadReadMore';
 import ReadMore from '../read-more/ReadMore';
+import FieldError from '../shared/FieldError';
 import FormElementBox from '../shared/FormElementBox';
 import { BaseFieldProps, ChoiceValidation } from '../types';
 import AttachmentItem from './AttachmentItem';
@@ -151,9 +151,7 @@ const Attachment = ({
               <Label>{translate(label)}</Label>
               {description && <BodyShort>{translate(description)}</BodyShort>}
               {(validationError ?? externalError) && (
-                <Alert variant="error" inline>
-                  {validationError ?? externalError}
-                </Alert>
+                <FieldError id={`${inputId(choicePath)}-error`} error={validationError ?? externalError} />
               )}
             </div>
           ) : (
