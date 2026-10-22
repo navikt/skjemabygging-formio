@@ -31,7 +31,7 @@ import { SelfDeclaration } from './sections/SelfDeclaration';
 import { sanitizeIntroPage } from './utils/sanitizeIntroPage';
 import { useIntroPageRefs } from './validation/useIntroPageRefs';
 import { useScrollToFirstError } from './validation/useScrollToFirstError';
-import { getMissingTextErrors, IntroPageError, validateIntroPage } from './validation/validation';
+import { IntroPageError, validateIntroPage } from './validation/validation';
 
 const fieldErrorMessage =
   'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.';
@@ -41,7 +41,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const { changeForm, saveForm } = useForm();
   const { isReady: formTranslationsReady } = useFormTranslations();
   const { isReady: globalTranslationsReady } = useGlobalTranslations();
-  const { saveChanges, validateChanges } = useEditFormTranslations();
+  const { saveChanges } = useEditFormTranslations();
   const { getKeyBasedText } = useKeyBasedText();
 
   const { sections, importantInformation } = form.introPage ?? {
@@ -108,15 +108,6 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
   const handleSave = async () => {
     const activeKeys = getTextKeysFromForm(form);
-    const missingTextKeys = validateChanges(activeKeys)
-      .filter((error) => error.type === 'MISSING_BOKMAL_VALIDATION')
-      .map((error) => error.key);
-    const missingTextErrors = getMissingTextErrors(form.introPage, missingTextKeys);
-    if (hasErrors(missingTextErrors)) {
-      showErrors(missingTextErrors, fieldErrorMessage);
-      return;
-    }
-
     try {
       if (!(await saveChanges(activeKeys))) {
         setSaveErrorMessage('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.');

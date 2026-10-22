@@ -33,7 +33,7 @@ export function validateIntroPage(
   getKeybasedText?: (value: string) => string,
 ): IntroPageError {
   const hasEmptyValue = (text?: string): boolean =>
-    text !== undefined && (text.trim() === '' || (!!getKeybasedText && !getKeybasedText(text)));
+    text !== undefined && (text.trim() === '' || (!!getKeybasedText && !getKeybasedText(text).trim()));
 
   if (!introPage) return {};
 
@@ -111,10 +111,7 @@ export function validateIntroPage(
 
   if (introPage.importantInformation) {
     const importantErrors: NonNullable<IntroPageError['importantInformation']> = {};
-    if (
-      hasEmptyValue(introPage.importantInformation.description) &&
-      hasEmptyValue(introPage.importantInformation.title)
-    ) {
+    if (hasEmptyValue(introPage.importantInformation.title)) {
       importantErrors.title = errorMessages.title;
     }
     if (
@@ -130,43 +127,3 @@ export function validateIntroPage(
 
   return errors;
 }
-
-export const getMissingTextErrors = (introPage: Partial<IntroPage> | undefined, missingKeys: string[]) => {
-  const isMissing = (key?: string) => !!key && missingKeys.includes(key);
-  const errors: IntroPageError = {};
-
-  if (isMissing(introPage?.introduction)) {
-    errors.introduction = errorMessages.introduction;
-  }
-
-  const { title, description } = introPage?.importantInformation ?? {};
-  if (isMissing(title) || isMissing(description)) {
-    errors.importantInformation = {
-      ...(isMissing(title) && { title: errorMessages.title }),
-      ...(isMissing(description) && { description: errorMessages.importantInformationDescription }),
-    };
-  }
-
-  supportedIntroPageSectionKeys.forEach((sectionKey) => {
-    const section = introPage?.sections?.[sectionKey];
-    const sectionErrors: IntroPageSectionError = {};
-
-    if (isMissing(section?.title)) {
-      sectionErrors.title = errorMessages.title;
-    }
-    if (isMissing(section?.description)) {
-      sectionErrors.description = errorMessages.description;
-    }
-    section?.bulletPoints?.forEach((bulletPoint, index) => {
-      if (isMissing(bulletPoint)) {
-        sectionErrors.bulletPoints = { ...sectionErrors.bulletPoints, [index]: errorMessages.bulletPoint };
-      }
-    });
-
-    if (Object.keys(sectionErrors).length > 0) {
-      errors.sections = { ...errors.sections, [sectionKey]: sectionErrors };
-    }
-  });
-
-  return errors;
-};

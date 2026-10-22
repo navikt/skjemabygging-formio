@@ -22,7 +22,6 @@ type EditFormTranslationsContextValue = {
   shouldWarnAboutInactiveTranslation: (key?: string) => boolean;
   errors: TranslationError[];
   editState: string;
-  validateChanges: (activeKeys?: string[]) => TranslationError[];
   saveChanges: (activeKeys?: string[]) => Promise<boolean>;
   getTextFromCurrentChanges: (key?: string, lang?: TranslationLang) => string;
 };
@@ -31,7 +30,6 @@ const defaultValue: EditFormTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   editState: 'INIT',
-  validateChanges: () => [],
   saveChanges: () => Promise.resolve(true),
   addKeyBasedText: () => '',
   updateKeyBasedText: () => '',
@@ -94,9 +92,6 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     return key;
   };
 
-  const validateChanges = (activeKeys?: string[]) =>
-    validateFormTranslations(getTranslationsForSaving(state, activeKeys));
-
   const saveChanges = async (activeKeys?: string[]) => {
     const translations = getTranslationsForSaving(state, activeKeys);
     const validationErrors = validateFormTranslations(translations);
@@ -156,7 +151,6 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     updateTranslation,
     errors: state.errors,
     editState: state.status,
-    validateChanges,
     saveChanges,
     addKeyBasedText,
     updateKeyBasedText,

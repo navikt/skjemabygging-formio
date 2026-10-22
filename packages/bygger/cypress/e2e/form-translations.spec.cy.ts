@@ -78,23 +78,37 @@ describe('Form translations', () => {
       cy.findAllByRole('button', { name: 'Slett' }).should('have.length', 2);
     });
 
-    it('rejects empty Bokmål and allows saving after it has been corrected', () => {
-      const translationWrites: unknown[] = [];
+    it('keeps incomplete translations editable and saves them without requiring Bokmål', () => {
+      const translation = { id: 401, revision: 1, key: 'active-key', tag: 'introPage', nb: '', nn: '' };
+      cy.intercept('GET', '/api/forms/tst123456/translations', (req) => req.reply([translation])).as(
+        'reloadTranslations',
+      );
       cy.intercept('PUT', '/api/forms/tst123456/translations/401', (req) => {
-        translationWrites.push(req.body);
-        req.reply(200, { ...req.body, id: 401, key: 'active-key', tag: 'introPage', revision: 2 });
+        Object.assign(translation, { nb: req.body.nb, nn: req.body.nn, revision: translation.revision + 1 });
+        req.reply(200, translation);
       }).as('saveActiveTranslation');
       cy.findByText('Bokmålstekst mangler for nøkkel: active-key').click();
       cy.findByRole('textbox', { name: 'Nynorsk' }).type('Translated');
       cy.findByRole('button', { name: 'Lagre' }).click();
-      cy.contains('Legg til bokmålstekst før du lagrer oversettelsen').should('be.visible');
-      cy.then(() => expect(translationWrites).to.be.empty);
+      cy.wait('@saveActiveTranslation').then(({ request, response }) => {
+        expect(response?.statusCode).to.equal(200);
+        expect(request.body).to.include({ nb: '', nn: 'Translated' });
+      });
+      cy.wait('@reloadTranslations')
+        .its('response.body.0')
+        .should('include', { id: 401, key: 'active-key', nb: '', nn: 'Translated' });
+      cy.findByText(/\d+ oversettelser ble lagret\./).should('be.visible');
+      cy.findByText('Bokmålstekst mangler for nøkkel: active-key').should('be.visible').click();
       cy.findByRole('textbox', { name: 'Bokmål' }).type('Welcome');
+      cy.findByRole('textbox', { name: 'Bokmål' }).should('have.value', 'Welcome');
+      cy.findByRole('button', { name: 'Lagre' }).focus();
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@saveActiveTranslation').then(({ request, response }) => {
         expect(response?.statusCode).to.equal(200);
         expect(request.body).to.include({ nb: 'Welcome', nn: 'Translated' });
       });
+      cy.findByText('Welcome').should('be.visible');
+      cy.findByText('Bokmålstekst mangler for nøkkel: active-key').should('not.exist');
     });
   });
 

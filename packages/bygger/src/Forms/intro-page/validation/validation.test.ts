@@ -1,5 +1,5 @@
 import { IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
-import { getMissingTextErrors, validateIntroPage } from './validation';
+import { validateIntroPage } from './validation';
 
 const createIntroPage = (): IntroPage => ({
   enabled: true,
@@ -53,35 +53,37 @@ describe('validateIntroPage', () => {
   });
 });
 
-describe('getMissingTextErrors', () => {
-  it('maps missing text keys to the fields that reference them', () => {
+describe('required intro-page texts', () => {
+  it.each(['', ' \n\t '])('rejects empty referenced texts: %j', (emptyText) => {
     const introPage: IntroPage = {
       ...createIntroPage(),
       importantInformation: { title: 'important-title', description: 'important-description' },
       sections: {
-        prerequisites: { description: 'prerequisites-description', bulletPoints: ['bullet-1', 'bullet-2'] },
-        optional: { title: 'optional-title' },
+        prerequisites: { title: 'prerequisites-title', description: 'description', bulletPoints: ['bullet-1'] },
+        optional: { title: 'optional-title', description: 'optional-description' },
       },
     };
 
-    expect(
-      getMissingTextErrors(introPage, ['Velkommen', 'important-title', 'bullet-2', 'optional-title', 'unknown']),
-    ).toEqual({
+    expect(validateIntroPage(introPage, (key) => (key.endsWith('-title') ? 'Title' : emptyText))).toEqual({
       introduction: 'Velkomstmelding må fylles ut',
-      importantInformation: { title: 'Overskrift må fylles ut' },
+      importantInformation: { description: 'Brødtekst må fylles ut' },
       sections: {
-        prerequisites: { bulletPoints: { 1: 'Kulepunktet må fylles ut' } },
-        optional: { title: 'Overskrift må fylles ut' },
+        prerequisites: { description: 'Ingress må fylles ut', bulletPoints: { 0: 'Kulepunktet må fylles ut' } },
+        optional: { description: 'Ingress må fylles ut' },
       },
     });
   });
 
-  it('ignores keys referenced only by unsupported sections', () => {
-    const introPage = {
+  it('allows an absent optional title but requires text once the title is added', () => {
+    const introPage: IntroPage = {
       ...createIntroPage(),
-      sections: { ...createIntroPage().sections, dataTreatment: { description: 'retired-key' } },
-    } as IntroPage;
-
-    expect(getMissingTextErrors(introPage, ['retired-key'])).toEqual({});
+      importantInformation: { description: 'description' },
+    };
+    const getText = (key: string) => (key === 'empty-title' ? '' : key);
+    expect(validateIntroPage(introPage, getText)).toEqual({});
+    introPage.importantInformation!.title = 'empty-title';
+    expect(validateIntroPage(introPage, getText)).toEqual({
+      importantInformation: { title: 'Overskrift må fylles ut' },
+    });
   });
 });

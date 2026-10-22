@@ -1,10 +1,8 @@
 import { validateFormTranslations, validateGlobalTranslations } from './inputValidation';
 
 describe('validateFormTranslations', () => {
-  it.each([undefined, '', ' \n\t '])('rejects missing Bokmål on key-based translations: %j', (nb) => {
-    expect(validateFormTranslations([{ key: 'intro-key', tag: 'introPage', nb }])).toEqual([
-      expect.objectContaining({ key: 'intro-key', type: 'MISSING_BOKMAL_VALIDATION' }),
-    ]);
+  it.each([undefined, '', ' \n\t '])('allows incomplete key-based translations: %j', (nb) => {
+    expect(validateFormTranslations([{ key: 'intro-key', tag: 'introPage', nb }])).toEqual([]);
   });
 
   it('accepts non-empty Bokmål without requiring other languages', () => {

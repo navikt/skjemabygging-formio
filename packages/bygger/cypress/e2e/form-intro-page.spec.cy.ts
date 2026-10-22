@@ -407,8 +407,45 @@ describe('FormSettingsPage', () => {
       });
     });
 
-    it('shows a field error and saves after recovery when a disabled intro page has empty text', () => {
-      const state = setupSavedIntroPage({ enabled: false });
+    [true, false].forEach((enabled) => {
+      it(`keeps cleared text references and applies required validation only when enabled (${enabled})`, () => {
+        const state = setupSavedIntroPage({ enabled });
+        cy.contains('Velkomstmelding')
+          .parent()
+          .within(() => {
+            cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+            cy.get('.rsw-editor [contenteditable="true"]').blur();
+          });
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        if (enabled) {
+          cy.findByText('Velkomstmelding må fylles ut').should('be.visible');
+          cy.findByText(fieldErrorMessage).should('be.visible');
+          cy.then(() => {
+            expect(state.translationPosts).to.be.empty;
+            expect(state.savedForms).to.be.empty;
+          });
+          cy.findByRole('checkbox', { name: 'Bruk standard introside' }).uncheck();
+          cy.findByRole('button', { name: 'Lagre' }).click();
+        }
+        cy.wait(['@saveTranslation', '@saveForm']).spread((translation, form) => {
+          expect(translation.response?.statusCode).to.equal(201);
+          expect(form.response?.statusCode).to.equal(200);
+          expect(translation.request.body).to.include({ nb: '', tag: 'introPage' });
+          expect(translation.request.body.key).to.match(uuidRegex).and.not.equal(savedIntroPageKeys.introduction);
+          expect(form.request.body.introPage.introduction).to.equal(translation.request.body.key);
+          expect(form.request.body.introPage.enabled).to.equal(false);
+        });
+        cy.findByText('Velkomstmelding må fylles ut').should('not.exist');
+        cy.findByText(fieldErrorMessage).should('not.exist');
+        cy.then(() => {
+          expect(state.translationPuts).to.be.empty;
+          expect(state.translations.find(({ id }) => id === 101)).to.deep.equal(initialSavedTranslations[0]);
+        });
+      });
+    });
+
+    it('shows a field error and saves after recovery when an enabled intro page has empty text', () => {
+      const state = setupSavedIntroPage();
       cy.contains('Velkomstmelding')
         .parent()
         .within(() => {
