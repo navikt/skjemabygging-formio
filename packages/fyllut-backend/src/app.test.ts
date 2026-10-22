@@ -101,6 +101,19 @@ describe('app', () => {
     formScope.done();
   });
 
+  it.each(['index.html', 'nav123456.php', 'nav-123456'])(
+    'rejects an invalid form path without requesting a published form: %s',
+    async (formPath) => {
+      const res = await request(createApp()).get(`/fyllut/api/forms/${formPath}`).expect(400);
+
+      expect(res.body).toMatchObject({
+        message: 'Form path contains invalid characters.',
+        errorCode: 'BAD_REQUEST',
+        correlationId: expect.any(String),
+      });
+    },
+  );
+
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
     await request(createApp())
       .get('/fyllut/api/config')
