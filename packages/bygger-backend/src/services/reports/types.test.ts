@@ -9,6 +9,9 @@ describe('Report formatting', () => {
       { timestamp: '2026-01-01T12:00:00Z', expected: '2026-01-01, 12:00:00' },
       { timestamp: '2026-12-31T23:59:59.999Z', expected: '2026-12-31, 23:59:59' },
       { timestamp: '2026-01-01T00:30:00+01:00', expected: '2025-12-31, 23:30:00' },
+      { timestamp: '2025-03-24T10:42:19.088+01', expected: '2025-03-24, 09:42:19' },
+      { timestamp: '2024-10-11T09:55:26.324+02', expected: '2024-10-11, 07:55:26' },
+      { timestamp: '2026-01-01T23:30:00-02', expected: '2026-01-02, 01:30:00' },
       { timestamp: undefined, expected: undefined },
       { timestamp: '', expected: undefined },
     ])('formats $timestamp in UTC without fractional seconds', ({ timestamp, expected }) => {

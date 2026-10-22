@@ -39,6 +39,56 @@ const form = createFormsApiFormObject(
 );
 
 describe('utils', () => {
+  it('extracts supported intro-page sections but ignores retired and fixed-text sections', () => {
+    const introPage = {
+      enabled: true,
+      introduction: 'introduction',
+      importantInformation: { title: 'important-title', description: 'important-description' },
+      sections: {
+        ...Object.fromEntries(
+          ['scope', 'outOfScope', 'prerequisites', 'dataDisclosure', 'automaticProcessing', 'optional'].map((key) => [
+            key,
+            { title: `${key}-title`, description: `${key}-description`, bulletPoints: [`${key}-bullet`] },
+          ]),
+        ),
+        prerequisites: { title: 'prerequisites-title' },
+        dataTreatment: { description: 'retired-key' },
+        futureSection: { description: 'unknown-key' },
+        beAwareOf: { description: 'fixed-awareness-key' },
+        dataStorage: { description: 'fixed-storage-key' },
+      },
+      selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+    };
+    const actual = getTextKeysFromForm({ ...createFormsApiFormObject([], 'title'), introPage });
+
+    expect(actual).toEqual([
+      'introduction',
+      'important-title',
+      'important-description',
+      ...['scope', 'outOfScope'].flatMap((key) => [`${key}-title`, `${key}-description`, `${key}-bullet`]),
+      'prerequisites-title',
+      ...['dataDisclosure', 'automaticProcessing', 'optional'].flatMap((key) => [
+        `${key}-title`,
+        `${key}-description`,
+        `${key}-bullet`,
+      ]),
+      'title',
+    ]);
+  });
+
+  it('keeps a translation used when a supported section shares a retired reference', () => {
+    const introPage = {
+      enabled: true,
+      introduction: 'introduction',
+      sections: {
+        prerequisites: { description: 'shared-key' },
+        dataTreatment: { description: 'shared-key' },
+      },
+      selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+    };
+    expect(getTextKeysFromForm({ ...createFormsApiFormObject([], 'title'), introPage })).toContain('shared-key');
+  });
+
   describe('testGetAllTextsAndTypeForForm', () => {
     it('Test empty form', () => {
       const actual = getTextKeysFromForm(createFormsApiFormObject([], 'title'));
