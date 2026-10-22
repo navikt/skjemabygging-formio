@@ -29,7 +29,7 @@ type TranslationState =
  * Selects the language from the lang query parameter and loads the global translations for it.
  * Bokmål texts are the translation keys, so nb needs no fetch, and a failed fetch falls back to nb.
  */
-const SendinnLanguageProvider = ({ children, loadGlobalTranslations, onLoadError }: Props) => {
+const SendinnTranslationProvider = ({ children, loadGlobalTranslations, onLoadError }: Props) => {
   const { pathname, search } = useLocation();
   const currentLanguage = sendinnLanguageUtils.getSelectedLanguage(new URLSearchParams(search));
   const [state, setState] = useState<TranslationState>({ status: 'loading' });
@@ -82,4 +82,4 @@ const SendinnLanguageProvider = ({ children, loadGlobalTranslations, onLoadError
   );
 };
 
-export { SendinnLanguageProvider };
+export { SendinnTranslationProvider };
