@@ -1,7 +1,8 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import texasClient from '../../services/texas/texasClient';
-import { type AuthHandlerLogger, getRequestLogContext } from '../authHandlerLogger';
+import type { Logger } from '../../shared/logger/types';
+import { getRequestLogContext } from '../requestLogContext';
 
 // Level4 is the legacy name for idporten-loa-high.
 const ACCEPTED_ACR_VALUES = ['idporten-loa-high', 'Level4'];
@@ -14,7 +15,7 @@ interface IdportenUser {
 
 interface CreateIdportenAuthOptions {
   introspectionEndpoint: string;
-  logger: AuthHandlerLogger;
+  logger: Logger;
   fetchImpl?: typeof fetch;
 }
 
