@@ -28,27 +28,4 @@ export default [
       },
     ],
   },
-  {
-    id: 'post-texas-exchange',
-    url: '/texas/exchange',
-    method: 'POST',
-    variants: [
-      {
-        id: 'success',
-        type: 'json',
-        options: {
-          status: 200,
-          body: { access_token: 'tokenx-access-token', expires_in: 3600, token_type: 'Bearer' },
-        },
-      },
-      {
-        id: 'error',
-        type: 'json',
-        options: {
-          status: 400,
-          body: { error: 'invalid_request', error_description: 'invalid target' },
-        },
-      },
-    ],
-  },
 ];

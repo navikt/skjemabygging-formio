@@ -30,7 +30,7 @@ const test = base.extend<TestOptions & Fixtures>({
     await use(() => page.setExtraHTTPHeaders(signedInHeaders));
   },
   readyPage: async ({ page }, use) => {
-    await page.route('**/sendinn/api/log*', (route) => route.fulfill({ status: 200, body: 'ok' }));
+    await page.route('**/sendinn/api/log/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
     await use(page);
   },
 });
