@@ -3,6 +3,7 @@ import {
   FormsApiTranslationMap,
   ResponseError,
   sendinnEntryUtils,
+  sendinnLanguageUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useState } from 'react';
@@ -10,11 +11,8 @@ import { useLocation } from 'react-router';
 import { SessionExpiredMessage } from '../app/error/SessionExpiredMessage';
 import http from '../app/http/http';
 import { getAkselLocale } from '../app/language/akselLocale';
-import { getCurrentLanguage } from '../app/language/languageUtils';
 import SkeletonList from '../app/loading/SkeletonList';
 import { LanguageProvider } from '../context/language/LanguageContext';
-
-const availableLanguages: TranslationLang[] = ['nb', 'nn', 'en'];
 
 interface Props {
   children: ReactNode;
@@ -33,7 +31,7 @@ type TranslationState =
  */
 const SendinnLanguageProvider = ({ children, loadGlobalTranslations, onLoadError }: Props) => {
   const { pathname, search } = useLocation();
-  const currentLanguage = getCurrentLanguage(search, availableLanguages);
+  const currentLanguage = sendinnLanguageUtils.getSelectedLanguage(new URLSearchParams(search));
   const [state, setState] = useState<TranslationState>({ status: 'loading' });
 
   useEffect(() => {
@@ -70,7 +68,11 @@ const SendinnLanguageProvider = ({ children, loadGlobalTranslations, onLoadError
   const loginUrl = sendinnEntryUtils.createLoginUrl(`${sendinnEntryUtils.basePath}${pathname}${search}`);
 
   return (
-    <LanguageProvider translations={translations} currentLanguage={language} availableLanguages={availableLanguages}>
+    <LanguageProvider
+      translations={translations}
+      currentLanguage={language}
+      availableLanguages={sendinnLanguageUtils.languages}
+    >
       <AkselProvider locale={getAkselLocale(language)}>
         {state.status === 'loading' && <SkeletonList size={3} />}
         {state.status === 'sessionExpired' && <SessionExpiredMessage loginUrl={loginUrl} />}

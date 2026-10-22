@@ -1,8 +1,7 @@
 import { renderIndexHtml } from '@navikt/skjemadigitalisering-shared-backend';
-import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { sendinnEntryUtils, sendinnLanguageUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from './config/config';
-import { getSelectedLanguage } from './language';
 import { decorator, idportenAuth } from './services';
 
 const getQuery = (url: string) => {
@@ -28,7 +27,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     renderIndexHtml(res, {
       decoratorFragments: await decorator.getDecorator({
         redirectToUrl: getPublicUrl(req, returnPath),
-        language: getSelectedLanguage(searchParams),
+        language: sendinnLanguageUtils.getSelectedLanguage(searchParams),
       }),
       statusCode: entry.journey === 'unavailable' ? 404 : 200,
       umamiWebsiteId: config.umamiWebsiteId,
