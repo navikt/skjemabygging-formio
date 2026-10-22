@@ -371,14 +371,15 @@ describe('FormSettingsPage', () => {
       });
     });
 
-    it('does not count retired references when choosing publication languages', () => {
-      setupSavedIntroPage({ includeRetiredSections: true });
-      cy.fixture('getForm.json').then((form) => {
-        cy.intercept('GET', '/api/forms/cypresssettings', {
-          body: {
+    [true, false].forEach((hasCompleteTranslations) => {
+      it(`ignores retired references but requires translations of supported content (${hasCompleteTranslations})`, () => {
+        const state = setupSavedIntroPage();
+        cy.fixture('getForm.json').then((form) => {
+          const formWithRetiredSection = {
             ...form,
             title: 'Intro form',
             components: [],
+            publishedLanguages: ['nb', 'nn', 'en'],
             properties: {
               ...form.properties,
               signatures: undefined,
@@ -389,21 +390,53 @@ describe('FormSettingsPage', () => {
               ...savedIntroPage,
               sections: { ...savedIntroPage.sections, dataTreatment: { description: 'retired-key' } },
             },
-          },
+          };
+          cy.intercept('GET', '/api/forms/cypresssettings', { body: formWithRetiredSection });
+          cy.intercept('GET', '/api/forms/cypresssettings/translations', {
+            body: [
+              ...initialSavedTranslations.map((translation) => ({
+                ...translation,
+                nn: hasCompleteTranslations ? 'Translated' : '',
+                en: hasCompleteTranslations ? 'Translated' : '',
+              })),
+              { id: 300, key: 'Intro form', nb: 'Intro form', nn: 'Translated', en: 'Translated' },
+              { id: 301, key: 'retired-key', tag: 'introPage', nb: '' },
+            ],
+          });
+          cy.intercept('POST', '/api/form-publications/cypresssettings*', {
+            statusCode: 201,
+            body: { changed: true, form: formWithRetiredSection },
+          }).as('publishForm');
+          cy.reload();
         });
-        cy.intercept('GET', '/api/forms/cypresssettings/translations', {
-          body: [
-            ...initialSavedTranslations.map((translation) => ({ ...translation, nn: 'Translated', en: 'Translated' })),
-            { id: 300, key: 'Intro form', nb: 'Intro form', nn: 'Translated', en: 'Translated' },
-            { id: 301, key: 'retired-key', tag: 'introPage', nb: '' },
-          ],
+        cy.findByRole('button', { name: 'Publiser' }).click();
+        cy.findByRole('dialog', { name: 'Publiseringsinnstillinger' }).within(() => {
+          ['Norsk nynorsk (NN)', 'Engelsk (EN)'].forEach((name) => {
+            cy.findByRole('checkbox', { name })
+              .should(hasCompleteTranslations ? 'be.enabled' : 'be.disabled')
+              .and(hasCompleteTranslations ? 'be.checked' : 'not.be.checked');
+          });
+          if (hasCompleteTranslations) {
+            cy.findByRole('button', { name: 'Publiser' }).click();
+          }
         });
-        cy.reload();
-      });
-      cy.findByRole('button', { name: 'Publiser' }).click();
-      cy.findByRole('dialog', { name: 'Publiseringsinnstillinger' }).within(() => {
-        cy.findByRole('checkbox', { name: 'Norsk nynorsk (NN)' }).should('be.enabled').and('be.checked');
-        cy.findByRole('checkbox', { name: 'Engelsk (EN)' }).should('be.enabled').and('be.checked');
+        if (hasCompleteTranslations) {
+          cy.findByRole('button', { name: 'Ja, publiser skjemaet' }).click();
+          cy.wait('@publishForm').then(({ request, response }) => {
+            expect(response?.statusCode).to.equal(201);
+            expect(new URL(request.url).searchParams.get('languageCodes')?.split(',')).to.have.members([
+              'nb',
+              'nn',
+              'en',
+            ]);
+          });
+          cy.findByText('Satt i gang publisering, dette kan ta noen minutter.').should('be.visible');
+        }
+        cy.then(() => {
+          expect(state.savedForms).to.be.empty;
+          expect(state.translationPosts).to.be.empty;
+          expect(state.translationPuts).to.be.empty;
+        });
       });
     });
 
