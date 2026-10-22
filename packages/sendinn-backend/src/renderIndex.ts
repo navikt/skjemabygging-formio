@@ -1,7 +1,7 @@
 import { renderIndexHtml } from '@navikt/skjemadigitalisering-shared-backend';
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { config } from './config';
+import { config } from './config/config';
 import { getSelectedLanguage } from './language';
 import { decorator, idportenAuth } from './services';
 

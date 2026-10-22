@@ -6,7 +6,7 @@ import {
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { collectDefaultMetrics, Registry } from 'prom-client';
-import { config } from '../config';
+import { config } from '../config/config';
 import { supportedLanguages } from '../language';
 import { logger } from '../logger';
 
