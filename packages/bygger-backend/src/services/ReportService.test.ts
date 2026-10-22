@@ -120,6 +120,8 @@ describe('ReportService', () => {
         { name: 'whole seconds', timestamp: '2026-01-01T12:00:00Z', expected: '2026-01-01, 12:00:00' },
         { name: 'no rounding', timestamp: '2026-12-31T23:59:59.999Z', expected: '2026-12-31, 23:59:59' },
         { name: 'UTC normalization', timestamp: '2026-01-01T00:30:00+01:00', expected: '2025-12-31, 23:30:00' },
+        { name: 'winter hour-only offset', timestamp: '2025-03-24T10:42:19.088+01', expected: '2025-03-24, 09:42:19' },
+        { name: 'summer hour-only offset', timestamp: '2024-10-11T09:55:26.324+02', expected: '2024-10-11, 07:55:26' },
         { name: 'missing timestamp', timestamp: undefined, expected: '' },
         { name: 'empty timestamp', timestamp: '', expected: '' },
       ])('formats $name with a comma and space between date and time', async ({ timestamp, expected }) => {
