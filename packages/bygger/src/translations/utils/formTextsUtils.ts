@@ -13,6 +13,7 @@ import {
   IntroPage,
   navFormUtils,
   signatureUtils,
+  supportedIntroPageSectionKeys,
   TEXTS,
   Tkey,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -25,11 +26,10 @@ const extractTextsFromIntroPage = (introPage?: IntroPage): string[] => {
   return [
     ...[introduction],
     ...Object.values(importantInformation ?? {}),
-    ...Object.values(sections ?? {}).flatMap(({ title, description, bulletPoints }) => [
-      title,
-      description,
-      ...(bulletPoints ?? []),
-    ]),
+    ...supportedIntroPageSectionKeys.flatMap((key) => {
+      const section = sections?.[key];
+      return section ? [section.title, section.description, ...(section.bulletPoints ?? [])] : [];
+    }),
   ].filter((value): value is string => value !== undefined);
 };
 
