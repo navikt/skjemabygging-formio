@@ -1,11 +1,22 @@
 import {
+  ErrorBoundary,
+  ErrorPage,
+  ErrorPageLayout,
   FormContainer,
   FrontendLogger,
+  FrontPageButton,
   getAvailableLanguages,
   getCurrentLanguage,
   http,
+  MyPageLink,
+  navUrls,
+  NotFoundContent,
+  ReportBugLink,
   resolveActiveLanguage,
+  ServerErrorContent,
+  SessionExpiredMessage,
   SkeletonList,
+  UnavailablePage,
 } from './app';
 import CountrySelect from './components/country-select/CountrySelect';
 import CurrencySelect from './components/currency-select/CurrencySelect';
@@ -35,7 +46,7 @@ import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submi
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
-export type { FetchHeader, FetchOptions, LoggerConfig } from './app';
+export type { ErrorContentProps, FetchHeader, FetchOptions, LoggerConfig } from './app';
 export type { CountrySelectProps } from './components/country-select/CountrySelect';
 export type { CurrencySelectProps } from './components/currency-select/CurrencySelect';
 export type { NavUnitSelectProps } from './components/nav-unit-select/NavUnitSelect';
@@ -85,27 +96,38 @@ export {
   applyPrefillDataToForm,
   CountrySelect,
   CurrencySelect,
+  ErrorBoundary,
+  ErrorPage,
+  ErrorPageLayout,
   FormContainer,
   FormDefinitionProvider,
   FormErrorSummary,
   FrontendLogger,
+  FrontPageButton,
   getAvailableLanguages,
   getCurrentLanguage,
   getFormPrefillKeys,
   http,
   initializeDigitalDraft,
   LanguageProvider,
+  MyPageLink,
   NavUnitSelect,
+  navUrls,
+  NotFoundContent,
   RenderForm,
   RenderSummaryForm,
+  ReportBugLink,
   resolveActiveLanguage,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
+  ServerErrorContent,
+  SessionExpiredMessage,
   sharedFrontendPackageName,
   SkeletonList,
   solvePow,
   StateStoreProvider,
   SubmissionStateProvider,
+  UnavailablePage,
   useApplication,
   useFormDefinition,
   useFormDefinitionComponents,
