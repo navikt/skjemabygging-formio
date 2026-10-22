@@ -7,13 +7,7 @@ interface Props {
   className?: string;
   onClick: () => void;
   variant?:
-    | 'primary'
-    | 'primary-neutral'
-    | 'secondary'
-    | 'secondary-neutral'
-    | 'tertiary'
-    | 'tertiary-neutral'
-    | 'danger';
+    'primary' | 'primary-neutral' | 'secondary' | 'secondary-neutral' | 'tertiary' | 'tertiary-neutral' | 'danger';
   size?: 'medium' | 'small' | 'xsmall';
 }
 

@@ -1,5 +1,5 @@
 import { LogLevel, loggingUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import baseHttp from '../util/http/http';
+import baseHttp from '../http/http';
 
 type BaseHttp = typeof baseHttp;
 
