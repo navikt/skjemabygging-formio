@@ -23,7 +23,7 @@ const JourneyPlaceholder = ({ journey }: Props) => {
       <Heading level="1" size="large">
         {title}
       </Heading>
-      <BodyShort>{translate(TEXTS.statiske.sendinn.comingSoon)}</BodyShort>
+      <BodyShort>Denne tjenesten er under utvikling.</BodyShort>
     </VStack>
   );
 };

@@ -1,5 +1,5 @@
 import { onLanguageSelect, setParams } from '@navikt/nav-dekoratoren-moduler';
-import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { sendinnLanguageUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from 'react-router';
 const DecoratorLanguageSync = () => {
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
-  const language = localizationUtils.getLanguageCodeAsIso639_1(new URLSearchParams(search).get('lang') ?? 'nb');
+  const language = sendinnLanguageUtils.getSelectedLanguage(new URLSearchParams(search));
 
   useEffect(() => {
     onLanguageSelect(({ locale }) => {

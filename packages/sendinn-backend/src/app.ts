@@ -1,7 +1,7 @@
 import { correlator, errorHandler, rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
-import { config } from './config';
+import { config } from './config/config';
 import { buildDirectory } from './context';
 import renderIndex from './renderIndex';
 import apiRouter from './routers/api';

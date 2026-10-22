@@ -402,6 +402,5 @@ export const statiske = {
       task: 'Send inn etterspurt dokumentasjon',
       taskLink: 'Send inn etterspurt dokumentasjon fra varsel',
     },
-    comingSoon: 'Denne tjenesten er under utvikling.',
   },
 };
