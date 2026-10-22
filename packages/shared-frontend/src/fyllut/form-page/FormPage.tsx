@@ -12,6 +12,7 @@ import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
+import SavedStatus from '../navigation/SavedStatus';
 import { useFieldFocus } from './useFieldFocus';
 import { useFormPageController } from './useFormPageController';
 
@@ -99,6 +100,7 @@ const FormPage = () => {
         }}
       />
       <FormActionError />
+      <SavedStatus />
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
