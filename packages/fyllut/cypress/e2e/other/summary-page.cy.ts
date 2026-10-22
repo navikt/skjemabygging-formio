@@ -6,6 +6,7 @@ describe('SummaryPage', () => {
   });
 
   beforeEach(() => {
+    cy.clock(new Date('2025-10-20'), ['Date']);
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
   });
