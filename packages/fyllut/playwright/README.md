@@ -31,7 +31,9 @@ Rebuild after application changes; the test command does not rebuild for you.
 These commands use the standard Playwright CLI. `--list`, `--headed`,
 `--debug`, `--ui`, file selection and `--grep` are available. Visible browser
 tools need a graphical display. See [playwright.config.ts](../playwright.config.ts)
-for browser and runner settings.
+for browser settings and
+[playwright-app-config.mjs](../../../bin/playwright-app-config.mjs) for runner
+settings.
 
 If Vite exits with `EMFILE` while creating file watchers, use polling for that
 invocation: `CHOKIDAR_USEPOLLING=true pnpm playwright:fyllut`. This changes how
@@ -41,6 +43,7 @@ Vite watches local files, not test readiness or retries.
 
 ```text
 Playwright config
+  -> bin/playwright-app-config.mjs allocates ports and sets up runner options shared with Sendinn
   -> bin/fyllut-server-config.mjs supplies the same command recipe as start:fyllut:mocks
   -> Playwright webServer starts mocks and backend, plus Vite frontend in dev
   -> each test gets a fresh browser context and reset mock variants
@@ -98,11 +101,13 @@ triggers and retention settings.
 
 ## Configuration and helpers
 
-| File                                                              | Purpose                                                        |
-| ----------------------------------------------------------------- | -------------------------------------------------------------- |
-| [playwright.config.ts](../playwright.config.ts)                   | Ports, server lifecycle, runner options and reports.           |
-| [tsconfig.json](tsconfig.json)                                    | Type-check tests separately from application code.             |
-| [fixtures/test.ts](fixtures/test.ts)                              | Reset mock variants, prepare pages and expose mock helpers.    |
-| [fixtures/mock-client.ts](fixtures/mock-client.ts)                | Select and reset variants through the mock server's admin API. |
-| [helpers/form.ts](helpers/form.ts)                                | Shared form actions and network assertions.                    |
-| [fyllut-server-config.mjs](../../../bin/fyllut-server-config.mjs) | Server commands shared with the developer launcher.            |
+| File                                                                | Purpose                                                        |
+| ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [playwright.config.ts](../playwright.config.ts)                     | Browser settings for FyllUt.                                   |
+| [playwright-app-config.mjs](../../../bin/playwright-app-config.mjs) | Ports, server lifecycle, runner options and reports.           |
+| [tsconfig.json](tsconfig.json)                                      | Type-check tests separately from application code.             |
+| [fixtures/test.ts](fixtures/test.ts)                                | Reset mock variants, prepare pages and expose mock helpers.    |
+| [fixtures/mock-client.ts](fixtures/mock-client.ts)                  | Select and reset variants through the mock server's admin API. |
+| [helpers/form.ts](helpers/form.ts)                                  | Shared form actions and network assertions.                    |
+| [fyllut-server-config.mjs](../../../bin/fyllut-server-config.mjs)   | Server commands shared with the developer launcher.            |
+| [app-server-config.mjs](../../../bin/app-server-config.mjs)         | Server commands and health URLs shared by FyllUt and Sendinn.  |
