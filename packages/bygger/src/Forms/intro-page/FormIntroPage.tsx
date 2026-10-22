@@ -109,7 +109,8 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const handleSave = async () => {
     const activeKeys = getTextKeysFromForm(form);
     try {
-      if (!(await saveChanges(activeKeys))) {
+      const translationsSaved = await saveChanges(activeKeys);
+      if (!translationsSaved) {
         setSaveErrorMessage('Endringene ble ikke lagret. Rett opp valideringsfeilene i oversettelsene.');
         return;
       }
