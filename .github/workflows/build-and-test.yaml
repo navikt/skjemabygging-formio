@@ -47,6 +47,8 @@ jobs:
         run: pnpm test:shared-backend
       - name: 'Test shared-frontend'
         run: pnpm test:shared-frontend
+      - name: 'Test skill scripts and Forms API tools'
+        run: pnpm test:skills
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/main'
