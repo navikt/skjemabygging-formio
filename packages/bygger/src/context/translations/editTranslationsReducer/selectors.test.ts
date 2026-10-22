@@ -30,4 +30,14 @@ describe('getTranslationsForSaving', () => {
   it('keeps all changes for validation when no active-reference list is provided', () => {
     expect(getTranslationsForSaving(state)).toEqual(translations);
   });
+
+  it('filters all empty drafts when the active-reference list is empty', () => {
+    expect(getTranslationsForSaving(state, []).map(({ key }) => key)).toEqual([
+      'stored-empty',
+      'new-with-bokmal',
+      'new-with-nynorsk',
+      'new-with-english',
+      'stored-other-tag',
+    ]);
+  });
 });

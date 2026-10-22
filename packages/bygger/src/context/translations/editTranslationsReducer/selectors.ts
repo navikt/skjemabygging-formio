@@ -6,9 +6,12 @@ const hasNewTranslationData = (state: GlobalTranslationState) => !!(state.new.nb
 const isUnreferencedAndEmptyDraft = ({ key, id, nb, nn, en }: FormsApiTranslation, activeKeys: string[]) =>
   id === undefined && !activeKeys.includes(key) && ![nb, nn, en].some((text) => text?.trim());
 
-const getTranslationsForSaving = (state: State, activeKeys?: string[]): FormsApiTranslation[] =>
-  Object.values(state.changes ?? {}).filter(
-    (translation) => !activeKeys || !isUnreferencedAndEmptyDraft(translation, activeKeys),
-  );
+const getTranslationsForSaving = (state: State, activeKeys?: string[]): FormsApiTranslation[] => {
+  const translations = Object.values(state.changes ?? {});
+  if (activeKeys === undefined) {
+    return translations;
+  }
+  return translations.filter((translation) => !isUnreferencedAndEmptyDraft(translation, activeKeys));
+};
 
 export { getTranslationsForSaving, hasNewTranslationData };
