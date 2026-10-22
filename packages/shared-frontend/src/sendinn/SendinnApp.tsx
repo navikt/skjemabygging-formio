@@ -3,8 +3,8 @@ import { ErrorInfo, useCallback } from 'react';
 import { useAppConfig } from '../app/config/AppConfigProvider';
 import { ErrorBoundary } from '../app/error/ErrorBoundary';
 import { FormContainer } from '../app/layout/FormContainer';
-import { SendinnLanguageProvider } from './SendinnLanguageProvider';
 import { SendinnRoutes } from './SendinnRoutes';
+import { SendinnTranslationProvider } from './SendinnTranslationProvider';
 
 // Expects AppConfigProvider and a router with basename /sendinn.
 const SendinnApp = () => {
@@ -26,13 +26,13 @@ const SendinnApp = () => {
   );
 
   return (
-    <SendinnLanguageProvider loadGlobalTranslations={loadGlobalTranslations} onLoadError={logLoadError}>
+    <SendinnTranslationProvider loadGlobalTranslations={loadGlobalTranslations} onLoadError={logLoadError}>
       <ErrorBoundary onError={logRenderError}>
         <FormContainer>
           <SendinnRoutes />
         </FormContainer>
       </ErrorBoundary>
-    </SendinnLanguageProvider>
+    </SendinnTranslationProvider>
   );
 };
 

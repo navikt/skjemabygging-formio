@@ -5,9 +5,9 @@ import {
   createPublishedTranslationService,
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
+import { sendinnLanguageUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { collectDefaultMetrics, Registry } from 'prom-client';
-import { config } from '../config';
-import { supportedLanguages } from '../language';
+import { config } from '../config/config';
 import { logger } from '../logger';
 
 const metricsRegister = new Registry();
@@ -34,7 +34,7 @@ const decorator = createDecorator({
     simple: true,
     logoutWarning: true,
     // The SPA updates lang when the user selects a language in the decorator's menu.
-    availableLanguages: supportedLanguages.map((locale) => ({ locale, handleInApp: true })),
+    availableLanguages: sendinnLanguageUtils.languages.map((locale) => ({ locale, handleInApp: true })),
   },
 });
 

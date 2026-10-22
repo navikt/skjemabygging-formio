@@ -6,7 +6,6 @@ const en: Record<string, string> = {
   'Send inn etterspurt dokumentasjon til skjema': 'Submit requested documentation for a form',
   'Send inn etterspurt dokumentasjon': 'Submit requested documentation',
   'Send inn etterspurt dokumentasjon fra varsel': 'Submit requested documentation from a notification',
-  'Denne tjenesten er under utvikling.': 'This service is under development.',
   'Beklager, fant ikke siden': 'Sorry, we could not find the page',
   'Gå til forsiden': 'Go to the front page',
 };
@@ -17,7 +16,6 @@ const nn: Record<string, string> = {
   'Send inn etterspurt dokumentasjon til skjema': 'Send inn etterspurd dokumentasjon til skjema',
   'Send inn etterspurt dokumentasjon': 'Send inn etterspurd dokumentasjon',
   'Send inn etterspurt dokumentasjon fra varsel': 'Send inn etterspurd dokumentasjon frå varsel',
-  'Denne tjenesten er under utvikling.': 'Denne tenesta er under utvikling.',
   'Beklager, fant ikke siden': 'Beklagar, fann ikkje sida',
   'Gå til forsiden': 'Gå til framsida',
 };
