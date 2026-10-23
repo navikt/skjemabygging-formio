@@ -107,7 +107,7 @@ triggers and retention settings.
 | [playwright-app-config.mjs](../../../bin/playwright-app-config.mjs) | Ports, server lifecycle, runner options and reports.           |
 | [tsconfig.json](tsconfig.json)                                      | Type-check tests separately from application code.             |
 | [fixtures/test.ts](fixtures/test.ts)                                | Reset mock variants, prepare pages and expose mock helpers.    |
-| [fixtures/mock-client.ts](fixtures/mock-client.ts)                  | Select and reset variants through the mock server's admin API. |
+| [mock-client.ts](../../../mocks/mock-client.ts)                     | Select and reset variants through the mock server's admin API. |
 | [helpers/form.ts](helpers/form.ts)                                  | Shared form actions and network assertions.                    |
 | [fyllut-server-config.mjs](../../../bin/fyllut-server-config.mjs)   | Server commands shared with the developer launcher.            |
 | [app-server-config.mjs](../../../bin/app-server-config.mjs)         | Server commands and health URLs shared by FyllUt and Sendinn.  |
