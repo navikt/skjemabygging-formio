@@ -2,8 +2,8 @@ app-name: sendinn-preprod-alt
 ingresses:
   - 'https://sendinn-preprod-alt.intern.dev.nav.no/sendinn'
   - 'https://sendinn-preprod-alt.ansatt.dev.nav.no/sendinn'
-replicas-min: 1
-replicas-max: 2
+replicas-min: 2
+replicas-max: 4
 innsending-api-audience: dev-gcp:team-soknad:innsending-api
 accessPolicy:
   outbound:
