@@ -9,8 +9,8 @@
     "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "check-types": "tsc",
-    "clean": "rimraf dist coverage node_modules .runtime .cypress-home cypress/screenshots cypress/downloads"
+    "check-types": "tsc && tsc --project playwright/tsconfig.json",
+    "clean": "rimraf dist coverage node_modules .runtime"
   },
   "dependencies": {
     "@navikt/aksel-icons": "^8.2.0",
@@ -24,6 +24,7 @@
     "react-router": "^7.15.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/node": "^24.12.0"
   }
 }

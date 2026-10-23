@@ -133,10 +133,15 @@ export default tseslint.config(
     },
   },
   {
-    files: ['packages/fyllut/playwright/**/*.ts', 'packages/fyllut/playwright.config.ts'],
+    files: [
+      'packages/fyllut/playwright/**/*.ts',
+      'packages/fyllut/playwright.config.ts',
+      'packages/sendinn/playwright/**/*.ts',
+      'packages/sendinn/playwright.config.ts',
+    ],
     languageOptions: {
       parserOptions: {
-        project: './packages/fyllut/playwright/tsconfig.json',
+        project: ['./packages/fyllut/playwright/tsconfig.json', './packages/sendinn/playwright/tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

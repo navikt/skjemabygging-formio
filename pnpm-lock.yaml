@@ -198,7 +198,7 @@ importers:
         version: 5.2.0(supports-color@10.2.2)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))
       '@vitest/browser':
         specifier: ^2.1.8
-        version: 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+        version: 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
       '@vitest/coverage-v8':
         specifier: ^2.1.8
         version: 2.1.9(@vitest/browser@2.1.9)(supports-color@10.2.2)(vitest@3.2.6)
@@ -800,6 +800,9 @@ importers:
         specifier: ^7.15.1
         version: 7.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       '@types/node':
         specifier: ^24.12.0
         version: 24.12.0
@@ -8964,7 +8967,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)':
+  '@vitest/browser@2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
@@ -8976,6 +8979,8 @@ snapshots:
       tinyrainbow: 1.2.0
       vitest: 3.2.6(@types/node@25.7.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@25.7.0)(typescript@6.0.3))(supports-color@10.2.2)(terser@5.46.1)(yaml@2.9.0)
       ws: 8.20.1
+    optionalDependencies:
+      playwright: 1.63.0
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -8999,7 +9004,7 @@ snapshots:
       tinyrainbow: 1.2.0
       vitest: 3.2.6(@types/node@25.7.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@25.7.0)(typescript@6.0.3))(supports-color@10.2.2)(terser@5.46.1)(yaml@2.9.0)
     optionalDependencies:
-      '@vitest/browser': 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+      '@vitest/browser': 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -14126,7 +14131,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
-      '@vitest/browser': 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+      '@vitest/browser': 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
       jsdom: 29.1.1(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - jiti
@@ -14169,7 +14174,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
-      '@vitest/browser': 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+      '@vitest/browser': 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
       jsdom: 29.1.1(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - jiti
@@ -14212,7 +14217,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
-      '@vitest/browser': 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+      '@vitest/browser': 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
       jsdom: 29.1.1(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - jiti
@@ -14255,7 +14260,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.7.0
-      '@vitest/browser': 2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
+      '@vitest/browser': 2.1.9(@types/node@25.7.0)(playwright@1.63.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6)
       jsdom: 29.1.1(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - jiti
