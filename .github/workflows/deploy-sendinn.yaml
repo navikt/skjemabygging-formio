@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       environment:
-        description: 'Target environment (preprod)'
+        description: 'Target environment (preprod or preprod-alt)'
         required: true
         type: string
 

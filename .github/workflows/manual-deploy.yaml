@@ -146,7 +146,7 @@ jobs:
 
   deploy-sendinn-to-preprod:
     name: 'Sendinn'
-    if: ${{ !failure() && !cancelled() && github.event.inputs.environment == 'preprod' }}
+    if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/deploy-sendinn.yaml
     with:
       git_sha: ${{ github.sha }}
