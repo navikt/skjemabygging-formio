@@ -11,7 +11,7 @@ const MS_ONE_MINUTE = 60 * 1000;
 
 const createApp = () => {
   const app = express();
-  // The NAIS ingress sets a single X-Forwarded-For value, so trusting one hop gives the real client address.
+  // Keep the existing one-hop proxy trust setting until the proxy chain is verified in #2271.
   app.set('trust proxy', 1);
   app.use(correlator());
   app.use(express.json({ limit: '1mb' }));
@@ -19,7 +19,7 @@ const createApp = () => {
   app.set('view engine', 'mustache');
   app.engine('html', mustacheExpress());
 
-  // Per pod and per client IP. Same limit as fyllut's API, high enough for users behind a shared IP.
+  // Process-local limit shared by API and index requests; client IP resolution is tracked in #2271.
   const publicRateLimiter = rateLimiter(MS_ONE_MINUTE, 1000);
 
   const sendinnRouter = express.Router();
