@@ -3,8 +3,9 @@ import {
   FormsApiTranslationMap,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { createPublishedTranslationService, FETCH_TIMEOUT_MS, toTranslationMap } from './publishedTranslationService';
+import { createPublishedTranslationService, FETCH_TIMEOUT_MS } from './publishedTranslationService';
 import translationClient from './translationClient';
+import { toTranslationMap } from './translationMapper';
 
 const formsSources = ['formsapi-staging', 'formsapi-published'] as const;
 type FormsSource = (typeof formsSources)[number];

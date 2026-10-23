@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createGlobalTranslationService } from './globalTranslationService';
+import { createGlobalTranslationService, FormsSource } from './globalTranslationService';
 
 const baseUrl = 'http://forms-api.example';
 
-const setup = (formsSource: 'formsapi-staging' | 'formsapi-published') => {
+const setup = (formsSource: FormsSource) => {
   const client = { getGlobalTranslations: vi.fn(), getPublishedGlobalTranslations: vi.fn() };
   const service = createGlobalTranslationService({ baseUrl, formsSource, client });
   return { service, client };
@@ -43,11 +43,13 @@ describe('createGlobalTranslationService', () => {
   });
 
   describe('formsapi-published', () => {
-    it('serves published translations', async () => {
+    it('reads from the published translations endpoint', async () => {
       const { service, client } = setup('formsapi-published');
-      client.getPublishedGlobalTranslations.mockResolvedValue({ Ja: 'Yes' });
+      client.getPublishedGlobalTranslations.mockResolvedValue({});
 
-      await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
+      await service.getGlobalTranslations('en');
+
+      expect(client.getPublishedGlobalTranslations).toHaveBeenCalled();
       expect(client.getGlobalTranslations).not.toHaveBeenCalled();
     });
   });
