@@ -30,6 +30,11 @@ throws, and the missing data only shows up as subtly wrong output much later.
 The static path serves **published snapshots**. The forms-api path serves the
 **latest revision**, which is often a draft ahead of what has been published.
 
+`sendinn-backend` reads `FORMS_SOURCE` too, but has no static files. It accepts
+`formsapi-staging` (preprod, preprod-alt, local) and `formsapi-published`
+(published content from forms-api, used by the mock server and Playwright).
+Production requires the variable, so an unknown or missing value stops startup.
+
 ## Trap 1: `FORMS_SOURCE` does not identify the environment
 
 Both prod and dev use `static`. Never use the forms source as a proxy for "is

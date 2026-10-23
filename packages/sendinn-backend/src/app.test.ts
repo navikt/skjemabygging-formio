@@ -12,7 +12,7 @@ vi.mock('./services', async () => {
     decorator: { getDecorator: getDecoratorMock },
     idportenAuth: { authenticate: vi.fn() },
     metricsRegister: new Registry(),
-    publishedTranslationService: { getGlobalTranslations: getGlobalTranslationsMock },
+    globalTranslationService: { getGlobalTranslations: getGlobalTranslationsMock },
   };
 });
 

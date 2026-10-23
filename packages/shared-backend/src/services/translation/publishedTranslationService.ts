@@ -76,5 +76,5 @@ const createPublishedTranslationService = ({
   return { getGlobalTranslations };
 };
 
-export { createPublishedTranslationService };
+export { createPublishedTranslationService, toTranslationMap };
 export type { PublishedTranslationService };

@@ -50,5 +50,5 @@ export { createRegisterDataService } from './register-data';
 export type { RegisterDataService } from './register-data';
 export { createStaticPdfService } from './static-pdf';
 export type { StaticPdfService } from './static-pdf';
-export { createPublishedTranslationService, createTranslationService } from './translation';
-export type { PublishedTranslationService, TranslationService } from './translation';
+export { createGlobalTranslationService, createTranslationService, isFormsSource } from './translation';
+export type { FormsSource, GlobalTranslationService, TranslationService } from './translation';
