@@ -1,21 +1,20 @@
 import {
+  ApplicationPartyData,
   Attachment,
-  AvsenderId,
-  BrukerDto,
+  mapPartyToApplication,
   OpplastingsStatus,
+  resolveSubmissionAttachments,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  AttachmentSettingValues,
   Component,
   Form,
-  formatUtils,
   I18nTranslationMap,
   navFormUtils,
-  senderUtils,
+  resolveParty,
   Submission,
+  SubmissionMethod,
   TranslationLang,
-  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
@@ -27,20 +26,24 @@ const assembleSubmitApplicationRequest = (
   language: TranslationLang,
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
+  submissionMethod?: SubmissionMethod,
 ): SubmitApplicationRequest => {
-  const activeAttachments: Component[] =
-    navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
-  const bruker = extractBruker(form, submission);
-  const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+  const activeAttachments = navFormUtils
+    .flattenComponents(navFormUtils.getAllActivePanelsFromForm(form, submission, { submissionMethod }) as Component[])
+    .filter((component) => component.type === 'attachment');
+  const submissionAttachments = resolveSubmissionAttachments(form, submission);
+  const applicationParty = extractApplicationParty(form, submission);
 
-  if (!bruker && !avsender) {
+  if (!applicationParty) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
 
+  const { bruker, avsender } = applicationParty;
+
   return {
-    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
+    ...(bruker && { bruker }),
     ...(avsender && { avsender }),
+    ...(form.properties.grantUserDigitalAccess === true && { grantUserDigitalAccess: true }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
     tema: form.properties.tema,
@@ -54,13 +57,16 @@ const assembleSubmitApplicationRequest = (
       }),
     ),
     attachments:
-      submission.attachments
+      submissionAttachments
         ?.filter(
           (attachment) =>
-            attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
+            attachment.type === 'personal-id' ||
+            activeAttachments.some((component) => navFormUtils.getNavId(component) === attachment.navId),
         )
         .map((attachment) => {
-          const component = activeAttachments.find((c) => c.navId === attachment.navId);
+          const component = activeAttachments.find(
+            (activeAttachment) => navFormUtils.getNavId(activeAttachment) === attachment.navId,
+          );
           return validateAttachment(
             {
               attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
@@ -71,11 +77,16 @@ const assembleSubmitApplicationRequest = (
               description: component?.description ? translate(component?.description) : null,
               formNumberPath: component?.properties?.vedleggskjema,
             },
-            component?.navId ?? attachment.type,
+            (component ? navFormUtils.getNavId(component) : undefined) ?? attachment.type,
           );
         }) ?? [],
     otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
   };
+};
+
+const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData | undefined => {
+  const party = resolveParty(form, submission);
+  return party ? mapPartyToApplication(party) : undefined;
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {
@@ -91,56 +102,7 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
   return attachment;
 };
 
-const removeSpaces = (value?: string): string | undefined => (value ? formatUtils.removeAllSpaces(value) : value);
-
-const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
-  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
-  if (identityNumber) {
-    return { id: removeSpaces(identityNumber)!, idType: 'FNR' };
-  }
-  return undefined;
-};
-
-const extractAvsender = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const sender = senderUtils.getSender(form, submission.data);
-  if (sender) {
-    if (sender.person) {
-      return {
-        idType: 'FNR',
-        id: removeSpaces(sender.person?.nationalIdentityNumber),
-        navn: `${sender.person?.firstName} ${sender.person?.surname}`,
-      };
-    } else if (sender.organization) {
-      return {
-        idType: 'ORGNR',
-        id: removeSpaces(sender.organization?.number),
-        navn: sender.organization?.name,
-      };
-    }
-  }
-
-  // TODO: Fjern kode når de få skjemaene som har denne er fjernet.
-  const avsenderFornavn = submission.data.fornavnAvsender;
-  const avsenderEtternavn = submission.data.etternavnAvsender;
-  if (avsenderFornavn && avsenderEtternavn) {
-    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
-  }
-  return undefined;
-};
-
-const extractAvsenderFromYourInformation = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
-  if (yourInformation?.fornavn && yourInformation?.etternavn) {
-    const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
-    if (yourInformation.identitet?.identitetsnummer) {
-      return { id: removeSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
-    }
-    return { navn };
-  }
-  return undefined;
-};
-
-function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
+function mapToStatus(value?: string): OpplastingsStatus {
   if (!value) {
     return 'IkkeValgt';
   }

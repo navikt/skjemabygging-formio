@@ -9,14 +9,9 @@ interface Props {
   translate: TranslateFunction;
 }
 
-/**
- * This component renders a summary for the intro page.
- * This is not inside the form definition so it works differently then the other summary components
- * @constructor
- */
 const SummaryIntroPage = (props: Props) => {
   const { submission, form, translate } = props;
-  const { search } = useLocation();
+  const { search, state } = useLocation();
 
   if (!form.introPage?.enabled) {
     return null;
@@ -42,7 +37,7 @@ const SummaryIntroPage = (props: Props) => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: '../', search }}>
+        <FormSummary.EditLink as={Link} to={{ pathname: '../', search }} state={state}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>

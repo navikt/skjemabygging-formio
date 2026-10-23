@@ -1,15 +1,6 @@
-import DefaultAnswer from '../../shared/PdfDefaultAnswer';
+import DefaultSelectAnswer from '../../shared/PdfDefaultSelectAnswer';
 import { PdfComponentProps } from '../../types';
 
-const PdfSelect = (props: PdfComponentProps) => {
-  const { translate, component } = props;
-
-  const getLabelFromValue = (value?: string) => {
-    const option = component.data?.values?.find((dataValue) => dataValue.value === value);
-    return option?.label ? translate(option?.label || '') : translate(value);
-  };
-
-  return DefaultAnswer(props, getLabelFromValue);
-};
+const PdfSelect = (props: PdfComponentProps) => DefaultSelectAnswer(props);
 
 export default PdfSelect;

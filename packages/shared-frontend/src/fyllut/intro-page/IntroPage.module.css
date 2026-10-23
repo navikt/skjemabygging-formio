@@ -1,0 +1,11 @@
+.section {
+  margin-block-end: var(--ax-space-40);
+}
+
+.staticPanel {
+  margin-block-end: var(--ax-space-40);
+}
+
+.listItem {
+  margin-block-end: var(--ax-space-16);
+}

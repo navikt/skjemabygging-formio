@@ -3,11 +3,13 @@ import {
   createApplicationActivitiesService,
   createApplicationPdfService,
   createApplicationService,
+  createCaptchaService,
   createCommonCodesService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
   createNavUnitService,
+  createNologinTokenService,
   createPrefillService,
   createRecipientService,
   createRegisterDataService,
@@ -17,7 +19,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
 import AppMetrics from './AppMetrics';
-import NologinTokenService from './nologin/NologinTokenService';
 import TranslationsService from './TranslationsService';
 
 const appMetrics: AppMetrics = new AppMetrics();
@@ -116,7 +117,8 @@ const translationService = createTranslationService({
 
 const translationsService = new TranslationsService(config);
 
-const nologinTokenService = NologinTokenService(config);
+const nologinTokenService = createNologinTokenService(config.nologin);
+const captchaService = createCaptchaService(config.captcha);
 
 export {
   activeTaskService,
@@ -124,6 +126,7 @@ export {
   applicationPdfService,
   applicationService,
   appMetrics,
+  captchaService,
   commonCodesService,
   coverPageService,
   formService,

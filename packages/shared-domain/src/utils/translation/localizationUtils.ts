@@ -1,4 +1,6 @@
-const getLanguageCodeAsIso639_1 = (locale) => {
+import { TranslationLang } from '../../models';
+
+const getSupportedLanguageCode = (locale: string): TranslationLang | undefined => {
   switch (locale) {
     case 'nn':
     case 'nn-NO':
@@ -9,10 +11,11 @@ const getLanguageCodeAsIso639_1 = (locale) => {
     case 'no':
     case 'nb':
     case 'nb-NO':
-    default:
       return 'nb';
   }
 };
+
+const getLanguageCodeAsIso639_1 = (locale: string): TranslationLang => getSupportedLanguageCode(locale) ?? 'nb';
 
 const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) => {
   if (keyNames.length !== valueNames.length) {
@@ -30,6 +33,7 @@ const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) =>
 };
 
 const localizationUtils = {
+  getSupportedLanguageCode,
   getLanguageCodeAsIso639_1,
   zipCountryNames,
 };

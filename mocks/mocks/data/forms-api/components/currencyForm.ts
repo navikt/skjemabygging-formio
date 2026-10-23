@@ -56,13 +56,6 @@ const currencyForm = () => {
             label: 'Beløp ikke påkrevd',
             validate: { required: false },
           }),
-          currency({
-            label: 'Beløp egendefinert',
-            validate: {
-              required: false,
-              custom: 'valid = input == 100 ? true : "Kun 100 er tillatt"',
-            },
-          }),
         ],
       }),
     ],

@@ -1,0 +1,10 @@
+.downloadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ax-space-16);
+}
+
+.navUnit {
+  inline-size: 100%;
+}

@@ -8,14 +8,6 @@
   "mainDocumentAlt": "<IGNORED>",
   "attachments": [
     {
-      "attachmentCode": "V9",
-      "label": "Vedlegg upload-only",
-      "title": "Vedlegg upload-only",
-      "uploadStatus": "LastetOpp",
-      "fileIds": ["<IGNORED>"],
-      "description": null
-    },
-    {
       "attachmentCode": "V1",
       "label": "Vedlegg 1",
       "title": "Vedleggstittel 1",
@@ -32,6 +24,14 @@
       "description": null
     },
     {
+      "attachmentCode": "V9",
+      "label": "Vedlegg upload-only",
+      "title": "Vedlegg upload-only",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
+    },
+    {
       "attachmentCode": "N6",
       "label": "Annet vedlegg 1",
       "title": "Annet",
@@ -40,5 +40,6 @@
       "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>"
     }
   ],
-  "otherUploadAvailable": true
+  "otherUploadAvailable": true,
+  "grantUserDigitalAccess": true
 }

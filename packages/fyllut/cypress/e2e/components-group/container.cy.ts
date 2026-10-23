@@ -20,7 +20,7 @@ describe('Container', () => {
 
     it('should hide label when hideLabel is true', () => {
       // The label is not rendered when hideLabel is true
-      cy.get('.formio-component-beholderSkjult').within(() => {
+      cy.get('[data-component-key="beholderSkjult"]').within(() => {
         cy.contains('Beholder med skjult overskrift').should('not.exist');
       });
     });

@@ -54,12 +54,15 @@ describe('legacyErrorToResponseError', () => {
     });
   });
 
-  it('passes explicit ResponseError through unchanged', () => {
-    const error = new ResponseError('BAD_REQUEST', 'Bad request', 'corr-id', 'Bad request');
-    const next = vi.fn();
+  it.each(['BAD_REQUEST', 'NOT_FOUND', 'FORBIDDEN', 'SERVICE_UNAVAILABLE'] as const)(
+    'passes explicit %s ResponseError through unchanged',
+    (errorCode) => {
+      const error = new ResponseError(errorCode, 'Request failed', 'corr-id', 'Request failed');
+      const next = vi.fn();
 
-    legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
+      legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
 
-    expect(next.mock.calls[0][0]).toBe(error);
-  });
+      expect(next.mock.calls[0][0]).toBe(error);
+    },
+  );
 });
