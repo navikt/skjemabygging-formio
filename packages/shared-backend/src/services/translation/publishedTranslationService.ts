@@ -76,5 +76,5 @@ const createPublishedTranslationService = ({
   return { getGlobalTranslations };
 };
 
-export { createPublishedTranslationService, toTranslationMap };
+export { createPublishedTranslationService, FETCH_TIMEOUT_MS, toTranslationMap };
 export type { PublishedTranslationService };

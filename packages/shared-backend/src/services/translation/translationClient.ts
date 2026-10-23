@@ -26,13 +26,16 @@ const getFormTranslations = async (props: GetFormTranslationsProps) => {
 interface GetGlobalTranslationsProps {
   baseUrl: string;
   languageCodes?: TranslationLang[];
+  timeoutMs?: number;
 }
 const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
-  const { baseUrl, languageCodes } = props;
+  const { baseUrl, languageCodes, timeoutMs } = props;
   const targetUrl = `${baseUrl}/${globalTranslationUrl}${buildLanguageCodesParam(languageCodes)}`;
   logger.debug('Getting global translations', { languageCodes, targetUrl });
 
-  return await http.get<FormsApiTranslation[]>(targetUrl);
+  return await http.get<FormsApiTranslation[]>(targetUrl, {
+    signal: timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined,
+  });
 };
 
 interface GetPublishedGlobalTranslationsProps {

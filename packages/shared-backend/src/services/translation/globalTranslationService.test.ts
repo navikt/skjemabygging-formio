@@ -19,7 +19,7 @@ describe('createGlobalTranslationService', () => {
       ]);
 
       await expect(service.getGlobalTranslations('en')).resolves.toEqual({ Ja: { en: 'Yes' } });
-      expect(client.getGlobalTranslations).toHaveBeenCalledWith({ baseUrl, languageCodes: ['en'] });
+      expect(client.getGlobalTranslations).toHaveBeenCalledWith({ baseUrl, languageCodes: ['en'], timeoutMs: 5000 });
       expect(client.getPublishedGlobalTranslations).not.toHaveBeenCalled();
     });
 

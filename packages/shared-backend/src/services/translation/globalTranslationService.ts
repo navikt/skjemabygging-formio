@@ -3,7 +3,7 @@ import {
   FormsApiTranslationMap,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { createPublishedTranslationService, toTranslationMap } from './publishedTranslationService';
+import { createPublishedTranslationService, FETCH_TIMEOUT_MS, toTranslationMap } from './publishedTranslationService';
 import translationClient from './translationClient';
 
 const formsSources = ['formsapi-staging', 'formsapi-published'] as const;
@@ -37,7 +37,7 @@ const toLanguageTranslations = (translations: FormsApiTranslation[], languageCod
  * Global translations for one language from forms-api.
  *
  * - `formsapi-staging` serves the latest revision, including unpublished changes. It is not cached, so edits show up
- *   at once, and failures propagate to the caller.
+ *   at once. Fetches time out after 5 seconds, and failures propagate to the caller.
  * - `formsapi-published` serves published translations with caching and fallback, see
  *   `createPublishedTranslationService`.
  */
@@ -52,7 +52,11 @@ const createGlobalTranslationService = ({
 
   return {
     getGlobalTranslations: async (languageCode) => {
-      const translations = await client.getGlobalTranslations({ baseUrl, languageCodes: [languageCode] });
+      const translations = await client.getGlobalTranslations({
+        baseUrl,
+        languageCodes: [languageCode],
+        timeoutMs: FETCH_TIMEOUT_MS,
+      });
       return toTranslationMap(languageCode, toLanguageTranslations(translations ?? [], languageCode));
     },
   };
