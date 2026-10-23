@@ -4,7 +4,6 @@ ingresses:
   - 'https://sendinn-preprod-alt.ansatt.dev.nav.no/sendinn'
 replicas-min: 1
 replicas-max: 2
-forms-api-url: http://forms-api.fyllut-sendinn
 innsending-api-audience: dev-gcp:team-soknad:innsending-api
 accessPolicy:
   outbound:
