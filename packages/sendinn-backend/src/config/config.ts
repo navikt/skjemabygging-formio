@@ -28,7 +28,6 @@ const config = {
   isTest,
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   noDecorator: process.env.NO_DECORATOR === 'true',
-  umamiWebsiteId: process.env.UMAMI_WEBSITE_ID,
   formsApiUrl: env('FORMS_API_URL', 'https://forms-api.intern.dev.nav.no'),
   texas: {
     introspectionEndpoint: env('NAIS_TOKEN_INTROSPECTION_ENDPOINT', 'http://127.0.0.1:3300/texas/introspect'),
