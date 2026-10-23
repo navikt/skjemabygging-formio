@@ -10,6 +10,7 @@ const createSendinnServerConfig = (options) =>
     createBackendEnv: (mockURL) => ({
       NO_DECORATOR: 'true',
       FORMS_API_URL: `${mockURL}/forms-api`,
+      FORMS_SOURCE: 'formsapi-published',
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockURL}/texas/introspect`,
       NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockURL}/texas/exchange`,
     }),

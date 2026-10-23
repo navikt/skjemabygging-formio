@@ -1,4 +1,4 @@
-export { createPublishedTranslationService } from './publishedTranslationService';
-export type { PublishedTranslationService } from './publishedTranslationService';
+export { createGlobalTranslationService, isFormsSource } from './globalTranslationService';
+export type { FormsSource, GlobalTranslationService } from './globalTranslationService';
 export { createTranslationService } from './translationService';
 export type { TranslationService } from './translationService';

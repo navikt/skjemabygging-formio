@@ -64,5 +64,7 @@ spec:
   env:
     - name: FORMS_API_URL
       value: http://forms-api.fyllut-sendinn
+    - name: FORMS_SOURCE
+      value: {{forms-source}}
     - name: INNSENDING_API_AUDIENCE
       value: {{innsending-api-audience}}

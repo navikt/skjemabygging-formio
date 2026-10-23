@@ -1,3 +1,4 @@
+import { isFormsSource } from '@navikt/skjemadigitalisering-shared-backend';
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'test') {
@@ -19,6 +20,16 @@ const env = (name: string, developmentValue?: string) => {
   return value;
 };
 
+// formsapi-staging serves unpublished changes from forms-api (preprod and local), formsapi-published only published ones.
+const getFormsSource = () => {
+  const formsSource = env('FORMS_SOURCE', 'formsapi-staging');
+  if (!isFormsSource(formsSource)) {
+    throw new Error(`Unsupported FORMS_SOURCE: ${formsSource}`);
+  }
+
+  return formsSource;
+};
+
 const config = {
   port: parseInt(process.env.PORT || '8083'),
   basePath: '/sendinn',
@@ -29,6 +40,7 @@ const config = {
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   noDecorator: process.env.NO_DECORATOR === 'true',
   formsApiUrl: env('FORMS_API_URL', 'https://forms-api.intern.dev.nav.no'),
+  formsSource: getFormsSource(),
   texas: {
     introspectionEndpoint: env('NAIS_TOKEN_INTROSPECTION_ENDPOINT', 'http://127.0.0.1:3300/texas/introspect'),
     exchangeEndpoint: env('NAIS_TOKEN_EXCHANGE_ENDPOINT', 'http://127.0.0.1:3300/texas/exchange'),
