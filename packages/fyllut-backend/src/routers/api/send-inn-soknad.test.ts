@@ -73,7 +73,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Internal Server Error');
+      expect(error.message).toBe('Draft request failed');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
@@ -92,7 +92,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('NOT_FOUND');
-      expect(error.message).toBe('Not Found');
+      expect(error.message).toBe('Draft request failed');
       expect(res.json).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
@@ -174,7 +174,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Internal Server Error');
+      expect(error.message).toBe('Draft request failed');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
@@ -195,7 +195,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('NOT_FOUND');
-      expect(error.message).toBe('Not Found');
+      expect(error.message).toBe('Draft request failed');
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -269,7 +269,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(error.message).toBe('Internal Server Error');
+      expect(error.message).toBe('Draft request failed');
       expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
