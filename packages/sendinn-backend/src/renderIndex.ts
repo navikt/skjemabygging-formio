@@ -30,7 +30,6 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         language: sendinnLanguageUtils.getSelectedLanguage(searchParams),
       }),
       statusCode: entry.journey === 'unavailable' ? 404 : 200,
-      umamiWebsiteId: config.umamiWebsiteId,
     });
   } catch (error) {
     next(error);
