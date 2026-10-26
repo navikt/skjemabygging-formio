@@ -28,12 +28,7 @@ interface UnidentifiedConcernedPerson {
 
 type ConcernedPerson = IdentifiedConcernedPerson | UnidentifiedConcernedPerson;
 
-interface LegacySender {
-  firstName: string;
-  surname: string;
-}
-
-type PartySender = SenderPerson | SenderOrganization | LegacySender;
+type PartySender = SenderPerson | SenderOrganization;
 
 type Party =
   | {
@@ -57,13 +52,10 @@ type Party =
 
 const isSenderOrganization = (sender: PartySender): sender is SenderOrganization => 'number' in sender;
 
-const isSenderPerson = (sender: PartySender): sender is SenderPerson => 'nationalIdentityNumber' in sender;
-
-export { isSenderOrganization, isSenderPerson };
+export { isSenderOrganization };
 export type {
   ConcernedPerson,
   IdentifiedConcernedPerson,
-  LegacySender,
   Party,
   PartyAddress,
   PartySender,

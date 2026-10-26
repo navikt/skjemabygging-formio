@@ -2,7 +2,6 @@ import {
   ConcernedPerson,
   formatUtils,
   isSenderOrganization,
-  isSenderPerson,
   Party,
   PartySender,
   SenderOrganization,
@@ -24,17 +23,11 @@ const mapSender = (sender: PartySender): AvsenderId => {
     return mapOrganization(sender);
   }
 
-  const mappedSender = { navn: getFullName(sender.firstName, sender.surname) };
-
-  if (isSenderPerson(sender)) {
-    return {
-      ...mappedSender,
-      id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
-      idType: 'FNR',
-    };
-  }
-
-  return mappedSender;
+  return {
+    navn: getFullName(sender.firstName, sender.surname),
+    id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
+    idType: 'FNR',
+  };
 };
 
 const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> | undefined =>
