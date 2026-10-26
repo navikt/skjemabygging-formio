@@ -1,5 +1,8 @@
+import { errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form, Submission, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import legacyErrorToResponseError from '../../../middleware/legacyErrorToResponseError';
+import { mockRequest, mockResponse } from '../../../test/testHelpers';
 import { assembleSubmitApplicationRequest } from './applicationUtils';
 
 const attachmentComponent = {
@@ -54,6 +57,58 @@ describe('assembleSubmitApplicationRequest', () => {
   });
 
   const submission = { data: { fodselsnummerDNummerSoker: '12345678911' } } as Submission;
+
+  it.each(['digital', 'digitalnologin'] as const)(
+    'preserves a specific missing-party diagnostic through error handling for %s without exposing submission values',
+    (submissionMethod) => {
+      const request = mockRequest({});
+      const response = mockResponse();
+      response.contentType.mockReturnThis();
+      response.status.mockReturnThis();
+      const next = vi.fn();
+      let submissionError: unknown;
+
+      try {
+        assembleSubmitApplicationRequest(
+          'submission-1',
+          {
+            ...form,
+            components: [{ key: 'identitet', type: 'identity', input: true }],
+          } as Form,
+          {
+            data: {
+              firstName: 'private-first-name',
+              lastName: 'private-last-name',
+              identitet: { identitetsnummer: '12345678911' },
+            },
+          },
+          'nb',
+          [],
+          (text) => text,
+          submissionMethod,
+        );
+      } catch (error) {
+        submissionError = error;
+      }
+
+      expect(submissionError).toBeInstanceOf(Error);
+      legacyErrorToResponseError(submissionError, request, response, next);
+      errorHandler(next.mock.calls[0][0], request, response, vi.fn());
+
+      expect(response.send).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          message: 'Cannot submit application: no user or sender could be resolved (formPath=application)',
+          errorCode: 'INTERNAL_SERVER_ERROR',
+          userMessage: 'Det oppstod en feil',
+        }),
+      );
+      expect(response.status).toHaveBeenCalledWith(500);
+      const errorResponse = JSON.stringify(response.send.mock.calls);
+      expect(errorResponse).not.toContain('private-first-name');
+      expect(errorResponse).not.toContain('private-last-name');
+      expect(errorResponse).not.toContain('12345678911');
+    },
+  );
 
   it('includes grantUserDigitalAccess only when the form property is true', () => {
     const request = assembleSubmitApplicationRequest(
