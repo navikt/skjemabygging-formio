@@ -12,6 +12,7 @@ import {
   I18nTranslationMap,
   navFormUtils,
   resolveParty,
+  ResponseError,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -35,7 +36,12 @@ const assembleSubmitApplicationRequest = (
   const applicationParty = extractApplicationParty(form, submission);
 
   if (!applicationParty) {
-    throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
+    throw new ResponseError(
+      'INTERNAL_SERVER_ERROR',
+      `Cannot submit application: no user or sender could be resolved (formPath=${form.path})`,
+      undefined,
+      'Det oppstod en feil',
+    );
   }
 
   const { bruker, avsender } = applicationParty;
