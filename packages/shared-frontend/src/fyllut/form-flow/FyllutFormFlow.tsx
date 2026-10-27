@@ -5,7 +5,6 @@ import { FormDefinitionProvider } from '../../context/form-definition/FormDefini
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
-import DevtoolsBridge from '../devtools/DevtoolsBridge';
 import FormLanguageSelector from '../language/FormLanguageSelector';
 import FormLayout from '../layout/FormLayout';
 import { resolveDefaultSubmissionMethod } from '../submission-method/submissionMethodResolution';
@@ -60,7 +59,6 @@ const FyllutFormFlow = ({
                 initialInnsendingsId={initialInnsendingsId}
                 setReceiptPdf={setReceiptPdf}
               >
-                <DevtoolsBridge />
                 <FormLayout>
                   <FormLanguageSelector />
                   {shouldRenderFormFlow ? (

@@ -437,7 +437,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
 
   const reportToDevtools = useDevtoolsReport();
   useEffect(() => {
-    reportToDevtools('validation', { pagesWithErrors, violationsByPage, externalErrors, errorSummaryScope });
+    reportToDevtools?.('validation', { pagesWithErrors, violationsByPage, externalErrors, errorSummaryScope });
   }, [errorSummaryScope, externalErrors, pagesWithErrors, reportToDevtools, violationsByPage]);
 
   const store = useMemo<ValidationStore>(

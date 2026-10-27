@@ -8,16 +8,12 @@ interface Props {
 
 const DevtoolsContext = createContext<DevtoolsReport | undefined>(undefined);
 
-const noReport: DevtoolsReport = () => undefined;
-
 const DevtoolsProvider = ({ connection, children }: Props) => {
   const report = useMemo(() => (connection ? createDevtoolsReport(connection) : undefined), [connection]);
   return <DevtoolsContext.Provider value={report}>{children}</DevtoolsContext.Provider>;
 };
 
-const useDevtoolsEnabled = (): boolean => useContext(DevtoolsContext) !== undefined;
+// Undefined without a connection. Call it with `?.` so the reported value is not computed then.
+const useDevtoolsReport = (): DevtoolsReport | undefined => useContext(DevtoolsContext);
 
-// Stable no-op without a connection, so providers can report unconditionally.
-const useDevtoolsReport = (): DevtoolsReport => useContext(DevtoolsContext) ?? noReport;
-
-export { DevtoolsProvider, useDevtoolsEnabled, useDevtoolsReport };
+export { DevtoolsProvider, useDevtoolsReport };

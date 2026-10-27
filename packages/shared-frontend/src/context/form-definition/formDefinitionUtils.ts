@@ -49,11 +49,26 @@ const enrichFormWithBaseSubmissionPath = (form: Form): Form => ({
 const flattenComponentsWithBaseSubmissionPath = (components: Component[]): ComponentDefinition[] =>
   toComponentDefinitions(flattenComponents(components));
 
+interface ActiveComponentSnapshot {
+  key: string;
+  type: string;
+  components?: ActiveComponentSnapshot[];
+}
+
+// The full definitions are large and static; the active tree is what conditionals change.
+const toActiveComponentSnapshots = (components: Component[]): ActiveComponentSnapshot[] =>
+  components.map(({ key, type, components: children }) => ({
+    key,
+    type,
+    ...(children?.length ? { components: toActiveComponentSnapshots(children) } : {}),
+  }));
+
 export {
   enrichComponentsWithBaseSubmissionPath,
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
   getActivePanels,
   getResolvedSubmissionPath,
+  toActiveComponentSnapshots,
   toComponentDefinitions,
 };

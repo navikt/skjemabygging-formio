@@ -68,7 +68,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const reportToDevtools = useDevtoolsReport();
 
   useEffect(() => {
-    reportToDevtools('submission', submissionRef.current, 'init');
+    reportToDevtools?.('submission', submissionRef.current, 'init');
   }, [reportToDevtools]);
 
   const notifyFieldStateListeners = useCallback(() => {
@@ -84,7 +84,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
       setSubmissionState(resolvedSubmission);
       if (!Object.is(previousSubmission, resolvedSubmission)) {
         notifyFieldStateListeners();
-        reportToDevtools('submission', resolvedSubmission, devtoolsLabel);
+        reportToDevtools?.('submission', resolvedSubmission, devtoolsLabel);
       }
     },
     [notifyFieldStateListeners, reportToDevtools],
@@ -97,11 +97,12 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
 
   const getLatestSubmission = useCallback(() => submissionRef.current, []);
 
+  // Returns the next submission so scope-aware validation can revalidate synchronously.
   const updateSubmission = useCallback(
-    (submissionPath: string, value: unknown) => {
-      commitSubmission((prev) => {
-        return createUpdatedSubmission(prev, submissionPath, value);
-      }, `set ${submissionPath}`);
+    (submissionPath: string, value: unknown): Submission => {
+      const nextSubmission = createUpdatedSubmission(submissionRef.current, submissionPath, value);
+      commitSubmission(nextSubmission, `set ${submissionPath}`);
+      return nextSubmission;
     },
     [commitSubmission],
   );
@@ -123,8 +124,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
 
   const value = useMemo(() => ({ submission, ...actions }), [submission, actions]);
 
-  // Fyllut's implementation of the generic field state store. setValue updates the submission and
-  // returns the next submission snapshot so scope-aware validation can revalidate synchronously.
+  // Fyllut's implementation of the generic field state store.
   const store = useMemo(
     () => ({
       getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submissionRef.current),
@@ -134,13 +134,9 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
           fieldStateListenersRef.current.delete(listener);
         };
       },
-      setValue: (statePath: string, fieldValue: unknown): Submission => {
-        const nextSubmission = createUpdatedSubmission(submissionRef.current, statePath, fieldValue);
-        commitSubmission(nextSubmission, `set ${statePath}`);
-        return nextSubmission;
-      },
+      setValue: updateSubmission,
     }),
-    [commitSubmission],
+    [updateSubmission],
   );
 
   return (

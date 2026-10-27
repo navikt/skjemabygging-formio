@@ -4,14 +4,21 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useSyncExternalStore,
 } from 'react';
 import { ComponentDefinition } from '../../form-components/component-types';
+import { useDevtoolsReport } from '../devtools/DevtoolsContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
-import { enrichFormWithBaseSubmissionPath, getActivePanels, toComponentDefinitions } from './formDefinitionUtils';
+import {
+  enrichFormWithBaseSubmissionPath,
+  getActivePanels,
+  toActiveComponentSnapshots,
+  toComponentDefinitions,
+} from './formDefinitionUtils';
 import { useFormDefinitionSubmissionSynchronization } from './useFormDefinitionSubmissionSynchronization';
 
 interface FormDefinitionContextType {
@@ -82,6 +89,7 @@ const stabilizeValue = (
 
 const FormDefinitionProvider = ({ children, form, submissionMethod }: Props) => {
   const { submission } = useSubmissionState();
+  const reportToDevtools = useDevtoolsReport();
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
   const panels = useMemo(
     () => getActivePanels(formWithBaseSubmissionPath, submission, { submissionMethod }),
@@ -128,6 +136,21 @@ const FormDefinitionProvider = ({ children, form, submissionMethod }: Props) => 
     versionRef.current += 1;
     listenersRef.current.forEach((listener) => listener());
   }, [value]);
+
+  // Layout effects run first, so this sees the published value. Unchanged active trees are not reported again.
+  const reportedValueRef = useRef<FormDefinitionContextType>();
+  useEffect(() => {
+    const publishedValue = publishedValueRef.current;
+    if (!reportToDevtools || reportedValueRef.current === publishedValue) {
+      return;
+    }
+    reportedValueRef.current = publishedValue;
+    reportToDevtools('formDefinition', {
+      submissionMethod: publishedValue.submissionMethod,
+      activePanels: publishedValue.panels.map((panel) => panel.key),
+      activeComponents: toActiveComponentSnapshots(publishedValue.activeComponents),
+    });
+  }, [value, reportToDevtools]);
 
   return <FormDefinitionContext.Provider value={store}>{children}</FormDefinitionContext.Provider>;
 };
