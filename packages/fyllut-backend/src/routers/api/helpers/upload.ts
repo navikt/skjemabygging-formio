@@ -1,6 +1,7 @@
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
+import { AsyncResource } from 'node:async_hooks';
 import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { logger } from '../../../logger';
@@ -20,20 +21,16 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
   }).single(fieldName);
 
   return (req: Request, res: Response, next: NextFunction) => {
-    upload(req, res, (error) => {
-      const queryAttachmentId = typeof req.query.attachmentId === 'string' ? req.query.attachmentId : undefined;
-      const logMeta = {
-        route: req.originalUrl,
-        fieldName,
-        innsendingsId: req.params.innsendingsId,
-        attachmentId: req.params.attachmentId ?? queryAttachmentId,
-      };
-
+    const logMeta = {
+      route: req.originalUrl?.split('?')[0],
+      fieldName,
+      innsendingsId: req.params?.innsendingsId ?? req.getNologinContext?.()?.innsendingsId,
+      attachmentId: req.params?.attachmentId,
+    };
+    // Express restores route parameters before application-level error handling.
+    res.locals.requestLogMeta = logMeta;
+    const handleUpload: NextFunction = (error) => {
       if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-        logger.warn('Upload rejected due to file size limit', {
-          ...logMeta,
-          maxFileSizeBytes,
-        });
         return next(
           new ResponseError(
             'BAD_REQUEST',
@@ -45,21 +42,21 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
       }
 
       if (error) {
-        logger.warn('Upload failed before route handler', { ...logMeta, error });
         return next(error);
       }
 
       if (req.file) {
         logger.info('Upload stored in temporary file', {
           ...logMeta,
-          hasTempFile: Boolean(req.file.path),
           fileSize: req.file.size,
           fileType: req.file.mimetype,
         });
       }
 
       next();
-    });
+    };
+    // Multer's stream events can run outside the request's correlation context.
+    upload(req, res, AsyncResource.bind(handleUpload));
   };
 };
 
