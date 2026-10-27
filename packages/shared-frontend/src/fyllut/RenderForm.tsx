@@ -1,5 +1,6 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
+import { DevtoolsConnection } from '../context/devtools/devtoolsSession';
 import { LanguageConfig } from '../context/language/LanguageContext';
 import { RuntimeServices } from '../context/runtime-services/RuntimeServicesContext';
 import { IntegrationContextValue } from './context/integration/IntegrationContext';
@@ -14,6 +15,8 @@ interface Props {
   integration: IntegrationContextValue;
   language: LanguageConfig;
   services: RuntimeServices;
+  /** Connection to a state inspector. The host decides when to provide it; omit it in production. */
+  devtools?: DevtoolsConnection;
 }
 
 const RenderForm = ({
@@ -24,6 +27,7 @@ const RenderForm = ({
   integration,
   language,
   services,
+  devtools,
 }: Props) => {
   const { state } = useLocation();
   const initialPagesWithErrors =
@@ -32,7 +36,7 @@ const RenderForm = ({
       : undefined;
 
   return (
-    <FyllutFormProviders integration={integration} language={language} services={services}>
+    <FyllutFormProviders devtools={devtools} integration={integration} language={language} services={services}>
       <FyllutFormFlow
         form={form}
         initialSubmission={initialSubmission}
