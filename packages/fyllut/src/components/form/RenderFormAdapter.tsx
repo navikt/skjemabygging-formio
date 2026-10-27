@@ -10,9 +10,10 @@ import {
 import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
+import { connectReduxDevtools } from './reduxDevtools';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
 
-type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {
+type Props = Omit<RenderFormProps, 'devtools' | 'integration' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
   languages?: TranslationLang[];
   services: RuntimeServices;
@@ -49,6 +50,10 @@ const RenderFormAdapter = ({ form, initialLanguage, languages, services, transla
   }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
 
   const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
+  const devtools = useMemo(
+    () => (environment === 'production' ? undefined : connectReduxDevtools(`fyllut: ${form.path}`)),
+    [environment, form.path],
+  );
   const renderFeedback = useCallback(
     (id: string) => <LetterUXSignals id={id} demo={environment !== 'production'} />,
     [environment],
@@ -76,6 +81,7 @@ const RenderFormAdapter = ({ form, initialLanguage, languages, services, transla
         integration={integration}
         language={language}
         services={services}
+        devtools={devtools}
       />
     </ApplicationProvider>
   );
