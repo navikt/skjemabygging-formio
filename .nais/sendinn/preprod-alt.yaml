@@ -1,0 +1,19 @@
+app-name: sendinn-preprod-alt
+ingresses:
+  - 'https://sendinn-preprod-alt.intern.dev.nav.no/sendinn'
+  - 'https://sendinn-preprod-alt.ansatt.dev.nav.no/sendinn'
+replicas-min: 2
+replicas-max: 4
+innsending-api-audience: dev-gcp:team-soknad:innsending-api
+accessPolicy:
+  outbound:
+    rules:
+      - application: forms-api
+        namespace: fyllut-sendinn
+        cluster: dev-gcp
+      - application: innsending-api
+        namespace: team-soknad
+        cluster: dev-gcp
+      - application: nav-dekoratoren
+        namespace: personbruker
+        cluster: dev-gcp

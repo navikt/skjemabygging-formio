@@ -1,4 +1,5 @@
 import {
+  appMetrics,
   coverPageService,
   formService,
   mergeFileService,
@@ -20,6 +21,11 @@ vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
 }));
 
 vi.mock('../../../services', () => ({
+  appMetrics: {
+    paperSubmissionsCounter: {
+      inc: vi.fn(),
+    },
+  },
   coverPageService: {
     downloadCoverPage: vi.fn(),
   },
@@ -41,6 +47,64 @@ vi.mock('../../../services', () => ({
 describe('[endpoint] staticPdf', () => {
   afterEach(() => {
     vi.clearAllMocks();
+  });
+
+  describe('paper submission metrics', () => {
+    beforeEach(() => {
+      vi.mocked(formService.getForm).mockResolvedValue({
+        skjemanummer: 'NAV 12.34-56',
+        path: 'nav123456',
+        title: 'Test form',
+        components: [{ key: 'attachment', type: 'attachment', label: 'Attachment' }],
+        properties: {
+          skjemanummer: 'NAV 12.34-56',
+          tema: 'TEST',
+          submissionTypes: [],
+          subsequentSubmissionTypes: [],
+        },
+      });
+      vi.mocked(translationService.createTranslate).mockResolvedValue((text) => text?.toString() ?? '');
+      vi.mocked(coverPageService.downloadCoverPage).mockResolvedValue('cover-page-pdf');
+      vi.mocked(staticPdfService.downloadPdf).mockResolvedValue('static-pdf');
+      vi.mocked(mergeFileService.mergeFiles).mockResolvedValue('merged-pdf');
+    });
+
+    it.each([
+      { type: undefined, source: 'statiskpdf' },
+      { type: 'ETTERSENDELSE', source: 'ettersending' },
+    ])('counts a successful download with source $source', async ({ type, source }) => {
+      const req = mockRequest({ body: { type, attachments: ['attachment'] } });
+      req.params = { formPath: 'nav123456', languageCode: 'nb' };
+      const res = mockResponse();
+      const next = mockNext();
+
+      await staticPdf.downloadPdf(req, res, next);
+
+      expect(appMetrics.paperSubmissionsCounter.inc).toHaveBeenCalledExactlyOnceWith({ source });
+      expect(res.json).toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    it.each(['cover page', 'static PDF', 'merge'])('does not count a failed %s download', async (step) => {
+      const error = new Error('PDF generation failed');
+      if (step === 'cover page') {
+        vi.mocked(coverPageService.downloadCoverPage).mockRejectedValueOnce(error);
+      } else if (step === 'static PDF') {
+        vi.mocked(staticPdfService.downloadPdf).mockRejectedValueOnce(error);
+      } else {
+        vi.mocked(mergeFileService.mergeFiles).mockRejectedValueOnce(error);
+      }
+      const req = mockRequest({ body: { attachments: [] } });
+      req.params = { formPath: 'nav123456', languageCode: 'nb' };
+      const res = mockResponse();
+      const next = mockNext();
+
+      await staticPdf.downloadPdf(req, res, next);
+
+      expect(appMetrics.paperSubmissionsCounter.inc).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(error);
+    });
   });
 
   it('adds p suffix to the first form number token before downloading cover page', async () => {
