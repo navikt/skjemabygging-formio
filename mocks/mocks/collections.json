@@ -43,6 +43,12 @@
   },
   {
     "id": "sendinn-base",
-    "routes": ["get-published-global-translations:success", "post-texas-introspect:signed-in"]
+    "routes": [
+      "get-global-translations:success",
+      "get-form-deprecated:success",
+      "get-form:success",
+      "get-form-translations:success",
+      "post-texas-introspect:signed-in"
+    ]
   }
 ]
