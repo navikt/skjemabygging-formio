@@ -1,4 +1,6 @@
+import { FormBuilderOptions } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, FormsApiTranslation, mockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { generateAndPopulateTags } from '../../context/translations/utils/globalTranslationsUtils';
 import { generateAndPopulateTranslationsForForm, generateUnsavedGlobalTranslations } from './editFormTranslationsUtils';
 
 const { createFormsApiFormObject, createPanelObject, createDummyTextfield, createDummySelectComponent } =
@@ -109,6 +111,51 @@ describe('editFormTranslationsUtils', () => {
   });
 
   describe('generateUnsavedGlobalTranslations', () => {
+    it('links organization sender defaults from the global static translation catalogue', () => {
+      const senderTranslations: FormsApiTranslation[] = [
+        {
+          id: 101,
+          key: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+          nb: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+          nn: 'Organisasjonsnummeret til den verksemda / undereininga du representerer',
+          en: 'The organisation number of the company / sub-entity you represent',
+          tag: 'statiske-tekster',
+        },
+        {
+          id: 102,
+          key: 'Virksomhetens navn',
+          nb: 'Virksomhetens navn',
+          nn: 'Namnet på verksemda',
+          en: 'Company name',
+          tag: 'statiske-tekster',
+        },
+      ];
+      const storedGlobals = Object.fromEntries(senderTranslations.map((translation) => [translation.key, translation]));
+      const staticTranslations = generateAndPopulateTags(storedGlobals)['statiske-tekster'];
+      const staticTranslationsMap = Object.fromEntries(
+        staticTranslations.map((translation) => [translation.key, translation]),
+      );
+      const organizationForm = createFormsApiFormObject(
+        [
+          {
+            ...FormBuilderOptions.builder.organizationGroup.components.senderOrganization.schema,
+            key: 'senderOrganization',
+          },
+        ],
+        'Organization form',
+      );
+
+      expect(generateUnsavedGlobalTranslations(organizationForm, {}, staticTranslationsMap)).toEqual(
+        senderTranslations.map(({ id, key, nb, nn, en }) => ({
+          key,
+          nb,
+          nn,
+          en,
+          globalTranslationId: id,
+        })),
+      );
+    });
+
     it('should return global translations for texts without stored translations', () => {
       expect(generateUnsavedGlobalTranslations(form, storedTranslations, globalTranslations)).toEqual([
         {

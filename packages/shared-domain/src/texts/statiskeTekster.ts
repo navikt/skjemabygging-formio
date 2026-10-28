@@ -315,6 +315,8 @@ export const statiske = {
     other: 'Annet',
   },
   sender: {
+    organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+    organizationName: 'Virksomhetens navn',
     applicationInsight:
       'Når du har sendt inn skjemaet, vil det ikke være tilgjengelig på Min side for deg. Det vil være tilgjengelig for personen du sender inn på vegne av.',
   },
