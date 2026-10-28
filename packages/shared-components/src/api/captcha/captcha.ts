@@ -1,6 +1,5 @@
 import type { CaptchaChallenge, SolvedCaptchaChallenge } from '@navikt/skjemadigitalisering-shared-domain';
-import { solvePow } from '@navikt/skjemadigitalisering-shared-frontend';
-import baseHttp from '../util/http/http';
+import { http as baseHttp, solvePow } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface CaptchaResponse {
   success: boolean;

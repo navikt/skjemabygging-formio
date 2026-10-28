@@ -1,4 +1,3 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
@@ -6,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
 import createRenderFormBootstrapService from '../../adapter-services/createRenderFormBootstrapService';
 import createRuntimeServices from '../../adapter-services/createRuntimeServices';
+import { useFyllutApp, useFyllutAppConfig } from '../../context/FyllutAppProvider';
 import { InternalServerErrorPage } from '../errors/InternalServerErrorPage';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
@@ -19,20 +19,19 @@ const RenderFormPage = () => {
   const { formPath, '*': routePath } = useParams();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const appConfig = useAppConfig();
-  const { http, baseUrl } = appConfig;
-  const submissionMethod = resolveSubmissionMethod(search, appConfig.submissionMethod);
-  const backendBaseUrl = baseUrl ?? '/fyllut';
+  const { http, baseUrl: backendBaseUrl, logger } = useFyllutAppConfig();
+  const { submissionMethod: initialSubmissionMethod } = useFyllutApp();
+  const submissionMethod = resolveSubmissionMethod(search, initialSubmissionMethod);
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const isActiveTasksRoute = routePath === 'paabegynt';
   const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
   const services = useMemo<RuntimeServices>(
-    () => createRuntimeServices({ http: createIntegrationHttp(http!), backendBaseUrl, innsendingsId }),
+    () => createRuntimeServices({ http: createIntegrationHttp(http), backendBaseUrl, innsendingsId }),
     [backendBaseUrl, http, innsendingsId],
   );
   const bootstrapService = useMemo(
-    () => createRenderFormBootstrapService({ http: createIntegrationHttp(http!), backendBaseUrl }),
+    () => createRenderFormBootstrapService({ http: createIntegrationHttp(http), backendBaseUrl }),
     [backendBaseUrl, http],
   );
   const { initializedForm, isLoading, hasInitializationError } = useInitializeRenderForm({
@@ -44,7 +43,7 @@ const RenderFormPage = () => {
     applications: services.applications,
     navigate,
     loadKey,
-    logger: appConfig.logger,
+    logger,
   });
 
   useFormDocumentMetadata(initializedForm?.form);
