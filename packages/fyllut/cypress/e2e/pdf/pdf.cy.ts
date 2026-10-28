@@ -31,7 +31,6 @@ describe('Pdf', () => {
   });
 
   beforeEach(() => {
-    cy.clock(new Date('2025-10-20'), ['Date']);
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
   });
@@ -113,6 +112,7 @@ describe('Pdf', () => {
   describe('Check components', () => {
     describe('Paper', () => {
       beforeEach(() => {
+        cy.clock(new Date('2025-10-20'), ['Date']);
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();
         cy.clickShowAllSteps();
@@ -253,6 +253,7 @@ describe('Pdf', () => {
 
     describe('Digital', () => {
       beforeEach(() => {
+        cy.clock(new Date('2025-10-20'), ['Date']);
         cy.defaultInterceptsMellomlagring();
         cy.visit('/fyllut/components?sub=digital');
         cy.defaultWaits();
