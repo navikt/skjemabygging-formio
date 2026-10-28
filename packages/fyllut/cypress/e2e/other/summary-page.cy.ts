@@ -146,6 +146,7 @@ describe('SummaryPage', () => {
   });
 
   it('All values', () => {
+    cy.clock(new Date('2025-10-20'), ['Date']);
     cy.visit('/fyllut/components?sub=paper');
     cy.defaultWaits();
     cy.clickShowAllSteps();
@@ -449,6 +450,7 @@ describe('SummaryPage', () => {
   });
 
   it('All values (en)', () => {
+    cy.clock(new Date('2025-10-20'), ['Date']);
     cy.visit('/fyllut/components?sub=paper&lang=en');
     cy.defaultWaits();
     cy.clickShowAllSteps();

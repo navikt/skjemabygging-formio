@@ -26,26 +26,28 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 
 ## 📦 Kommandoer
 
-| **Kommando**              | **Beskrivelse**                                                             |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `pnpm install`            | Installerer alle avhengigheter                                              |
-| `pnpm start`              | Starter både Bygger og Fyllut, inkludert backend                            |
-| `pnpm start:bygger`       | Starter kun Bygger med backend                                              |
-| `pnpm start:fyllut`       | Starter kun Fyllut med backend                                              |
-| `pnpm build`              | Bygger React-appene (ikke nødvendig for lokal utvikling)                    |
-| `pnpm preview:bygger`     | Starter Bygger fra bygd kode (`dist`-mappen)                                |
-| `pnpm preview:fyllut`     | Starter Fyllut fra bygd kode (`dist`-mappen)                                |
-| `pnpm test`               | Kjører alle tester                                                          |
-| `pnpm test:coverage`      | Tester med rapportering av dekningsgrad                                     |
-| `pnpm cypress:bygger`     | Kjører Cypress-tester for Bygger                                            |
-| `pnpm cypress:fyllut`     | Kjører Cypress-tester for Fyllut                                            |
-| `pnpm start:fyllut:mocks` | Starter Fyllut med mocks på ledige porter og skriver Cypress runtime config |
-| `pnpm start:bygger:mocks` | Starter Bygger på ledige porter og skriver Cypress runtime config           |
-| `pnpm mocks:fyllut`       | Starter bare Mocks Server for Fyllut ved manuell feilsøking                 |
-| `pnpm check-types`        | Sjekker TypeScript-typer                                                    |
-| `pnpm clean`              | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker         |
-| `pnpm lint`               | Sjekker kodekvalitet                                                        |
-| `pnpm get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                         |
+| **Kommando**                   | **Beskrivelse**                                                             |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `pnpm install`                 | Installerer alle avhengigheter                                              |
+| `pnpm start`                   | Starter både Bygger og Fyllut, inkludert backend                            |
+| `pnpm start:bygger`            | Starter kun Bygger med backend                                              |
+| `pnpm start:fyllut`            | Starter kun Fyllut med backend                                              |
+| `pnpm build`                   | Bygger React-appene (ikke nødvendig for lokal utvikling)                    |
+| `pnpm preview:bygger`          | Starter Bygger fra bygd kode (`dist`-mappen)                                |
+| `pnpm preview:fyllut`          | Starter Fyllut fra bygd kode (`dist`-mappen)                                |
+| `pnpm test`                    | Kjører alle tester                                                          |
+| `pnpm test:coverage`           | Tester med rapportering av dekningsgrad                                     |
+| `pnpm cypress:bygger`          | Kjører Cypress-tester for Bygger                                            |
+| `pnpm cypress:fyllut`          | Kjører Cypress-tester for Fyllut                                            |
+| `pnpm playwright:fyllut`       | Kjører FyllUt-piloten i Playwright med egne servere og mocks                |
+| `pnpm playwright:fyllut:built` | Kjører samme pilot mot ferdig bygget kode                                   |
+| `pnpm start:fyllut:mocks`      | Starter Fyllut med mocks på ledige porter og skriver Cypress runtime config |
+| `pnpm start:bygger:mocks`      | Starter Bygger på ledige porter og skriver Cypress runtime config           |
+| `pnpm mocks:fyllut`            | Starter bare Mocks Server for Fyllut ved manuell feilsøking                 |
+| `pnpm check-types`             | Sjekker TypeScript-typer                                                    |
+| `pnpm clean`                   | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker         |
+| `pnpm lint`                    | Sjekker kodekvalitet                                                        |
+| `pnpm get-tokens`              | Henter tokens for eksterne API-er ved lokal kjøring                         |
 
 ## 🔒 cplt-sandbox (for agenter og lokal kjøring)
 

@@ -348,6 +348,11 @@ export const statiske = {
       buttonText: 'Start på nytt',
     },
     alreadySubmitted: 'Søknaden er allerede sendt inn',
+    loggedOut: {
+      title: 'Du er logget ut',
+      message: 'Du er logget ut. Logg inn på nytt for å fortsette.',
+      login: 'Logg inn på nytt',
+    },
   },
   phoneNumber: {
     areaCodeLabel: 'Landskode',
@@ -389,4 +394,13 @@ export const statiske = {
     },
   },
   loading: 'Laster',
+  sendinn: {
+    journey: {
+      standalone: 'Send dokumenter til Nav',
+      form: 'Send inn dokumentasjon til skjema',
+      formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
+      task: 'Send inn etterspurt dokumentasjon',
+      taskLink: 'Send inn etterspurt dokumentasjon fra varsel',
+    },
+  },
 };
