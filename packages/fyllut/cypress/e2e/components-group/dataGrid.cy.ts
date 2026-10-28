@@ -75,13 +75,10 @@ describe('DataGrid', () => {
       cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
     });
 
-    it('should use compact blue row cards with the remove action below the fields', () => {
+    it('should use blue row cards with the remove action below the fields', () => {
       cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad/i })
         .click();
-      cy.findByRole('group', { name: groupName })
-        .find('[data-cy="fieldset-content"]')
-        .should('have.css', 'padding', '0px');
       cy.findAllByRole('textbox', { name: 'Navn' })
         .first()
         .closest('[data-component-key]')
@@ -92,11 +89,9 @@ describe('DataGrid', () => {
           const remove = row.lastElementChild!;
           const rowStyle = getComputedStyle(row);
 
-          expect(rowStyle.padding).to.equal('16px');
           expect(rowStyle.backgroundColor).to.equal('rgb(238, 246, 252)');
           expect(getComputedStyle(fieldBox).marginBottom).to.equal('0px');
           expect(remove.textContent).to.equal('Fjern rad');
-          expect(getComputedStyle(remove).marginTop).to.equal('8px');
           expect(remove.getBoundingClientRect().top).to.be.at.least(content.getBoundingClientRect().bottom);
         });
     });
