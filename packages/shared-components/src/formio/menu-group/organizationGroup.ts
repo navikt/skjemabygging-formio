@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import employerBuilder from '../components/extensions/employer/Employer.builder';
 import organizationNumberBuilder from '../components/extensions/organization-number/OrganizationNumber.builder';
 import senderBuilder from '../components/extensions/sender/Sender.builder';
@@ -11,8 +12,8 @@ const organizationGroup = {
       label: 'Avsender organisasjon',
       senderRole: 'organization',
       customLabels: {
-        organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
-        organizationName: 'Virksomhetens navn',
+        organizationNumber: TEXTS.statiske.sender.organizationNumber,
+        organizationName: TEXTS.statiske.sender.organizationName,
       },
     }),
   },
