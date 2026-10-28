@@ -119,6 +119,9 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       translate,
       submissionMethod as SubmissionMethod | undefined,
     );
+    if (config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath)) {
+      Object.assign(coverPageData, coverPageMapper.createAttachmentDocumentLists(form, submissionParsed, translate));
+    }
     const coverPageTitle = getCoverPageTitle(form, translate);
     const [coverPagePdfBase64, applicationPdfBase64] = await Promise.all([
       coverPageService.downloadCoverPage({

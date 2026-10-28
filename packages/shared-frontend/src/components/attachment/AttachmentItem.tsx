@@ -59,7 +59,7 @@ const AttachmentItem = ({
   onUpload,
   downloadEnabled,
   readOnly,
-  uploadSelected,
+  uploadSelected = true,
   requiredFilesMessage,
 }: Props) => {
   const { translate } = useLanguage();
@@ -89,13 +89,14 @@ const AttachmentItem = ({
   const filesExternalError = useValidationExternalError(filesPath);
   const filesValidationError = useValidationFieldError(filesPath, pageKey);
   const filesError = filesValidationError ?? filesExternalError;
-  const uploadReadMore = showButton && !readOnly ? readMore : undefined;
+  const uploadReadMore = uploadSelected && showButton && !readOnly ? readMore : undefined;
   const fields = toAttachmentFilesValidationFields({
     submissionPath,
     attachmentId,
     label: attachmentLabel ?? label,
     attachment,
     uploadSelected,
+    requireAttachmentTitle: requireAttachmentTitle && !uploadSelected,
     requiredFilesMessage,
   });
   const handleTitleChange = (title: string) => {
@@ -133,7 +134,7 @@ const AttachmentItem = ({
           rules={field.rules}
         />
       ))}
-      {(!showButton || fileItems.length > 0) && (
+      {uploadSelected && (!showButton || fileItems.length > 0) && (
         <FileList
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
@@ -144,7 +145,7 @@ const AttachmentItem = ({
           onDownloadFile={downloadEnabled ? handleDownloadFileItem : undefined}
         />
       )}
-      {showButton && (
+      {(showButton || !uploadSelected) && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <UnvalidatedFields>
@@ -159,7 +160,7 @@ const AttachmentItem = ({
               />
             </UnvalidatedFields>
           )}
-          {!readOnly && (
+          {uploadSelected && !readOnly && (
             <HStack gap="space-16">
               <UploadButton
                 attachmentId={attachmentId}

@@ -64,6 +64,7 @@ const Attachment = ({
   const implicitValue = getImplicitAttachmentValue(values, uploadEnabled);
   const value = attachment?.value ?? implicitValue;
   const uploadSelected = uploadEnabled && !!values.find((option) => option.value === value)?.upload;
+  const paperTitleRequired = multiple && !uploadEnabled && value === 'leggerVedNaa';
   const counter = useRef(getLargestAttachmentIdCounter(attachments));
   const choicePath = attachmentFieldPath(statePath, attachmentId, 'value');
   const scope = useOptionalValidationScope();
@@ -120,6 +121,7 @@ const Attachment = ({
         value: next?.value,
         additionalDocumentation: next?.additionalDocumentation,
         ...(!uploadEnabled ? { files: [] } : {}),
+        ...(!uploadEnabled && next.value !== 'leggerVedNaa' ? { title: undefined } : {}),
       })),
     );
   };
@@ -175,9 +177,9 @@ const Attachment = ({
           )}
           {readMore && <ReadMore {...readMore} />}
         </div>
-        {uploadSelected && (
+        {(uploadSelected || paperTitleRequired) && (
           <VStack gap="space-8">
-            {uploadedFiles.length > 0 && (
+            {uploadSelected && uploadedFiles.length > 0 && (
               <div>
                 <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
                 {!multiple && uploadedFiles.length > 1 && !readOnly && (
@@ -201,12 +203,12 @@ const Attachment = ({
                   attachmentValue={value}
                   showDeleteAttachmentButton={multiple && documents.length > 1}
                   onDeleteAttachment={multiple ? deleteDocument : undefined}
-                  readMore={<FileUploadReadMore />}
+                  readMore={uploadSelected ? <FileUploadReadMore /> : undefined}
                   readOnly={readOnly}
                   downloadEnabled={downloadEnabled}
                 />
               ))}
-              {multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
+              {uploadSelected && multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
                 <Button
                   variant="tertiary"
                   icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
