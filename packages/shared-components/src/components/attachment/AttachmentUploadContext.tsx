@@ -6,9 +6,9 @@ import {
   TEXTS,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { http as baseHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 import { createContext, useContext, useMemo, useState } from 'react';
 import getFileUploadApi from '../../api/file-upload/fileUpload';
-import baseHttp from '../../api/util/http/http';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
