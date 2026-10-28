@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
- * Starts fyllut or bygger on automatically allocated free ports.
+ * Starts fyllut, bygger or sendinn on automatically allocated free ports.
  * Designed for sub-agents and CI environments where default ports may be occupied.
  *
  * Usage:
  *   node bin/start.mjs fyllut
  *   node bin/start.mjs bygger
+ *   node bin/start.mjs sendinn
  *   node bin/start.mjs fyllut --no-runtime-config
  *   node bin/start.mjs bygger --no-runtime-config
  *
  *   pnpm start:fyllut:mocks
  *   pnpm start:bygger:mocks
+ *   pnpm start:sendinn:mocks
  *
  * Output (printed after servers are ready, easy to parse):
  *   START_PID=12345
@@ -25,6 +27,8 @@ import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { connect, createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { createFyllutServerConfig } from './fyllut-server-config.mjs';
+import { createSendinnServerConfig } from './sendinn-server-config.mjs';
 
 const isPortFree = (port) =>
   new Promise((resolve) => {
@@ -83,7 +87,6 @@ const isWindows = process.platform === 'win32';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const nodeExecutable = process.execPath;
 const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
-const mocksTsNodeCliPath = resolve(repoRoot, 'mocks/node_modules/ts-node/dist/bin.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
 const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
@@ -97,47 +100,8 @@ const configs = {
     const mockUrl = `http://127.0.0.1:${mockPort}`;
     const backendUrl = `http://127.0.0.1:${backendPort}`;
     const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
-    const fyllutBackendEnv = {
-      NODE_ENV: 'development',
-      MOCKS_ENABLED: 'true',
-      SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
-      AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
-      FORMIO_API_SERVICE: mockUrl,
-      FORMS_API_URL: `${mockUrl}/forms-api`,
-      SEND_INN_HOST: `${mockUrl}/send-inn`,
-      TILLEGGSSTONADER_HOST: `${mockUrl}/register-data`,
-      KODEVERK_URL: `${mockUrl}/kodeverk`,
-      TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-      FAMILIE_PDF_GENERATOR_URL: mockUrl,
-      TEAM_LOGS_URL: `${mockUrl}/team-logs`,
-    };
     return {
-      commands: [
-        [
-          nodeExecutable,
-          [
-            mocksTsNodeCliPath,
-            'mocks/server.ts',
-            '--no-plugins.inquirerCli.enabled',
-            `--server.port=${mockPort}`,
-            `--plugins.adminApi.port=${mockAdminPort}`,
-          ],
-          {},
-          resolve(repoRoot, 'mocks'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(backendPort)],
-          fyllutBackendEnv,
-          resolve(repoRoot, 'packages/fyllut-backend'),
-        ],
-        [
-          nodeExecutable,
-          [rootViteCliPath, '--clearScreen', 'false', '--host', '127.0.0.1', '--port', String(frontendPort)],
-          { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
-          resolve(repoRoot, 'packages/fyllut'),
-        ],
-      ],
+      ...createFyllutServerConfig({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
       ports: [mockPort, mockAdminPort, backendPort, frontendPort],
       summaryLines: [
         `FYLLUT_MOCK_URL=${mockUrl}`,
@@ -213,10 +177,26 @@ const configs = {
       onCleanup: shouldWriteRuntimeConfig ? () => rmSync(byggerCypressRuntimePath, { force: true }) : undefined,
     };
   },
+  sendinn: async () => {
+    const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
+    const mockUrl = `http://127.0.0.1:${mockPort}`;
+    const backendUrl = `http://127.0.0.1:${backendPort}/sendinn`;
+    const frontendUrl = `http://127.0.0.1:${frontendPort}/sendinn`;
+    return {
+      ...createSendinnServerConfig({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
+      ports: [mockPort, mockAdminPort, backendPort, frontendPort],
+      summaryLines: [
+        `SENDINN_MOCK_URL=${mockUrl}`,
+        `SENDINN_MOCK_ADMIN_PORT=${mockAdminPort}`,
+        `SENDINN_BACKEND_URL=${backendUrl}`,
+        `SENDINN_FRONTEND_URL=${frontendUrl}`,
+      ],
+    };
+  },
 };
 
 if (!configs[target] || unknownArgs.length > 0) {
-  console.error(`Usage: node bin/start.mjs <fyllut|bygger> [--no-runtime-config]`);
+  console.error(`Usage: node bin/start.mjs <fyllut|bygger|sendinn> [--no-runtime-config]`);
   process.exit(1);
 }
 
