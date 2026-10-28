@@ -1,7 +1,7 @@
+import { rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import { config } from '../../../config/config';
 import { corsAllowNavOrigin, corsAllowNavOrSameOrigin } from '../../../middleware/corsHandlers';
-import { rateLimiter } from '../../../middleware/ratelimit';
 import captchaErrorHandler from './errorHandler';
 import captchaHandler from './handler';
 
