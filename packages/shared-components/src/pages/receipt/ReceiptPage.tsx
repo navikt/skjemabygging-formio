@@ -1,6 +1,7 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { SkyraSurvey } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
 import InnerHtml from '../../components/inner-html/InnerHtml';
@@ -240,6 +241,7 @@ export function ReceiptPage() {
               {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
             </Button>
           </HStack>
+          <SkyraSurvey slug={form.properties.skyraSlug} />
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>

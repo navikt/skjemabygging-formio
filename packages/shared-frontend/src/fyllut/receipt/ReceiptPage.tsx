@@ -2,6 +2,7 @@ import { VStack } from '@navikt/ds-react';
 import { dateUtils, Form, ReceiptSummary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useNavigationType } from 'react-router';
+import SkyraSurvey from '../../components/skyra-survey/SkyraSurvey';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
@@ -109,6 +110,7 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
         )}
 
         <ReceiptActions />
+        <SkyraSurvey slug={form.properties.skyraSlug} />
       </VStack>
     </>
   );
