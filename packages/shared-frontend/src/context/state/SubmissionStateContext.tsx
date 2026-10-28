@@ -6,11 +6,13 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 
+import { useDevtoolsReport } from '../devtools/DevtoolsContext';
 import { StateStoreProvider } from './StateContext';
 import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
 
@@ -63,13 +65,18 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmissionState] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
   const submissionRef = useRef<Submission | undefined>(initialSubmission ?? { data: {} });
   const fieldStateListenersRef = useRef(new Set<() => void>());
+  const reportToDevtools = useDevtoolsReport();
+
+  useEffect(() => {
+    reportToDevtools?.('submission', submissionRef.current, 'init');
+  }, [reportToDevtools]);
 
   const notifyFieldStateListeners = useCallback(() => {
     fieldStateListenersRef.current.forEach((listener) => listener());
   }, []);
 
-  const setSubmission = useCallback<Dispatch<SetStateAction<Submission | undefined>>>(
-    (nextSubmission) => {
+  const commitSubmission = useCallback(
+    (nextSubmission: SetStateAction<Submission | undefined>, devtoolsLabel: string) => {
       const previousSubmission = submissionRef.current;
       const resolvedSubmission =
         typeof nextSubmission === 'function' ? nextSubmission(previousSubmission) : nextSubmission;
@@ -77,27 +84,37 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
       setSubmissionState(resolvedSubmission);
       if (!Object.is(previousSubmission, resolvedSubmission)) {
         notifyFieldStateListeners();
+        reportToDevtools?.('submission', resolvedSubmission, devtoolsLabel);
       }
     },
-    [notifyFieldStateListeners],
+    [notifyFieldStateListeners, reportToDevtools],
+  );
+
+  const setSubmission = useCallback<Dispatch<SetStateAction<Submission | undefined>>>(
+    (nextSubmission) => commitSubmission(nextSubmission, 'replace'),
+    [commitSubmission],
   );
 
   const getLatestSubmission = useCallback(() => submissionRef.current, []);
 
+  // Returns the next submission so scope-aware validation can revalidate synchronously.
   const updateSubmission = useCallback(
-    (submissionPath: string, value: unknown) => {
-      setSubmission((prev) => {
-        return createUpdatedSubmission(prev, submissionPath, value);
-      });
+    (submissionPath: string, value: unknown): Submission => {
+      const nextSubmission = createUpdatedSubmission(submissionRef.current, submissionPath, value);
+      commitSubmission(nextSubmission, `set ${submissionPath}`);
+      return nextSubmission;
     },
-    [setSubmission],
+    [commitSubmission],
   );
 
   const clearSubmissionPaths = useCallback(
     (submissionPaths: string[]) => {
-      setSubmission((prev) => clearSubmissionPathsFromSubmission(prev, submissionPaths));
+      commitSubmission(
+        (prev) => clearSubmissionPathsFromSubmission(prev, submissionPaths),
+        `clear ${submissionPaths.join(', ')}`,
+      );
     },
-    [setSubmission],
+    [commitSubmission],
   );
 
   const actions = useMemo(
@@ -107,8 +124,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
 
   const value = useMemo(() => ({ submission, ...actions }), [submission, actions]);
 
-  // Fyllut's implementation of the generic field state store. setValue updates the submission and
-  // returns the next submission snapshot so scope-aware validation can revalidate synchronously.
+  // Fyllut's implementation of the generic field state store.
   const store = useMemo(
     () => ({
       getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submissionRef.current),
@@ -118,13 +134,9 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
           fieldStateListenersRef.current.delete(listener);
         };
       },
-      setValue: (statePath: string, fieldValue: unknown): Submission => {
-        const nextSubmission = createUpdatedSubmission(submissionRef.current, statePath, fieldValue);
-        setSubmission(nextSubmission);
-        return nextSubmission;
-      },
+      setValue: updateSubmission,
     }),
-    [setSubmission],
+    [updateSubmission],
   );
 
   return (

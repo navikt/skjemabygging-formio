@@ -2,6 +2,7 @@ import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
+import { useDevtoolsReport } from '../devtools/DevtoolsContext';
 import { useLanguage } from '../language/LanguageContext';
 import { ErrorSummaryScope, PageFieldsResolver, ValidationContextValue } from './validationContextTypes';
 import { PageViolationsByKey, replacePageSet, setPageViolations, togglePageInSet } from './validationState';
@@ -433,6 +434,12 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
   const publishedValueRef = useRef(value);
   const listenersRef = useRef(new Set<() => void>());
   const versionRef = useRef(0);
+
+  const reportToDevtools = useDevtoolsReport();
+  useEffect(() => {
+    reportToDevtools?.('validation', { pagesWithErrors, violationsByPage, externalErrors, errorSummaryScope });
+  }, [errorSummaryScope, externalErrors, pagesWithErrors, reportToDevtools, violationsByPage]);
+
   const store = useMemo<ValidationStore>(
     () => ({
       subscribe: (listener) => {

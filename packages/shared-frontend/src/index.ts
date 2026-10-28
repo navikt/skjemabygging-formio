@@ -35,6 +35,7 @@ export type {
   ApplicationEnvironment,
   ApplicationLogger,
 } from './context/application/ApplicationContext';
+export type { DevtoolsConnection } from './context/devtools/devtoolsSession';
 export type { LanguageConfig, LanguageContextValue } from './context/language/LanguageContext';
 export type {
   ActiveTask,
