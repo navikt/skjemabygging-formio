@@ -1,0 +1,77 @@
+name: Playwright tests
+
+on: push
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: Europe/Oslo
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CYPRESS_INSTALL_BINARY: '0'
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest-8-cores
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.22.1'
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+      - run: pnpm build:fyllut
+      - name: Run the built pilot
+        run: pnpm playwright:fyllut:built
+      - name: Upload Playwright reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fyllut-playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            packages/fyllut/.runtime/playwright/*/html/
+            packages/fyllut/.runtime/playwright/*/results.json
+
+  sendinn:
+    runs-on: ubuntu-latest-8-cores
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.22.1'
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir packages/sendinn exec playwright install --with-deps chromium
+      - run: pnpm build:sendinn
+      - name: Run the built Sendinn suite
+        run: pnpm playwright:sendinn:built
+      - name: Upload Playwright reports
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sendinn-playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            packages/sendinn/.runtime/playwright/*/html/
+            packages/sendinn/.runtime/playwright/*/results.json
