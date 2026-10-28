@@ -10,11 +10,12 @@ const createSendinnServerConfig = (options) =>
     createBackendEnv: (mockURL) => ({
       NO_DECORATOR: 'true',
       FORMS_API_URL: `${mockURL}/forms-api`,
+      SENDINN_CONTENT_SOURCE: 'latest',
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockURL}/texas/introspect`,
       NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockURL}/texas/exchange`,
     }),
     mockArgs: ['--mock.collections.selected=sendinn-base'],
-    mockHealthPath: '/forms-api/v1/published-global-translations/nb',
+    mockHealthPath: '/forms-api/v1/global-translations',
     backendHealthPath: '/sendinn/internal/isReady',
   });
 
