@@ -50,19 +50,27 @@ const PhoneNumber = ({
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
   const selectedAreaCode = phoneNumberValue?.areaCode;
+  const displayedAreaCode = selectedAreaCode || DEFAULT_AREA_CODE;
   const loadAreaCodes = useCallback(() => formData.getCodeList('areaCodes'), [formData]);
   const { values: loadedAreaCodes, error } = useRemoteOptions(showAreaCode ? loadAreaCodes : undefined);
 
   useEffect(() => {
-    if (!showAreaCode || phoneNumberValue?.areaCode) {
+    if (!showAreaCode) {
       return;
     }
 
-    setStateValue({
-      areaCode: DEFAULT_AREA_CODE,
-      number: typeof stateValue === 'string' ? stateValue : (phoneNumberValue?.number ?? ''),
-    });
-  }, [phoneNumberValue?.areaCode, phoneNumberValue?.number, setStateValue, showAreaCode, stateValue]);
+    // The selector shows the default area code without storing it, so an untouched field has no answer.
+    if (typeof stateValue === 'string') {
+      if (stateValue) {
+        setStateValue({ areaCode: DEFAULT_AREA_CODE, number: stateValue });
+      }
+      return;
+    }
+
+    if (phoneNumberValue?.number && !phoneNumberValue.areaCode) {
+      setStateValue({ ...phoneNumberValue, areaCode: DEFAULT_AREA_CODE });
+    }
+  }, [phoneNumberValue, setStateValue, showAreaCode, stateValue]);
 
   useEffect(() => {
     if (!error) {
@@ -108,18 +116,14 @@ const PhoneNumber = ({
         </div>
       )}
       <div className={styles.controls}>
-        <div
-          className={
-            (selectedAreaCode ?? DEFAULT_AREA_CODE).length > 3
-              ? `${styles.areaCode} ${styles.areaCodeLong}`
-              : styles.areaCode
-          }
-        >
+        <div className={displayedAreaCode.length > 3 ? `${styles.areaCode} ${styles.areaCodeLong}` : styles.areaCode}>
           <Select
             statePath={`${statePath}.areaCode`}
             label={TEXTS.statiske.phoneNumber.areaCodeLabel}
             hideLabel
             values={areaCodeOptions}
+            value={displayedAreaCode}
+            onChange={(areaCode) => setStateValue({ ...phoneNumberValue, areaCode })}
             required={false}
             readOnly={readOnly}
             selectType="select"
@@ -128,7 +132,7 @@ const PhoneNumber = ({
         </div>
         <FormElementBox fieldSize={fieldSize} marginBottom="space-0" className={styles.number}>
           <InternalTextField
-            key={selectedAreaCode}
+            key={displayedAreaCode}
             statePath={`${statePath}.number`}
             label={label}
             hideLabel
@@ -141,9 +145,7 @@ const PhoneNumber = ({
             type="tel"
             autoComplete={autoComplete}
             inputMode="tel"
-            formatKey={
-              (selectedAreaCode ?? DEFAULT_AREA_CODE) === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'
-            }
+            formatKey={displayedAreaCode === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'}
             validation={toPhoneNumberRules(true, selectedAreaCode, validation)}
           />
         </FormElementBox>
