@@ -43,6 +43,15 @@ const config = {
   formsApiUrl: env('FORMS_API_URL', 'https://forms-api.intern.dev.nav.no'),
   norg2Url: env('NORG2_URL', 'https://norg2.dev.intern.nav.no'),
   contentSource: readContentSource(),
+  skjemabyggingProxyUrl: env('SKJEMABYGGING_PROXY_URL', 'http://127.0.0.1:3300/skjemabygging-proxy'),
+  skjemabyggingProxyClientId: env('SKJEMABYGGING_PROXY_CLIENT_ID', 'local-proxy'),
+  azure: {
+    tokenEndpoint: env('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', 'http://127.0.0.1:3300/azure-openid/oauth2/v2.0/token'),
+    clientId: env('AZURE_APP_CLIENT_ID', 'local-sendinn'),
+    // Missing local credentials fail token acquisition, never fall back to an anonymous generator call.
+    clientSecret:
+      isDevelopment || isTest ? (process.env.AZURE_APP_CLIENT_SECRET ?? '') : env('AZURE_APP_CLIENT_SECRET'),
+  },
   texas: {
     introspectionEndpoint: env('NAIS_TOKEN_INTROSPECTION_ENDPOINT', 'http://127.0.0.1:3300/texas/introspect'),
     exchangeEndpoint: env('NAIS_TOKEN_EXCHANGE_ENDPOINT', 'http://127.0.0.1:3300/texas/exchange'),

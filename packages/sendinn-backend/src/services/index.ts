@@ -1,9 +1,12 @@
 import { fetchDecoratorHtml } from '@navikt/nav-dekoratoren-moduler/ssr';
 import {
+  createAzureTokenService,
   createContentService,
+  createCoverPageService,
   createDecorator,
   createIdportenAuth,
   createNavUnitService,
+  createSendinnCoverPageService,
   createSendinnFormService,
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
@@ -18,6 +21,18 @@ collectDefaultMetrics({ register: metricsRegister });
 const contentService = createContentService({ baseUrl: config.formsApiUrl, source: config.contentSource });
 const sendinnFormService = createSendinnFormService({ contentService });
 const navUnitService = createNavUnitService({ baseUrl: config.norg2Url, consumerId: 'sendinn' });
+const coverPageService = createCoverPageService({ baseUrl: config.skjemabyggingProxyUrl });
+const generatorTokenService = createAzureTokenService({
+  ...config.azure,
+  scope: `openid api://${config.skjemabyggingProxyClientId}/.default`,
+});
+const sendinnCoverPageService = createSendinnCoverPageService({
+  formService: sendinnFormService,
+  coverPageService,
+  navUnitService,
+  getAccessToken: generatorTokenService.getAccessToken,
+  allowTestIdentityNumbers: config.naisClusterName !== 'prod-gcp',
+});
 
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
@@ -48,6 +63,7 @@ export {
   idportenAuth,
   metricsRegister,
   navUnitService,
+  sendinnCoverPageService,
   sendinnFormService,
   tokenxForInnsendingApi,
 };

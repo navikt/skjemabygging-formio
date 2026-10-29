@@ -1,14 +1,15 @@
-import { CoverPageDownloadType, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, ResponseError, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import coverPageClient from './coverPageClient';
 import { coverPageMapper } from './mapper';
+import { SubsequentSubmissionCoverPageData } from './subsequentSubmissionTypes';
 
 type CoverPageClient = Pick<typeof coverPageClient, 'downloadCoverPage'>;
 
 interface DownloadCoverPageProps {
   languageCode?: string;
   accessToken?: string;
-  data: CoverPageDownloadType;
+  data: CoverPageDownloadType | SubsequentSubmissionCoverPageData;
   translate?: TranslateFunction;
   formNumber?: string;
 }
@@ -35,11 +36,10 @@ const createCoverPageService = ({
 
     logger.debug(`Download cover page for ${data.form.skjemanummer}`);
 
-    const response = await client.downloadCoverPage({
-      baseUrl,
-      accessToken,
-      body,
-    });
+    const response = await client.downloadCoverPage({ baseUrl, accessToken, body });
+    if (!response || typeof response.foersteside !== 'string' || !response.foersteside.trim()) {
+      throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid cover page response');
+    }
 
     logger.info(
       `Cover page for ${body.navSkjemaId} with id (loepenummer) ${response.loepenummer} created successfully`,

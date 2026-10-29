@@ -1,4 +1,5 @@
 import { correlator, errorHandler, rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import { config } from './config/config';
@@ -9,12 +10,21 @@ import internalRouter from './routers/internal';
 
 const MS_ONE_MINUTE = 60 * 1000;
 
+const handleJsonParseError: express.ErrorRequestHandler = (error, _req, _res, next) => {
+  if (error?.type === 'entity.parse.failed' || error?.type === 'entity.too.large') {
+    next(new ResponseError('BAD_REQUEST', 'Invalid JSON request body'));
+    return;
+  }
+  next(error);
+};
+
 const createApp = () => {
   const app = express();
   // Keep the existing one-hop proxy trust setting until the proxy chain is verified in #2271.
   app.set('trust proxy', 1);
   app.use(correlator());
   app.use(express.json({ limit: '1mb' }));
+  app.use(handleJsonParseError);
   app.set('views', buildDirectory);
   app.set('view engine', 'mustache');
   app.engine('html', mustacheExpress());
