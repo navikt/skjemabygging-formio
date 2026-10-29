@@ -1,4 +1,9 @@
-import { UploadedFile, getStatusFromErrorCode, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ResponseError,
+  UploadedFile,
+  getStatusFromErrorCode,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import type { LogMetadata } from '../../shared';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
@@ -74,7 +79,7 @@ interface DeleteApplicationProps extends ApplicationBaseProps {
 
 const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   const { baseUrl, accessToken, innsendingsId, correlationId } = props;
-  logger.info(`Getting soknad ${innsendingsId}`);
+  logger.info(`${innsendingsId}: Getting draft`);
 
   try {
     return await http.get<T>(getDraftUrl(baseUrl, innsendingsId), {
@@ -83,30 +88,38 @@ const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
-    throw normalizeApplicationError(error);
+    throw sanitizeDraftError(error);
   }
+};
+
+const sanitizeDraftError = (error: unknown): ResponseError => {
+  const normalized = normalizeApplicationError(error);
+  return new ResponseError(normalized.errorCode, 'Draft request failed', normalized.correlationId);
 };
 
 const createApplication = async <T>(props: CreateApplicationProps): Promise<DraftResponse<T>> => {
   const { baseUrl, accessToken, body, force, envQualifier, correlationId, innsendingsId } = props;
   const forceParam = force ? '?force=true' : '';
-  logger.info('Creating soknad');
+  logger.info(`${innsendingsId ? `${innsendingsId}: ` : ''}Creating draft`);
 
-  const response = await http.post<T>(`${getDraftUrl(baseUrl)}${forceParam}`, body, {
-    accessToken,
-    responseType: 'metadata',
-    headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
-  });
-
-  return {
-    status: response.status,
-    body: response.body as T,
-  };
+  try {
+    const response = await http.post<T>(`${getDraftUrl(baseUrl)}${forceParam}`, body, {
+      accessToken,
+      responseType: 'metadata',
+      headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
+    });
+    return {
+      status: response.status,
+      body: response.body as T,
+    };
+  } catch (error) {
+    throw sanitizeDraftError(error);
+  }
 };
 
 const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
   const { baseUrl, accessToken, body, innsendingsId, correlationId } = props;
-  logger.info(`Updating soknad ${innsendingsId}`);
+  logger.info(`${innsendingsId}: Updating draft`);
 
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
@@ -114,7 +127,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
-    throw normalizeApplicationError(error);
+    throw sanitizeDraftError(error);
   }
 };
 
@@ -123,7 +136,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
  */
 const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) => {
   const { baseUrl, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
-  logger.info(`Submitting utfylt soknad ${innsendingsId}`);
+  logger.info(`${innsendingsId}: Submitting completed draft`);
 
   let response;
   try {
@@ -134,7 +147,7 @@ const submitCompletedApplication = async (props: SubmitCompletedApplicationProps
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
     });
   } catch (error) {
-    throw normalizeApplicationError(error);
+    throw sanitizeDraftError(error);
   }
 
   return {
