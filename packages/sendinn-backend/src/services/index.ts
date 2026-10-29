@@ -3,6 +3,7 @@ import {
   createContentService,
   createDecorator,
   createIdportenAuth,
+  createSendinnFormService,
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { sendinnLanguageUtils } from '@navikt/skjemadigitalisering-shared-domain';
@@ -14,6 +15,7 @@ const metricsRegister = new Registry();
 collectDefaultMetrics({ register: metricsRegister });
 
 const contentService = createContentService({ baseUrl: config.formsApiUrl, source: config.contentSource });
+const sendinnFormService = createSendinnFormService({ contentService });
 
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
@@ -38,4 +40,4 @@ const decorator = createDecorator({
   },
 });
 
-export { contentService, decorator, idportenAuth, metricsRegister, tokenxForInnsendingApi };
+export { contentService, decorator, idportenAuth, metricsRegister, sendinnFormService, tokenxForInnsendingApi };
