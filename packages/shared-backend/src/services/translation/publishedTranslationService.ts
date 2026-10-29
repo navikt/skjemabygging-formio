@@ -1,6 +1,7 @@
 import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import translationClient from './translationClient';
+import { toTranslationMap } from './translationMapper';
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 5 * 1000;
@@ -28,12 +29,6 @@ type PublishedTranslationService = {
    */
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
 };
-
-const toTranslationMap = (
-  languageCode: TranslationLang,
-  translations: Record<string, string> | undefined,
-): FormsApiTranslationMap =>
-  Object.fromEntries(Object.entries(translations ?? {}).map(([key, value]) => [key, { [languageCode]: value }]));
 
 const createPublishedTranslationService = ({
   baseUrl,
