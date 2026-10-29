@@ -45,6 +45,7 @@ describe('Attachment', () => {
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
     cy.findByRole('textbox', { name: TITLE.textarea }).type('Dette er en test');
+    cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
 
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
@@ -130,6 +131,7 @@ describe('Attachment', () => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
+    cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
     cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickNextStep();
 
