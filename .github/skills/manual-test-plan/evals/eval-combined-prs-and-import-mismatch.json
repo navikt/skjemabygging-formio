@@ -1,0 +1,16 @@
+{
+  "skills": ["manual-test-plan"],
+  "query": "/manual-test-plan 2129 and 2273",
+  "files": [],
+  "expected_behavior": [
+    "Resolves both targets and verifies whether one deployed head includes both changes; records the primary and related analyzed PR revisions",
+    "Uses read-only fetched Git objects if GitHub rejects a large diff; never substitutes the current checkout",
+    "Distinguishes published production snapshots from the latest production draft before asking for Bygger imports",
+    "Explains an import-source mismatch before overwriting shared preprod and agrees on a suitable reference or substitute",
+    "Preflights the pinned runtime and installed dependencies before selecting a generated-form validation approach; asks once about a blocker rather than repeatedly installing dependencies or requesting credentials",
+    "Preserves the approved behavior IDs and asks about material deferrals instead of silently dropping agreed checks",
+    "Reuses the form-flow JSON report for case labels, values and page order, and rejects nonexistent static option values",
+    "Runs committed-source citation validation and retains the distinction between source-mapped routes, local branch checks and preprod browser observations",
+    "On the non-developer path, ends with HTML and manual print/review instructions; never requires a PDF path or edits Trello"
+  ]
+}
