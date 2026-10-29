@@ -13,7 +13,7 @@ import { SubmissionStateProvider } from '../../context/state/SubmissionStateCont
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
 import { SendinnJourney } from '../journey/SendinnJourney';
 import { LoadSendinnForm } from './createSendinnFormService';
-import { createSendinnRuntimeServices } from './createSendinnRuntimeServices';
+import { CreateSendinnCoverPage, createSendinnRuntimeServices } from './createSendinnRuntimeServices';
 import { SendinnFormProvider, useSendinnForm } from './SendinnFormProvider';
 
 interface Props {
@@ -22,12 +22,12 @@ interface Props {
   onLoadError: (error: unknown) => void;
 }
 
-const LoadedForm = () => {
+const LoadedForm = ({ createCoverPage }: { createCoverPage: CreateSendinnCoverPage }) => {
   const { form } = useSendinnForm();
   return (
     <FormDefinitionProvider form={form} submissionMethod="paper">
       <FormValidationProvider>
-        <SendinnJourney />
+        <SendinnJourney createCoverPage={createCoverPage} />
       </FormValidationProvider>
     </FormDefinitionProvider>
   );
@@ -60,7 +60,7 @@ const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
             onLoadError={onLoadError}
             loginUrl={loginUrl}
           >
-            <LoadedForm />
+            <LoadedForm createCoverPage={services.coverPage.create} />
           </SendinnFormProvider>
         </SubmissionStateProvider>
       </RuntimeServicesProvider>

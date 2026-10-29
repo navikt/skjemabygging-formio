@@ -1,5 +1,5 @@
 import { flattenComponents, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
@@ -15,9 +15,13 @@ import FormFlowLayout from '../../form-flow/FormFlowLayout';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../../form-flow/layout/FormButtonRow';
 import { useFieldFocus } from '../../form-flow/useFieldFocus';
 import { useFormPageController } from '../../form-flow/useFormPageController';
+import { CreateSendinnCoverPage } from '../form/createSendinnRuntimeServices';
+import { SendinnDownloadPage } from './SendinnDownloadPage';
 import styles from './SendinnJourney.module.css';
 
-const SendinnJourney = () => {
+const INSTRUCTIONS_KEY = 'instructions';
+
+const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCoverPage }) => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const { translate, currentLanguage } = useLanguage();
@@ -29,16 +33,20 @@ const SendinnJourney = () => {
   const { currentPanel, currentIndex, components, isFirst, isLast, goToNext } = useFormPageController(step);
   const { hideErrorSummary, schedulePageValidation, validatePages } = useValidationActions();
   const summary = step === SUMMARY_KEY;
+  const instructions = step === INSTRUCTIONS_KEY;
   const hasDocuments = useMemo(
     () => flattenComponents(form.components).some((component) => component.type === 'attachment'),
     [form],
   );
   const pageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
-  const getPanelLink = (panelKey: string) => {
-    const params = new URLSearchParams(search);
-    params.set('step', panelKey);
-    return { pathname, search: `?${params}` };
-  };
+  const getPanelLink = useCallback(
+    (panelKey: string) => {
+      const params = new URLSearchParams(search);
+      params.set('step', panelKey);
+      return { pathname, search: `?${params}` };
+    },
+    [pathname, search],
+  );
   const goToStep = (panelKey: string, focusId?: string) => {
     hideErrorSummary();
     navigate(getPanelLink(panelKey), { state: focusId ? { focusId } : undefined });
@@ -49,8 +57,13 @@ const SendinnJourney = () => {
     document.title = translate(TEXTS.statiske.sendinn.journey.form);
   }, [translate]);
   useEffect(() => {
-    if (!summary && currentPanel) schedulePageValidation(currentPanel.key);
-  }, [components, currentPanel, schedulePageValidation, summary]);
+    if (!summary && !instructions && currentPanel) schedulePageValidation(currentPanel.key);
+  }, [components, currentPanel, schedulePageValidation, summary, instructions]);
+  useEffect(() => {
+    if (instructions && hasDocuments && validatePages(pageKeys).length > 0) {
+      navigate(getPanelLink(SUMMARY_KEY), { replace: true, state: { redirect: true } });
+    }
+  }, [instructions, hasDocuments, pageKeys, validatePages, navigate, getPanelLink]);
 
   const next = () => {
     if (!goToNext()) return;
@@ -65,14 +78,30 @@ const SendinnJourney = () => {
     <div data-journey="form">
       <FormFlowLayout
         form={{ ...form, title: TEXTS.statiske.sendinn.journey.form }}
-        pageTitle={summary ? TEXTS.statiske.summaryPage.title : (currentPanel?.title ?? form.title)}
-        activeIndex={summary ? panels.length : currentIndex}
+        pageTitle={
+          instructions
+            ? TEXTS.statiske.sendinn.coverPage.notSent
+            : summary
+              ? TEXTS.statiske.summaryPage.title
+              : (currentPanel?.title ?? form.title)
+        }
+        activeIndex={summary || instructions ? panels.length : currentIndex}
         leadingSteps={[]}
-        navigationKey={summary ? SUMMARY_KEY : currentPanel?.key}
+        navigationKey={instructions ? INSTRUCTIONS_KEY : summary ? SUMMARY_KEY : currentPanel?.key}
         onStepClick={(key) => goToStep(key)}
       >
         {!hasDocuments ? (
           <Alert variant="info">{translate(TEXTS.statiske.sendinn.noMatchingDocuments)}</Alert>
+        ) : instructions ? (
+          <SendinnDownloadPage
+            createCoverPage={createCoverPage}
+            validate={() => {
+              if (validatePages(pageKeys).length === 0) return true;
+              navigate(getPanelLink(SUMMARY_KEY), { state: { redirect: true } });
+              return false;
+            }}
+            onPrevious={() => goToStep(SUMMARY_KEY)}
+          />
         ) : summary ? (
           <>
             <div className={styles.summary}>
@@ -96,8 +125,10 @@ const SendinnJourney = () => {
               }
               nextButton={
                 <FormNextButton
-                  label={translate(TEXTS.statiske.sendinn.reviewAnswers)}
-                  onClick={() => validatePages(pageKeys)}
+                  label={translate(TEXTS.grensesnitt.navigation.instructions)}
+                  onClick={() => {
+                    if (validatePages(pageKeys).length === 0) goToStep(INSTRUCTIONS_KEY);
+                  }}
                 />
               }
             />
