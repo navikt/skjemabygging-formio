@@ -40,8 +40,6 @@ const createSubmission = (attachment: SubmissionAttachment): Submission => ({
   data: {
     documentation: 'ettersender',
     fodselsnummerDNummerSoker: '12345678911',
-    fornavnAvsender: 'Ola',
-    etternavnAvsender: 'Nordmann',
   },
   attachments: [attachment],
 });
@@ -220,8 +218,6 @@ describe('assembleSubmitApplicationRequest', () => {
     const submission: Submission = {
       data: {
         fodselsnummerDNummerSoker: '12345678911',
-        fornavnAvsender: 'Ola',
-        etternavnAvsender: 'Nordmann',
         rows: [{ documentation: 'leggerVedNaa' }, { documentation: 'leggerVedNaa' }, {}],
       },
       attachments: [legacy],
