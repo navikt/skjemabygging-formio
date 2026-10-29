@@ -191,6 +191,37 @@ describe('PhoneNumber', () => {
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.testDownloadPdf();
     });
+
+    it('should not include an untouched phone number with area code in the summary', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Visning' }).should('exist');
+      cy.contains('label', 'Telefonnummer').closest('[data-form-component]').find('input[type="tel"]').type('12345678');
+      cy.contains('label', 'Telefonnummer med landkode')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('12345678');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Validering' }).should('exist');
+      cy.contains('label', 'Telefonnummer påkrevd')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('11223344');
+      cy.contains('label', 'Telefonnummer landkode påkrevd')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('87654321');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Validering', () => {
+        cy.get('dt').should('have.length', 2);
+        cy.contains('dt', 'Telefonnummer landkode ikke påkrevd').should('not.exist');
+        cy.contains('dd', '+47 87 65 43 21').should('exist');
+      });
+    });
   });
 
   describe('Translation', () => {
