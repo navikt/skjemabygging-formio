@@ -36,6 +36,16 @@ describe('Active tasks', () => {
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
     });
+
+    it('redirects to /fyllut/:skjemapath:/paabegynt when digital is selected on the intro page', () => {
+      cy.visit('/fyllut/activetasksmellomlagring');
+      cy.defaultWaits();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).click();
+      cy.wait('@createMellomlagring').its('request.url').should('not.include', 'forceMellomlagring');
+      cy.wait('@getActiveTasks');
+      cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
+      cy.url().should('include', '/activetasksmellomlagring/paabegynt');
+    });
   });
 
   describe('When user has mellomlagring and ettersending in progress for the form', () => {
