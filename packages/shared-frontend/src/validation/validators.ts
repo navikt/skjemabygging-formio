@@ -37,6 +37,8 @@ interface DateMessages {
 
 interface ValidationRules {
   required?: boolean;
+  /** Replaces the standard required message, for a field whose own wording says what is missing. */
+  requiredMessage?: string;
   onlyAvailableItems?: string[];
   minLength?: number;
   maxLength?: number;
@@ -148,7 +150,7 @@ const validateValue = (
     return { textKey: rules.requiredFilesMessage ?? TEXTS.validering.fileMissing, params: { field } };
   }
   if (rules.required && (value === false || validatorUtils.isEmpty(value))) {
-    return { textKey: TEXTS.validering.required, params: { field } };
+    return { textKey: rules.requiredMessage ?? TEXTS.validering.required, params: { field } };
   }
   if (validatorUtils.isEmpty(value)) {
     return undefined;

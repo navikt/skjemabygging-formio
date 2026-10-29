@@ -1,5 +1,7 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { inputId } from '../../../utils/inputId';
+import { SELF_DECLARATION_PATH } from '../selfDeclarationValidation';
 import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {
@@ -26,6 +28,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
         value={value ? ['selfDeclaration'] : []}
       >
         <Checkbox
+          id={inputId(SELF_DECLARATION_PATH)}
           value="selfDeclaration"
           onChange={(event) => setSelfDeclaration?.(event.target.checked)}
           error={!!error}
