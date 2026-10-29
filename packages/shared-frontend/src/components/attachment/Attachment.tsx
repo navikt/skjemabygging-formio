@@ -1,5 +1,5 @@
 import { PlusIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Label, VStack } from '@navikt/ds-react';
+import { Button, Label, VStack } from '@navikt/ds-react';
 import { AttachmentType, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
@@ -13,10 +13,11 @@ import { useValidationExternalError, useValidationFieldError } from '../../conte
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
 import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
-import Alert from '../alert/Alert';
 import FileUploadReadMore from '../file-upload/FileUploadReadMore';
 import ReadMore from '../read-more/ReadMore';
+import FieldError from '../shared/FieldError';
 import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
 import { BaseFieldProps, ChoiceValidation } from '../types';
 import AttachmentItem from './AttachmentItem';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
@@ -149,18 +150,16 @@ const Attachment = ({
           {uploadEnabled && uploadedFiles.length > 0 ? (
             <div id={inputId(choicePath)} tabIndex={-1}>
               <Label>{translate(label)}</Label>
-              {description && <BodyShort>{translate(description)}</BodyShort>}
+              {description && <TranslatedDescription translationKey={description} />}
               {(validationError ?? externalError) && (
-                <Alert variant="error" inline>
-                  {validationError ?? externalError}
-                </Alert>
+                <FieldError id={`${inputId(choicePath)}-error`} error={validationError ?? externalError} />
               )}
             </div>
           ) : (
             <AttachmentOptionSelect
               title={translate(label)}
               required={required}
-              description={translate(description)}
+              description={description}
               error={validationError ?? externalError}
               value={attachment}
               values={values}
