@@ -217,15 +217,22 @@ test.describe('Paper cover-page download', () => {
         await route.fulfill({ response });
       });
       const download = page.waitForEvent('download');
+      await downloadButton(page).focus();
+      await expect(downloadButton(page)).toBeFocused();
       await downloadButton(page).click();
       await expect(downloadButton(page)).toBeDisabled();
-      await expect(downloadButton(page)).toBeFocused();
       await expect(page.getByRole('status')).toHaveText('Lager førstesiden. Vent litt.');
       await expect(page).toHaveURL((url) => url.searchParams.get('step') === 'instructions');
       const focusTarget = moveFocus
         ? page.getByRole('button', { name: 'Forrige steg', exact: true })
         : downloadButton(page);
-      if (moveFocus) await focusTarget.focus();
+      if (moveFocus) {
+        await focusTarget.focus();
+        await expect(focusTarget).toBeFocused();
+      } else {
+        await downloadButton(page).evaluate((button) => button.blur());
+        await expect(downloadButton(page)).not.toBeFocused();
+      }
       release();
       await expectPdf(await download);
       await expect(downloadButton(page)).toBeEnabled();
