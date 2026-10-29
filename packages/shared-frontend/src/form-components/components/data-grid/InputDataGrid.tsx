@@ -25,8 +25,8 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { submission, updateSubmission } = useSubmissionState();
   const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
-  const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
-    component;
+  const { components, label, description, hideLabel, addAnother, removeAnother, rowTitle } = component;
+  const allowAddingAndRemovingRows = !component.disableAddingRemovingRows;
   const submissionPath = getResolvedSubmissionPath(component);
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
@@ -65,7 +65,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
       componentRegistry={componentRegistry}
       onAdd={addRow}
       onRemove={removeRow}
-      addable={!disableAddingRemovingRows}
+      allowAddingAndRemovingRows={allowAddingAndRemovingRows}
       initEmpty={component.initEmpty}
       removeLabel={removeAnother}
       rowComponents={rowComponentTemplates}
