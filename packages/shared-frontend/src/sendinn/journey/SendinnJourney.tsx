@@ -52,7 +52,7 @@ const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCov
     navigate(getPanelLink(panelKey), { state: focusId ? { focusId } : undefined });
   };
 
-  useFieldFocus();
+  useFieldFocus({ preferInputFocus: true });
   useEffect(() => {
     document.title = translate(TEXTS.statiske.sendinn.journey.form);
   }, [translate]);
@@ -115,7 +115,11 @@ const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCov
                 getPanelLink={getPanelLink}
               />
             </div>
-            <FormErrorSummary pageKeys={pageKeys} onNavigateToField={(error, id) => goToStep(error.pageKey, id)} />
+            <FormErrorSummary
+              preferInputFocus
+              pageKeys={pageKeys}
+              onNavigateToField={(error, id) => goToStep(error.pageKey, id)}
+            />
             <FormButtonRow
               previousButton={
                 <FormPrevButton
@@ -136,7 +140,7 @@ const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCov
         ) : (
           <>
             <RenderInputForm pageKey={currentPanel?.key} components={components} />
-            <FormErrorSummary pageKey={currentPanel?.key} />
+            <FormErrorSummary preferInputFocus pageKey={currentPanel?.key} />
             <FormButtonRow
               previousButton={
                 !isFirst && (
