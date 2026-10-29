@@ -28,7 +28,7 @@ const requireText = (value: unknown, required = true): string | undefined => {
     if (required) invalidAnswer();
     return undefined;
   }
-  if (typeof value !== 'string' || (required && !value.trim()) || !validatorUtils.isValidCoverPageValue(value)) {
+  if (typeof value !== 'string' || !validatorUtils.isValidCoverPageValue(value)) {
     return invalidAnswer();
   }
   return value;

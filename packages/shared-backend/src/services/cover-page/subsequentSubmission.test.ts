@@ -309,6 +309,9 @@ describe('trusted subsequent submission assembly', () => {
     const other = { ...attachment('other-id', 'a'.repeat(50)), type: 'other' as const };
     submission.data.sendinnAttachment3 = { other: [other] };
     expect(assemble(submission).attachments.at(-1)).toBe('a'.repeat(50));
+    submission.data.sendinnAttachment3 = { other: [{ ...other, title: '   ' }] };
+    expect(assemble(submission).attachments.at(-1)).toBe('   ');
+    expect(assemble(submission).archivedAttachments?.at(-1)).toBe('   ');
     submission.data.sendinnAttachment3 = { other: [other, other] };
     expect(() => assemble(submission)).toThrow();
     submission.data.sendinnAttachment3 = { other: [{ ...other, value: 'ettersender' }] };
