@@ -61,6 +61,7 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
           ) : (
             <FormSummary.Value key={attachment.attachmentId}>
               <VStack gap="space-8">
+                {attachment.value === 'leggerVedNaa' && attachment.title && <Label>{attachment.title}</Label>}
                 {translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values))}
                 {attachment.additionalDocumentation && <div>{translate(attachment.additionalDocumentation)}</div>}
                 {showDeadline(attachment) &&

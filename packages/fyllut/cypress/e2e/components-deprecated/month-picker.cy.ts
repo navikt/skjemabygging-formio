@@ -2,6 +2,7 @@
  * Tests that the month picker component (react) renders and functions correctly
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 const today = new Date('2024-08-01');
@@ -31,6 +32,7 @@ describe('Month picker', () => {
       cy.clickNextStep();
 
       cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
 
       cy.clickNextStep();
 

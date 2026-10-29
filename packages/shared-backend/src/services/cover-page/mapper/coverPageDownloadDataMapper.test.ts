@@ -148,6 +148,53 @@ describe('coverPageDownloadDataMapper', () => {
     });
   });
 
+  it('prints translated labels but archives original labels, leaving user titles untranslated', () => {
+    const form: Form = {
+      ...formWithAttachments,
+      components: [
+        formWithAttachments.components[1],
+        {
+          ...formWithAttachments.components[1],
+          key: 'other',
+          navId: 'other',
+          attachmentType: 'other',
+        },
+      ],
+    };
+    const submission: Submission = {
+      data: {
+        attachment1: { attachmentId: 'attachment1', navId: 'attachment1', type: 'default', value: 'leggerVedNaa' },
+        other: [{ attachmentId: 'other', navId: 'other', type: 'other', value: 'leggerVedNaa', title: 'My documents' }],
+      },
+    };
+    const translate = vi.fn(() => 'Translated attachment');
+
+    expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(form, submission, translate)).toEqual({
+      attachments: ['Translated attachment', 'My documents'],
+      archivedAttachments: ['Vedlegg label', 'My documents'],
+    });
+    expect(translate).toHaveBeenCalledExactlyOnceWith('Vedlegg label');
+  });
+
+  it('uses the label when no title exists and excludes stale titles for unselected attachments', () => {
+    const submission: Submission = {
+      data: {
+        attachment1: [
+          { attachmentId: 'first', navId: 'attachment1', type: 'other', value: 'leggerVedNaa' },
+          { attachmentId: 'second', navId: 'attachment1', type: 'other', value: 'ettersender', title: 'Not selected' },
+        ],
+      },
+      attachments: [
+        { attachmentId: 'obsolete', navId: 'attachment1', type: 'other', value: 'leggerVedNaa', title: 'Obsolete' },
+      ],
+    };
+
+    expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(formWithAttachments, submission)).toEqual({
+      attachments: ['Vedlegg label'],
+      archivedAttachments: ['Vedlegg label'],
+    });
+  });
+
   it('uses an empty cover-page user when the submission has no party data', () => {
     const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
       data: {},
