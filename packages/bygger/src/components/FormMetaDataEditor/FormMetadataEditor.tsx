@@ -8,6 +8,7 @@ import DeclarationFields from './fields/DeclarationFields';
 import EnhetFields from './fields/EnhetFields';
 import MellomlagrinDurationFields from './fields/MellomlagringDurationFields';
 import SignatureFields from './fields/SignatureFields';
+import SkyraFields from './fields/SkyraFields';
 import SubmissionFields from './fields/SubmissionFields';
 import UxSignalsFields from './fields/UxSignalsFields';
 import LabelWithDiff from './LabelWithDiff';
@@ -92,6 +93,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
 
   const uxSignalsFields = () => <UxSignalsFields onChange={onChange} diff={diff} form={form} />;
 
+  const skyraFields = () => <SkyraFields onChange={onChange} diff={diff} form={form} />;
+
   return (
     <Fieldset hideLegend legend="">
       {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
@@ -104,6 +107,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
           {addressFields()}
           {enhetFields()}
           {uxSignalsFields()}
+          {skyraFields()}
           {mellomlagringFields()}
           {instructionFields()}
           {signatureFields()}
