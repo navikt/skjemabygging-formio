@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { introPageTexts, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {
@@ -20,7 +20,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
     <div className={className}>
       <InnerHtmlLong content={translate(description)} />
       <CheckboxGroup
-        legend={translate('introPage.selfDeclaration.inputLabel')}
+        legend={translate(introPageTexts.selfDeclaration.inputLabel)}
         hideLegend
         error={error}
         value={value ? ['selfDeclaration'] : []}
@@ -30,7 +30,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
           onChange={(event) => setSelfDeclaration?.(event.target.checked)}
           error={!!error}
         >
-          {translate('introPage.selfDeclaration.inputLabel')}
+          {translate(introPageTexts.selfDeclaration.inputLabel)}
         </Checkbox>
       </CheckboxGroup>
     </div>

@@ -2,6 +2,7 @@ import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitaliseri
 import { TranslationError } from '../utils/errorUtils';
 import {
   AddAction,
+  ClearChangesAction,
   generateMap,
   getErrors,
   getResetChanges,
@@ -21,7 +22,13 @@ type FormTranslationState = {
 };
 
 type FormTranslationAction =
-  InitializeAction | UpdateAction | AddAction | ValidationErrorAction | SaveStartedAction | SaveFinishedAction;
+  | InitializeAction
+  | UpdateAction
+  | AddAction
+  | ValidationErrorAction
+  | SaveStartedAction
+  | SaveFinishedAction
+  | ClearChangesAction;
 
 const getUpdatedFormTranslationChanges = (
   state: FormTranslationState,
@@ -69,6 +76,8 @@ const editFormTranslationsReducer = (
           action.payload.errors.map(({ key }) => key).filter((key) => state.inactiveTranslationWarningKeys.has(key)),
         ),
       };
+    case 'CLEAR_CHANGES':
+      return { ...state, changes: {}, errors: [], status: 'SAVED', inactiveTranslationWarningKeys: new Set() };
     default:
       throw new Error();
   }
