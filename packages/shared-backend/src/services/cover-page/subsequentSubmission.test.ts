@@ -127,6 +127,7 @@ describe('trusted subsequent submission assembly', () => {
         hasNavContact: 'ja',
         navContactUnit: '9999',
         navUnit: '9999',
+        sendinnAttachment1: { first: attachment() },
       },
     };
     const result = assemble(submission);
@@ -158,7 +159,7 @@ describe('trusted subsequent submission assembly', () => {
       '0101',
     ],
   ] as const)('authorizes no-user only from the trusted configuration/branch %j', (properties, data, reason, unit) => {
-    const result = assemble({ data: { ...data } }, properties);
+    const result = assemble({ data: { ...data, sendinnAttachment1: { first: attachment() } } }, properties);
     expect(result).toMatchObject({ collection: 'authorized-no-user', reason });
     expect(result).not.toHaveProperty('user');
     const body = coverPageMapper.createRequestBodyFromDownloadData(result);
@@ -173,7 +174,10 @@ describe('trusted subsequent submission assembly', () => {
     'rejects a branch choice in forced mode: %s',
     (collectionType) => {
       expect(() =>
-        assemble({ data: { collectionType, navUnit: '0101' } }, { enhetMaVelgesVedPapirInnsending: true }),
+        assemble(
+          { data: { collectionType, navUnit: '0101', sendinnAttachment1: { first: attachment() } } },
+          { enhetMaVelgesVedPapirInnsending: true },
+        ),
       ).toThrow();
     },
   );
@@ -186,7 +190,7 @@ describe('trusted subsequent submission assembly', () => {
     { collectionType: 'unidentified-person', yourInformation: {} },
     { collectionType: 'multiple-people' },
   ])('does not turn invalid person/branch answers into no-user success: %j', (data) => {
-    expect(() => assemble({ data })).toThrow();
+    expect(() => assemble({ data: { ...data, sendinnAttachment1: { first: attachment() } } })).toThrow();
   });
 
   it.each([
@@ -274,9 +278,35 @@ describe('trusted subsequent submission assembly', () => {
     expect(assemble(unidentified(), {}, ['N1']).attachments).toEqual(['Translated first']);
   });
 
-  it('allows zero selections in a nonempty available set until T9, but rejects an empty available set', () => {
-    expect(assemble({ data: {} }, { hideUserTypes: true }).attachments).toEqual([]);
+  it('rejects zero selections separately from an empty available set', () => {
+    expect(() => assemble({ data: {} }, { hideUserTypes: true })).toThrow(
+      'At least one available attachment must be selected',
+    );
     expect(() => assemble({ data: {} }, { hideUserTypes: true }, ['unknown'])).toThrow('No attachments are available');
+  });
+
+  it.each([
+    [{ hideUserTypes: true }, {}],
+    [{ enhetMaVelgesVedPapirInnsending: true }, { navUnit: '0101' }],
+    [{}, { collectionType: 'multiple-people', navUnit: '0101' }],
+    [{}, { collectionType: 'identified-person', yourInformation: { identitet: { identitetsnummer: '10915596784' } } }],
+    [{}, Object.fromEntries(Object.entries(unidentified().data).filter(([key]) => key !== 'sendinnAttachment1'))],
+  ])('requires selection in every authorized collection mode %j', (properties, data) => {
+    expect(() => assemble({ data }, properties)).toThrow('At least one available attachment must be selected');
+  });
+
+  it('accepts a later available document alone and does not count unselected records', () => {
+    const submission: Submission = {
+      data: {
+        sendinnAttachment1: { first: { ...attachment(), value: '' } },
+        sendinnAttachment2: { second: attachment('second-id') },
+      },
+    };
+    expect(assemble(submission, { hideUserTypes: true }).attachments).toEqual(['Second document']);
+    delete submission.data.sendinnAttachment2;
+    expect(() => assemble(submission, { hideUserTypes: true })).toThrow(
+      'At least one available attachment must be selected',
+    );
   });
 
   it.each([

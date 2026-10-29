@@ -214,6 +214,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
         data: {
           collectionType: 'identified-person',
           yourInformation: { identitet: { identitetsnummer: 'invalid' } },
+          ...body().submission.data,
         },
       },
     };
@@ -256,7 +257,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
               };
       await request(createApp())
         .post('/sendinn/api/cover-page')
-        .send({ ...body(), submission: { data } })
+        .send({ ...body(), submission: { data: { ...body().submission.data, ...data } } })
         .expect(200);
       expect(generated[0]).toMatchObject({ enhetsnummer: '0101', netsPostboks: '1400' });
       expect(generated[0]).not.toHaveProperty('adresse');
@@ -265,7 +266,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       const unavailable = { ...data, ...(mode === 'contact' ? { navContactUnit: '0202' } : { navUnit: '0202' }) };
       await request(createApp())
         .post('/sendinn/api/cover-page')
-        .send({ ...body(), submission: { data: unavailable } })
+        .send({ ...body(), submission: { data: { ...body().submission.data, ...unavailable } } })
         .expect(400);
       expect(generated).toHaveLength(1);
     },
@@ -275,7 +276,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
     form.properties.hideUserTypes = false;
     form.properties.enhetMaVelgesVedPapirInnsending = true;
     form.properties.enhetstyper = ['KLAGE'];
-    const payload = { ...body(), submission: { data: { navUnit: '0202' } } };
+    const payload = { ...body(), submission: { data: { ...body().submission.data, navUnit: '0202' } } };
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
     navStatus = 500;
     const response = await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(503);
@@ -361,22 +362,63 @@ describe('Sendinn cover page HTTP boundaries', () => {
     ).toBe(false);
   });
 
-  it('defaults to Bokmål, preserves titles verbatim and permits zero selected documents until T9', async () => {
+  it('defaults to Bokmål, preserves titles verbatim and rejects zero selected documents before token acquisition', async () => {
     const payload: Omit<SendinnFormRequest, 'language'> & { submission: { data: object } } = {
       formPath: 'nav123456',
       attachmentFilter: [],
       submission: { data: { sendinnAttachment1: { first: selected('first-id', 'Custom description') } } },
     };
+    const response = await request(createApp())
+      .post('/sendinn/api/cover-page')
+      .set('x-correlation-id', 'selection-correlation')
+      .send({ ...payload, submission: { data: {} } })
+      .expect(400);
+    expect(response.body).toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      message: 'At least one available attachment must be selected',
+      correlationId: 'selection-correlation',
+    });
+    expect(response.headers['x-correlation-id']).toBe('selection-correlation');
+    expect(generated).toEqual([]);
+    expect(requests.some(({ path }) => path === '/token' || path === '/proxy/foersteside')).toBe(false);
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
     expect(generated[0]).toMatchObject({
       spraakkode: 'NB',
       dokumentlisteFoersteside: ['Custom description'],
       vedleggsliste: ['Custom description'],
     });
-    await request(createApp())
-      .post('/sendinn/api/cover-page')
-      .send({ ...payload, submission: { data: {} } })
-      .expect(200);
-    expect(generated[1].dokumentlisteFoersteside).toEqual([]);
   });
+
+  it.each(['unknown', 'filtered', 'inactive', 'forged'])(
+    'does not count %s selections and retains the membership error before token acquisition',
+    async (mode) => {
+      const payload = {
+        ...body(),
+        attachmentFilter: ['N2'],
+        submission: {
+          data:
+            mode === 'unknown'
+              ? { unknown: selected() }
+              : mode === 'inactive'
+                ? { yourInformation: { selected: selected() } }
+                : mode === 'forged'
+                  ? { sendinnAttachment2: { second: selected('forged-id') } }
+                  : body().submission.data,
+        },
+      };
+      const response = await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(400);
+      expect(response.body).toMatchObject({
+        errorCode: 'BAD_REQUEST',
+        message: 'Invalid cover page answers',
+        correlationId: expect.any(String),
+      });
+      expect(generated).toEqual([]);
+      expect(requests.some(({ path }) => path === '/token')).toBe(false);
+      await request(createApp())
+        .post('/sendinn/api/cover-page')
+        .send({ ...payload, submission: { data: { sendinnAttachment2: { second: selected('second-id') } } } })
+        .expect(200);
+      expect(generated[0]).toMatchObject({ dokumentlisteFoersteside: ['Second document'] });
+    },
+  );
 });

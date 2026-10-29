@@ -37,6 +37,11 @@ test.describe('Paper acceptance through the real backend', () => {
     await page.goto('/sendinn/sendinnjourney?lang=nn&filter=N1');
     await expect(page.locator('html')).toHaveAttribute('lang', 'nn');
     await expect(page.getByRole('group', { name: /Evidence document \(nn\)/ })).toBeVisible();
+    await next(page);
+    await expect(page.getByTestId('error-summary').getByRole('link')).toHaveText('Du må velje minst eitt vedlegg');
+    await page.getByTestId('error-summary').getByRole('link').click();
+    await expect(page.getByRole('checkbox')).toBeFocused();
+    await scanPage(page);
     await page.getByRole('checkbox').check();
     await next(page);
     await expect(page.getByTestId('form-summary-panel')).toContainText('Evidence document (nn)');

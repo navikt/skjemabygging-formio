@@ -2,15 +2,18 @@ import {
   normalizeSendinnAttachmentFilter,
   sendinnEntryUtils,
   sendinnLanguageUtils,
+  Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import { useAppConfig } from '../../app/config/AppConfigProvider';
 import { ApplicationProvider } from '../../context/application/ApplicationContext';
-import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
+import { FormDefinitionProvider, useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 import { RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
+import { collectSendinnAttachmentValidationFields } from '../journey/sendinnAttachmentValidation';
 import { SendinnJourney } from '../journey/SendinnJourney';
 import { LoadSendinnForm } from './createSendinnFormService';
 import { CreateSendinnCoverPage, createSendinnRuntimeServices } from './createSendinnRuntimeServices';
@@ -22,13 +25,28 @@ interface Props {
   onLoadError: (error: unknown) => void;
 }
 
+const SendinnValidationProvider = ({ children }: { children: ReactNode }) => {
+  const form = useFormDefinitionForm();
+  const { currentLanguage } = useLanguage();
+  const resolveSpecialPageFields = useCallback(
+    (pageKey: string, submission?: Submission) =>
+      pageKey === 'sendinnAttachments'
+        ? collectSendinnAttachmentValidationFields({ form, submission, currentLanguage })
+        : undefined,
+    [form, currentLanguage],
+  );
+  return (
+    <FormValidationProvider resolveSpecialPageFields={resolveSpecialPageFields}>{children}</FormValidationProvider>
+  );
+};
+
 const LoadedForm = ({ createCoverPage }: { createCoverPage: CreateSendinnCoverPage }) => {
   const { form } = useSendinnForm();
   return (
     <FormDefinitionProvider form={form} submissionMethod="paper">
-      <FormValidationProvider>
+      <SendinnValidationProvider>
         <SendinnJourney createCoverPage={createCoverPage} />
-      </FormValidationProvider>
+      </SendinnValidationProvider>
     </FormDefinitionProvider>
   );
 };

@@ -113,6 +113,7 @@ const validateAttachments = (form: Form, submission: Submission, raw: Submission
   };
   inspectSelections(raw.data);
   if (raw.attachments !== undefined && (!Array.isArray(raw.attachments) || raw.attachments.length)) invalidAnswer();
+  let selectedCount = 0;
   available.forEach(({ component, submissionPath }) => {
     const value: unknown = submissionUtils.getSubmissionValue(submissionPath, submission);
     if (value === undefined) return;
@@ -139,8 +140,10 @@ const validateAttachments = (form: Form, submission: Submission, raw: Submission
       if (record.value !== 'leggerVedNaa') return;
       const title = requireText(record.title, !!other);
       if (title && validatorUtils.isValidMaxLength(title, 50)) invalidAnswer();
+      selectedCount += 1;
     });
   });
+  if (selectedCount === 0) throw new ResponseError('BAD_REQUEST', 'At least one available attachment must be selected');
 };
 
 const createSubsequentSubmissionDownloadData = ({

@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { Page } from '@playwright/test';
 import { expect, test } from '../fixtures/test';
 import { selectDecoratorLanguage } from '../helpers/language';
@@ -43,6 +44,13 @@ test.describe('Generated paper journey', () => {
     await expect(identity(page)).toHaveValue('038763 99856');
     await next(page);
     await next(page);
+    await expect(errorSummary(page).getByRole('link')).toHaveText('Du må velge minst ett vedlegg');
+    await expect(page.getByRole('group').getByText('Du må velge minst ett vedlegg', { exact: true })).toBeVisible();
+    await errorSummary(page).getByRole('link').click();
+    await expect(page.getByRole('checkbox')).toBeFocused();
+    await page.keyboard.press('Space');
+    await expect(errorSummary(page)).toBeHidden();
+    await next(page);
     await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('038763');
     await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
@@ -56,7 +64,7 @@ test.describe('Generated paper journey', () => {
     await page.goBack();
     await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
     await page.goBack();
-    await expect(page.getByRole('checkbox')).not.toBeChecked();
+    await expect(page.getByRole('checkbox')).toBeChecked();
     await page.goForward();
     await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
   });
@@ -65,8 +73,8 @@ test.describe('Generated paper journey', () => {
     await page.goto('/sendinn/sendinnjourney?step=oppsummering');
     await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
-    await expect(errorSummary(page).getByRole('link')).toHaveCount(1);
-    await errorSummary(page).getByRole('link').click();
+    await expect(errorSummary(page).getByRole('link')).toHaveCount(2);
+    await errorSummary(page).getByRole('link').first().click();
     await expect(
       page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true }),
     ).toBeFocused();
@@ -83,7 +91,14 @@ test.describe('Generated paper journey', () => {
     await expect(page.getByRole('radio')).toHaveCount(0);
     await expect(page.getByRole('combobox')).toHaveCount(0);
     const choice = page.getByRole('checkbox');
+    await next(page);
+    await expect(errorSummary(page).getByRole('link')).toHaveText('Du må velge minst ett vedlegg');
+    await errorSummary(page).getByRole('link').click();
+    await expect(choice).toBeFocused();
+    await expect(choice).toHaveAttribute('aria-describedby', /.+/);
+    await expect(page.locator('#input-sendinnAttachment2-other-value')).toContainText('Du må velge minst ett vedlegg');
     await choice.check();
+    await expect(page.getByText('Du må velge minst ett vedlegg', { exact: true })).toHaveCount(0);
     const title = page.getByRole('textbox');
     await expect(title).toBeVisible();
     await next(page);
@@ -98,6 +113,9 @@ test.describe('Generated paper journey', () => {
     await title.fill('Additional evidence');
     await choice.uncheck();
     await expect(title).toBeHidden();
+    await next(page);
+    await expect(errorSummary(page).getByRole('link')).toHaveCount(1);
+    await expect(errorSummary(page).getByRole('link')).toHaveText('Du må velge minst ett vedlegg');
     await choice.check();
     await expect(title).toHaveValue('');
     await title.fill('Additional evidence');
@@ -120,6 +138,10 @@ test.describe('Generated paper journey', () => {
     await unitSelect(page).selectOption('0202');
     await expect(unitSelect(page)).toBeFocused();
     await next(page);
+    await page
+      .getByRole('group', { name: /Evidence document/ })
+      .getByRole('checkbox')
+      .check();
     await next(page);
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
     await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
@@ -154,6 +176,10 @@ test.describe('Generated paper journey', () => {
     await expect(unitSelect(page).getByRole('option')).toHaveText(['Velg enhet', 'Nav Gamma']);
     await unitSelect(page).selectOption('0303');
     await next(page);
+    await page
+      .getByRole('group', { name: /Evidence document/ })
+      .getByRole('checkbox')
+      .check();
     await next(page);
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Gamma');
   });
@@ -175,6 +201,7 @@ test.describe('Generated paper journey', () => {
     await page.getByRole('button', { name: 'Next step', exact: true }).click();
     await expect(page.getByRole('group', { name: /Evidence document \(en\)/ })).toBeVisible();
     await expect(page.getByRole('checkbox')).toHaveCount(1);
+    await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: 'Next step', exact: true }).click();
     await expect(page.getByRole('heading', { level: 2, name: 'Summary', exact: true })).toBeFocused();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
@@ -220,6 +247,7 @@ test.describe('Generated paper journey', () => {
     await expect(unitSelect(page)).toHaveValue('');
     await unitSelect(page).selectOption('0101');
     await next(page);
+    await page.getByRole('checkbox').check();
     await next(page);
     const collectionSummary = page.getByTestId('form-summary-panel').first();
     await expect(collectionSummary).toContainText('Alex');
@@ -279,5 +307,46 @@ test.describe('Generated paper journey', () => {
     await expect(
       page.getByRole('button', { name: /Instruksjoner for innsending|Neste steg|Last ned|Send til Nav/ }),
     ).toHaveCount(0);
+  });
+
+  test('accepts a later document without requiring the first and keeps title errors after the aggregate clears', async ({
+    readyPage: page,
+  }) => {
+    await page.goto('/sendinn/sendinnjourney?lang=en');
+    await page.getByRole('radio', { name: 'Multiple people / Nav unit', exact: true }).check();
+    await page.getByRole('combobox').selectOption('0101');
+    const englishNext = () => page.getByRole('button', { name: 'Next step', exact: true }).click();
+    await englishNext();
+    await expect(page.getByText('Choose at least one attachment', { exact: true })).toHaveCount(0);
+    await englishNext();
+    const summary = errorSummary(page);
+    await expect(summary.getByRole('heading')).toBeFocused();
+    await expect(summary.getByRole('link')).toHaveText('Choose at least one attachment');
+    const first = page.getByRole('group', { name: /Evidence document/ });
+    const later = page.getByRole('group', { name: /Other document/ }).getByRole('checkbox');
+    await expect(first.getByText('Choose at least one attachment', { exact: true })).toBeVisible();
+    await summary.getByRole('link').focus();
+    await page.keyboard.press('Enter');
+    await expect(first.getByRole('checkbox')).toBeFocused();
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.getAnimations().filter(({ playState }) => playState === 'running').length),
+      )
+      .toBe(0);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    await later.check();
+    await expect(later).toBeFocused();
+    await expect(page.getByText('Choose at least one attachment', { exact: true })).toHaveCount(0);
+    await expect(summary.getByRole('link')).toHaveCount(1);
+    await expect(summary.getByRole('link')).not.toHaveText('Choose at least one attachment');
+    await englishNext();
+    await summary.getByRole('link').click();
+    await expect(page.getByRole('textbox')).toBeFocused();
+    await page.getByRole('textbox').fill('Additional evidence');
+    await expect(summary).toBeHidden();
+    await expect(first.getByRole('checkbox')).not.toBeChecked();
+    await englishNext();
+    await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
+    await expect(page.getByTestId('form-summary-panel').last()).toContainText('Additional evidence');
   });
 });
