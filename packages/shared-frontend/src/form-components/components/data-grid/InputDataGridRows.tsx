@@ -8,7 +8,7 @@ interface InputDataGridRowsProps {
   componentRegistry?: InputComponentRegistry;
   onAdd: () => void;
   onRemove: (index: number) => void;
-  addable: boolean;
+  allowAddingAndRemovingRows: boolean;
   initEmpty?: boolean;
   removeLabel?: string;
   rowComponents: ComponentDefinition[][];
@@ -22,7 +22,7 @@ const InputDataGridRows = ({
   componentRegistry,
   onAdd,
   onRemove,
-  addable,
+  allowAddingAndRemovingRows,
   initEmpty,
   removeLabel,
   rowComponents,
@@ -31,7 +31,7 @@ const InputDataGridRows = ({
   rows,
 }: InputDataGridRowsProps) => {
   return (
-    <DataGrid addLabel={addLabel} onAdd={addable ? onAdd : undefined}>
+    <DataGrid addLabel={addLabel} onAdd={allowAddingAndRemovingRows ? onAdd : undefined}>
       {rows.map((row, index) => (
         <InputDataGridRow
           key={rowIds[index]}
@@ -40,7 +40,7 @@ const InputDataGridRows = ({
           label={rowLabel}
           onRemove={() => onRemove(index)}
           removeLabel={removeLabel}
-          removable={addable && (initEmpty || rows.length > 1)}
+          removable={allowAddingAndRemovingRows && (initEmpty || rows.length > 1)}
           row={row}
         />
       ))}
