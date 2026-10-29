@@ -1,0 +1,13 @@
+{
+  "foerstesidetype": "ETTERSENDELSE",
+  "navSkjemaId": "NAV test",
+  "spraakkode": "NB",
+  "overskriftstittel": "Ettersending til NAV test Sendinn journey",
+  "arkivtittel": "Ettersending til NAV test Sendinn journey",
+  "tema": "HJE",
+  "vedleggsliste": ["Evidence document"],
+  "dokumentlisteFoersteside": ["Evidence document"],
+  "ukjentBrukerPersoninfo": "Alex Example, Example street 1, 0123 Oslo, Norge",
+  "enhetsnummer": "0101",
+  "netsPostboks": "1400"
+}

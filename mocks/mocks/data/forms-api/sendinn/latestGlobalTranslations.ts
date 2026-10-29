@@ -4,43 +4,51 @@ const sendinnTranslations = [
   {
     key: 'Ettersending til {{formNumber}} {{title}}',
     nb: 'Ettersending til {{formNumber}} {{title}}',
+    nn: 'Ettersending til {{formNumber}} {{title}}',
     en: 'Additional documentation for {{formNumber}} {{title}}',
   },
   {
     key: 'Dokumentene er ikke sendt ennå',
     nb: 'Dokumentene er ikke sendt ennå',
+    nn: 'Dokumenta er ikkje sende enno',
     en: 'The documents have not been sent yet',
   },
-  { key: 'Last ned førsteside', nb: 'Last ned førsteside', en: 'Download cover page' },
-  { key: 'Skriv ut førstesiden', nb: 'Skriv ut førstesiden', en: 'Print the cover page' },
+  { key: 'Last ned førsteside', nb: 'Last ned førsteside', nn: 'Last ned førsteside', en: 'Download cover page' },
+  { key: 'Skriv ut førstesiden', nb: 'Skriv ut førstesiden', nn: 'Skriv ut førstesida', en: 'Print the cover page' },
   {
     key: 'Lager førstesiden. Vent litt.',
     nb: 'Lager førstesiden. Vent litt.',
+    nn: 'Lagar førstesida. Vent litt.',
     en: 'Preparing the cover page. Please wait.',
   },
   {
     key: 'Vi kunne ikke laste ned førstesiden. Prøv igjen.',
     nb: 'Vi kunne ikke laste ned førstesiden. Prøv igjen.',
+    nn: 'Vi kunne ikkje laste ned førstesida. Prøv igjen.',
     en: 'We could not download the cover page. Try again.',
   },
   {
     key: 'Instruksjoner for innsending',
     nb: 'Instruksjoner for innsending',
+    nn: 'Instruksjonar for innsending',
     en: 'Submission instructions',
   },
   {
     key: 'Legg førstesiden med strekkode på toppen av dokumentene.',
     nb: 'Legg førstesiden med strekkode på toppen av dokumentene.',
+    nn: 'Legg førstesida med strekkode på toppen av dokumenta.',
     en: 'Place the cover page with the barcode on top of the documents.',
   },
   {
     key: 'Legg ved alle vedlegg som er listet på førstesiden.',
     nb: 'Legg ved alle vedlegg som er listet på førstesiden.',
+    nn: 'Legg ved alle vedlegg som er lista på førstesida.',
     en: 'Enclose all attachments listed on the cover page.',
   },
   {
     key: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     nb: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
+    nn: 'Legg dokumenta i ein konvolutt som du sender i posten til adressa som står på førstesida.',
     en: 'Put the documents in an envelope and post it to the address on the cover page.',
   },
   {
