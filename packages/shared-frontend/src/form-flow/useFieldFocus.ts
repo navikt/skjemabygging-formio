@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { focusField as focusControl } from '../utils/focusField';
 
-const useFieldFocus = () => {
+const useFieldFocus = ({ preferInputFocus = false }: { preferInputFocus?: boolean } = {}) => {
   const { key, pathname, search, hash, state } = useLocation();
   const navigate = useNavigate();
   const stateFocusId =
@@ -28,7 +28,7 @@ const useFieldFocus = () => {
     };
     const focusField = (remainingAttempts = 20) => {
       const element = document.getElementById(targetId);
-      if (element && focusControl(element)) {
+      if (element && focusControl(element, preferInputFocus)) {
         completeRequest();
         return;
       }
@@ -46,7 +46,7 @@ const useFieldFocus = () => {
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [key, navigate, pathname, search, state, targetId]);
+  }, [key, navigate, pathname, search, state, targetId, preferInputFocus]);
 };
 
 export { useFieldFocus };

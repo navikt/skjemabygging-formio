@@ -18,11 +18,12 @@ interface Props {
   pageKey?: string;
   pageKeys?: string[];
   onNavigateToField?: (error: FieldError, id: string) => void;
+  preferInputFocus?: boolean;
 }
 
 const noPageKeys: string[] = [];
 
-const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
+const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField, preferInputFocus = false }: Props) => {
   const { translate } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const pageErrors = useValidationErrorsForPage(pageKeys ? undefined : pageKey);
@@ -58,7 +59,7 @@ const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
     }
     event.preventDefault();
     event.stopPropagation();
-    focusField(element);
+    focusField(element, preferInputFocus);
   };
 
   return (
