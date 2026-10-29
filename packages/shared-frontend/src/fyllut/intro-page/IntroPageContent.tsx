@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   useFormDefinitionForm,
   useFormDefinitionSubmissionMethod,
 } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
+import { useValidationActions, useValidationFieldError } from '../../context/validation/ValidationContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useNologinToken } from '../context/nologin-token/NologinTokenContext';
+import { INTRO_KEY } from '../form-flow/constants';
 import FormActionError from '../layout/FormActionError';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import IntroPageDynamic from './IntroPageDynamic';
 import IntroPageStatic from './IntroPageStatic';
+import { SELF_DECLARATION_PATH } from './selfDeclarationValidation';
 
 interface Props {
   onStart: () => void;
@@ -21,15 +24,16 @@ const IntroPage = ({ onStart }: Props) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const form = useFormDefinitionForm();
   const { saveDraft, canSaveDraft, status } = useFormActions();
-  const { submission, setSubmission, getLatestSubmission } = useSubmissionState();
-  const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
+  const { submission, setSubmission } = useSubmissionState();
+  const { validatePage, schedulePageValidation } = useValidationActions();
+  const selfDeclarationError = useValidationFieldError(SELF_DECLARATION_PATH, INTRO_KEY);
   const { tokenExpiration } = useNologinToken();
   const introPage = form.introPage;
   const isDynamic = introPage?.enabled;
 
   const setSelfDeclaration = (value: boolean) => {
     setSubmission((prev) => ({ ...(prev ?? { data: {} }), selfDeclaration: value }));
-    if (value) setSelfDeclarationError(undefined);
+    schedulePageValidation(INTRO_KEY);
   };
 
   useEffect(() => {
@@ -38,13 +42,7 @@ const IntroPage = ({ onStart }: Props) => {
     }
   }, [setSubmission, submissionMethod]);
 
-  const validateSelfDeclaration = () => {
-    if (isDynamic && !getLatestSubmission()?.selfDeclaration) {
-      setSelfDeclarationError(translate('introPage.selfDeclaration.validationError'));
-      return false;
-    }
-    return true;
-  };
+  const validateSelfDeclaration = () => validatePage(INTRO_KEY);
 
   const handleStart = async () => {
     if (!validateSelfDeclaration()) {
