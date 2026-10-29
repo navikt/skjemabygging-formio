@@ -80,6 +80,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
   let generatorStatus: number;
   let tokenStatus: number;
   let tokenResponse: unknown;
+  let tokenService: ReturnType<typeof createAzureTokenService>;
   let translationStatus: number;
   let navStatus: number;
   let generatorResponse: unknown;
@@ -145,7 +146,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       { enhetNr: '0101', navn: 'Local office', type: 'LOKAL' },
       { enhetNr: '0202', navn: 'Other office', type: 'HMS' },
     ];
-    const tokenService = createAzureTokenService({
+    tokenService = createAzureTokenService({
       tokenEndpoint: `${baseUrl}/token`,
       clientId: 'test-client',
       clientSecret: 'test-credential',
@@ -157,7 +158,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       }),
       navUnitService: createNavUnitService({ baseUrl, consumerId: 'sendinn' }),
       coverPageService: createCoverPageService({ baseUrl: `${baseUrl}/proxy` }),
-      getAccessToken: tokenService.getAccessToken,
+      getAccessToken: () => tokenService.getAccessToken(),
       allowTestIdentityNumbers: true,
     });
     download.mockClear();
@@ -196,6 +197,44 @@ describe('Sendinn cover page HTTP boundaries', () => {
       scope: 'openid api://test-proxy/.default',
     });
     expect(requests.some((entry) => entry.path.includes('select='))).toBe(false);
+  });
+
+  it('rejects missing client credentials without calling Azure or the generator', async () => {
+    tokenService = createAzureTokenService({
+      tokenEndpoint: `${baseUrl}/token`,
+      clientId: '',
+      clientSecret: '',
+      scope: 'openid api://test-proxy/.default',
+    });
+
+    const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(503);
+
+    expect(response.body).toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Unable to authenticate cover page request',
+      correlationId: expect.any(String),
+    });
+    expect(requests.some((entry) => entry.path === '/token' || entry.path === '/proxy/foersteside')).toBe(false);
+    expect(generated).toEqual([]);
+  });
+
+  it('uses a pre-generated proxy token without client credentials or an Azure token request', async () => {
+    tokenService = createAzureTokenService({
+      tokenEndpoint: `${baseUrl}/token`,
+      clientId: '',
+      clientSecret: '',
+      scope: 'openid api://test-proxy/.default',
+      devToken: 'local-generator-token',
+    });
+
+    const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(200);
+
+    expect(response.body).toEqual({ pdf });
+    expect(requests.some((entry) => entry.path === '/token')).toBe(false);
+    expect(requests.find((entry) => entry.path === '/proxy/foersteside')?.authorization).toBe(
+      'Bearer local-generator-token',
+    );
+    expect(generated).toHaveLength(1);
   });
 
   it('reloads on every operation and rejects newly unavailable attachments without calling the generator', async () => {

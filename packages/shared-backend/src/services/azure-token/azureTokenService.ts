@@ -10,11 +10,15 @@ const createAzureTokenService = ({
   clientId,
   clientSecret,
   scope,
+  devToken,
   client = azureTokenClient,
 }: AzureTokenRequest & {
+  devToken?: string;
   client?: Pick<typeof azureTokenClient, 'getAccessToken'>;
 }): AzureTokenService => ({
   getAccessToken: async () => {
+    if (devToken) return devToken;
+
     try {
       if (!clientId || !clientSecret) throw new Error('Missing credentials');
       const result = await client.getAccessToken({ tokenEndpoint, clientId, clientSecret, scope });
