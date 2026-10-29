@@ -43,12 +43,16 @@ const config = {
   formsApiUrl: env('FORMS_API_URL', 'https://forms-api.intern.dev.nav.no'),
   norg2Url: env('NORG2_URL', 'https://norg2.dev.intern.nav.no'),
   contentSource: readContentSource(),
-  skjemabyggingProxyUrl: env('SKJEMABYGGING_PROXY_URL', 'http://127.0.0.1:3300/skjemabygging-proxy'),
-  skjemabyggingProxyClientId: env('SKJEMABYGGING_PROXY_CLIENT_ID', 'local-proxy'),
+  skjemabyggingProxyUrl: env('SKJEMABYGGING_PROXY_URL', 'https://skjemabygging-proxy.dev-fss-pub.nais.io'),
+  skjemabyggingProxyClientId: env('SKJEMABYGGING_PROXY_CLIENT_ID', '95170319-b4d7-4190-8271-118ed19bafbf'),
   azure: {
-    tokenEndpoint: env('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', 'http://127.0.0.1:3300/azure-openid/oauth2/v2.0/token'),
-    clientId: env('AZURE_APP_CLIENT_ID', 'local-sendinn'),
-    // Missing local credentials fail token acquisition, never fall back to an anonymous generator call.
+    tokenEndpoint: env(
+      'AZURE_OPENID_CONFIG_TOKEN_ENDPOINT',
+      'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
+    ),
+    clientId: isDevelopment || isTest ? (process.env.AZURE_APP_CLIENT_ID ?? '') : env('AZURE_APP_CLIENT_ID'),
+    devToken: isDevelopment ? process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN : undefined,
+    // Missing local credentials and token fail authentication, never fall back to an anonymous generator call.
     clientSecret:
       isDevelopment || isTest ? (process.env.AZURE_APP_CLIENT_SECRET ?? '') : env('AZURE_APP_CLIENT_SECRET'),
   },

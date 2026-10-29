@@ -72,7 +72,8 @@ for (const env of jsonConfig) {
     continue;
   }
 
-  const envContent = fs.readFileSync(path.join(root, env.filePath), { encoding: 'utf-8', flag: 'r' });
+  const envPath = path.join(root, env.filePath);
+  const envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, { encoding: 'utf-8', flag: 'r' }) : '';
   const lines = envContent.split('\n');
   const tokenLine = `${env.name}=${accessToken}`;
   let tokenLineReplaced = false;
@@ -96,10 +97,9 @@ for (const env of jsonConfig) {
     lines.push(tokenLine);
   }
 
-  process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
-
   const newEnvContent = lines.join('\n');
-  fs.writeFileSync(path.join(root, env.filePath), newEnvContent);
+  fs.writeFileSync(envPath, newEnvContent, { mode: 0o600 });
+  process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
   process.stdout.write('\n');
 }
 

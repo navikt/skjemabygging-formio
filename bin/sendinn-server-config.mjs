@@ -14,6 +14,7 @@ const createSendinnServerConfig = (options) =>
       NORG2_URL: mockURL,
       SKJEMABYGGING_PROXY_URL: `${mockURL}/skjemabygging-proxy`,
       SKJEMABYGGING_PROXY_CLIENT_ID: 'mock-proxy',
+      SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN: '',
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockURL}/azure-openid/oauth2/v2.0/token`,
       AZURE_APP_CLIENT_ID: 'mock-sendinn',
       AZURE_APP_CLIENT_SECRET: 'mock-credential',
