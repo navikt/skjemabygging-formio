@@ -7,7 +7,7 @@ import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
 
 const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
-  const { submissionPath, translate, component, panelValidationList } = props;
+  const { submissionPath, translate, component, panelValidationList, getPanelLink } = props;
   const { title, components, navId, key } = component;
   const { search, state } = useLocation();
   const childComponents = components ?? [];
@@ -39,7 +39,7 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: `../${key}`, search }} state={state}>
+        <FormSummary.EditLink as={Link} to={getPanelLink?.(key) ?? { pathname: `../${key}`, search }} state={state}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>
