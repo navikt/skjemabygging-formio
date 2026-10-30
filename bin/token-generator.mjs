@@ -103,7 +103,7 @@ for (const env of jsonConfig) {
   const newEnvContent = lines.join('\n');
   fs.writeFileSync(envPath, newEnvContent, { mode: 0o600 });
   if (!envFileExists) {
-    process.stdout.write(`${ICON_NEW_FILE} ${COLOR_ORANGE}Created ${env.filePath}${COLOR_RESET}\n`);
+    process.stdout.write(`${ICON_NEW_FILE} Created ${env.filePath}\n`);
   }
   process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
   process.stdout.write('\n');
