@@ -2,11 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('dotenv', () => ({ default: { config: vi.fn() } }));
 
-describe('Sendinn content source configuration', () => {
+describe('Sendinn configuration', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.stubEnv('NODE_ENV', 'test');
     vi.stubEnv('NAIS_CLUSTER_NAME', 'dev-gcp');
+    vi.stubEnv('MOCKS_ENABLED', undefined);
   });
 
   afterEach(() => {
@@ -56,5 +57,65 @@ describe('Sendinn content source configuration', () => {
     vi.stubEnv('SENDINN_CONTENT_SOURCE', 'published');
 
     await expect(import('./config')).resolves.toMatchObject({ config: { contentSource: 'published' } });
+  });
+
+  it.each(['development', 'test'])(
+    'supports browsing without credentials but defaults token acquisition to preprod Azure in %s',
+    async (nodeEnv) => {
+      vi.stubEnv('NODE_ENV', nodeEnv);
+      vi.stubEnv('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', undefined);
+      vi.stubEnv('AZURE_APP_CLIENT_ID', undefined);
+      vi.stubEnv('AZURE_APP_CLIENT_SECRET', undefined);
+      vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', undefined);
+
+      const { config } = await import('./config');
+
+      expect(config.azure).toEqual({
+        tokenEndpoint: 'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
+        clientId: '',
+        clientSecret: '',
+        devToken: undefined,
+      });
+    },
+  );
+
+  it.each(['development', 'test', 'production'])(
+    'gates pre-generated proxy tokens to development (%s)',
+    async (nodeEnv) => {
+      Object.entries({
+        NODE_ENV: nodeEnv,
+        SENDINN_CONTENT_SOURCE: 'published',
+        FORMS_API_URL: 'https://forms-api.example.com',
+        NORG2_URL: 'https://norg2.example.com',
+        SKJEMABYGGING_PROXY_URL: 'https://proxy.example.com',
+        SKJEMABYGGING_PROXY_CLIENT_ID: 'test-proxy',
+        SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN: 'local-generator-token',
+        AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: 'https://azure.example.com/token',
+        AZURE_APP_CLIENT_ID: 'test-client',
+        AZURE_APP_CLIENT_SECRET: 'test-credential',
+        NAIS_TOKEN_INTROSPECTION_ENDPOINT: 'https://texas.example.com/introspect',
+        NAIS_TOKEN_EXCHANGE_ENDPOINT: 'https://texas.example.com/exchange',
+        INNSENDING_API_AUDIENCE: 'test-audience',
+      }).forEach(([name, value]) => vi.stubEnv(name, value));
+
+      const { config } = await import('./config');
+
+      expect(config.azure).toEqual({
+        tokenEndpoint: 'https://azure.example.com/token',
+        clientId: 'test-client',
+        clientSecret: 'test-credential',
+        devToken: nodeEnv === 'development' ? 'local-generator-token' : undefined,
+      });
+    },
+  );
+
+  it('ignores pre-generated proxy tokens when development runs against mocks', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('MOCKS_ENABLED', 'true');
+    vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', 'local-generator-token');
+
+    const { config } = await import('./config');
+
+    expect(config.azure.devToken).toBeUndefined();
   });
 });

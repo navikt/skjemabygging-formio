@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import tc08a from '../data/test-cases/tc08a-cover-page-body.json';
 import tc08b from '../data/test-cases/tc08b-cover-page-body.json';
 import tc08c from '../data/test-cases/tc08c-static-pdf-ettersending-cover-page-body.json';
@@ -21,6 +23,17 @@ export default [
     url: '/skjemabygging-proxy/foersteside',
     method: 'POST',
     variants: [
+      {
+        id: 'success-sendinn',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {
+            foersteside: readFileSync(join(__dirname, '../data/innsending-api/files/mini.pdf')).toString('base64'),
+            loepenummer: '0001',
+          },
+        },
+      },
       {
         id: 'success',
         type: 'json',

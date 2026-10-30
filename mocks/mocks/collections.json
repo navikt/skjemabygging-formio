@@ -44,6 +44,8 @@
   {
     "id": "sendinn-base",
     "routes": [
+      "post-azure-openid-token:success",
+      "foersteside:success-sendinn",
       "get-nav-units:success",
       "get-global-translations:sendinn",
       "get-form-deprecated:success",

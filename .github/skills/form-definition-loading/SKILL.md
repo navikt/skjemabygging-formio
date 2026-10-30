@@ -168,3 +168,47 @@ journey. `useSendinnForm()` reads the loaded response from
 `SendinnFormProvider`; it does not provide draft, upload or submission
 capabilities. Document preparation must independently reload and reconvert
 the trusted source with the same normalized filter.
+
+### Sendinn paper cover page
+
+`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `language`
+(`nb`, `nn` or `en`, default `nb`), `attachmentFilter` (a string or string
+array, default empty) and `submission: { data: ... }`. Pass the canonical
+Submission answers and the filter retained by `SendinnFormProvider`.
+Do not pass a form definition, labels or a Party. Query parameter `sub`
+does not select a submission mode.
+`SendinnCoverPageRequest` and `SendinnCoverPageResult` are exported from
+shared-domain for the T7 host adapter. Concerned-person answers are supplied
+postal metadata, not proof of the caller's identity or resource ownership.
+
+The service calls the same configured form loader as GET, rechecking current
+paper eligibility, language availability and normalized filter membership.
+It does not compare revisions or pin publication IDs. A changed definition
+can therefore reject an answer that was available when the page loaded.
+
+Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
+`Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
+this endpoint does not return form answers or download assembly data.
+Expected errors use the central `ErrorResponse` and `x-correlation-id`:
+invalid answers, unavailable selections and empty available attachment lists
+are 400; missing or paper-disabled forms are 404; content, Nav-unit, Azure
+token and generator failures are 503. Diagnostics never contain answers or
+raw upstream bodies. A nonempty available attachment list still permits
+zero selections until T9 adds the final minimum-selection rule.
+
+Shared-backend exports `createSendinnCoverPageService` and
+`createSubsequentSubmissionDownloadData`. The latter returns
+`SubsequentSubmissionCoverPageData`: identified person, unidentified person,
+or an explicit `authorized-no-user` state with reason `hidden`, `forced-unit`
+or `multiple-people`. Existing `CoverPageDownloadType` still requires a user.
+Only active converted inputs reach party resolution and recipient mapping.
+Selected Nav units use `enhetsnummer` with the mapper's existing
+`netsPostboks: "1400"` routing, not a fabricated postal address.
+
+Sendinn configures the existing cover-page service with
+`SKJEMABYGGING_PROXY_URL`. Its own Azure application obtains client-credentials
+tokens through `createAzureTokenService`, using injected Azure environment
+variables and the target `SKJEMABYGGING_PROXY_CLIENT_ID`. Local mock launchers
+provide mock credentials and the existing proxy/token routes. Preprod release
+also requires the proxy's inbound policy and Azure caller authorization to
+accept both Sendinn applications. Those permissions live outside this repo.

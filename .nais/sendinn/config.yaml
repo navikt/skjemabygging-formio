@@ -26,6 +26,10 @@ spec:
       level: idporten-loa-high
   tokenx:
     enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: {{azure.application.tenant}}
   ingresses:
   {{#each ingresses as |url|}}
     - {{url}}
@@ -63,6 +67,10 @@ spec:
           namespace: {{this.namespace}}
           cluster: {{this.cluster}}
       {{/each}}
+      external:
+      {{#each accessPolicy.outbound.external}}
+        - host: {{this.host}}
+      {{/each}}
   env:
     - name: SENDINN_CONTENT_SOURCE
       value: {{content-source}}
@@ -72,3 +80,7 @@ spec:
       value: http://norg2.org
     - name: INNSENDING_API_AUDIENCE
       value: {{innsending-api-audience}}
+    - name: SKJEMABYGGING_PROXY_URL
+      value: {{skjemabygging-proxy-url}}
+    - name: SKJEMABYGGING_PROXY_CLIENT_ID
+      value: {{skjemabygging-proxy-client-id}}
