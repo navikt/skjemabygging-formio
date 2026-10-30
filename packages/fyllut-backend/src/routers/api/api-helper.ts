@@ -7,6 +7,7 @@ const {
   kodeverk,
   sendInnConfig,
   skjemabyggingProxyClientId,
+  skjemabyggingProxyDevToken,
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
   familiePdfDevToken,
@@ -16,7 +17,9 @@ const {
 
 const initApiConfig = () => {
   return {
-    azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
+    azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken', {
+      token: skjemabyggingProxyDevToken,
+    }),
     azureM2MSendInn: azureTokenHandler(`${naisClusterName}.team-soknad.innsending-api`, 'AzureAccessToken', {
       token: sendInnConfig.devM2MToken,
     }),
@@ -28,7 +31,10 @@ const initApiConfig = () => {
     azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken', {
       token: familiePdfDevToken,
     }),
-    azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken'),
+    azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken', {
+      // PDF merging is served by innsending-api, so the local innsending-api token applies
+      token: sendInnConfig.devM2MToken,
+    }),
     nologinTokenHandler,
   };
 };
