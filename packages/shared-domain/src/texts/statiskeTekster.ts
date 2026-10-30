@@ -398,6 +398,7 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
+    selectAttachment: 'Du må velge minst ett vedlegg',
     reviewAnswers: 'Kontroller opplysningene',
     coverPage: {
       notSent: 'Dokumentene er ikke sendt ennå',

@@ -128,8 +128,8 @@ describe('sendinnEntryUtils', () => {
         '/lospost/sendinnCollection',
         '/oppgave/sendinnCollection',
         '/404/oppsummering',
-        `/${submissionId}/oppsummering`,
-        '/nav123456/oppsummering/extra',
+        `/${submissionId}/instructions`,
+        '/nav123456/instructions/extra',
         '/nav123456//sendinnAttachments',
         '//nav123456/sendinnAttachments',
         '/INVALID/sendinnAttachments',
@@ -138,7 +138,7 @@ describe('sendinnEntryUtils', () => {
       });
 
       it('does not open a task-based form through a paper step', () => {
-        expect(resolveEntry('/nav123456/oppsummering', query(`innsendingsId=${submissionId}`))).toEqual({
+        expect(resolveEntry('/nav123456/instructions', query(`innsendingsId=${submissionId}`))).toEqual({
           journey: 'unavailable',
         });
       });

@@ -2,6 +2,12 @@ import globalTranslations from '../global-translations.json';
 
 const sendinnTranslations = [
   {
+    key: 'Du må velge minst ett vedlegg',
+    nb: 'Du må velge minst ett vedlegg',
+    nn: 'Du må velje minst eitt vedlegg',
+    en: 'Choose at least one attachment',
+  },
+  {
     key: 'Ettersending til {{formNumber}} {{title}}',
     nb: 'Ettersending til {{formNumber}} {{title}}',
     nn: 'Ettersending til {{formNumber}} {{title}}',
