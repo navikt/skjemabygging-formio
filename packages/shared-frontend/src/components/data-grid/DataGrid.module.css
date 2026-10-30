@@ -7,6 +7,11 @@
   background-color: var(--ax-bg-brand-blue-soft);
   border-radius: var(--ax-radius-12);
   padding: var(--ax-space-16);
+  padding-block-end: var(--ax-space-24);
+}
+
+.rowWithRemove {
+  padding-block-end: 0;
 }
 
 .rowHeading {
@@ -22,7 +27,7 @@
 }
 
 .remove {
-  margin-block-start: var(--ax-space-8);
+  padding-block: var(--ax-space-8);
 }
 
 .add {

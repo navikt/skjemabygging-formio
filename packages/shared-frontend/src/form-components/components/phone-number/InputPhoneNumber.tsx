@@ -21,6 +21,7 @@ const InputPhoneNumber = ({ component, submissionPath }: InputComponentProps<Pho
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       showAreaCode={component.showAreaCode}
+      autoComplete={component.autocomplete}
       validation={validation}
     />
   );
