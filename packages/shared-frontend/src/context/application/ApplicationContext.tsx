@@ -20,6 +20,7 @@ interface Props extends ApplicationContextValue {
 const ApplicationContext = createContext<ApplicationContextValue>({
   environment: 'production',
 });
+ApplicationContext.displayName = 'ApplicationContext';
 
 const ApplicationProvider = ({ children, environment, logger }: Props) => {
   const value = useMemo(() => ({ environment, logger }), [environment, logger]);

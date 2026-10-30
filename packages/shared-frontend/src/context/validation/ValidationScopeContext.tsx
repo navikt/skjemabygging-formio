@@ -17,6 +17,7 @@ interface ValidationScope {
 }
 
 const ValidationScopeContext = createContext<ValidationScope | undefined>(undefined);
+ValidationScopeContext.displayName = 'ValidationScopeContext';
 
 interface Props {
   pageKey: string;
