@@ -18,7 +18,7 @@ describe('Cover page', () => {
 
     cy.clickIntroPageConfirmation();
     cy.clickStart();
-    cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
     });
     cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -72,14 +72,14 @@ describe('Cover page', () => {
 
     cy.clickIntroPageConfirmation();
     cy.clickStart();
-    cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
       cy.findByRole('radio', { name: 'Nei' }).check();
     });
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
     cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-    cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
-    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
+    cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
       cy.findByLabelText('Vegadresse').check(),
     );
     cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1');

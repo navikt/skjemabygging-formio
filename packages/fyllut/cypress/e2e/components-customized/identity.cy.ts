@@ -10,7 +10,7 @@ describe('Identity', () => {
     });
 
     it('should render the default radio question', () => {
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('exist');
     });
 
     it('should show Ja and Nei options', () => {
@@ -36,7 +36,7 @@ describe('Identity', () => {
     });
 
     it('should render the custom radio question label', () => {
-      cy.findByRole('group', { name: 'Har du et gyldig identitetsdokument?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du et gyldig identitetsdokument?' }).should('exist');
     });
 
     it('should show Ja and Nei options', () => {
@@ -57,7 +57,7 @@ describe('Identity', () => {
     });
 
     it('should translate the custom radio question label', () => {
-      cy.findByRole('group', { name: 'Har du et gyldig identitetsdokument? (en)' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du et gyldig identitetsdokument? (en)' }).should('exist');
     });
   });
 });

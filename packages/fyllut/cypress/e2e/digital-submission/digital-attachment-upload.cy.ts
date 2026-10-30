@@ -29,20 +29,20 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { level: 2, name: 'Diverse' }).should('exist');
-      cy.findByRole('group', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
+      cy.findByRole('radiogroup', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     });
 
     it('shows validation errors when files are not uploaded', () => {
-      cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Vedlegg 1/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
-      cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Vedlegg 2/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.clickSaveAndContinue();

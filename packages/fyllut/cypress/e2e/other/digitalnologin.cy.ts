@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital no login', () => {
   const verifyUploadOnlyAttachmentAndUpload = () => {
-    cy.findByRole('group', { name: 'Vedlegg med ett valg' }).should('not.exist');
+    cy.findByRole('radiogroup', { name: 'Vedlegg med ett valg' }).should('not.exist');
     cy.contains('[data-cy=attachment-upload]', 'Vedlegg med ett valg').within(() => {
       cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
     });
@@ -37,13 +37,13 @@ describe('Digital no login', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('abc');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Informasjon om din næringsinntekt fra Norge eller utlandet',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       verifyUploadOnlyAttachmentAndUpload();
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
@@ -69,13 +69,13 @@ describe('Digital no login', () => {
       cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Informasjon om din næringsinntekt fra Norge eller utlandet',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       verifyUploadOnlyAttachmentAndUpload();
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
@@ -98,7 +98,7 @@ describe('Digital no login', () => {
     it('shows validation errors if no personal ID has been uploaded', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
       cy.clickNextStep();
-      cy.findByRole('group', { name: TEXTS.statiske.uploadId.label }).within(() => {
+      cy.findByRole('radiogroup', { name: TEXTS.statiske.uploadId.label }).within(() => {
         cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('be.visible');
       });
       cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.uploadId.label}` }).should('be.visible');

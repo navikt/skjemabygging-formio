@@ -23,7 +23,7 @@ describe('Attachment', () => {
   };
 
   it('lists attachment values in pre-defined order', () => {
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('exist')
       .within(() => {
         cy.get('input').should('have.length', 3);
@@ -36,7 +36,7 @@ describe('Attachment', () => {
   it('check different attachment settings', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('exist')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist').check();
@@ -50,14 +50,14 @@ describe('Attachment', () => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment })
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment })
       .should('exist')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('exist').check();
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('be.checked');
       });
 
-    cy.findByRole('group', { name: new RegExp(`^${TITLE.legacyValuesAttachment}`) }).within(() => {
+    cy.findByRole('radiogroup', { name: new RegExp(`^${TITLE.legacyValuesAttachment}`) }).within(() => {
       cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check();
     });
 
@@ -72,18 +72,18 @@ describe('Attachment', () => {
     cy.contains('dd', 'Jeg ettersender dokumentasjonen senere').should('exist');
 
     cy.go('back');
-    cy.findByRole('group', { name: attachmentGroupName }).should('exist');
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).should('exist');
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('be.checked');
     });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.nei).should('be.checked');
     });
@@ -105,7 +105,7 @@ describe('Attachment', () => {
           .click();
       });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment })
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment })
       .should('have.focus')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
@@ -120,7 +120,7 @@ describe('Attachment', () => {
           .click();
       });
 
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('have.focus')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
@@ -137,11 +137,11 @@ describe('Attachment', () => {
   });
 
   it('validates attachment with one option after being checked and unchecked', () => {
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check();
     });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment }).within(() => {
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).check();
     });
 

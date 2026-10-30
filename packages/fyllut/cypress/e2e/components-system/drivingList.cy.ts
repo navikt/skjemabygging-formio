@@ -23,7 +23,7 @@ describe('DrivingList', () => {
     });
 
     it('should render parking radio group', () => {
-      cy.findByRole('group', { name: PARKING_LABEL }).should('exist');
+      cy.findByRole('radiogroup', { name: PARKING_LABEL }).should('exist');
       cy.findByRole('radio', { name: 'Ja' }).should('exist');
       cy.findByRole('radio', { name: 'Nei' }).should('exist');
     });
