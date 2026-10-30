@@ -24,8 +24,8 @@
     "prepare": "pnpm run build"
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.2.0",
-    "@navikt/ds-react": "^8.2.2",
+    "@navikt/aksel-icons": "^8.20.0",
+    "@navikt/ds-react": "^8.20.0",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "dompurify": "^3.4.17",
     "i18n-iso-countries": "^7.14.0",

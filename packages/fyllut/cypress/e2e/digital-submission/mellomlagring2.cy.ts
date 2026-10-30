@@ -144,7 +144,7 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).shouldBeVisible();
       cy.get('@createMellomlagringSpy').should('not.have.been.called');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
         cy.findByLabelText('Ja').check();
       });
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('03876399856');
@@ -152,7 +152,7 @@ describe('Mellomlagring v2', () => {
       cy.clickNextStep();
       cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
-      cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
         cy.findByLabelText('Nei').check({ force: true });
       });
 
@@ -171,10 +171,10 @@ describe('Mellomlagring v2', () => {
           force: true,
         });
       });
-      cy.findByRole('group', { name: 'Oppmøtebekreftelse' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Oppmøtebekreftelse' }).within(() => {
         cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check({ force: true });
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport',
       }).within(() => {
         cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check({ force: true });
@@ -204,7 +204,7 @@ describe('Mellomlagring v2', () => {
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
 
-      cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
         cy.findByLabelText('Nei').check({ force: true });
       });
 
@@ -220,13 +220,13 @@ describe('Mellomlagring v2', () => {
       cy.wait('@updateMellomlagring');
 
       cy.findByRole('heading', { name: TEXTS.statiske.attachment.title }).shouldBeVisible();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByLabelText(/Nei, jeg har ingen ekstra dokumentasjon/).check();
       });
-      cy.findByRole('group', { name: /Oppmøtebekreftelse/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Oppmøtebekreftelse/ }).within(() => {
         cy.findByLabelText(/ettersender dokumentasjonen senere|laster opp dette senere/).check();
       });
-      cy.findByRole('group', { name: /Bekreftelse på at du av helsemessige/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Bekreftelse på at du av helsemessige/ }).within(() => {
         cy.findByLabelText(/ettersender dokumentasjonen senere|laster opp dette senere/).check();
       });
 
@@ -282,7 +282,7 @@ describe('Mellomlagring v2', () => {
         ['@getMellomlagringValid'],
       );
 
-      cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
       cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 500);
       cy.findByRole('dialog', { name: TEXTS.grensesnitt.confirmDeletePrompt.title })
@@ -297,7 +297,7 @@ describe('Mellomlagring v2', () => {
         ['@getMellomlagringForInnsendingWithUpdateError'],
       );
 
-      cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       confirmSaveDraftAfterCancellingOnce();
       cy.wait('@updateMellomlagring');
       cy.findByText(TEXTS.statiske.mellomlagringError.update.message).shouldBeVisible();
@@ -318,7 +318,7 @@ describe('Mellomlagring v2', () => {
         expectSummaryValidationToBlockSubmission();
         cy.clickEditAnswers();
         cy.wait('@getActivities');
-        cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
+        cy.findByRole('radiogroup', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
           'have.focus',
         );
       });
@@ -453,12 +453,12 @@ describe('Mellomlagring v2', () => {
           cy.findByText('Tekst på kortet').should('not.exist');
 
           cy.clickEditAnswer('Gave');
-          cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
+          cy.findByRole('radiogroup', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
             cy.findByLabelText('Ja').click();
             cy.findByLabelText('Ja').should('be.checked');
           });
 
-          cy.findByRole('group', { name: 'Farge' }).shouldBeVisible();
+          cy.findByRole('radiogroup', { name: 'Farge' }).shouldBeVisible();
 
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
@@ -468,7 +468,7 @@ describe('Mellomlagring v2', () => {
             cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).click({ force: true });
           });
 
-          cy.findByRole('group', { name: 'Farge' })
+          cy.findByRole('radiogroup', { name: 'Farge' })
             .should('have.focus')
             .within(() => {
               cy.findByLabelText('Rød').click();

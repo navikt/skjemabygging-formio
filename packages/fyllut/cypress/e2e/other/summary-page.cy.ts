@@ -26,7 +26,7 @@ describe('SummaryPage', () => {
 
     const completePersonalIdStep = () => {
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -155,7 +155,7 @@ describe('SummaryPage', () => {
 
     cy.clickIntroPageConfirmation();
     cy.clickStart();
-    cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
     });
     cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -176,7 +176,7 @@ describe('SummaryPage', () => {
     // Select formio (HTML5)
     cy.findAllByRole('combobox', { name: /Nedtrekksmeny \(select HTML5\)/ }).select('0,50');
 
-    cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Radiopanel/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
     });
 
@@ -267,10 +267,10 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-    cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Vedlegg/ }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
     });
-    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
     });
 
@@ -459,7 +459,7 @@ describe('SummaryPage', () => {
 
     cy.findByRoleWhenAttached('checkbox', { name: /I confirm that I will answer as accurately as I can/ }).click();
     cy.clickNextStep();
-    cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
+    cy.findByRole('radiogroup', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
       () => {
         cy.findByRole('radio', { name: 'Yes' }).check();
       },
@@ -482,7 +482,7 @@ describe('SummaryPage', () => {
     // Select formio (HTML5)
     cy.findAllByRole('combobox', { name: /Dropdown \(select HTML5\)/ }).select('0.50');
 
-    cy.findByRole('group', { name: /Radio panel/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Radio panel/ }).within(() => {
       cy.findByRole('radio', { name: 'Yes' }).check();
     });
 
@@ -572,10 +572,10 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Attachments' }).click();
     cy.findByRole('heading', { name: 'Attachments' }).shouldBeVisible();
-    cy.findByRole('group', { name: /Attachments/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Attachments/ }).within(() => {
       cy.findByRole('radio', { name: 'I will forward the documentation later' }).check();
     });
-    cy.findByRole('group', { name: /Other documentation/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Other documentation/ }).within(() => {
       cy.findByRole('radio', { name: 'No, I have no additional documentation to attach' }).check();
     });
 
@@ -759,7 +759,7 @@ describe('SummaryPage', () => {
 
   it('Digital no login, some components', () => {
     cy.visit('/fyllut/components/legitimasjon?sub=digitalnologin');
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
     cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -770,10 +770,10 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-    cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Vedlegg/ }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
     });
-    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
     });
 

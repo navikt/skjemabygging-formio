@@ -188,7 +188,7 @@ Cypress.Commands.add('clickDownloadApplication', () => {
 });
 
 Cypress.Commands.add('findAttachment', (name: RegExp | string) => {
-  cy.findByRole('group', { name }).closest('[data-cy=attachment-upload]');
+  cy.findByRole('radiogroup', { name }).closest('[data-cy=attachment-upload]');
 });
 
 Cypress.Commands.add(

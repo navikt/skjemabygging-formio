@@ -29,7 +29,7 @@ describe('FormPreview', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('ABC');
       cy.findByRole('link', { name: 'Neste steg' }).click();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
       });
       cy.findByRole('link', { name: 'Neste steg' }).click();
@@ -83,7 +83,7 @@ describe('FormPreview', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('ABC');
       cy.findByRole('link', { name: 'Neste steg' }).click();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
       });
       cy.findByRole('link', { name: 'Neste steg' }).click();
@@ -139,7 +139,7 @@ describe('FormPreview', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('ABC');
       cy.findByRole('link', { name: 'Neste steg' }).click();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
       });
       cy.findByRole('link', { name: 'Neste steg' }).click();

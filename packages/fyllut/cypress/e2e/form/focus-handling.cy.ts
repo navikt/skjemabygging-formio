@@ -23,7 +23,7 @@ describe('Focus handling', () => {
 
     it('has focus after navigating to next panel', () => {
       cy.findByLabelText('Fornavn').should('exist').type('Gaute');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').click();
@@ -51,13 +51,13 @@ describe('Focus handling', () => {
       cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
       cy.defaultWaits();
       cy.findByLabelText('Fornavn').should('exist').type('Gaute');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').click();
         });
       cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').should('have.focus');
@@ -68,34 +68,34 @@ describe('Focus handling', () => {
       cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
       cy.defaultWaits();
       cy.findByLabelText('Fornavn').should('exist').type('Klara');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').click();
         });
       cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').should('have.focus');
           cy.findByLabelText('Nei').click();
         });
       cy.findByText('Her vises en informasjonstekst.').should('not.exist');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Nei').should('have.focus');
           cy.findByLabelText('Ja').click();
         });
       cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').should('have.focus');
           cy.findByLabelText('Nei').click();
         });
       cy.findByText('Her vises en informasjonstekst.').should('not.exist');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Nei').should('have.focus');
@@ -132,14 +132,14 @@ describe('Focus handling', () => {
     it('puts focus on correct component when clicking in error summary', () => {
       cy.visit('/fyllut/datagridconditional/levering?sub=paper');
       cy.defaultWaits();
-      cy.findByRole('group', { name: 'Hvordan vil du ha pakken levert?' })
+      cy.findByRole('radiogroup', { name: 'Hvordan vil du ha pakken levert?' })
         .should('exist')
         .shouldBeVisible()
         .within(() => {
           cy.findByLabelText('På døra').click();
         });
-      cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' }).should('exist').shouldBeVisible();
-      cy.findByRole('group', { name: 'Hvordan vil du ha pakken levert?' })
+      cy.findByRole('radiogroup', { name: 'Hvilken type bolig bor du i?' }).should('exist').shouldBeVisible();
+      cy.findByRole('radiogroup', { name: 'Hvordan vil du ha pakken levert?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('På døra').should('have.focus');
@@ -160,7 +160,7 @@ describe('Focus handling', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).click({ force: true });
         });
 
-      cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' })
+      cy.findByRole('radiogroup', { name: 'Hvilken type bolig bor du i?' })
         .should('exist')
         .should('have.focus')
         .shouldBeVisible()
@@ -225,7 +225,7 @@ describe('Focus handling', () => {
     it('allows fresh group-focus requests and still focuses same-page errors', () => {
       openSummaryErrors();
       cy.findByRole('link', { name: 'Du må fylle ut: Choice' }).click();
-      cy.findByRole('group', { name: 'Choice' }).should('have.focus');
+      cy.findByRole('radiogroup', { name: 'Choice' }).should('have.focus');
       cy.findByRole('radio', { name: 'First choice' }).should('not.be.checked');
       cy.findByRole('radio', { name: 'Second choice' }).should('not.be.checked');
       cy.location('hash').should('equal', '');
@@ -234,7 +234,7 @@ describe('Focus handling', () => {
       cy.findByRole('link', { name: 'Oppsummering' }).click();
       cy.clickDownloadInstructions();
       cy.findByRole('link', { name: 'Du må fylle ut: Choice' }).click();
-      cy.findByRole('group', { name: 'Choice' }).should('have.focus');
+      cy.findByRole('radiogroup', { name: 'Choice' }).should('have.focus');
 
       cy.clickNextStep();
       cy.get('[data-cy=error-summary]').within(() => {
