@@ -1,5 +1,6 @@
 import globalTranslations from '../data/forms-api/global-translations.json';
 import publishedGlobalTranslations from '../data/forms-api/published-global-translations';
+import { sendinnFormLoadingForm } from '../data/forms-api/sendinn/formLoadingForm';
 import { latestSendinnGlobalTranslations } from '../data/forms-api/sendinn/latestGlobalTranslations';
 import { findTestdata } from './formio-api';
 
@@ -96,6 +97,32 @@ export default [
         options: {
           middleware: (req: any, res: any) => {
             res.redirect(`/formio-api/form?path=${req.params.formPath}&single=true`);
+          },
+        },
+      },
+      {
+        id: 'sendinn-paper-disabled',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            const form = sendinnFormLoadingForm();
+            res.status(200).json({
+              ...form,
+              properties: { ...form.properties, subsequentSubmissionTypes: ['DIGITAL'] },
+            });
+          },
+        },
+      },
+      {
+        id: 'sendinn-error',
+        type: 'json',
+        options: {
+          status: 503,
+          headers: { 'x-correlation-id': 'sendinn-form-upstream-error' },
+          body: {
+            errorCode: 'SERVICE_UNAVAILABLE',
+            message: 'Forms service unavailable',
+            correlationId: 'sendinn-form-upstream-error',
           },
         },
       },
