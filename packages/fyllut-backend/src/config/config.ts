@@ -15,10 +15,10 @@ import {
 } from './types';
 
 if (process.env.NODE_ENV !== 'test') {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
 if (process.env.MOCKS_ENABLED === 'true') {
-  dotenv.config({ path: '.env.test' });
+  dotenv.config({ path: '.env.test', quiet: true });
 }
 
 const defaultEnabledFeatures = '';

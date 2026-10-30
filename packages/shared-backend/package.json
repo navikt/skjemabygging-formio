@@ -28,7 +28,7 @@
     "dompurify": "^3.4.17",
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^8.7.1",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.1.3",
     "jsonwebtoken": "^9.0.3",
     "prom-client": "^15.1.3",
     "winston": "^3.18.3"
