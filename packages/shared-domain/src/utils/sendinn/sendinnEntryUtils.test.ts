@@ -27,6 +27,16 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry('/nav123456/', query())).toEqual({ journey: 'form', formPath: 'nav123456' });
       });
 
+      it.each(['sendinnCollection', 'sendinnAttachments', 'oppsummering'])(
+        'resolves a direct form step %s with language and filters',
+        (step) => {
+          expect(resolveEntry(`/nav123456/${step}`, query('lang=en&filter=N1&filter=N2'))).toEqual({
+            journey: 'form',
+            formPath: 'nav123456',
+          });
+        },
+      );
+
       it('ignores other query parameters', () => {
         expect(resolveEntry('/nav123456', query('lang=en&sub=digital'))).toEqual({
           journey: 'form',
@@ -114,6 +124,25 @@ describe('sendinnEntryUtils', () => {
     });
 
     describe('unavailable', () => {
+      it.each([
+        '/lospost/sendinnCollection',
+        '/oppgave/sendinnCollection',
+        '/404/oppsummering',
+        `/${submissionId}/oppsummering`,
+        '/nav123456/oppsummering/extra',
+        '/nav123456//sendinnAttachments',
+        '//nav123456/sendinnAttachments',
+        '/INVALID/sendinnAttachments',
+      ])('rejects form steps outside the paper form journey %s', (path) => {
+        expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
+      });
+
+      it('does not open a task-based form through a paper step', () => {
+        expect(resolveEntry('/nav123456/oppsummering', query(`innsendingsId=${submissionId}`))).toEqual({
+          journey: 'unavailable',
+        });
+      });
+
       it.each(['', '/', '//'])('returns unavailable for the root path %j', (path) => {
         expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
       });

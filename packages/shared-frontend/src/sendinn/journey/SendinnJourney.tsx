@@ -1,6 +1,6 @@
 import { flattenComponents, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
@@ -18,14 +18,14 @@ import { useFormPageController } from '../../form-flow/useFormPageController';
 import styles from './SendinnJourney.module.css';
 
 const SendinnJourney = () => {
-  const { pathname, search } = useLocation();
+  const { search } = useLocation();
+  const { step } = useParams<'step'>();
   const navigate = useNavigate();
   const { translate, currentLanguage } = useLanguage();
   const { logger, environment } = useApplication();
   const { submission } = useSubmissionState();
   const form = useFormDefinitionForm();
   const panels = useFormDefinitionPanels();
-  const step = new URLSearchParams(search).get('step') ?? undefined;
   const { currentPanel, currentIndex, components, isFirst, isLast, goToNext } = useFormPageController(step);
   const { hideErrorSummary, schedulePageValidation, validatePages } = useValidationActions();
   const summary = step === SUMMARY_KEY;
@@ -34,11 +34,14 @@ const SendinnJourney = () => {
     [form],
   );
   const pageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
-  const getPanelLink = (panelKey: string) => {
-    const params = new URLSearchParams(search);
-    params.set('step', panelKey);
-    return { pathname, search: `?${params}` };
-  };
+  const getPanelLink = useCallback(
+    (panelKey: string) => {
+      const params = new URLSearchParams(search);
+      params.delete('step');
+      return { pathname: `/${form.path}/${panelKey}`, search: params.size ? `?${params}` : '' };
+    },
+    [form.path, search],
+  );
   const goToStep = (panelKey: string, focusId?: string) => {
     hideErrorSummary();
     navigate(getPanelLink(panelKey), { state: focusId ? { focusId } : undefined });
@@ -48,6 +51,9 @@ const SendinnJourney = () => {
   useEffect(() => {
     document.title = translate(TEXTS.statiske.sendinn.journey.form);
   }, [translate]);
+  useEffect(() => {
+    if (!step && currentPanel) navigate(getPanelLink(currentPanel.key), { replace: true });
+  }, [step, currentPanel, navigate, getPanelLink]);
   useEffect(() => {
     if (!summary && currentPanel) schedulePageValidation(currentPanel.key);
   }, [components, currentPanel, schedulePageValidation, summary]);
