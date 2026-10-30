@@ -21,7 +21,7 @@ const env = (name: string, developmentValue?: string) => {
 };
 
 const readContentSource = (): ContentSource => {
-  const source = env('SENDINN_CONTENT_SOURCE');
+  const source = env('SENDINN_CONTENT_SOURCE', 'latest');
   if (source !== 'published' && source !== 'latest') {
     throw new Error('SENDINN_CONTENT_SOURCE must be published or latest');
   }
@@ -51,7 +51,11 @@ const config = {
       'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
     ),
     clientId: isDevelopment || isTest ? (process.env.AZURE_APP_CLIENT_ID ?? '') : env('AZURE_APP_CLIENT_ID'),
-    devToken: isDevelopment ? process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN : undefined,
+    // Mock runs must never send a locally collected token to the real proxy.
+    devToken:
+      isDevelopment && process.env.MOCKS_ENABLED !== 'true'
+        ? process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN
+        : undefined,
     // Missing local credentials and token fail authentication, never fall back to an anonymous generator call.
     clientSecret:
       isDevelopment || isTest ? (process.env.AZURE_APP_CLIENT_SECRET ?? '') : env('AZURE_APP_CLIENT_SECRET'),
