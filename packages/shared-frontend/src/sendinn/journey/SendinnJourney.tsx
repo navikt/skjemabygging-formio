@@ -1,6 +1,6 @@
 import { flattenComponents, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
@@ -22,14 +22,14 @@ import styles from './SendinnJourney.module.css';
 const INSTRUCTIONS_KEY = 'instructions';
 
 const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCoverPage }) => {
-  const { pathname, search } = useLocation();
+  const { search } = useLocation();
+  const { step } = useParams<'step'>();
   const navigate = useNavigate();
   const { translate, currentLanguage } = useLanguage();
   const { logger, environment } = useApplication();
   const { submission } = useSubmissionState();
   const form = useFormDefinitionForm();
   const panels = useFormDefinitionPanels();
-  const step = new URLSearchParams(search).get('step') ?? undefined;
   const { currentPanel, currentIndex, components, isFirst, isLast, goToNext } = useFormPageController(step);
   const { hideErrorSummary, schedulePageValidation, validatePages } = useValidationActions();
   const summary = step === SUMMARY_KEY;
@@ -42,10 +42,10 @@ const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCov
   const getPanelLink = useCallback(
     (panelKey: string) => {
       const params = new URLSearchParams(search);
-      params.set('step', panelKey);
-      return { pathname, search: `?${params}` };
+      params.delete('step');
+      return { pathname: `/${form.path}/${panelKey}`, search: params.size ? `?${params}` : '' };
     },
-    [pathname, search],
+    [form.path, search],
   );
   const goToStep = (panelKey: string, focusId?: string) => {
     hideErrorSummary();
@@ -56,6 +56,9 @@ const SendinnJourney = ({ createCoverPage }: { createCoverPage: CreateSendinnCov
   useEffect(() => {
     document.title = translate(TEXTS.statiske.sendinn.journey.form);
   }, [translate]);
+  useEffect(() => {
+    if (!step && currentPanel) navigate(getPanelLink(currentPanel.key), { replace: true });
+  }, [step, currentPanel, navigate, getPanelLink]);
   useEffect(() => {
     if (!summary && !instructions && currentPanel) schedulePageValidation(currentPanel.key);
   }, [components, currentPanel, schedulePageValidation, summary, instructions]);
