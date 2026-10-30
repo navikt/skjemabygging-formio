@@ -25,14 +25,18 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { submission, updateSubmission } = useSubmissionState();
   const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
-  const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
-    component;
+  const { components, label, description, hideLabel, addAnother, removeAnother, rowTitle } = component;
+  const allowAddingAndRemovingRows = !component.disableAddingRemovingRows;
   const submissionPath = getResolvedSubmissionPath(component);
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
   const synchronizedRowIds = syncDataGridRowIds(rowIds, renderedRows.length);
+  // Persist generated ids so keys stay stable between renders; otherwise rows remount on every change.
+  if (synchronizedRowIds !== rowIds) {
+    setRowIds(synchronizedRowIds);
+  }
   const rowComponentTemplates = renderedRows.map((_, index) =>
     toComponentDefinitions(enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`)),
   );
@@ -61,11 +65,12 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
       componentRegistry={componentRegistry}
       onAdd={addRow}
       onRemove={removeRow}
-      removable={!disableAddingRemovingRows}
+      allowAddingAndRemovingRows={allowAddingAndRemovingRows}
+      initEmpty={component.initEmpty}
       removeLabel={removeAnother}
       rowComponents={rowComponentTemplates}
       rowIds={synchronizedRowIds}
-      rowLabel={rowTitle || label || component.key}
+      rowLabel={rowTitle}
       rows={renderedRows}
     />
   );

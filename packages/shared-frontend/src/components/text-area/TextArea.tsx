@@ -14,6 +14,7 @@ import { BaseFieldProps, TextAreaValidation } from '../types';
 interface TextAreaProps extends BaseFieldProps {
   label: string;
   maxLength?: number;
+  autoComplete?: string;
   value?: string;
   onChange?: (value: string) => void;
   validation?: TextAreaValidation;
@@ -26,6 +27,7 @@ const TextArea = ({
   required = true,
   readOnly,
   maxLength,
+  autoComplete = 'off',
   value: controlledValue,
   onChange: controlledOnChange,
   readMore,
@@ -88,6 +90,7 @@ const TextArea = ({
         error={error}
         readOnly={readOnly}
         maxLength={maxLength}
+        autoComplete={autoComplete}
       />
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
