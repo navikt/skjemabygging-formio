@@ -73,7 +73,7 @@ type NavUnitSelectDefinition = BaseComponentDefinition & { type: 'navUnitSelect'
 type SelectBoxesDefinition = BaseComponentDefinition &
   OptionValuesDefinition &
   DefaultValueDefinition & { type: 'selectboxes' };
-type TextAreaDefinition = BaseComponentDefinition & { type: 'textarea' };
+type TextAreaDefinition = BaseComponentDefinition & Pick<TextInputDefinition, 'autocomplete'> & { type: 'textarea' };
 type TextFieldDefinition = BaseComponentDefinition & TextInputDefinition & { type: 'textfield' };
 
 type AccountNumberDefinition = BaseComponentDefinition & { type: 'bankAccount' };
@@ -105,9 +105,11 @@ type EmailDefinition = BaseComponentDefinition & TextInputDefinition & { type: '
 type FirstNameDefinition = BaseComponentDefinition & TextInputDefinition & { type: 'firstName' };
 type IbanDefinition = BaseComponentDefinition & { type: 'iban' };
 type IdentityDefinition = BaseComponentDefinition & CustomLabelsDefinition & { type: 'identity' };
-type NationalIdentityNumberDefinition = BaseComponentDefinition & { type: 'fnrfield' };
+type NationalIdentityNumberDefinition = BaseComponentDefinition &
+  Pick<TextInputDefinition, 'autocomplete'> & { type: 'fnrfield' };
 type OrganizationNumberDefinition = BaseComponentDefinition & TextInputDefinition & { type: 'orgNr' };
-type PhoneNumberDefinition = BaseComponentDefinition & { showAreaCode?: boolean; type: 'phoneNumber' };
+type PhoneNumberDefinition = BaseComponentDefinition &
+  Pick<TextInputDefinition, 'autocomplete'> & { showAreaCode?: boolean; type: 'phoneNumber' };
 type SenderDefinition = BaseComponentDefinition &
   CustomLabelsDefinition & {
     senderRole?: RecipientRole;
