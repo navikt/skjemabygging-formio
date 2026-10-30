@@ -16,6 +16,9 @@ test.describe('Generated paper journey', () => {
       if (request.url().includes('/api/forms/')) loads += 1;
     });
     await page.goto('/sendinn/sendinnjourney?filter=N1&sub=digital');
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnCollection' && !url.searchParams.has('step'),
+    );
     await next(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await errorSummary(page).getByRole('link').click();
@@ -36,6 +39,9 @@ test.describe('Generated paper journey', () => {
     await identity(page).fill('03876399856');
     await expect(errorSummary(page)).toBeHidden();
     await next(page);
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnAttachments' && !url.searchParams.has('step'),
+    );
     await expect(page.getByRole('heading', { level: 2, name: 'Ettersend dokumentasjon', exact: true })).toBeFocused();
     await expect(page.getByRole('checkbox')).toHaveCount(1);
     await expect(page.getByRole('checkbox')).not.toBeChecked();
@@ -44,12 +50,19 @@ test.describe('Generated paper journey', () => {
     await next(page);
     await next(page);
     await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/sendinn/sendinnjourney/oppsummering' && !url.searchParams.has('step'),
+    );
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('038763');
     await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
     await expect(errorSummary(page)).toBeHidden();
     await expect(page.getByRole('button', { name: /Last ned|Send til Nav|Lagre/ })).toHaveCount(0);
     await expect(page).toHaveURL(
-      (url) => url.searchParams.get('filter') === 'N1' && url.searchParams.get('sub') === 'digital',
+      (url) =>
+        url.pathname === '/sendinn/sendinnjourney/oppsummering' &&
+        !url.searchParams.has('step') &&
+        url.searchParams.get('filter') === 'N1' &&
+        url.searchParams.get('sub') === 'digital',
     );
     expect(loads).toBe(1);
     await page.goBack();
@@ -59,7 +72,7 @@ test.describe('Generated paper journey', () => {
   });
 
   test('validates unvisited pages from the summary and focuses the linked field', async ({ readyPage: page }) => {
-    await page.goto('/sendinn/sendinnjourney?step=oppsummering');
+    await page.goto('/sendinn/sendinnjourney/oppsummering');
     await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await expect(errorSummary(page).getByRole('link')).toHaveCount(1);
@@ -68,7 +81,10 @@ test.describe('Generated paper journey', () => {
       page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true }),
     ).toBeFocused();
     await expect(errorSummary(page)).toBeHidden();
-    await expect(page).toHaveURL((url) => url.searchParams.get('step') === 'sendinnCollection' && !url.hash);
+    await expect(page).toHaveURL(
+      (url) =>
+        url.pathname === '/sendinn/sendinnjourney/sendinnCollection' && !url.searchParams.has('step') && !url.hash,
+    );
   });
 
   test('reuses paper other-document titles, rejects invalid titles and clears them on deselection', async ({
@@ -76,7 +92,7 @@ test.describe('Generated paper journey', () => {
     useRouteVariant,
   }) => {
     await useRouteVariant('get-form:sendinn-hidden-collection');
-    await page.goto('/sendinn/sendinnjourney?filter=N6');
+    await page.goto('/sendinn/sendinnjourney/sendinnAttachments?filter=N6');
     await expect(page.getByRole('radio')).toHaveCount(0);
     await expect(page.getByRole('combobox')).toHaveCount(0);
     const choice = page.getByRole('checkbox');
@@ -175,8 +191,20 @@ test.describe('Generated paper journey', () => {
     await expect(page.getByRole('heading', { level: 2, name: 'Summary', exact: true })).toBeFocused();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
     await expect(page).toHaveURL(
-      (url) => url.searchParams.get('lang') === 'en' && url.searchParams.get('filter') === 'N1',
+      (url) =>
+        url.pathname === '/sendinn/sendinnjourney/oppsummering' &&
+        !url.searchParams.has('step') &&
+        url.searchParams.get('lang') === 'en' &&
+        url.searchParams.get('filter') === 'N1',
     );
+    await selectDecoratorLanguage(page, 'nb');
+    await expect(page).toHaveURL(
+      (url) =>
+        url.pathname === '/sendinn/sendinnjourney/oppsummering' &&
+        url.searchParams.get('lang') === 'nb' &&
+        url.searchParams.get('filter') === 'N1',
+    );
+    await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
   });
 
   test('collects an unidentified person and retries Nav contact lookup without losing other answers', async ({
@@ -267,7 +295,7 @@ test.describe('Generated paper journey', () => {
   });
 
   test('blocks empty filtered choices even when navigating directly to the summary', async ({ readyPage: page }) => {
-    await page.goto('/sendinn/sendinnjourney?filter=unknown&step=oppsummering');
+    await page.goto('/sendinn/sendinnjourney/oppsummering?filter=unknown');
     await expect(
       page.getByText('Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.'),
     ).toBeVisible();
