@@ -1,6 +1,8 @@
 /*
  * Tests that fields inside containers are displayed on the summary page and populated with stored values
  */
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Container/Beholder og skjemagruppe', () => {
   before(() => {
     cy.configMocksServer();
@@ -81,6 +83,7 @@ describe('Container/Beholder og skjemagruppe', () => {
       cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
       });
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl')

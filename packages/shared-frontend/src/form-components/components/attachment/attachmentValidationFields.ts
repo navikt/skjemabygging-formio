@@ -33,17 +33,17 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
     value: implicitValue,
   };
 
-  const fileFields = !attachmentUtils.enableAttachmentUpload(submissionMethod)
-    ? []
-    : (attachments.length ? attachments : [baseAttachment]).flatMap((attachment) =>
-        toAttachmentFilesValidationFields({
-          submissionPath,
-          attachmentId: attachment.attachmentId,
-          label,
-          attachment,
-          uploadSelected: !!options.find((option) => option.value === attachment.value)?.upload,
-        }),
-      );
+  const uploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
+  const fileFields = (attachments.length ? attachments : [baseAttachment]).flatMap((attachment) =>
+    toAttachmentFilesValidationFields({
+      submissionPath,
+      attachmentId: attachment.attachmentId,
+      label,
+      attachment,
+      uploadSelected: uploadEnabled && !!options.find((option) => option.value === attachment.value)?.upload,
+      requireAttachmentTitle: !uploadEnabled && attachment.type === 'other' && attachment.value === 'leggerVedNaa',
+    }),
+  );
 
   return [
     ...toAttachmentValueValidationFields({

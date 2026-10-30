@@ -110,11 +110,36 @@ describe('attachment validation', () => {
     ).toHaveLength(1);
   });
 
-  it('only validates the choice on paper, including canonical other arrays', () => {
+  it('requires a title but no uploaded files for other documentation on paper', () => {
     const fields = collect([{ ...attachment, type: 'other' }], 'paper', { ...component, attachmentType: 'other' });
-    expect(fields.map((field) => field.statePath)).toEqual(['documentation.value']);
+    expect(fields.map((field) => field.statePath)).toEqual(['documentation.value', 'documentation.doc.title']);
     expect(fields[0].value).toBe('leggerVedNaa');
     expect(validateValue(fields[0].value, fields[0].field, fields[0].rules, 'nb')).toBeUndefined();
+    expect(validateValue(fields[1].value, fields[1].field, fields[1].rules, 'nb')).toBeDefined();
+    const digitalTitle = collect([{ ...attachment, type: 'other' }], 'digital', {
+      ...component,
+      attachmentType: 'other',
+    }).find((field) => field.statePath === 'documentation.doc.title');
+    expect(fields[1].rules).toEqual(digitalTitle?.rules);
+  });
+
+  it('rejects restored paper titles longer than the digital limit', () => {
+    const fields = collect([{ ...attachment, type: 'other', title: 'a'.repeat(51) }], 'paper', {
+      ...component,
+      attachmentType: 'other',
+    });
+    const title = fields[1];
+    expect(validateValue(title.value, title.field, title.rules, 'nb')).toBeDefined();
+  });
+
+  it('does not validate inactive paper descriptions or require a title for ordinary documentation', () => {
+    expect(collect(attachment, 'paper').map((field) => field.statePath)).toEqual(['documentation.value']);
+    expect(
+      collect([{ ...attachment, type: 'other', value: 'ettersender' }], 'paper', {
+        ...component,
+        attachmentType: 'other',
+      }).map((field) => field.statePath),
+    ).toEqual(['documentation.value']);
   });
 
   it('requires an uploaded file even for an unvisited implicit single upload choice', () => {
