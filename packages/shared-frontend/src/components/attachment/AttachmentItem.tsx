@@ -1,7 +1,11 @@
 import { Box, Button, FileItem, HStack, VStack } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
-import { readAttachments, standaloneAttachmentsPath } from '../../context/attachment/attachmentSubmission';
+import {
+  createAttachmentSubmissionActions,
+  readAttachments,
+  standaloneAttachmentsPath,
+} from '../../context/attachment/attachmentSubmission';
 import {
   getFileValidationError,
   useAttachmentUpload,
@@ -9,6 +13,7 @@ import {
 } from '../../context/attachment/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../../context/attachment/fileUploadConfig';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useOptionalFieldStateStore } from '../../context/state/StateContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
@@ -64,6 +69,7 @@ const AttachmentItem = ({
 }: Props) => {
   const { translate } = useLanguage();
   const { stateValue } = useFieldBinding({ statePath: submissionPath ?? standaloneAttachmentsPath });
+  const store = useOptionalFieldStateStore();
   const { changeAttachmentValue, handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const uploadsInProgress = useAttachmentUploadsInProgress(attachmentId);
@@ -100,7 +106,9 @@ const AttachmentItem = ({
     requiredFilesMessage,
   });
   const handleTitleChange = (title: string) => {
-    changeAttachmentValue(
+    const changeTitleValue =
+      !uploadSelected && store ? createAttachmentSubmissionActions(store).changeAttachmentValue : changeAttachmentValue;
+    changeTitleValue(
       initialAttachment,
       {
         value: attachmentValue,

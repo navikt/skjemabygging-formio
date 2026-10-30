@@ -62,6 +62,7 @@ describe('attachmentSubmission', () => {
     const { actions, getSubmission } = createActions({
       data: { documentation: { ...attachment, title: 'Existing title', additionalDocumentation: 'Explanation' } },
     });
+
     actions.addFileToSubmission(uploadedFile, 'documentation');
     actions.changeAttachmentValue(attachment, { title: 'Edited title' }, 'documentation');
     actions.addFileToSubmission({ ...uploadedFile, fileId: 'file-2' }, 'documentation');
@@ -71,6 +72,17 @@ describe('attachmentSubmission', () => {
       title: 'Edited title',
       additionalDocumentation: 'Explanation',
       files: [{ ...uploadedFile, fileId: 'file-2' }],
+    });
+  });
+
+  it('updates paper other-document array titles directly in submission without an upload host', () => {
+    const other = { ...attachment, type: 'other' as const };
+    const { actions, getSubmission } = createActions({
+      data: { documents: { other: [other] } },
+    });
+    actions.changeAttachmentValue(other, { title: 'Additional evidence' }, 'documents.other', true);
+    expect(getSubmission().data.documents).toEqual({
+      other: [{ ...other, title: 'Additional evidence' }],
     });
   });
 

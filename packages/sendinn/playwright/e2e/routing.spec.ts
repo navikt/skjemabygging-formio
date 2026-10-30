@@ -39,6 +39,7 @@ test.describe('Entry routing', () => {
     '/sendinn/oppgave',
     '/sendinn/oppgave?innsendingsId=not-a-uuid',
     '/sendinn/nav123456/extra',
+    '/sendinn/nav123456//sendinnAttachments',
     '/sendinn/nav123456?innsendingsId=not-a-uuid',
     '/sendinn/404/',
   ]) {

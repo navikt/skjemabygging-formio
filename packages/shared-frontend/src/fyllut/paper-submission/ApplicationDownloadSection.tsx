@@ -33,15 +33,14 @@ const ApplicationDownloadSection = ({ documentType }: Props) => {
   const requiresNavUnit =
     documentType === 'application-with-cover-page' && form.properties.enhetMaVelgesVedPapirInnsending === true;
   const {
-    allUnits,
     units: filteredNavUnits,
+    availableUnits: navUnits,
     error: navUnitFetchError,
     loading: navUnitsLoading,
   } = useNavUnits({
     enabled: requiresNavUnit,
     unitTypes: form.properties.enhetstyper,
   });
-  const navUnits = filteredNavUnits?.length ? filteredNavUnits : allUnits;
   const fileName = useMemo(() => `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`, [form.path]);
 
   useEffect(() => {

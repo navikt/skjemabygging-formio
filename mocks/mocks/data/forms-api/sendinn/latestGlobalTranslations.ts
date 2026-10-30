@@ -2,6 +2,43 @@ import globalTranslations from '../global-translations.json';
 
 const sendinnTranslations = [
   {
+    key: 'Hvem gjelder innsendingen for?',
+    nb: 'Hvem gjelder innsendingen for?',
+    nn: 'Kven gjeld innsendinga for?',
+    en: 'Who is the submission for?',
+  },
+  {
+    key: 'Person som har fødselsnummer eller d-nummer',
+    nb: 'Person som har fødselsnummer eller d-nummer',
+    nn: 'Person som har fødselsnummer eller d-nummer',
+    en: 'Person with a national identity number',
+  },
+  {
+    key: 'Person som ikke har fødselsnummer eller d-nummer',
+    nb: 'Person som ikke har fødselsnummer eller d-nummer',
+    nn: 'Person som ikkje har fødselsnummer eller d-nummer',
+    en: 'Person without a national identity number',
+  },
+  {
+    key: 'Flere personer / Nav-enhet',
+    nb: 'Flere personer / Nav-enhet',
+    nn: 'Fleire personar / Nav-eining',
+    en: 'Multiple people / Nav unit',
+  },
+  {
+    key: 'Har du vært i kontakt med Nav om saken?',
+    nb: 'Har du vært i kontakt med Nav om saken?',
+    nn: 'Har du vore i kontakt med Nav om saka?',
+    en: 'Have you contacted Nav about the case?',
+  },
+  {
+    key: 'Kontroller opplysningene',
+    nb: 'Kontroller opplysningene',
+    nn: 'Kontroller opplysningane',
+    en: 'Check your answers',
+  },
+  { key: 'Prøv igjen', nb: 'Prøv igjen', nn: 'Prøv igjen', en: 'Try again' },
+  {
     key: 'Send dokumenter til Nav',
     nb: 'Send dokumenter til Nav',
     nn: 'Send dokument til Nav',
