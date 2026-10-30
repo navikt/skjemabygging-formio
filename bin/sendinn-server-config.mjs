@@ -9,6 +9,7 @@ const createSendinnServerConfig = (options) =>
     app: 'sendinn',
     createBackendEnv: (mockURL) => ({
       NO_DECORATOR: 'true',
+      MOCKS_ENABLED: 'true',
       FORMS_API_URL: `${mockURL}/forms-api`,
       SENDINN_CONTENT_SOURCE: 'latest',
       NORG2_URL: mockURL,

@@ -7,6 +7,7 @@ describe('Sendinn configuration', () => {
     vi.resetModules();
     vi.stubEnv('NODE_ENV', 'test');
     vi.stubEnv('NAIS_CLUSTER_NAME', 'dev-gcp');
+    vi.stubEnv('MOCKS_ENABLED', undefined);
   });
 
   afterEach(() => {
@@ -107,4 +108,14 @@ describe('Sendinn configuration', () => {
       });
     },
   );
+
+  it('ignores pre-generated proxy tokens when development runs against mocks', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('MOCKS_ENABLED', 'true');
+    vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', 'local-generator-token');
+
+    const { config } = await import('./config');
+
+    expect(config.azure.devToken).toBeUndefined();
+  });
 });
