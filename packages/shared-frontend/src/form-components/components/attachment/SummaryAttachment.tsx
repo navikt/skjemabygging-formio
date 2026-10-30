@@ -29,61 +29,63 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   return (
     <FormSummary.Answer>
       <FormSummary.Label>{translate(component.label)}</FormSummary.Label>
-      <VStack gap="space-16">
-        {attachments.map((attachment) =>
-          (attachment.files ?? []).length > 0 ? (
-            <FormSummary.Value key={attachment.attachmentId}>
-              {attachment.title && <Label>{translate(attachment.title)}</Label>}
-              <VStack gap="space-8" as="ul">
-                {(attachment.files ?? []).map((file) => (
-                  <FileUpload.Item
-                    as="li"
-                    key={file.fileId}
-                    file={{ name: file.fileName, size: file.size }}
-                    href={canDownloadAttachment ? '#' : undefined}
-                    onFileClick={
-                      canDownloadAttachment
-                        ? (event) => {
-                            event.preventDefault();
-                            void handleDownloadFile(
-                              attachment.attachmentId,
-                              file.fileId,
-                              file.fileName,
-                              source === 'data' ? submissionPath : undefined,
-                            );
-                          }
-                        : undefined
-                    }
-                  ></FileUpload.Item>
-                ))}
-              </VStack>
-            </FormSummary.Value>
-          ) : (
-            <FormSummary.Value key={attachment.attachmentId}>
-              <VStack gap="space-8">
-                {attachment.value === 'leggerVedNaa' && attachment.title && <Label>{attachment.title}</Label>}
-                {translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values))}
-                {attachment.additionalDocumentation && <div>{translate(attachment.additionalDocumentation)}</div>}
-                {showDeadline(attachment) &&
-                  formProperties?.ettersendelsesfrist &&
-                  (showDeadlineAsWarning ? (
-                    <Alert variant="warning">
-                      {translate(TEXTS.statiske.attachment.deadline, {
-                        deadline: formProperties.ettersendelsesfrist,
-                      })}
-                    </Alert>
-                  ) : (
-                    <div>
-                      {translate(TEXTS.statiske.attachment.deadline, {
-                        deadline: formProperties.ettersendelsesfrist,
-                      })}
-                    </div>
+      <FormSummary.Value>
+        <VStack gap="space-16">
+          {attachments.map((attachment) =>
+            (attachment.files ?? []).length > 0 ? (
+              <div key={attachment.attachmentId}>
+                {attachment.title && <Label>{translate(attachment.title)}</Label>}
+                <VStack gap="space-8" as="ul">
+                  {(attachment.files ?? []).map((file) => (
+                    <FileUpload.Item
+                      as="li"
+                      key={file.fileId}
+                      file={{ name: file.fileName, size: file.size }}
+                      href={canDownloadAttachment ? '#' : undefined}
+                      onFileClick={
+                        canDownloadAttachment
+                          ? (event) => {
+                              event.preventDefault();
+                              void handleDownloadFile(
+                                attachment.attachmentId,
+                                file.fileId,
+                                file.fileName,
+                                source === 'data' ? submissionPath : undefined,
+                              );
+                            }
+                          : undefined
+                      }
+                    ></FileUpload.Item>
                   ))}
-              </VStack>
-            </FormSummary.Value>
-          ),
-        )}
-      </VStack>
+                </VStack>
+              </div>
+            ) : (
+              <div key={attachment.attachmentId}>
+                <VStack gap="space-8">
+                  {attachment.value === 'leggerVedNaa' && attachment.title && <Label>{attachment.title}</Label>}
+                  {translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values))}
+                  {attachment.additionalDocumentation && <div>{translate(attachment.additionalDocumentation)}</div>}
+                  {showDeadline(attachment) &&
+                    formProperties?.ettersendelsesfrist &&
+                    (showDeadlineAsWarning ? (
+                      <Alert variant="warning">
+                        {translate(TEXTS.statiske.attachment.deadline, {
+                          deadline: formProperties.ettersendelsesfrist,
+                        })}
+                      </Alert>
+                    ) : (
+                      <div>
+                        {translate(TEXTS.statiske.attachment.deadline, {
+                          deadline: formProperties.ettersendelsesfrist,
+                        })}
+                      </div>
+                    ))}
+                </VStack>
+              </div>
+            ),
+          )}
+        </VStack>
+      </FormSummary.Value>
     </FormSummary.Answer>
   );
 };

@@ -6,6 +6,9 @@ import tc08c from '../data/test-cases/tc08c-static-pdf-ettersending-cover-page-b
 import tc08d from '../data/test-cases/tc08d-cover-page-body.json';
 import tc08e from '../data/test-cases/tc08e-sendinn-cover-page-body.json';
 import tc08f from '../data/test-cases/tc08f-sendinn-description-cover-page-body.json';
+import tc08g from '../data/test-cases/tc08g-sendinn-identified-cover-page-body.json';
+import tc08h from '../data/test-cases/tc08h-sendinn-unidentified-cover-page-body.json';
+import tc08i from '../data/test-cases/tc08i-sendinn-nynorsk-cover-page-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const defaultResponseBody = {
@@ -40,6 +43,21 @@ export default [
         id: 'success-tc08f-sendinn-description',
         type: 'middleware',
         options: { middleware: compareBodyMiddleware(tc08f, [], onSendinnSuccess) },
+      },
+      {
+        id: 'success-tc08g-sendinn-identified',
+        type: 'middleware',
+        options: { middleware: compareBodyMiddleware(tc08g, [], onSendinnSuccess) },
+      },
+      {
+        id: 'success-tc08h-sendinn-unidentified',
+        type: 'middleware',
+        options: { middleware: compareBodyMiddleware(tc08h, [], onSendinnSuccess) },
+      },
+      {
+        id: 'success-tc08i-sendinn-nynorsk',
+        type: 'middleware',
+        options: { middleware: compareBodyMiddleware(tc08i, [], onSendinnSuccess) },
       },
       {
         id: 'success-sendinn',

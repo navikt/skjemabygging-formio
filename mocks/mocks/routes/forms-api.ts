@@ -3,6 +3,7 @@ import publishedGlobalTranslations from '../data/forms-api/published-global-tran
 import { sendinnJourneyForm } from '../data/forms-api/sendinn-journey/sendinnJourneyForm';
 import { sendinnFormLoadingForm } from '../data/forms-api/sendinn/formLoadingForm';
 import { latestSendinnGlobalTranslations } from '../data/forms-api/sendinn/latestGlobalTranslations';
+import { getMockTranslationsFromForm } from '../form-builder/shared/utils';
 import { findTestdata } from './formio-api';
 
 const toFormsApiTranslations = (formPath: string) => {
@@ -143,6 +144,39 @@ export default [
           },
         },
       },
+      ...[true, false].flatMap((hideUserTypes) =>
+        [true, false, undefined].map((forcedUnit) => ({
+          id: `sendinn-collection-${hideUserTypes}-${forcedUnit ?? 'absent'}`,
+          type: 'middleware',
+          options: {
+            middleware: (_req, res) => {
+              const form = sendinnJourneyForm();
+              res.status(200).json({
+                ...form,
+                properties: {
+                  ...form.properties,
+                  hideUserTypes,
+                  ...(forcedUnit === undefined ? {} : { enhetMaVelgesVedPapirInnsending: forcedUnit }),
+                },
+              });
+            },
+          },
+        })),
+      ),
+      {
+        id: 'sendinn-nynorsk',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            const form = sendinnJourneyForm();
+            res.status(200).json({
+              ...form,
+              publishedLanguages: ['nn', 'en'],
+              properties: { ...form.properties, hideUserTypes: true },
+            });
+          },
+        },
+      },
       {
         id: 'sendinn-error',
         type: 'json',
@@ -171,6 +205,16 @@ export default [
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send(toFormsApiTranslations(req.params.formPath));
+          },
+        },
+      },
+      {
+        id: 'sendinn-nynorsk',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            const translations = getMockTranslationsFromForm(sendinnJourneyForm(), 'nn').data.i18n;
+            res.status(200).json(Object.entries(translations).map(([key, nn]) => ({ key, nn })));
           },
         },
       },
