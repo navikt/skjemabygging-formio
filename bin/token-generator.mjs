@@ -73,8 +73,8 @@ for (const env of jsonConfig) {
   }
 
   const envPath = path.join(root, env.filePath);
-  const envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, { encoding: 'utf-8', flag: 'r' }) : '';
-  const lines = envContent.split('\n');
+  const envFileExists = fs.existsSync(envPath);
+  const lines = envFileExists ? fs.readFileSync(envPath, { encoding: 'utf-8', flag: 'r' }).split('\n') : [];
   const tokenLine = `${env.name}=${accessToken}`;
   let tokenLineReplaced = false;
 
@@ -99,6 +99,9 @@ for (const env of jsonConfig) {
 
   const newEnvContent = lines.join('\n');
   fs.writeFileSync(envPath, newEnvContent, { mode: 0o600 });
+  if (!envFileExists) {
+    process.stdout.write(`${COLOR_ORANGE}Created ${env.filePath}${COLOR_RESET}\n`);
+  }
   process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
   process.stdout.write('\n');
 }
