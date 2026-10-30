@@ -1,4 +1,4 @@
-import { Heading } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 import { PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import Alert from '../../components/alert/Alert';
@@ -22,6 +22,7 @@ import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
+import SavedStatus from '../navigation/SavedStatus';
 import styles from './SummaryPage.module.css';
 
 const SummaryPage = () => {
@@ -96,6 +97,7 @@ const SummaryPage = () => {
 
   return (
     <>
+      <BodyShort className={styles.description}>{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       {hasValidationErrors && (
         <>
           <Alert variant="warning">
@@ -137,6 +139,7 @@ const SummaryPage = () => {
           {translate(TEXTS.statiske.attachment.pendingOperations)}
         </Alert>
       )}
+      <SavedStatus />
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
