@@ -145,6 +145,107 @@ describe('[endpoint] documents', () => {
     expect(mergePdfScope.isDone()).toBe(true);
   }, 10000);
 
+  it.each([true, false])('separates archival labels only for the new renderer (%s)', async (newRenderer) => {
+    const previousNewRenderForms = config.newRenderForms;
+    config.newRenderForms = newRenderer ? ['testskjema'] : [];
+    try {
+      const formScope = nock(formsApiUrl)
+        .get('/v1/forms/testskjema')
+        .query(true)
+        .reply(200, {
+          ...mockForm,
+          components: [
+            ...mockForm.components,
+            ...['ordinary', 'other'].map((key) => ({
+              key,
+              navId: key,
+              type: 'attachment',
+              input: true,
+              label: key,
+              attachmentType: key === 'other' ? 'other' : 'default',
+              properties: { vedleggskode: key },
+            })),
+          ],
+        });
+      const recipientScope = nock(formsApiUrl)
+        .get('/v1/recipients/mottaksadresseId')
+        .reply(200, { adresselinje1: 'Test' });
+      const globalScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+      const translationsScope = nock(formsApiUrl)
+        .get('/v1/forms/testskjema/translations')
+        .query(true)
+        .reply(200, [
+          { key: 'ordinary', en: 'Translated attachment' },
+          { key: 'other', en: 'Other documentation' },
+        ]);
+      const coverPageScope = nock(skjemabyggingProxyUrl!)
+        .post('/foersteside', (body) => {
+          expect(body.vedleggsliste).toEqual(
+            newRenderer ? ['ordinary', 'My description'] : ['Translated attachment', 'Other documentation'],
+          );
+          expect(body.dokumentlisteFoersteside).toEqual([
+            `NAV 12.34-56 ${formTitle}`,
+            'Translated attachment',
+            newRenderer ? 'My description' : 'Other documentation',
+          ]);
+          return true;
+        })
+        .reply(200, { foersteside: readFileSync(filePathForsteside).toString('base64') });
+      const applicationScope = nock(familiePdfGeneratorUrl!)
+        .post('/api/pdf/v3/opprett-pdf')
+        .reply(200, { content: readFileSync(filePathSoknad).toString('base64') });
+      const mergeScope = nock(sendInnConfig.host!)
+        .post('/fyllUt/v1/merge-filer')
+        .reply(200, readFileSync(filePathMerged), { 'content-type': 'application/pdf' });
+      const next = vi.fn();
+      await documents.coverPageAndApplication(
+        mockRequest({
+          headers: { AzureAccessToken: 'test', PdfAccessToken: 'test', MergePdfToken: 'test' },
+          body: {
+            formPath: 'testskjema',
+            language: 'en',
+            submissionMethod: 'paper',
+            submission: JSON.stringify({
+              data: {
+                ordinary: {
+                  attachmentId: 'ordinary',
+                  navId: 'ordinary',
+                  type: 'default',
+                  value: 'leggerVedNaa',
+                },
+                other: [
+                  {
+                    attachmentId: 'other',
+                    navId: 'other',
+                    type: 'other',
+                    value: 'leggerVedNaa',
+                    title: 'My description',
+                  },
+                ],
+              },
+            }),
+          },
+        }),
+        mockResponse(),
+        next,
+      );
+      expect(next).not.toHaveBeenCalled();
+      for (const scope of [
+        formScope,
+        recipientScope,
+        globalScope,
+        translationsScope,
+        coverPageScope,
+        applicationScope,
+        mergeScope,
+      ]) {
+        expect(scope.isDone()).toBe(true);
+      }
+    } finally {
+      config.newRenderForms = previousNewRenderForms;
+    }
+  });
+
   it('fails if submission is missing in application endpoint', async () => {
     const req = mockRequest({
       headers: {
