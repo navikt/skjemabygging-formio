@@ -23,11 +23,11 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           run_install: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.22.1'
           cache: 'pnpm'
@@ -41,7 +41,7 @@ jobs:
         run: pnpm install --frozen-lockfile && pnpm build:bygger && pnpm run deploy:bygger-backend
 
       - name: 'Build and push Docker image for bygger'
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
         id: docker-build-push-bygger
         with:
           team: skjemadigitalisering
@@ -63,11 +63,11 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           run_install: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.22.1'
           cache: 'pnpm'
@@ -81,7 +81,7 @@ jobs:
         run: pnpm install --frozen-lockfile && pnpm build:fyllut && pnpm run deploy:fyllut-backend
 
       - name: 'Build and push Docker image for fyllut'
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
         id: docker-build-push-fyllut
         with:
           team: skjemadigitalisering
@@ -105,9 +105,9 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: 'Deploy to preprod'
-        uses: 'nais/deploy/actions/deploy@v2'
+        uses: nais/deploy/actions/deploy@6a9dcd6df697ec2d38edc78cadb0b9acd1232f50 # v3
         env:
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/bygger/nais.yaml'
@@ -122,9 +122,9 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v7'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: 'Deploy to preprod'
-        uses: 'nais/deploy/actions/deploy@v2'
+        uses: nais/deploy/actions/deploy@6a9dcd6df697ec2d38edc78cadb0b9acd1232f50 # v3
         env:
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/fyllut/config.yaml'
