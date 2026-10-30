@@ -1,4 +1,4 @@
-import { Checkbox as AkselCheckbox, ErrorMessage } from '@navikt/ds-react';
+import { Checkbox as AkselCheckbox, CheckboxGroup as AkselCheckboxGroup } from '@navikt/ds-react';
 import { useEffect } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -13,9 +13,10 @@ interface CheckboxProps extends BaseFieldProps {
   label: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  showInlineError?: boolean;
   validation?: ChoiceValidation;
 }
+
+const CHECKED_VALUE = 'checked';
 
 const Checkbox = ({
   statePath,
@@ -28,7 +29,6 @@ const Checkbox = ({
   marginBottom,
   checked,
   onChange,
-  showInlineError = true,
   validation,
 }: CheckboxProps) => {
   const { stateValue, error, setStateValue } = useFieldBinding({
@@ -49,21 +49,27 @@ const Checkbox = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      <AkselCheckbox
+      <AkselCheckboxGroup
         id={inputId(statePath)}
-        checked={current}
-        onChange={(event) => {
+        tabIndex={-1}
+        legend={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
+        hideLegend
+        value={current ? [CHECKED_VALUE] : []}
+        onChange={(values: string[]) => {
           if (readOnly) {
             return;
           }
-          return onChange ? onChange(event.target.checked) : setStateValue(event.target.checked);
+          const nextChecked = values.includes(CHECKED_VALUE);
+          return onChange ? onChange(nextChecked) : setStateValue(nextChecked);
         }}
-        error={!!error}
+        error={error}
+        readOnly={readOnly}
       >
-        <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
-      </AkselCheckbox>
-      {description && <TranslatedDescription translationKey={description} />}
-      {showInlineError && error && <ErrorMessage>{error}</ErrorMessage>}
+        {description && <TranslatedDescription translationKey={description} />}
+        <AkselCheckbox value={CHECKED_VALUE}>
+          <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
+        </AkselCheckbox>
+      </AkselCheckboxGroup>
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
