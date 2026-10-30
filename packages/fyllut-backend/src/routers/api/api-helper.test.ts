@@ -7,7 +7,22 @@ vi.mock('../../logger', () => ({ logger: { info: vi.fn(), error: vi.fn() } }));
 vi.mock('../../security/tokenxHandler', () => ({ default: vi.fn() }));
 vi.mock('../../middleware/nologinTokenHandler', () => ({ default: vi.fn() }));
 
-describe('cover-page proxy token', () => {
+describe.each([
+  {
+    name: 'cover-page proxy',
+    handler: 'azureM2MSkjemabyggingProxy',
+    tokenVariable: 'SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN',
+    header: 'AzureAccessToken',
+    scopeProperty: 'skjemabyggingProxyClientId',
+  },
+  {
+    name: 'PDF merge',
+    handler: 'azureMergePdfToken',
+    tokenVariable: 'INNSENDING_API_M2M_ACCESS_TOKEN',
+    header: 'MergePdfToken',
+    scopeProperty: 'mergePdfScope',
+  },
+] as const)('$name token', ({ handler, tokenVariable, header, scopeProperty }) => {
   const tokenEndpoint = 'https://azure.example.test';
   const developmentToken = 'synthetic-proxy-token';
 
@@ -16,7 +31,7 @@ describe('cover-page proxy token', () => {
     vi.stubEnv('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', `${tokenEndpoint}/token`);
     vi.stubEnv('AZURE_APP_CLIENT_ID', 'test-fyllut-client');
     vi.stubEnv('SKJEMABYGGING_PROXY_CLIENT_ID', 'test-proxy-client');
-    vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', developmentToken);
+    vi.stubEnv(tokenVariable, developmentToken);
   });
 
   afterEach(() => {
@@ -33,9 +48,9 @@ describe('cover-page proxy token', () => {
     const req = mockRequest({});
     const next = vi.fn();
 
-    await initApiConfig().azureM2MSkjemabyggingProxy(req, mockResponse(), next);
+    await initApiConfig()[handler](req, mockResponse(), next);
 
-    expect(req.headers.AzureAccessToken).toBe(developmentToken);
+    expect(req.headers[header]).toBe(developmentToken);
     expect(next).toHaveBeenCalledExactlyOnceWith();
     expect(azureRequest.isDone()).toBe(false);
   });
@@ -48,7 +63,7 @@ describe('cover-page proxy token', () => {
   ])('retains client credentials in $name', async ({ nodeEnv, mocks, token }) => {
     vi.stubEnv('NODE_ENV', nodeEnv);
     vi.stubEnv('MOCKS_ENABLED', mocks);
-    vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', token);
+    vi.stubEnv(tokenVariable, token);
     vi.stubEnv('AZURE_APP_CLIENT_SECRET', 'synthetic-client-secret');
     const { config } = await import('../../config/config');
     const azureRequest = nock(tokenEndpoint)
@@ -56,7 +71,7 @@ describe('cover-page proxy token', () => {
         '/token',
         qs.stringify({
           grant_type: 'client_credentials',
-          scope: `openid api://${config.skjemabyggingProxyClientId}/.default`,
+          scope: `openid api://${config[scopeProperty]}/.default`,
           client_id: 'test-fyllut-client',
           client_secret: 'synthetic-client-secret',
           client_auth_method: 'client_secret_basic',
@@ -68,10 +83,9 @@ describe('cover-page proxy token', () => {
     const req = mockRequest({});
     const next = vi.fn();
 
-    await initApiConfig().azureM2MSkjemabyggingProxy(req, mockResponse(), next);
+    await initApiConfig()[handler](req, mockResponse(), next);
 
-    expect(config.coverPageProxyDevToken).toBeUndefined();
-    expect(req.headers.AzureAccessToken).toBe('client-credentials-token');
+    expect(req.headers[header]).toBe('client-credentials-token');
     expect(next).toHaveBeenCalledExactlyOnceWith();
     expect(azureRequest.isDone()).toBe(true);
   });

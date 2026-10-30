@@ -12,6 +12,7 @@ const {
   familiePdfGeneratorScope,
   familiePdfDevToken,
   mergePdfScope,
+  mocksEnabled,
   naisClusterName,
 } = appConfig;
 
@@ -31,7 +32,9 @@ const initApiConfig = () => {
     azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken', {
       token: familiePdfDevToken,
     }),
-    azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken'),
+    azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken', {
+      token: mocksEnabled ? undefined : sendInnConfig.devM2MToken,
+    }),
     nologinTokenHandler,
   };
 };
