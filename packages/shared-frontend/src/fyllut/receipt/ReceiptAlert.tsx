@@ -11,7 +11,7 @@ interface Props {
 
 const ReceiptAlert = ({ variant, heading, children }: Props) => (
   <>
-    <Alert size="medium" variant={variant} className={styles.hideOnPrint}>
+    <Alert size="medium" variant={variant} marginBottom="space-0" className={styles.hideOnPrint}>
       <Heading level="2" spacing size="xsmall">
         {heading}
       </Heading>
