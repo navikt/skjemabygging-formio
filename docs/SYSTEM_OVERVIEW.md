@@ -23,8 +23,9 @@ Alle instansene ligger i namespace `skjemadigitalisering`. `preprod` og
 | form-spec-api | Preprod / preprod-alt | `dev-gcp`  | `form-spec-api-preprod` / `form-spec-api-preprod-alt`     |
 | Sendinn       | Preprod / preprod-alt | `dev-gcp`  | `sendinn-preprod` / `sendinn-preprod-alt`                 |
 
-Sendinn har ingen produksjonskonfigurasjon her. Det er ikke samme applikasjon som
-[send-inn-frontend](https://github.com/navikt/send-inn-frontend), som ligger i et eget repo.
+Sendinn er under utvikling og skal etter hvert erstatte appene
+[send-inn-frontend](https://github.com/navikt/send-inn-frontend) og
+[fyllut-ettersending](https://github.com/navikt/fyllut-ettersending), som ligger i egne repoer.
 
 ## Skjemaer og publisering
 
@@ -55,12 +56,12 @@ Endringer i Bygger vises dermed først i dev etter publisering og deploy.
 
 Fra Bygger kan skjemaansvarlige kopiere en lenke til
 `https://skjemadelingslenke.ekstern.dev.nav.no/fyllut` for å dele og teste skjemaet
-før publisering. Instansen kjører i `dev-gcp`, men henter skjemadefinisjoner fra
+før publisering. Instansen kjører i `dev-gcp`, men henter siste lagrede revisjon fra
 produksjonens forms-api. Innsending går mot testtjenester.
 
-Lenken velger i dag ikke en fast revisjon. Endringer i Bygger kan derfor endre
-skjemaet som åpnes fra samme lenke. Støtte for å velge historiske revisjoner er
-ikke en del av dagens oppsett.
+Delingslenkeknappen bruker samme miljø også fra Bygger preprod og preprod-alt.
+Lenken åpner derfor skjemaet med samme sti i produksjonens forms-api, ikke
+testmiljøets skjema. Skjemaet må finnes der for at lenken skal fungere.
 
 ## Applikasjonskode og deploy
 
