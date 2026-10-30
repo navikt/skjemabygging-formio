@@ -13,6 +13,7 @@ interface AttachmentUploadValidationInput {
   attachment?: SubmissionAttachment;
   validation?: ChoiceValidation;
   uploadSelected?: boolean;
+  requireAttachmentTitle?: boolean;
   requiredFilesMessage?: string;
 }
 
@@ -52,38 +53,41 @@ const toAttachmentFilesValidationFields = ({
   label,
   attachment,
   uploadSelected = requiresUploadedFiles(attachment),
+  requireAttachmentTitle = false,
   requiredFilesMessage,
 }: AttachmentUploadValidationInput): ValidationField[] => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'files');
 
-  return uploadSelected
-    ? [
-        ...toValidationFields(
-          statePath,
-          attachment?.files ?? [],
-          toFieldValidation({
+  return [
+    ...(uploadSelected
+      ? [
+          ...toValidationFields(
             statePath,
-            label,
-            validation: {
-              ...attachmentFilesRules,
-              ...(requiredFilesMessage ? { requiredFilesMessage } : {}),
-            },
+            attachment?.files ?? [],
+            toFieldValidation({
+              statePath,
+              label,
+              validation: {
+                ...attachmentFilesRules,
+                ...(requiredFilesMessage ? { requiredFilesMessage } : {}),
+              },
+            }),
+          ),
+        ]
+      : []),
+    ...(requireAttachmentTitle || (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
+      ? toValidationFields(
+          attachmentFieldPath(submissionPath, attachmentId, 'title'),
+          attachment?.title,
+          toFieldValidation({
+            statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
+            label: TEXTS.statiske.attachment.attachmentTitle,
+            required: true,
+            validation: { maxLength: 50 },
           }),
-        ),
-        ...(attachment?.type === 'other' && !attachment.files?.length
-          ? toValidationFields(
-              attachmentFieldPath(submissionPath, attachmentId, 'title'),
-              attachment.title,
-              toFieldValidation({
-                statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
-                label: TEXTS.statiske.attachment.attachmentTitle,
-                required: true,
-                validation: { maxLength: 50 },
-              }),
-            )
-          : []),
-      ]
-    : [];
+        )
+      : []),
+  ];
 };
 
 export {

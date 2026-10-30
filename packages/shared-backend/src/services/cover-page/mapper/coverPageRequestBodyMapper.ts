@@ -182,7 +182,7 @@ const createRequestBodyFromDownloadData = (
       : undefined,
     languageCode,
     tema: properties?.tema,
-    vedleggsliste: attachments,
+    vedleggsliste: data.archivedAttachments ?? attachments,
     dokumentlisteFoersteside: isSubsequentSubmission ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),
