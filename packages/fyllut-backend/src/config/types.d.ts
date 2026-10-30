@@ -62,7 +62,7 @@ export type DefaultConfig = {
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
-  coverPageProxyDevToken?: string;
+  skjemabyggingProxyDevToken?: string;
   familiePdfGeneratorUrl: string;
   familiePdfGeneratorScope: string;
   familiePdfDevToken?: string;

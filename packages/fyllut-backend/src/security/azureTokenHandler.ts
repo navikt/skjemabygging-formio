@@ -5,13 +5,14 @@ import { config } from '../config/config';
 import { logger } from '../logger';
 import { toJsonOrThrowError } from '../utils/errorHandling';
 
-const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
+const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment, mocksEnabled } = config;
 
 const azureTokenHandler =
   (scope: string, headerName = 'AzureAccessToken', dev: { token?: string; skip?: boolean } = {}) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     if (isDevelopment) {
-      if (dev.token) {
+      // Mock runs use the mock token endpoint, so tokens from a local .env are never sent to mocks
+      if (dev.token && !mocksEnabled) {
         req.headers[headerName] = dev.token;
         logger.info('Using pre-generated access token to fetch');
         return next();
