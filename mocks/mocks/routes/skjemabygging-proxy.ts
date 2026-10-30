@@ -4,6 +4,8 @@ import tc08a from '../data/test-cases/tc08a-cover-page-body.json';
 import tc08b from '../data/test-cases/tc08b-cover-page-body.json';
 import tc08c from '../data/test-cases/tc08c-static-pdf-ettersending-cover-page-body.json';
 import tc08d from '../data/test-cases/tc08d-cover-page-body.json';
+import tc08e from '../data/test-cases/tc08e-sendinn-cover-page-body.json';
+import tc08f from '../data/test-cases/tc08f-sendinn-description-cover-page-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const defaultResponseBody = {
@@ -17,12 +19,28 @@ const onSuccess = (_req, res) => {
   res.send(defaultResponseBody);
 };
 
+const onSendinnSuccess = (_req, res) =>
+  res.status(200).json({
+    foersteside: readFileSync(join(__dirname, '../data/innsending-api/files/mini.pdf')).toString('base64'),
+    loepenummer: '0001',
+  });
+
 export default [
   {
     id: 'foersteside',
     url: '/skjemabygging-proxy/foersteside',
     method: 'POST',
     variants: [
+      {
+        id: 'success-tc08e-sendinn',
+        type: 'middleware',
+        options: { middleware: compareBodyMiddleware(tc08e, [], onSendinnSuccess) },
+      },
+      {
+        id: 'success-tc08f-sendinn-description',
+        type: 'middleware',
+        options: { middleware: compareBodyMiddleware(tc08f, [], onSendinnSuccess) },
+      },
       {
         id: 'success-sendinn',
         type: 'json',

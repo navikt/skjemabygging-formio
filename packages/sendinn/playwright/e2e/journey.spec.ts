@@ -54,17 +54,20 @@ test.describe('Generated paper journey', () => {
       (url) => url.pathname === '/sendinn/sendinnjourney/oppsummering' && !url.searchParams.has('step'),
     );
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('038763');
-    await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
+    await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
     await expect(errorSummary(page)).toBeHidden();
-    await expect(page.getByRole('button', { name: /Last ned|Send til Nav|Lagre/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Last ned førsteside', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Send til Nav|Lagre/ })).toHaveCount(0);
     await expect(page).toHaveURL(
       (url) =>
-        url.pathname === '/sendinn/sendinnjourney/oppsummering' &&
+        url.pathname === '/sendinn/sendinnjourney/instructions' &&
         !url.searchParams.has('step') &&
         url.searchParams.get('filter') === 'N1' &&
         url.searchParams.get('sub') === 'digital',
     );
     expect(loads).toBe(1);
+    await page.goBack();
+    await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
     await page.goBack();
     await expect(page.getByRole('checkbox')).not.toBeChecked();
     await page.goForward();
@@ -73,7 +76,7 @@ test.describe('Generated paper journey', () => {
 
   test('validates unvisited pages from the summary and focuses the linked field', async ({ readyPage: page }) => {
     await page.goto('/sendinn/sendinnjourney/oppsummering');
-    await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
+    await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await expect(errorSummary(page).getByRole('link')).toHaveCount(1);
     await errorSummary(page).getByRole('link').click();
@@ -136,8 +139,9 @@ test.describe('Generated paper journey', () => {
     await next(page);
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
     await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
-    await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
+    await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
     await expect(errorSummary(page)).toBeHidden();
+    await previous(page);
     await previous(page);
     await previous(page);
     await expect(unitSelect(page)).toHaveValue('0202');
@@ -301,7 +305,7 @@ test.describe('Generated paper journey', () => {
     ).toBeVisible();
     await expect(page.getByRole('checkbox')).toHaveCount(0);
     await expect(
-      page.getByRole('button', { name: /Kontroller opplysningene|Neste steg|Last ned|Send til Nav/ }),
+      page.getByRole('button', { name: /Instruksjoner for innsending|Neste steg|Last ned|Send til Nav/ }),
     ).toHaveCount(0);
   });
 });

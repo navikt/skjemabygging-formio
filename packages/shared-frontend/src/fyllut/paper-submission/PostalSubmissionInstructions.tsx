@@ -1,9 +1,9 @@
-import { BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
+import { Link } from '@navikt/ds-react';
 import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
+import SharedPostalSubmissionInstructions from '../../components/postal-submission-instructions/PostalSubmissionInstructions';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
-import styles from './PostalSubmissionInstructions.module.css';
 
 interface Props {
   attachments: Component[];
@@ -26,56 +26,39 @@ const PostalSubmissionInstructions = ({ attachments, children }: Props) => {
   );
 
   return (
-    <VStack gap="space-16" className={styles.instructions}>
-      <section aria-labelledby="postal-download-title">
-        <BodyShort className={styles.introduction}>
-          {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
-        </BodyShort>
-        <Heading id="postal-download-title" level="3" size="medium" spacing>
-          1. {translate(TEXTS.grensesnitt.downloadApplication)}
-        </Heading>
-        {children}
-      </section>
-      <section aria-labelledby="postal-print-title">
-        <Heading id="postal-print-title" level="3" size="medium" spacing>
-          2. {translate(TEXTS.statiske.prepareLetterPage.printFormTitle)}
-        </Heading>
-        <BodyShort>{translate(TEXTS.statiske.prepareLetterPage.printFormDescription)}</BodyShort>
-      </section>
-      {hasAttachments && (
-        <section aria-labelledby="postal-attachments-title">
-          <Heading id="postal-attachments-title" level="3" size="medium" spacing>
-            3. {attachmentSectionTitle}
-          </Heading>
-          <List>
-            {attachments.map((attachment) => (
-              <List.Item key={attachment.key}>
-                {attachment.attachmentType === 'default' && attachment.properties?.vedleggskjema ? (
-                  <>
-                    <Link
-                      href={`${fyllutBaseUrl}/${attachment.properties.vedleggskjema}?sub=papernocoverpage`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {translate(attachment.label)}
-                    </Link>{' '}
-                    <span>{translate(TEXTS.common.opensInNewTab)}</span>
-                  </>
-                ) : (
-                  translate(attachment.label)
-                )}
-              </List.Item>
-            ))}
-          </List>
-        </section>
-      )}
-      <section aria-labelledby="postal-mail-title">
-        <Heading id="postal-mail-title" level="3" size="medium" spacing>
-          {hasAttachments ? 4 : 3}. {mailingSectionTitle}
-        </Heading>
-        <BodyShort>{translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}</BodyShort>
-      </section>
-    </VStack>
+    <SharedPostalSubmissionInstructions
+      introduction={translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
+      download={{ title: translate(TEXTS.grensesnitt.downloadApplication), content: children }}
+      print={{
+        title: translate(TEXTS.statiske.prepareLetterPage.printFormTitle),
+        description: translate(TEXTS.statiske.prepareLetterPage.printFormDescription),
+      }}
+      attachments={{
+        title: attachmentSectionTitle,
+        items: attachments.map((attachment) => ({
+          key: attachment.key,
+          content:
+            attachment.attachmentType === 'default' && attachment.properties?.vedleggskjema ? (
+              <>
+                <Link
+                  href={`${fyllutBaseUrl}/${attachment.properties.vedleggskjema}?sub=papernocoverpage`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {translate(attachment.label)}
+                </Link>{' '}
+                <span>{translate(TEXTS.common.opensInNewTab)}</span>
+              </>
+            ) : (
+              translate(attachment.label)
+            ),
+        })),
+      }}
+      mailing={{
+        title: mailingSectionTitle,
+        description: translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction),
+      }}
+    />
   );
 };
 

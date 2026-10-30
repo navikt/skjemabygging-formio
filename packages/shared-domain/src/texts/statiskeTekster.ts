@@ -399,6 +399,13 @@ export const statiske = {
   loading: 'Laster',
   sendinn: {
     reviewAnswers: 'Kontroller opplysningene',
+    coverPage: {
+      notSent: 'Dokumentene er ikke sendt ennå',
+      download: 'Last ned førsteside',
+      print: 'Skriv ut førstesiden',
+      pending: 'Lager førstesiden. Vent litt.',
+      downloadError: 'Vi kunne ikke laste ned førstesiden. Prøv igjen.',
+    },
     noMatchingDocuments: 'Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.',
     collection: {
       multiplePeople: 'Flere personer / Nav-enhet',

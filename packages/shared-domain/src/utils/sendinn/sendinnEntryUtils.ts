@@ -4,7 +4,7 @@ import { submissionUtils } from '../submission/submissionUtils';
 const BASE_PATH = '/sendinn';
 const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
 const NOT_FOUND_PATH = '/404';
-const FORM_STEPS = new Set(['sendinnCollection', 'sendinnAttachments', 'oppsummering']);
+const FORM_STEPS = new Set(['sendinnCollection', 'sendinnAttachments', 'oppsummering', 'instructions']);
 
 type SendinnEntry =
   | { journey: 'standalone' }
