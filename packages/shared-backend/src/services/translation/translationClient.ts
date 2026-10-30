@@ -1,6 +1,7 @@
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
+import type { ContentSource } from '../content/contentSource';
 
 const formsUrl = 'v1/forms';
 const globalTranslationUrl = 'v1/global-translations';
@@ -14,25 +15,33 @@ interface GetFormTranslationsProps {
   baseUrl: string;
   formPath?: string;
   languageCodes?: TranslationLang[];
+  source?: ContentSource;
+  timeoutMs?: number;
 }
 const getFormTranslations = async (props: GetFormTranslationsProps) => {
-  const { baseUrl, formPath, languageCodes } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/translations${buildLanguageCodesParam(languageCodes)}`;
+  const { baseUrl, formPath, languageCodes, source = 'latest', timeoutMs } = props;
+  const resource = source === 'published' ? 'v1/form-publications' : formsUrl;
+  const targetUrl = `${baseUrl}/${resource}/${encodeURIComponent(String(formPath))}/translations${buildLanguageCodesParam(languageCodes)}`;
   logger.debug('Getting form translations', { formPath, languageCodes, targetUrl });
 
-  return await http.get<FormsApiTranslation[]>(targetUrl);
+  return await http.get<FormsApiTranslation[]>(targetUrl, {
+    ...(timeoutMs !== undefined && { signal: AbortSignal.timeout(timeoutMs) }),
+  });
 };
 
 interface GetGlobalTranslationsProps {
   baseUrl: string;
   languageCodes?: TranslationLang[];
+  timeoutMs?: number;
 }
 const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
-  const { baseUrl, languageCodes } = props;
+  const { baseUrl, languageCodes, timeoutMs } = props;
   const targetUrl = `${baseUrl}/${globalTranslationUrl}${buildLanguageCodesParam(languageCodes)}`;
   logger.debug('Getting global translations', { languageCodes, targetUrl });
 
-  return await http.get<FormsApiTranslation[]>(targetUrl);
+  return await http.get<FormsApiTranslation[]>(targetUrl, {
+    ...(timeoutMs !== undefined && { signal: AbortSignal.timeout(timeoutMs) }),
+  });
 };
 
 interface GetPublishedGlobalTranslationsProps {

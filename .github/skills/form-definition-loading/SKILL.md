@@ -19,6 +19,9 @@ throws, and the missing data only shows up as subtly wrong output much later.
 
 ## Two loading paths
 
+The paths below describe Fyllut. Sendinn uses the separate forms-api-only
+service described under "Sendinn content source".
+
 `fyllut-backend` resolves form definitions in one of two ways, decided by
 `FORMS_SOURCE`:
 
@@ -85,3 +88,53 @@ repository.
 - [ ] Field added to the backwards-compatibility mapper used by the static path
 - [ ] Field added to the `select` list of **every** call site that needs it
 - [ ] Behaviour verified on both loading paths, not just the one running locally
+
+## Sendinn content source
+
+Sendinn uses `SENDINN_CONTENT_SOURCE`, not Fyllut's `FORMS_SOURCE`.
+The value is required at startup in every environment. Missing, empty or
+unknown values fail startup. `prod-gcp` also rejects `latest`.
+
+| Value       | Form definition                | Form translations                           | Global translations                                |
+| ----------- | ------------------------------ | ------------------------------------------- | -------------------------------------------------- |
+| `published` | `/v1/form-publications/{path}` | `/v1/form-publications/{path}/translations` | `/v1/published-global-translations/{language}`     |
+| `latest`    | `/v1/forms/{path}`             | `/v1/forms/{path}/translations`             | `/v1/global-translations?languageCodes={language}` |
+
+Both sources fetch the whole form without `select`. Sendinn never loads
+static snapshots. `latest` returns the current revision, including pending
+or unpublished edits, without filtering by status. A pending form's
+`publicationId` still describes an older publication and must not identify
+the current content.
+
+Preprod, preprod-alt and the local mock launcher explicitly select `latest`.
+The shared Nais template requires an environment-specific `content-source`.
+There is no production Sendinn manifest yet. When #2283 adds it, select
+`published` and add forms-api production inbound access in `navikt/forms-api`
+before exposing the journey.
+
+Neither source has an application content cache. Every call fetches fresh
+content, with a five-second timeout per outbound request, including reading
+the response body. There is no stale, static, cross-source or empty-success
+fallback on failure. Requests are not revision-pinned: content can change
+between a form request and a translation request.
+
+`createContentService({ baseUrl, source })` and the `ContentService` and
+`ContentSource` types are exported through shared-backend's services barrel.
+Sendinn initializes `contentService` once in `src/services/index.ts`.
+Downstream form loading and document preparation use `getForm({ formPath })`
+and `getTranslations({ formPath, languageCode })`. The service also exposes
+`getFormTranslations({ formPath, languageCode })` and
+`getGlobalTranslations(languageCode)`. Translation results use the existing
+`FormsApiTranslationMap` shape; form translations override matching global
+keys in `getTranslations`. Forms include resolved `languages`, using the
+existing published/unpublished language rules.
+
+Upstream missing content remains `NOT_FOUND`. Other HTTP dependency errors,
+connection failures and timeouts become `SERVICE_UNAVAILABLE` with a safe
+English message. Malformed content responses also fail explicitly.
+The centralized handler returns the standard correlated error. Upstream
+correlation IDs are preserved for HTTP failures. No upstream body, author
+metadata or answers are logged or included in the public diagnostic.
+
+Existing Fyllut form/translation defaults and the legacy
+`PublishedTranslationService` cache/fallback contract are unchanged.
