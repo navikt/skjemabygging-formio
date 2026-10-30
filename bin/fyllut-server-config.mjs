@@ -11,6 +11,7 @@ const createFyllutServerConfig = ({ testMode = false, ...options }) =>
     createBackendEnv: (mockURL) => ({
       MOCKS_ENABLED: 'true',
       SKJEMABYGGING_PROXY_URL: `${mockURL}/skjemabygging-proxy`,
+      SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN: '',
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockURL}/azure-openid/oauth2/v2.0/token`,
       FORMIO_API_SERVICE: mockURL,
       FORMS_API_URL: `${mockURL}/forms-api`,

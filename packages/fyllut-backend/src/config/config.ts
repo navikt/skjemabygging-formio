@@ -108,6 +108,10 @@ const localDevelopmentConfig: DefaultConfig = {
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
+  coverPageProxyDevToken:
+    process.env.NODE_ENV === 'development' && process.env.MOCKS_ENABLED !== 'true'
+      ? process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN
+      : undefined,
   familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'https://familie-pdf.intern.dev.nav.no',
   familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE || 'dev-gcp.teamfamilie.familie-pdf',
   familiePdfDevToken: process.env.FAMILIE_PDF_M2M_ACCESS_TOKEN,

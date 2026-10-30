@@ -22,5 +22,11 @@
     "name": "FAMILIE_PDF_M2M_ACCESS_TOKEN",
     "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp:teamfamilie:familie-pdf",
     "tags": ["pdf", "fyllut", "nologin"]
+  },
+  {
+    "filePath": "packages/fyllut-backend/.env",
+    "name": "SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN",
+    "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-fss:skjemadigitalisering:skjemabygging-proxy",
+    "tags": ["fyllut", "skjemabygging-proxy"]
   }
 ]

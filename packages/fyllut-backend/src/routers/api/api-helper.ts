@@ -7,6 +7,7 @@ const {
   kodeverk,
   sendInnConfig,
   skjemabyggingProxyClientId,
+  coverPageProxyDevToken,
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
   familiePdfDevToken,
@@ -16,7 +17,9 @@ const {
 
 const initApiConfig = () => {
   return {
-    azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
+    azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken', {
+      token: coverPageProxyDevToken,
+    }),
     azureM2MSendInn: azureTokenHandler(`${naisClusterName}.team-soknad.innsending-api`, 'AzureAccessToken', {
       token: sendInnConfig.devM2MToken,
     }),
