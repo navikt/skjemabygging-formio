@@ -1,4 +1,4 @@
-import { Button, FileItem, HStack, VStack } from '@navikt/ds-react';
+import { Box, Button, FileItem, HStack, VStack } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import {
@@ -19,9 +19,9 @@ import { useValidationExternalError, useValidationFieldError } from '../../conte
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
 import { UnvalidatedFields, useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
-import Alert from '../alert/Alert';
 import FileList from '../file-upload/FileList';
 import UploadButton from '../file-upload/UploadButton';
+import FieldError from '../shared/FieldError';
 import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { toAttachmentFilesValidationFields } from './attachmentValidation';
@@ -153,54 +153,53 @@ const AttachmentItem = ({
           onDownloadFile={downloadEnabled ? handleDownloadFileItem : undefined}
         />
       )}
-      {(showButton || !uploadSelected) && (
-        <VStack gap="space-32">
-          {requireAttachmentTitle && (
-            <UnvalidatedFields>
-              <TextField
-                statePath={attachmentTitlePath}
-                label={translate(TEXTS.statiske.attachment.attachmentTitle)}
-                maxLength={50}
-                value={attachment?.title ?? ''}
-                error={attachmentTitleErrorMessage}
-                onChange={handleTitleChange}
-                readOnly={readOnly}
-              />
-            </UnvalidatedFields>
-          )}
-          {uploadSelected && !readOnly && (
-            <HStack gap="space-16">
-              <UploadButton
-                attachmentId={attachmentId}
-                statePath={attachmentFieldPath(submissionPath, attachmentId, 'files')}
-                submissionPath={submissionPath}
-                multipleAttachments={multipleAttachments}
-                variant={initialUpload ? 'primary' : 'secondary'}
-                allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-                accept={accept}
-                maxFileSizeInBytes={maxFileSizeInBytes}
-                onSuccess={() => onUpload?.(initialAttachment)}
-              />
-              {showDeleteAttachmentButton && onDeleteAttachment && (
-                <Button variant="tertiary" onClick={() => onDeleteAttachment(attachmentId)}>
-                  {translate(TEXTS.statiske.attachment.deleteAttachment)}
-                </Button>
+      {(showButton || !uploadSelected || filesError || uploadReadMore) && (
+        <div>
+          {(showButton || !uploadSelected) && (
+            <VStack gap="space-16">
+              {requireAttachmentTitle && (
+                <UnvalidatedFields>
+                  <TextField
+                    marginBottom="space-0"
+                    statePath={attachmentTitlePath}
+                    label={translate(TEXTS.statiske.attachment.attachmentTitle)}
+                    maxLength={50}
+                    value={attachment?.title ?? ''}
+                    error={attachmentTitleErrorMessage}
+                    onChange={handleTitleChange}
+                    readOnly={readOnly}
+                  />
+                </UnvalidatedFields>
               )}
-            </HStack>
+              {uploadSelected && !readOnly && (
+                <HStack gap="space-16">
+                  <UploadButton
+                    attachmentId={attachmentId}
+                    statePath={attachmentFieldPath(submissionPath, attachmentId, 'files')}
+                    submissionPath={submissionPath}
+                    multipleAttachments={multipleAttachments}
+                    variant={initialUpload ? 'primary' : 'secondary'}
+                    allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                    accept={accept}
+                    maxFileSizeInBytes={maxFileSizeInBytes}
+                    onSuccess={() => onUpload?.(initialAttachment)}
+                  />
+                  {showDeleteAttachmentButton && onDeleteAttachment && (
+                    <Button variant="tertiary" onClick={() => onDeleteAttachment(attachmentId)}>
+                      {translate(TEXTS.statiske.attachment.deleteAttachment)}
+                    </Button>
+                  )}
+                </HStack>
+              )}
+            </VStack>
           )}
-        </VStack>
-      )}
-      {(filesError || uploadReadMore) && (
-        <VStack gap="space-16">
           {filesError && (
-            <div id={inputId(filesPath)} tabIndex={-1}>
-              <Alert variant="error" inline marginBottom="space-0">
-                {translate(filesError, fileUploadErrorParams)}
-              </Alert>
-            </div>
+            <Box paddingBlock="space-8 space-0" id={inputId(filesPath)} tabIndex={-1}>
+              <FieldError id={`${inputId(filesPath)}-error`} error={translate(filesError, fileUploadErrorParams)} />
+            </Box>
           )}
-          {uploadReadMore}
-        </VStack>
+          {uploadReadMore && <Box paddingBlock="space-8 space-0">{uploadReadMore}</Box>}
+        </div>
       )}
     </VStack>
   );

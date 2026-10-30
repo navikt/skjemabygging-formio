@@ -1,5 +1,5 @@
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { Navigate, useLocation } from 'react-router';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { UnavailablePage } from '../app/error/UnavailablePage';
 import { LoadSendinnForm } from './form/createSendinnFormService';
 import { SendinnFormEntry } from './form/SendinnFormEntry';
@@ -23,7 +23,14 @@ const SendinnRoutes = ({ loadForm, onLoadError }: Props) => {
   }
 
   if (entry.journey === 'form') {
-    return <SendinnFormEntry formPath={entry.formPath} loadForm={loadForm} onLoadError={onLoadError} />;
+    return (
+      <Routes>
+        <Route
+          path="/:formPath/:step?"
+          element={<SendinnFormEntry formPath={entry.formPath} loadForm={loadForm} onLoadError={onLoadError} />}
+        />
+      </Routes>
+    );
   }
 
   return <JourneyPlaceholder journey={entry.journey} />;

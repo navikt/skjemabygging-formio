@@ -192,8 +192,7 @@ test.describe('Paper cover-page download', () => {
     await reachInstructions(page);
     await expect(page).toHaveURL(
       (url) =>
-        [...url.searchParams.keys()].sort().join(',') === 'filter,step' &&
-        url.searchParams.get('step') === 'instructions',
+        url.pathname === '/sendinn/sendinnjourney/instructions' && [...url.searchParams.keys()].join(',') === 'filter',
     );
     await page.reload();
     await expect(page.getByTestId('error-summary').getByRole('heading')).toBeFocused();
@@ -226,7 +225,7 @@ test.describe('Paper cover-page download', () => {
       await downloadButton(page).click();
       await expect(downloadButton(page)).toBeDisabled();
       await expect(page.getByRole('status')).toHaveText('Lager førstesiden. Vent litt.');
-      await expect(page).toHaveURL((url) => url.searchParams.get('step') === 'instructions');
+      await expect(page).toHaveURL((url) => url.pathname === '/sendinn/sendinnjourney/instructions');
       const focusTarget = moveFocus
         ? page.getByRole('button', { name: 'Forrige steg', exact: true })
         : downloadButton(page);
@@ -286,20 +285,20 @@ test.describe('Paper cover-page download', () => {
     page.on('request', (request) => {
       if (request.url().endsWith('/api/cover-page')) downloads += 1;
     });
-    await page.goto('/sendinn/sendinnjourney?step=instructions');
+    await page.goto('/sendinn/sendinnjourney/instructions');
     await expect(page.getByTestId('error-summary').getByRole('heading')).toBeFocused();
     await expect(downloadButton(page)).toHaveCount(0);
     await useRouteVariant('get-form:sendinn-hidden-collection');
-    await page.goto('/sendinn/sendinnjourney?step=instructions&filter=N6');
+    await page.goto('/sendinn/sendinnjourney/instructions?filter=N6');
     const errors = page.getByTestId('error-summary');
     await expect(errors.getByRole('heading')).toBeFocused();
     await expect(errors.getByRole('link')).toHaveText('Du må velge minst ett vedlegg');
-    await expect(page).toHaveURL((url) => url.searchParams.get('step') === 'oppsummering');
+    await expect(page).toHaveURL((url) => url.pathname === '/sendinn/sendinnjourney/oppsummering');
     await expect(downloadButton(page)).toHaveCount(0);
     await errors.getByRole('link').click();
     await expect(page.getByRole('checkbox')).toBeFocused();
     await expect(page.locator('#input-sendinnAttachment2-other-value')).toContainText('Du må velge minst ett vedlegg');
-    await page.goto('/sendinn/sendinnjourney?step=instructions&filter=unknown');
+    await page.goto('/sendinn/sendinnjourney/instructions?filter=unknown');
     await expect(
       page.getByText('Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.'),
     ).toBeVisible();
@@ -330,7 +329,7 @@ test.describe('Paper cover-page download', () => {
     await page.goBack();
     await page.goBack();
     await page.goBack();
-    await expect(page).toHaveURL((url) => url.searchParams.get('step') === 'oppsummering');
+    await expect(page).toHaveURL((url) => url.pathname === '/sendinn/sendinnjourney/oppsummering');
     await expect(errors.getByRole('heading')).toBeFocused();
     await expect(errors.getByRole('link')).toHaveText('Du må velge minst ett vedlegg');
     await expect(downloadButton(page)).toHaveCount(0);

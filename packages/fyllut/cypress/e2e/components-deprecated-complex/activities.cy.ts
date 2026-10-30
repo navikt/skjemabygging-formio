@@ -162,7 +162,7 @@ describe('Activities', () => {
     });
 
     describe('saved application', () => {
-      describe('with prefilled maalgruppe MOTDAGPEN and default activity chosen', () => {
+      describe('with saved prefilled maalgruppe MOTDAGPEN and default activity chosen', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-activities:success-multiple');
           cy.mocksUseRouteVariant('get-soknad:success-activities-prefilled-maalgruppe');
@@ -184,7 +184,7 @@ describe('Activities', () => {
             });
         });
 
-        it('should keep prefilled maalgruppe from saved application, not overwrite with new value from prefill endpoint', () => {
+        it('should replace prefilled maalgruppe from saved application with latest value from prefill endpoint', () => {
           cy.clickSaveAndContinue();
 
           // Attachments page
@@ -203,7 +203,7 @@ describe('Activities', () => {
             {
               calculated: { maalgruppetype: 'ANNET' },
               prefilled: {
-                maalgruppetype: 'MOTDAGPEN',
+                maalgruppetype: 'ARBSOKERE',
                 gyldighetsperiode: {
                   fom: '2024-01-01',
                   tom: '2024-05-13',
@@ -250,7 +250,7 @@ describe('Activities', () => {
             {
               calculated: { maalgruppetype: 'ANNET' },
               prefilled: {
-                maalgruppetype: 'MOTDAGPEN',
+                maalgruppetype: 'ARBSOKERE',
                 gyldighetsperiode: {
                   fom: '2024-01-01',
                   tom: '2024-05-13',
