@@ -21,7 +21,7 @@ const env = (name: string, developmentValue?: string) => {
 };
 
 const readContentSource = (): ContentSource => {
-  const source = env('SENDINN_CONTENT_SOURCE');
+  const source = env('SENDINN_CONTENT_SOURCE', 'latest');
   if (source !== 'published' && source !== 'latest') {
     throw new Error('SENDINN_CONTENT_SOURCE must be published or latest');
   }
