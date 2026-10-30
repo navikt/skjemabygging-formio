@@ -14,19 +14,21 @@ describe('Attachments page (paper submission)', () => {
     cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
       cy.findByLabelText('Ja').check(),
     );
     cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
     cy.clickNextStep();
 
-    cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+    cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByLabelText('Annet').check(),
+    );
     cy.clickNextStep();
     cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
   });
 
   it('shows legacy paper labels for attachment options', () => {
-    cy.findByRole('group', { name: /Vedlegg med masse greier/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Vedlegg med masse greier/ }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.levertTidligere }).should('exist');
@@ -53,7 +55,7 @@ describe('Attachments page', () => {
     cy.findByRole('link', { name: 'Dine opplysninger' }).click();
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
       cy.findByLabelText('Ja').check(),
     );
     cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
@@ -65,7 +67,7 @@ describe('Attachments page', () => {
       uploadFileInCurrentScope('test.txt');
       cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
     });
-    cy.findByRole('group', {
+    cy.findByRole('radiogroup', {
       name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
     }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -146,10 +148,10 @@ describe('Attachments page', () => {
     });
 
     it('validates required attachment with one option', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
@@ -163,7 +165,7 @@ describe('Attachments page', () => {
   });
 
   it('shows digital option labels for digital no login attachments', () => {
-    cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+    cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).should('exist');
 
@@ -193,7 +195,7 @@ describe('Attachments page', () => {
 
   describe('Other attachments', () => {
     it('requires a title to upload file', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -210,7 +212,7 @@ describe('Attachments page', () => {
     });
 
     it('lets you add several attachments', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -279,13 +281,13 @@ describe('Attachments page', () => {
     });
 
     it('lets you add more attachments after visiting summary page', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       getUploadOnlyAttachment().within(() => {
         uploadFileInCurrentScope('test.txt');
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -334,7 +336,7 @@ describe('Attachments page', () => {
     });
 
     it('lets you delete an uploaded attachment', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -355,13 +357,13 @@ describe('Attachments page', () => {
     });
 
     it('is still valid after deleting the first attachment', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       getUploadOnlyAttachment().within(() => {
         uploadFileInCurrentScope('test.txt');
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();

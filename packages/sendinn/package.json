@@ -13,9 +13,9 @@
     "clean": "rimraf dist coverage node_modules .runtime"
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.2.0",
-    "@navikt/ds-css": "^8.2.0",
-    "@navikt/ds-react": "^8.2.2",
+    "@navikt/aksel-icons": "^8.20.0",
+    "@navikt/ds-css": "^8.20.0",
+    "@navikt/ds-react": "^8.20.0",
     "@navikt/nav-dekoratoren-moduler": "^3.6.3",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
