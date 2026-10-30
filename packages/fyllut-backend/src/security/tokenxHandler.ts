@@ -4,7 +4,7 @@ import { config } from '../config/config';
 import { logger } from '../logger';
 import TokenXClient from './tokenxClient';
 
-const { isDevelopment } = config;
+const { isDevelopment, mocksEnabled } = config;
 
 const { instance: tokenx } = TokenXClient;
 
@@ -15,7 +15,8 @@ const tokenxHandler =
       let tokenxAccessToken;
       if (isDevelopment) {
         logger.debug('Mocking TokenX access token');
-        tokenxAccessToken = dev.token ?? 'mocked-tokenx-access-token';
+        // Mock runs use a mocked token, so tokens from a local .env are never sent to mocks
+        tokenxAccessToken = dev.token && !mocksEnabled ? dev.token : 'mocked-tokenx-access-token';
       } else if (typeof req.getIdportenJwt !== 'function') {
         throw new ResponseError('UNAUTHORIZED', 'ID-porten authentication is required');
       } else {
