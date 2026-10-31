@@ -368,7 +368,7 @@ importers:
     devDependencies:
       '@testing-library/cypress':
         specifier: ^10.1.3
-        version: 10.1.3(cypress@15.21.1)
+        version: 10.1.3(cypress@16.2.1)
       '@testing-library/dom':
         specifier: ^10.4.2
         version: 10.4.2
@@ -388,8 +388,8 @@ importers:
         specifier: ^6.3.0
         version: 6.3.0
       cypress:
-        specifier: ^15.21.1
-        version: 15.21.1
+        specifier: ^16.2.1
+        version: 16.2.1
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -603,15 +603,12 @@ importers:
       '@axe-core/playwright':
         specifier: 4.14.0
         version: 4.14.0(playwright-core@1.64.1)
-      '@mocks-server/cypress-commands':
-        specifier: ^6.1.1
-        version: 6.1.1(cypress@15.21.1)
       '@playwright/test':
         specifier: 1.64.1
         version: 1.64.1
       '@testing-library/cypress':
         specifier: ^10.1.3
-        version: 10.1.3(cypress@15.21.1)
+        version: 10.1.3(cypress@16.2.1)
       '@testing-library/dom':
         specifier: ^10.4.2
         version: 10.4.2
@@ -628,11 +625,11 @@ importers:
         specifier: ^6.3.0
         version: 6.3.0
       cypress:
-        specifier: ^15.21.1
-        version: 15.21.1
+        specifier: ^16.2.1
+        version: 16.2.1
       cypress-axe:
         specifier: ^1.7.0
-        version: 1.7.0(axe-core@4.14.0)(cypress@15.21.1)
+        version: 1.7.0(axe-core@4.14.0)(cypress@16.2.1)
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -1870,10 +1867,6 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@mocks-server/admin-api-client@7.0.0':
-    resolution: {integrity: sha512-upJnRkSCntDrXmlGB4w0xsoVtHLo8Rz5+hqqn/r3C/UWT1qVBooW8bCNPjKLaXh7TAkzynXKCQROVsYdaOholQ==}
-    engines: {node: '>=14.0.0'}
-
   '@mocks-server/admin-api-paths@5.0.0':
     resolution: {integrity: sha512-HlFhNnHtvY9ZZGthaatAFvGFofTCs1Yj3kxeb5EmvdHBgNC+dZxfMjXWCvuIhp7qFNaTFarPgGJ3Zsm7+o/siw==}
     engines: {node: '>=14.x'}
@@ -1886,13 +1879,6 @@ packages:
     resolution: {integrity: sha512-TqV7WJwH+BeaaywXkGK4Xhy/qTx9ZEE/QOASJligRRMuWyhH5kdJ54ZVNegl7OEx++kY/NLCG2sOtZnbgGO2pA==}
     engines: {node: '>=14.x'}
     deprecated: This package has been discontinued and is no longer maintained. It will not receive bug fixes or security updates.
-
-  '@mocks-server/cypress-commands@6.1.1':
-    resolution: {integrity: sha512-nO3N43c1e+jxeXtO2RiNxFBuF/G9coAiD6lEPh52J/h/KZhw75eMiae67nmsY+WntJaq5s3/gIRxg1fyCTYhlw==}
-    engines: {node: '>=14.0.0'}
-    deprecated: This package has been discontinued and is no longer maintained. It will not receive bug fixes or security updates.
-    peerDependencies:
-      cypress: '>=2.0.0'
 
   '@mocks-server/logger@1.1.2':
     resolution: {integrity: sha512-9FtmOG4EEMW15I8xeRwrS6RU0HcYF9uDSz0Eyu76VRWLH4tm0hER0pww5/j0VBIpuEliZb7aDZUaq7CzoIVLig==}
@@ -3466,9 +3452,6 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  cross-fetch@3.1.5:
-    resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
-
   cross-spawn-async@2.2.5:
     resolution: {integrity: sha512-snteb3aVrxYYOX9e8BabYFK9WhCDhTlw1YQktfTthBogxri4/2r9U2nQc0ffY73ZAxezDc+U8gvHAeU1wy1ubQ==}
     deprecated: cross-spawn no longer requires a build toolchain, use it instead
@@ -3531,9 +3514,9 @@ packages:
       axe-core: ^3 || ^4
       cypress: ^10 || ^11 || ^12 || ^13 || ^14 || ^15
 
-  cypress@15.21.1:
-    resolution: {integrity: sha512-ogHpHMj0XNlZA5MGzjg8SWHf0eMw9lTwVQRKjpcT1GzNTxNUjwnHA8YCG6nOJ8ThU+XZaUxJgpMYZnJ//8aDaw==}
-    engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
+  cypress@16.2.1:
+    resolution: {integrity: sha512-3Vqf1Krr92hKww/Owob9JrDO7TgBCR2ct+OQrvBOFGSnoGsikL4YF5arqDrJb+SM8Fzi7xXIeVmCeaOqJKPhRA==}
+    engines: {node: ^22.0.0 || ^24.0.0 || >=26.0.0}
     hasBin: true
 
   dashdash@1.14.1:
@@ -3563,8 +3546,8 @@ packages:
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
-  dayjs@1.11.21:
-    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
   debounce@2.2.0:
     resolution: {integrity: sha512-Xks6RUDLZFdz8LIdR6q0MTH44k7FikOmnh5xkSjMig6ch45afc8sjTjRQf3P6ax8dMgcQrYO/AR2RGWURrruqw==}
@@ -4130,7 +4113,6 @@ packages:
 
   extsprintf@1.3.0:
     resolution: {integrity: sha512-11Ndz7Nv+mvAC1j0ktTa7fAb0vLyGGX+rMHNBYQviQDGU0Hw7lhctJANqbPhu9nV9/izT/IntTgZ7Im/9LJs9g==}
-    engines: {'0': node >=0.6.0}
 
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
@@ -5082,7 +5064,6 @@ packages:
 
   jsprim@2.0.2:
     resolution: {integrity: sha512-gqXddjPqQ6G40VdnI6T6yObEC+pDNvyP95wdQhkWkg7crHH3km5qP1FsOXEkzEQwnz6gz5qGTn1c2Y52wP3OyQ==}
-    engines: {'0': node >=0.6.0}
 
   jss-plugin-camel-case@10.10.0:
     resolution: {integrity: sha512-z+HETfj5IYgFxh1wJnUAU8jByI48ED+v0fuTuhKrPR+pRBYS2EDwbusU8aFOpCdYhtRc9zhN+PJ7iNE8pAWyPw==}
@@ -5609,15 +5590,6 @@ packages:
 
   node-fetch@2.6.13:
     resolution: {integrity: sha512-StxNAxh15zr77QvvkmveSQ8uCQ4+v5FkvNTj0OESmiHu+VRi/gXArXtkWMElOsOUNLtUEvI4yS+rdtOHZTwlQA==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-
-  node-fetch@2.6.7:
-    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -7099,7 +7071,6 @@ packages:
 
   verror@1.10.0:
     resolution: {integrity: sha512-ZZKSmDAEFOijERBLkmYfJ+vmk3w+7hOLYDNkRCuRuMJGEmqYNCNLyBBFwWKVMhfwaEF3WOd0Zlw86U/WC/+nYw==}
-    engines: {'0': node >=0.6.0}
 
   vite-node@3.2.4:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
@@ -8280,13 +8251,6 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@mocks-server/admin-api-client@7.0.0':
-    dependencies:
-      '@mocks-server/admin-api-paths': 5.0.0
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
-
   '@mocks-server/admin-api-paths@5.0.0': {}
 
   '@mocks-server/config@1.4.1':
@@ -8327,14 +8291,6 @@ snapshots:
       yaml: 2.3.1
     transitivePeerDependencies:
       - supports-color
-
-  '@mocks-server/cypress-commands@6.1.1(cypress@15.21.1)':
-    dependencies:
-      '@mocks-server/admin-api-client': 7.0.0
-      '@mocks-server/admin-api-paths': 5.0.0
-      cypress: 15.21.1
-    transitivePeerDependencies:
-      - encoding
 
   '@mocks-server/logger@1.1.2':
     dependencies:
@@ -8722,11 +8678,11 @@ snapshots:
     dependencies:
       defer-to-connect: 1.1.3
 
-  '@testing-library/cypress@10.1.3(cypress@15.21.1)':
+  '@testing-library/cypress@10.1.3(cypress@16.2.1)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@testing-library/dom': 10.4.2
-      cypress: 15.21.1
+      cypress: 16.2.1
 
   '@testing-library/dom@10.4.2':
     dependencies:
@@ -10042,12 +9998,6 @@ snapshots:
       '@epic-web/invariant': 1.0.0
       cross-spawn: 7.0.6
 
-  cross-fetch@3.1.5:
-    dependencies:
-      node-fetch: 2.6.7
-    transitivePeerDependencies:
-      - encoding
-
   cross-spawn-async@2.2.5:
     dependencies:
       lru-cache: 4.1.5
@@ -10107,12 +10057,12 @@ snapshots:
 
   custom-event@1.0.1: {}
 
-  cypress-axe@1.7.0(axe-core@4.14.0)(cypress@15.21.1):
+  cypress-axe@1.7.0(axe-core@4.14.0)(cypress@16.2.1):
     dependencies:
       axe-core: 4.14.0
-      cypress: 15.21.1
+      cypress: 16.2.1
 
-  cypress@15.21.1:
+  cypress@16.2.1:
     dependencies:
       '@cypress/request': 4.0.1
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
@@ -10130,7 +10080,7 @@ snapshots:
       cli-table3: 0.6.1
       commander: 6.2.1
       common-tags: 1.8.2
-      dayjs: 1.11.21
+      dayjs: 1.11.23
       debug: 4.4.3(supports-color@8.1.1)
       eventemitter2: 6.4.7
       execa: 4.1.0
@@ -10190,7 +10140,7 @@ snapshots:
 
   date-fns@4.1.0: {}
 
-  dayjs@1.11.21: {}
+  dayjs@1.11.23: {}
 
   debounce@2.2.0: {}
 
@@ -12595,10 +12545,6 @@ snapshots:
       semver: 6.3.1
 
   node-fetch@2.6.13:
-    dependencies:
-      whatwg-url: 5.0.0
-
-  node-fetch@2.6.7:
     dependencies:
       whatwg-url: 5.0.0
 

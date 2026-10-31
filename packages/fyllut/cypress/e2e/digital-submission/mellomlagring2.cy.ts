@@ -272,7 +272,7 @@ describe('Mellomlagring v2', () => {
       cy.url().should('not.include', validInnsendingsId);
       cy.url().should('not.include', 'sub=digital');
       cy.url().should('not.include', 'oppsummering');
-      cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/soknad-ikke-funnet`);
+      cy.url().should('equal', `${Cypress.expose('BASE_URL')}/fyllut/soknad-ikke-funnet`);
     });
 
     it('shows an error when deleting mellomlagring fails', () => {
