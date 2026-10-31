@@ -1,5 +1,4 @@
 import MemoryStream from 'memorystream';
-import { Response } from 'node-fetch';
 import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
 import { HttpError } from '../../fetchUtils';
