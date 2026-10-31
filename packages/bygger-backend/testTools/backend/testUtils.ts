@@ -1,4 +1,3 @@
-import { Response } from 'node-fetch';
 import { Backend } from '../../src/Backend';
 import type { ByggerBackendConfig } from '../../src/config/types';
 

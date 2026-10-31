@@ -1,7 +1,6 @@
 import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
 import { CoverPageType, ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { appMetrics } from '../../services';
