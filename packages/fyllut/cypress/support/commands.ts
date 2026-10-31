@@ -290,15 +290,29 @@ Cypress.Commands.add('defaultWaits', () => {
   return cy;
 });
 
+const getMocksAdminPort = () => Number(Cypress.expose('MOCKS_ADMIN_PORT') ?? 3310);
+
+let mocksAdminPort = getMocksAdminPort();
+
+const customRouteVariantsUrl = () => `http://127.0.0.1:${mocksAdminPort}/api/mock/custom-route-variants`;
+
 Cypress.Commands.add('configMocksServer', () => {
-  cy.mocksConfigClient({
-    port: Number(Cypress.env('MOCKS_ADMIN_PORT') ?? 3310),
-  });
+  mocksAdminPort = getMocksAdminPort();
   return cy;
 });
 
+Cypress.Commands.add('mocksUseRouteVariant', (routeVariantId: string) => {
+  cy.log(`[Mocks Server] Use route variant '${routeVariantId}'`);
+  return cy.request({ method: 'POST', url: customRouteVariantsUrl(), body: { id: routeVariantId }, log: false });
+});
+
+Cypress.Commands.add('mocksRestoreRouteVariants', () => {
+  cy.log('[Mocks Server] Restore route variants');
+  return cy.request({ method: 'DELETE', url: customRouteVariantsUrl(), log: false });
+});
+
 Cypress.Commands.add('skipIfNoIncludeDistTests', function () {
-  if (!Cypress.env('INCLUDE_DIST_TESTS')) {
+  if (!Cypress.expose('INCLUDE_DIST_TESTS')) {
     cy.log('Set INCLUDE_DIST_TESTS to true to run this test');
     this.skip();
   }
