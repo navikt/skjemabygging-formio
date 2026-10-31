@@ -1,9 +1,8 @@
-import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
 import TokenXClient from './security/tokenxClient';
-import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from './test/testHelpers';
+import { createMockIdportenJwt, fetchedUrls, generateJwk } from './test/testHelpers';
 
 vi.mock('./dekorator', () => ({
   getDecorator: () => {},
@@ -12,14 +11,11 @@ vi.mock('./dekorator', () => ({
 
 afterEach(() => {
   vi.restoreAllMocks();
-  resetFetchMock();
 });
 
 it('keeps a genuine TokenX exchange failure as a server error', async () => {
   const key = await generateJwk();
-  const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
-    .get(extractPath(config.idporten!.idportenJwksUri))
-    .reply(200, { keys: [key.toJSON(false)] });
+  const jwksFetch = vi.spyOn(global, 'fetch').mockResolvedValueOnce(Response.json({ keys: [key.toJSON(false)] }));
   const exchangeToken = vi
     .spyOn(TokenXClient.instance, 'exchangeToken')
     .mockRejectedValue(new Error('TokenX unavailable'));
@@ -31,7 +27,7 @@ it('keeps a genuine TokenX exchange failure as a server error', async () => {
     .set('Authorization', `Bearer ${createMockIdportenJwt({}, '1h', key)}`)
     .expect(500);
 
-  jwksScope.done();
+  expect(fetchedUrls(jwksFetch)).toEqual([config.idporten!.idportenJwksUri]);
   expect(exchangeToken).toHaveBeenCalledOnce();
   expect(response.body.errorCode).toBe('INTERNAL_SERVER_ERROR');
   expect(response.body.correlationId).toBeTruthy();

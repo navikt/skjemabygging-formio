@@ -1,12 +1,11 @@
-import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import jwt from 'jsonwebtoken';
 import jose from 'node-jose';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
 import TokenXClient from './security/tokenxClient';
-import { createNologinToken, setupAzureTokenMocks } from './test/integrationTestHelpers';
-import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from './test/testHelpers';
+import { createNologinToken } from './test/integrationTestHelpers';
+import { createMockIdportenJwt, fetchedHeaders, fetchedUrls, generateJwk } from './test/testHelpers';
 
 vi.mock('./dekorator', () => ({
   getDecorator: () => {},
@@ -27,7 +26,6 @@ describe('Fyllut attachment authentication', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    resetFetchMock();
   });
 
   it.each([
@@ -82,9 +80,7 @@ describe('Fyllut attachment authentication', () => {
   });
 
   it('does not disguise an ID-porten key-service outage as invalid authentication', async () => {
-    const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
-      .get(extractPath(config.idporten!.idportenJwksUri))
-      .reply(503);
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response(null, { status: 503 }));
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken');
 
     const response = await request(createApp())
@@ -94,18 +90,15 @@ describe('Fyllut attachment authentication', () => {
 
     expect(response.body.errorCode).toBe('INTERNAL_SERVER_ERROR');
     expect(exchangeToken).not.toHaveBeenCalled();
-    jwksScope.done();
+    expect(fetchedUrls(fetchSpy)).toEqual([config.idporten!.idportenJwksUri]);
   });
 
   it('accepts an authenticated digital attachment request without a submission-method header', async () => {
-    const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
-      .get(extractPath(config.idporten!.idportenJwksUri))
-      .reply(200, { keys: [key.toJSON(false)] });
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ keys: [key.toJSON(false)] }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 }));
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken').mockResolvedValue('tokenx-access-token');
-    const upstreamScope = mockFetch(config.sendInnConfig.host)
-      .delete(`/v1/application-digital/${innsendingsId}/attachments/${attachmentId}`)
-      .matchHeader('authorization', 'Bearer tokenx-access-token')
-      .reply(204);
 
     await request(createApp())
       .delete(digitalPath)
@@ -113,16 +106,19 @@ describe('Fyllut attachment authentication', () => {
       .expect(204);
 
     expect(exchangeToken).toHaveBeenCalledOnce();
-    jwksScope.done();
-    upstreamScope.done();
+    expect(fetchedUrls(fetchSpy)).toEqual([
+      config.idporten!.idportenJwksUri,
+      `${config.sendInnConfig.host}/v1/application-digital/${innsendingsId}/attachments/${attachmentId}`,
+    ]);
+    expect(fetchedHeaders(fetchSpy, 1).get('authorization')).toBe('Bearer tokenx-access-token');
   });
 
   it('still allows nologin attachments without an ID-porten JWT', async () => {
-    const azureToken = setupAzureTokenMocks();
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ access_token: 'azure-access-token' }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 }));
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken');
-    const upstreamScope = mockFetch(config.sendInnConfig.host)
-      .delete(`/v1/application-nologin/${innsendingsId}/attachments/${attachmentId}`)
-      .reply(204);
 
     await request(createApp())
       .delete(`/fyllut/api/send-inn/nologin-application/attachments/${attachmentId}`)
@@ -130,8 +126,10 @@ describe('Fyllut attachment authentication', () => {
       .expect(204);
 
     expect(exchangeToken).not.toHaveBeenCalled();
-    azureToken.assertDone();
-    upstreamScope.done();
+    expect(fetchedUrls(fetchSpy)).toEqual([
+      process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT,
+      `${config.sendInnConfig.host}/v1/application-nologin/${innsendingsId}/attachments/${attachmentId}`,
+    ]);
   });
 
   it('rejects other TokenX-dependent routes without an ID-porten JWT', async () => {

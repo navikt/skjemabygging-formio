@@ -1,5 +1,4 @@
 import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
-import { mockFetch } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
 import forsteside, { validateForstesideRequest } from './forsteside';
@@ -7,8 +6,12 @@ import forsteside, { validateForstesideRequest } from './forsteside';
 const { skjemabyggingProxyUrl } = config;
 
 describe('[endpoint] forsteside', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('Create front page', async () => {
-    const generateFileMock = mockFetch(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
+    const generateFileMock = vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response('{}'));
 
     const req = mockRequest({
       headers: {
@@ -26,11 +29,14 @@ describe('[endpoint] forsteside', () => {
 
     await forsteside.post(req, mockResponse(), mockNext());
 
-    expect(generateFileMock.isDone()).toBe(true);
+    expect(generateFileMock).toHaveBeenCalledExactlyOnceWith(
+      `${skjemabyggingProxyUrl}/foersteside`,
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 
   it('rejects invalid unknown user information before calling the proxy', async () => {
-    const generateFileMock = mockFetch(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
+    const generateFileMock = vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response('{}'));
     const next = mockNext();
     const req = mockRequest({
       headers: {
@@ -50,7 +56,7 @@ describe('[endpoint] forsteside', () => {
         message: 'Unknown user information contains invalid characters.',
       }),
     );
-    expect(generateFileMock.isDone()).toBe(false);
+    expect(generateFileMock).not.toHaveBeenCalled();
   });
 
   describe('validateForstesideRequest', () => {

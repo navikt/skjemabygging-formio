@@ -1,9 +1,8 @@
-import { isFetchMockDone, mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
-import { extractHost, extractPath } from './test/testHelpers';
+import { fetchedUrls } from './test/testHelpers';
 
 vi.mock('./dekorator', () => ({
   getDecorator: () => {},
@@ -13,6 +12,10 @@ vi.mock('./dekorator', () => ({
 const { formsApiUrl, norg2 } = config;
 
 describe('app', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('index.html', () => {
     it('Renders index.html', async () => {
       await request(createApp()).get('/fyllut/').expect(200);
@@ -24,17 +27,11 @@ describe('app', () => {
     });
 
     it('Returns 404 if form is not found', async () => {
-      mockFetch(formsApiUrl).get('/v1/forms/testform001').query(true).reply(404);
+      const formFetch = vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response(null, { status: 404 }));
 
       const res = await request(createApp()).get('/fyllut/testform001');
       expect(res.status).toBe(404);
-    });
-
-    afterEach(() => {
-      if (!isFetchMockDone()) {
-        resetFetchMock();
-        throw new Error('Pending fetch mocks not used');
-      }
+      expect(fetchedUrls(formFetch)).toEqual([`${formsApiUrl}/v1/forms/testform001`]);
     });
 
     describe("Query param 'form'", () => {
@@ -78,10 +75,9 @@ describe('app', () => {
   });
 
   it('returns a 404 response error when an api form is not found', async () => {
-    const formScope = mockFetch(formsApiUrl)
-      .get('/v1/forms/testform001')
-      .query(true)
-      .reply(404, { message: 'not found', correlationId: 'corr-1' }, { 'Content-Type': 'application/json' });
+    const formFetch = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ message: 'not found', correlationId: 'corr-1' }, { status: 404 }));
 
     const res = await request(createApp())
       .get('/fyllut/api/forms/testform001')
@@ -94,7 +90,7 @@ describe('app', () => {
       correlationId: 'corr-1',
     });
 
-    formScope.done();
+    expect(fetchedUrls(formFetch)).toEqual([`${formsApiUrl}/v1/forms/testform001`]);
   });
 
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
@@ -107,13 +103,17 @@ describe('app', () => {
 
   it('Returns error message and a correlationId', async () => {
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
-    const azureOpenidScope = mockFetch(extractHost(tokenEndpoint))
-      .post(extractPath(tokenEndpoint))
-      .reply(200, { access_token: 'azure-access-token' });
-
-    const skjemabyggingproxyScope = mockFetch(process.env.SKJEMABYGGING_PROXY_URL as string)
-      .post('/foersteside')
-      .reply(400, 'Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.');
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ access_token: 'azure-access-token' }))
+      .mockResolvedValueOnce(
+        new Response(
+          'Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.',
+          {
+            status: 400,
+          },
+        ),
+      );
 
     const foerstesideBody = {
       foerstesidetype: 'ETTERSENDELSE',
@@ -132,14 +132,13 @@ describe('app', () => {
     expect(res.body.message).toBe('Feil ved generering av førsteside');
     expect(res.body.correlationId).not.toBeNull();
 
-    azureOpenidScope.done();
-    skjemabyggingproxyScope.done();
+    expect(fetchedUrls(fetchSpy)).toEqual([tokenEndpoint, `${process.env.SKJEMABYGGING_PROXY_URL}/foersteside`]);
   });
 
   it('Returns the new enhetsliste error response contract', async () => {
-    const norg2Scope = mockFetch(norg2.url).get('/norg2/api/v1/enhet').query({ enhetStatusListe: 'AKTIV' }).reply(503, {
-      message: 'upstream unavailable',
-    });
+    const norg2Fetch = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ message: 'upstream unavailable' }, { status: 503 }));
 
     const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(503);
 
@@ -149,6 +148,9 @@ describe('app', () => {
     expect(res.body.userMessage).toBe(TEXTS.statiske.error.serverErrorTitle);
     expect(res.headers['x-correlation-id']).toBe(res.body.correlationId);
 
-    norg2Scope.done();
+    expect(norg2Fetch).toHaveBeenCalledExactlyOnceWith(
+      `${norg2.url}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`,
+      expect.anything(),
+    );
   });
 });

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import jose from 'node-jose';
-import { Mock } from 'vitest';
+import { Mock, MockInstance } from 'vitest';
 
 const keystore = jose.JWK.createKeyStore();
 
@@ -78,5 +78,21 @@ const createAccessToken = (payload: string | Buffer | object, expiresIn: Expires
   return jwt.sign(payload, key.toPEM(true), { expiresIn, algorithm: 'RS256' });
 };
 
-export { createAccessToken, createMockIdportenJwt, extractHost, extractPath, generateJwk, mockRequest, mockResponse };
+const fetchedUrls = (fetchSpy: MockInstance<typeof fetch>) =>
+  fetchSpy.mock.calls.map(([input]) => String(input instanceof globalThis.Request ? input.url : input).split('?')[0]);
+
+const fetchedHeaders = (fetchSpy: MockInstance<typeof fetch>, callIndex: number) =>
+  new Headers(fetchSpy.mock.calls[callIndex]?.[1]?.headers);
+
+export {
+  createAccessToken,
+  createMockIdportenJwt,
+  extractHost,
+  extractPath,
+  fetchedHeaders,
+  fetchedUrls,
+  generateJwk,
+  mockRequest,
+  mockResponse,
+};
 export type { MockRequestParams };

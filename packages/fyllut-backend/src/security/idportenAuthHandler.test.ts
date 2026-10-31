@@ -1,4 +1,3 @@
-import { mockFetch } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { Request } from 'express';
 import jose from 'node-jose';
 import { createMockIdportenJwt, generateJwk, mockRequest, mockResponse } from '../test/testHelpers';
@@ -17,9 +16,7 @@ describe('idportenAuthHandler', () => {
   let key: jose.JWK.Key;
   beforeAll(async () => {
     key = await generateJwk();
-    mockFetch('https://testoidc.unittest.no')
-      .get('/idporten-oidc-provider/jwk')
-      .reply(200, { keys: [key.toJSON(false)] });
+    vi.spyOn(global, 'fetch').mockImplementation(async () => Response.json({ keys: [key.toJSON(false)] }));
   });
 
   describe('Header Fyllut-Submission-Method digital', () => {

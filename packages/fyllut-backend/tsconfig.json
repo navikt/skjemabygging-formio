@@ -4,8 +4,7 @@
     "outDir": "./dist",
     "paths": {
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"],
-      "@navikt/skjemadigitalisering-shared-backend": ["../shared-backend/src"],
-      "@navikt/skjemadigitalisering-shared-backend/test": ["../shared-backend/src/test/fetchMock.ts"]
+      "@navikt/skjemadigitalisering-shared-backend": ["../shared-backend/src"]
     }
   },
   "include": ["src"]

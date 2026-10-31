@@ -1,4 +1,3 @@
-import { resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { Backend } from '../Backend';
 import PublisherService from './PublisherService';
@@ -7,10 +6,6 @@ describe('PublisherService', () => {
   let publisherService: PublisherService;
 
   let backendMock: Backend;
-
-  afterEach(() => {
-    resetFetchMock();
-  });
 
   describe('publishForm', () => {
     describe('when publishing succeeds', () => {
