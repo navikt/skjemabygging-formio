@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 
-import nock from 'nock';
 import { afterAll, beforeAll } from 'vitest';
 import http from '../http/http';
 import FrontendLogger, { LoggerConfig } from './FrontendLogger';
@@ -8,6 +7,8 @@ import FrontendLogger, { LoggerConfig } from './FrontendLogger';
 const BASE_PATH = 'http://test.nav.no';
 const PATH_API_LOG_ERROR = '/api/log/error';
 const PATH_API_LOG_INFO = '/api/log/info';
+
+const mockFetchStatus = (status: number) => vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status }));
 
 describe('FrontendLogger', () => {
   const createLogger = (config: LoggerConfig = { enabled: true }) => new FrontendLogger(http, BASE_PATH, config);
@@ -21,7 +22,7 @@ describe('FrontendLogger', () => {
   });
 
   afterEach(() => {
-    nock.abortPendingRequests();
+    vi.restoreAllMocks();
     consoleLogMock.mockReset();
   });
 
@@ -30,40 +31,49 @@ describe('FrontendLogger', () => {
   });
 
   it('Invokes error endpoint in backend', async () => {
-    nock(BASE_PATH).post(PATH_API_LOG_ERROR).reply(200);
+    const fetchSpy = mockFetchStatus(200);
     const logger = createLogger();
     await logger._error('En feil oppstod', { skjemanummer: 'NAV 12.34-56' });
-    expect(nock.isDone()).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      `${BASE_PATH}${PATH_API_LOG_ERROR}`,
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 
   it('Invokes info endpoint in backend', async () => {
-    nock(BASE_PATH).post(PATH_API_LOG_INFO).reply(200);
+    const fetchSpy = mockFetchStatus(200);
     const logger = createLogger();
     await logger._info('Bruker klikket publiser', { skjemanummer: 'NAV 12.34-56' });
-    expect(nock.isDone()).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      `${BASE_PATH}${PATH_API_LOG_INFO}`,
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 
   it('Ignores backend failure', async () => {
-    nock(BASE_PATH).post(PATH_API_LOG_ERROR).reply(500);
+    const fetchSpy = mockFetchStatus(500);
     const logger = createLogger();
     await logger._error('En feil oppstod', { skjemanummer: 'NAV 12.34-56' });
-    expect(nock.isDone()).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      `${BASE_PATH}${PATH_API_LOG_ERROR}`,
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 
   it('Disabled logger does not invoke backend', async () => {
-    nock(BASE_PATH).post(PATH_API_LOG_ERROR).times(0);
+    const fetchSpy = mockFetchStatus(200);
     const logger = createLogger({ enabled: false });
     await logger._error('En feil oppstod');
-    expect(nock.isDone()).toBe(true);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   describe('browserOnly=true', () => {
     it('logs to console, not backend', async () => {
-      nock(BASE_PATH).post(PATH_API_LOG_INFO).times(0);
+      const fetchSpy = mockFetchStatus(200);
       const logger = createLogger({ enabled: true, browserOnly: true });
       await logger._info('Info message');
       expect(consoleLogMock).toHaveBeenCalledTimes(1);
-      expect(nock.isDone()).toBe(true);
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
 
     it('respects config log level', async () => {
