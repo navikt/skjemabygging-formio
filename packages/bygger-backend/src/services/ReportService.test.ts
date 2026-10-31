@@ -1,3 +1,4 @@
+import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import {
   Component,
   ComponentProperties,
@@ -9,7 +10,6 @@ import {
   SubmissionType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
-import nock from 'nock';
 import config from '../config';
 import { logger } from '../logging/logger';
 import ReportService from './ReportService';
@@ -26,8 +26,7 @@ describe('ReportService', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    resetFetchMock();
   });
 
   it('returns list containing report metadata', () => {
@@ -63,18 +62,18 @@ describe('ReportService', () => {
       recipients: Recipient[] = [],
       formsWithUploadedPdfs: string[] = [],
     ) => {
-      nock(formsApi.url).get('/v1/recipients').reply(200, recipients);
-      nock(formsApi.url)
+      mockFetch(formsApi.url).get('/v1/recipients').reply(200, recipients);
+      mockFetch(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
         .times(1)
         .reply(200, publishedForms);
-      nock(formsApi.url)
+      mockFetch(formsApi.url)
         .get(/\/v1\/form-publications$/)
         .times(1)
         .reply(200, publishedForms);
       for (const form of publishedForms) {
-        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
-        nock(formsApi.url)
+        mockFetch(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
+        mockFetch(formsApi.url)
           .get(`/v1/forms/${form.path}/static-pdfs`)
           .reply(
             200,
@@ -82,7 +81,7 @@ describe('ReportService', () => {
               ? [{ id: 1, languageCode: 'nb', fileName: 'example.pdf' }]
               : [],
           );
-        nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
+        mockFetch(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
           publishedBy: 'TEST',
@@ -94,7 +93,7 @@ describe('ReportService', () => {
               };
             }, {}) || {},
         };
-        nock(formsApi.url)
+        mockFetch(formsApi.url)
           .get(/\/v1\/form-publications\/(.+)\/translations\?.*/)
           .times(1)
           .reply(200, publishedTranslations);
@@ -789,7 +788,7 @@ describe('ReportService', () => {
           },
           components: [],
         };
-        const api = nock(formsApi.url)
+        const api = mockFetch(formsApi.url)
           .get('/v1/form-publications')
           .reply(200, [compact])
           .get('/v1/form-publications/legacy-publication')
@@ -835,7 +834,7 @@ describe('ReportService', () => {
             },
             components: [],
           };
-          const api = nock(formsApi.url)
+          const api = mockFetch(formsApi.url)
             .get('/v1/form-publications')
             .reply(200, [form])
             .get('/v1/form-publications/unsupported-publication')
@@ -893,7 +892,7 @@ describe('ReportService', () => {
             en: { 'Published title': 'English title' },
           },
         };
-        const api = nock(formsApi.url)
+        const api = mockFetch(formsApi.url)
           .get('/v1/form-publications')
           .reply(200, [draft])
           .get('/v1/form-publications/test1')
@@ -939,7 +938,7 @@ describe('ReportService', () => {
           properties: { ...markedInSnapshot.properties, isTestForm: true },
         };
         const legitimate = createForm('allergitest');
-        const api = nock(formsApi.url)
+        const api = mockFetch(formsApi.url)
           .get('/v1/form-publications')
           .reply(200, [published, pending, draft, unpublished, markedInList, markedInSnapshot, legitimate])
           .get('/v1/form-publications/published')
@@ -989,7 +988,7 @@ describe('ReportService', () => {
             },
             components: [],
           };
-          const api = nock(formsApi.url)
+          const api = mockFetch(formsApi.url)
             .get('/v1/form-publications')
             .reply(200, [form])
             .get('/v1/form-publications/not-published')

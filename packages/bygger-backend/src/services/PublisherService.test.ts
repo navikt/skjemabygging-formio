@@ -1,5 +1,5 @@
+import { resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import { Backend } from '../Backend';
 import PublisherService from './PublisherService';
 
@@ -9,8 +9,7 @@ describe('PublisherService', () => {
   let backendMock: Backend;
 
   afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    resetFetchMock();
   });
 
   describe('publishForm', () => {

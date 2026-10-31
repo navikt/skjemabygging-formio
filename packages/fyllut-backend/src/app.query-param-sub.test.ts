@@ -1,5 +1,5 @@
+import { isFetchMockDone, mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, it, vi } from 'vitest';
 import { createApp } from './app';
@@ -14,7 +14,7 @@ const { formsApiUrl } = config;
 const defaultNewRenderForms = [...config.newRenderForms];
 
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
-  nock(formsApiUrl)
+  mockFetch(formsApiUrl)
     .get(`/v1/forms/${formPath}`)
     .query(true)
     .reply(200, {
@@ -32,13 +32,11 @@ describe('Fyllut backend :: query param sub', () => {
   afterEach(() => {
     config.newRenderForms = [...defaultNewRenderForms];
 
-    if (!nock.isDone()) {
-      nock.cleanAll();
-      throw new Error('Pending nock interceptors not used');
+    if (!isFetchMockDone()) {
+      resetFetchMock();
+      throw new Error('Pending fetch mocks not used');
     }
-
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    resetFetchMock();
   });
 
   describe('when submissionTypes resolves a missing sub param', () => {

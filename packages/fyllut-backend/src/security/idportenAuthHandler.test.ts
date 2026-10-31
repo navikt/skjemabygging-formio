@@ -1,5 +1,5 @@
+import { mockFetch } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { Request } from 'express';
-import nock from 'nock';
 import jose from 'node-jose';
 import { createMockIdportenJwt, generateJwk, mockRequest, mockResponse } from '../test/testHelpers';
 import idportenAuthHandler from './idportenAuthHandler';
@@ -17,7 +17,7 @@ describe('idportenAuthHandler', () => {
   let key: jose.JWK.Key;
   beforeAll(async () => {
     key = await generateJwk();
-    nock('https://testoidc.unittest.no')
+    mockFetch('https://testoidc.unittest.no')
       .get('/idporten-oidc-provider/jwk')
       .reply(200, { keys: [key.toJSON(false)] });
   });

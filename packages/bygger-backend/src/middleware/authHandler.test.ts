@@ -1,4 +1,4 @@
-import nock from 'nock';
+import { mockFetch } from '@navikt/skjemadigitalisering-shared-backend/test';
 import jose from 'node-jose';
 import { createMockJwt, generateJwk, mockRequest, mockResponse } from '../test/testHelpers';
 import { ByggerRequest } from '../types';
@@ -17,7 +17,7 @@ describe('authHandler', () => {
   let key: jose.JWK.Key;
   beforeAll(async () => {
     key = await generateJwk();
-    nock('https://login.unittest.no')
+    mockFetch('https://login.unittest.no')
       .get('/tenant-id/discovery/v2.0/keys')
       .reply(200, { keys: [key.toJSON(false)] });
   });

@@ -1,4 +1,4 @@
-import nock from 'nock';
+import { mockFetch, type RecordedRequest } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { config } from '../config/config';
 import { extractHost, extractPath } from '../test/testHelpers';
 import TokenXClient from './tokenxClient';
@@ -11,22 +11,19 @@ const mockTokenxAccessToken = '123456';
 describe('TokenX client', () => {
   const { instance: client } = TokenXClient;
 
-  let recorder: Recorder;
-
   beforeEach(() => {
-    recorder = new Recorder();
-    nockWellKnown();
+    mockWellKnown();
   });
 
-  const nockWellKnown = () => {
-    nock(extractHost(tokenxConfig.wellKnownUrl))
+  const mockWellKnown = () => {
+    mockFetch(extractHost(tokenxConfig.wellKnownUrl))
       .get(extractPath(tokenxConfig.wellKnownUrl))
       .reply(200, { token_endpoint });
   };
 
   it('exchanges idporten jwt for a TokenX access token', async () => {
-    const tokenxNockScope = nock(extractHost(token_endpoint))
-      .post(extractPath(token_endpoint), recorder.saveBody)
+    const tokenxScope = mockFetch(extractHost(token_endpoint))
+      .post(extractPath(token_endpoint))
       .reply(200, { access_token: mockTokenxAccessToken }, { 'Content-Type': 'application/json' });
     // eslint-disable-next-line no-useless-catch
     try {
@@ -35,15 +32,13 @@ describe('TokenX client', () => {
     } catch (err) {
       throw err;
     }
-    tokenxNockScope.done();
-    expect(recorder.bodies).toHaveLength(1);
-    expect(recorder.bodies[0].subject_token).toBe('idporten-jwt');
-    expect(recorder.bodies[0].audience).toBe('unittest-gcp:namespace:app-a');
+    tokenxScope.done();
+    expectExchangeRequestBody(tokenxScope.requests);
   });
 
   it('throws error when response from TokenX is not ok', async () => {
-    const tokenxNockScope = nock(extractHost(token_endpoint))
-      .post(extractPath(token_endpoint), recorder.saveBody)
+    const tokenxScope = mockFetch(extractHost(token_endpoint))
+      .post(extractPath(token_endpoint))
       .reply(500, { message: 'Error occurred' }, { 'Content-Type': 'application/json' });
 
     await expect(client.exchangeToken('idporten-jwt', 'unittest-gcp:namespace:app-a')).rejects.toMatchObject({
@@ -51,19 +46,14 @@ describe('TokenX client', () => {
       http_response_body: { message: 'Error occurred' },
     });
 
-    tokenxNockScope.done();
-    expect(recorder.bodies).toHaveLength(1);
-    expect(recorder.bodies[0].subject_token).toBe('idporten-jwt');
-    expect(recorder.bodies[0].audience).toBe('unittest-gcp:namespace:app-a');
+    tokenxScope.done();
+    expectExchangeRequestBody(tokenxScope.requests);
   });
 
-  class Recorder {
-    bodies: Array<Record<string, string>> = [];
-
-    saveBody = (body: string | Record<string, string>) => {
-      const parsedBody = typeof body === 'string' ? Object.fromEntries(new URLSearchParams(body).entries()) : body;
-      this.bodies.push(parsedBody);
-      return true;
-    };
-  }
+  const expectExchangeRequestBody = (requests: RecordedRequest[]) => {
+    expect(requests).toHaveLength(1);
+    const body = new URLSearchParams(requests[0].body);
+    expect(body.get('subject_token')).toBe('idporten-jwt');
+    expect(body.get('audience')).toBe('unittest-gcp:namespace:app-a');
+  };
 });

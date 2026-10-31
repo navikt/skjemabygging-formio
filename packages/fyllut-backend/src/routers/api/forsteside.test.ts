@@ -1,5 +1,5 @@
 import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
-import nock from 'nock';
+import { mockFetch } from '@navikt/skjemadigitalisering-shared-backend/test';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
 import forsteside, { validateForstesideRequest } from './forsteside';
@@ -8,7 +8,7 @@ const { skjemabyggingProxyUrl } = config;
 
 describe('[endpoint] forsteside', () => {
   it('Create front page', async () => {
-    const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
+    const generateFileMock = mockFetch(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
 
     const req = mockRequest({
       headers: {
@@ -30,7 +30,7 @@ describe('[endpoint] forsteside', () => {
   });
 
   it('rejects invalid unknown user information before calling the proxy', async () => {
-    const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
+    const generateFileMock = mockFetch(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
     const next = mockNext();
     const req = mockRequest({
       headers: {

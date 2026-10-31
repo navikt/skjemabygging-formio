@@ -1,30 +1,35 @@
 // @vitest-environment jsdom
 
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import http from './http';
 
 interface TestBody {
   body: string;
 }
 const defaultBodyText = 'This is the body';
-const setupDefaultGetMock = () => {
-  nock('https://www.nav.no')
-    .defaultReplyHeaders({
-      'Content-Type': http.MimeType.JSON,
-    })
-    .get('/ok')
-    .reply(200, {
-      body: defaultBodyText,
-    });
+
+const statusTexts: Record<number, string> = { 200: 'OK', 201: 'Created', 404: 'Not Found', 503: 'Service Unavailable' };
+
+const mockFetchResponse = (status: number, body?: unknown, headers: Record<string, string> = {}) => {
+  const responseBody = body === undefined || typeof body === 'string' ? body : JSON.stringify(body);
+  return vi
+    .spyOn(global, 'fetch')
+    .mockResolvedValue(new Response(responseBody, { status, statusText: statusTexts[status], headers }));
 };
+
+const setupDefaultGetMock = () =>
+  mockFetchResponse(200, { body: defaultBodyText }, { 'Content-Type': http.MimeType.JSON });
 
 const originalWindowLocation = window.location;
 
 describe('http requests', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('get', () => {
     it('with custom headers', async () => {
-      setupDefaultGetMock();
+      const fetchSpy = setupDefaultGetMock();
       const headers = {
         'Content-Type': http.MimeType.TEXT,
       };
@@ -32,57 +37,50 @@ describe('http requests', () => {
       const response = await http.get<TestBody>('https://www.nav.no/ok', headers);
       expect(typeof response).toBe('object');
       expect(response.body).toBe(defaultBodyText);
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('without custom headers', async () => {
-      setupDefaultGetMock();
+      const fetchSpy = setupDefaultGetMock();
       const response = await http.get<TestBody>('https://www.nav.no/ok');
       expect(response.body).toBe(defaultBodyText);
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('with text response', async () => {
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.TEXT,
-        })
-        .get('/ok')
-        .reply(200, {
+      const fetchSpy = mockFetchResponse(
+        200,
+        {
           body: 'This is the body',
-        });
+        },
+        { 'Content-Type': http.MimeType.TEXT },
+      );
 
       const response = await http.get('https://www.nav.no/ok');
       expect(typeof response).toBe('string');
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('error with json', async () => {
       const errorMessage = 'Error message';
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.JSON,
-        })
-        .get('/error')
-        .reply(404, { message: errorMessage });
+      const fetchSpy = mockFetchResponse(404, { message: errorMessage }, { 'Content-Type': http.MimeType.JSON });
 
       await expect(http.get('https://www.nav.no/error')).rejects.toThrow(errorMessage);
 
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('throws ResponseError and keeps userMessage separate from message', async () => {
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.JSON,
-        })
-        .get('/response-error')
-        .reply(503, {
+      const fetchSpy = mockFetchResponse(
+        503,
+        {
           message: 'Internal upstream detail',
           userMessage: 'statiske.nologin.temporarilyUnavailable',
           errorCode: 'SERVICE_UNAVAILABLE',
           correlationId: 'corr-id',
-        });
+        },
+        { 'Content-Type': http.MimeType.JSON },
+      );
 
       await expect(http.get('https://www.nav.no/response-error')).rejects.toMatchObject({
         constructor: ResponseError,
@@ -92,44 +90,29 @@ describe('http requests', () => {
         correlationId: 'corr-id',
       });
 
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('error', async () => {
       const errorMessage = 'Error message';
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.TEXT,
-        })
-        .get('/error')
-        .reply(404, errorMessage);
+      const fetchSpy = mockFetchResponse(404, errorMessage, { 'Content-Type': http.MimeType.TEXT });
 
       await expect(http.get('https://www.nav.no/error')).rejects.toThrow(errorMessage);
 
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('error with unsupported mimetype', async () => {
       // Should use default statusText as message
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': 'whatever',
-        })
-        .get('/error')
-        .reply(404);
+      const fetchSpy = mockFetchResponse(404, undefined, { 'Content-Type': 'whatever' });
 
       await expect(http.get('https://www.nav.no/error')).rejects.toThrow('Not Found');
 
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
 
     it('defaults userMessage when backend response does not provide one', async () => {
-      nock('https://www.nav.no')
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.TEXT,
-        })
-        .get('/response-error-without-user-message')
-        .reply(503, 'Service unavailable');
+      const fetchSpy = mockFetchResponse(503, 'Service unavailable', { 'Content-Type': http.MimeType.TEXT });
 
       await expect(http.get('https://www.nav.no/response-error-without-user-message')).rejects.toMatchObject({
         constructor: ResponseError,
@@ -138,7 +121,7 @@ describe('http requests', () => {
         errorCode: 'SERVICE_UNAVAILABLE',
       });
 
-      nock.isDone();
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
   });
 
@@ -152,14 +135,13 @@ describe('http requests', () => {
           value: windowLocation,
           writable: true,
         });
-        nock('https://www.unittest.nav.no').post('/fyllut/api/send-inn').reply(201, 'CREATED', {
+        mockFetchResponse(201, 'CREATED', {
           'Content-Type': http.MimeType.TEXT,
           Location: 'https://www.nav.no/sendInn/123',
         });
       });
 
       afterEach(() => {
-        nock.isDone();
         // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
         window.location = originalWindowLocation;
       });

@@ -56,7 +56,6 @@
     "@types/node": "^24.6.2",
     "@types/node-jose": "^1.1.13",
     "@types/supertest": "^7.2.0",
-    "nock": "^14.0.16",
     "supertest": "^7.2.2",
     "vite-plugin-node": "^7.0.0",
     "vite-plugin-static-copy": "^3.1.5"

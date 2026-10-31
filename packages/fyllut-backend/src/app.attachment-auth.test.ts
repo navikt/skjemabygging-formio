@@ -1,5 +1,5 @@
+import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import jwt from 'jsonwebtoken';
-import nock from 'nock';
 import jose from 'node-jose';
 import request from 'supertest';
 import { createApp } from './app';
@@ -27,7 +27,7 @@ describe('Fyllut attachment authentication', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    nock.cleanAll();
+    resetFetchMock();
   });
 
   it.each([
@@ -82,7 +82,7 @@ describe('Fyllut attachment authentication', () => {
   });
 
   it('does not disguise an ID-porten key-service outage as invalid authentication', async () => {
-    const jwksScope = nock(extractHost(config.idporten!.idportenJwksUri))
+    const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
       .get(extractPath(config.idporten!.idportenJwksUri))
       .reply(503);
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken');
@@ -98,11 +98,11 @@ describe('Fyllut attachment authentication', () => {
   });
 
   it('accepts an authenticated digital attachment request without a submission-method header', async () => {
-    const jwksScope = nock(extractHost(config.idporten!.idportenJwksUri))
+    const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
       .get(extractPath(config.idporten!.idportenJwksUri))
       .reply(200, { keys: [key.toJSON(false)] });
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken').mockResolvedValue('tokenx-access-token');
-    const upstreamScope = nock(config.sendInnConfig.host)
+    const upstreamScope = mockFetch(config.sendInnConfig.host)
       .delete(`/v1/application-digital/${innsendingsId}/attachments/${attachmentId}`)
       .matchHeader('authorization', 'Bearer tokenx-access-token')
       .reply(204);
@@ -120,7 +120,7 @@ describe('Fyllut attachment authentication', () => {
   it('still allows nologin attachments without an ID-porten JWT', async () => {
     const azureToken = setupAzureTokenMocks();
     const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken');
-    const upstreamScope = nock(config.sendInnConfig.host)
+    const upstreamScope = mockFetch(config.sendInnConfig.host)
       .delete(`/v1/application-nologin/${innsendingsId}/attachments/${attachmentId}`)
       .reply(204);
 

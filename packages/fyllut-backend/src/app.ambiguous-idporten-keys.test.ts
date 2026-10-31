@@ -1,4 +1,4 @@
-import nock from 'nock';
+import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
@@ -12,13 +12,13 @@ vi.mock('./dekorator', () => ({
 
 afterEach(() => {
   vi.restoreAllMocks();
-  nock.cleanAll();
+  resetFetchMock();
 });
 
 it('rejects a JWT without a key ID when multiple ID-porten keys match', async () => {
   const key = await generateJwk();
   const secondKey = await generateJwk();
-  const jwksScope = nock(extractHost(config.idporten!.idportenJwksUri))
+  const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
     .get(extractPath(config.idporten!.idportenJwksUri))
     .reply(200, { keys: [key.toJSON(false), secondKey.toJSON(false)] });
   const exchangeToken = vi.spyOn(TokenXClient.instance, 'exchangeToken');

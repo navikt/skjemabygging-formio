@@ -1,4 +1,4 @@
-import nock from 'nock';
+import { mockFetch, resetFetchMock } from '@navikt/skjemadigitalisering-shared-backend/test';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
@@ -12,12 +12,12 @@ vi.mock('./dekorator', () => ({
 
 afterEach(() => {
   vi.restoreAllMocks();
-  nock.cleanAll();
+  resetFetchMock();
 });
 
 it('keeps a genuine TokenX exchange failure as a server error', async () => {
   const key = await generateJwk();
-  const jwksScope = nock(extractHost(config.idporten!.idportenJwksUri))
+  const jwksScope = mockFetch(extractHost(config.idporten!.idportenJwksUri))
     .get(extractPath(config.idporten!.idportenJwksUri))
     .reply(200, { keys: [key.toJSON(false)] });
   const exchangeToken = vi
