@@ -2,6 +2,7 @@
  * Tests that the select boxes component (react) renders and functions correctly
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Select boxes', () => {
@@ -32,6 +33,7 @@ describe('Select boxes', () => {
       cy.clickNextStep();
 
       cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
 
       cy.clickNextStep();
 

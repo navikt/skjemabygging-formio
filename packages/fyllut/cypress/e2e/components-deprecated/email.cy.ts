@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Email', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -78,6 +80,7 @@ describe('Email', () => {
         .each((radiogroup) => {
           cy.wrap(radiogroup).findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
         });
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
