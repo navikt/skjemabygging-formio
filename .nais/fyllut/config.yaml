@@ -63,8 +63,12 @@ spec:
       rules:
       {{#each accessPolicy.inbound.rules}}
         - application: {{this.application}}
+          {{#if this.namespace}}
           namespace: {{this.namespace}}
+          {{/if}}
+          {{#if this.cluster}}
           cluster: {{this.cluster}}
+          {{/if}}
       {{/each}}
     outbound:
       rules:
@@ -74,8 +78,12 @@ spec:
           namespace: nais-system
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
+          {{#if this.namespace}}
           namespace: {{this.namespace}}
+          {{/if}}
+          {{#if this.cluster}}
           cluster: {{this.cluster}}
+          {{/if}}
       {{/each}}
       external:
       {{#each accessPolicy.outbound.external}}
@@ -86,7 +94,7 @@ spec:
     - secret: nologin
   env:
     - name: ENABLED_FEATURES
-      value: {{enabled-features}}
+      value: "{{enabled-features}}"
     - name: FEATURE_ATTACHMENT_UPLOAD_FORMS
       value: "{{feature-attachment-upload-forms}}"
     - name: FEATURE_NEW_RENDER_FORMS

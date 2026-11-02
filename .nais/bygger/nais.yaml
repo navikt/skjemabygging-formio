@@ -39,7 +39,7 @@ spec:
     - name: FYLLUT_BASE_URL
       value: {{fyllut-base-url}}
     - name: ENABLED_FEATURES
-      value: {{enabled-features}}
+      value: "{{enabled-features}}"
     - name: PUBLISH_REPO
       value: {{publish-repo}}
     - name: PUBLISH_REPO_OWNER
@@ -87,8 +87,12 @@ spec:
           namespace: fyllut-sendinn
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
+          {{#if this.namespace}}
           namespace: {{this.namespace}}
+          {{/if}}
+          {{#if this.cluster}}
           cluster: {{this.cluster}}
+          {{/if}}
       {{/each}}
       external:
         - host: api.github.com
