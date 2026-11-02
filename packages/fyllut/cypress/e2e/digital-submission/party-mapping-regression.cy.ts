@@ -5,7 +5,7 @@ describe('Party mapping regression', () => {
     cy.visit(`/fyllut/${formPath}/legitimasjon?sub=digitalnologin`);
     cy.defaultWaits();
 
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
     cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -43,7 +43,7 @@ describe('Party mapping regression', () => {
 
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
       cy.findByLabelText('Ja').check(),
     );
     cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
@@ -64,12 +64,12 @@ describe('Party mapping regression', () => {
 
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
       cy.findByLabelText('Nei').check(),
     );
     cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-    cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
-    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
+    cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
       cy.findByLabelText('Vegadresse').check(),
     );
     cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1');
