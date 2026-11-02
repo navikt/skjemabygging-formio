@@ -397,6 +397,10 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
+    collection: {
+      multiplePeople: 'Flere personer / Nav-enhet',
+      hasNavContact: 'Har du vært i kontakt med Nav om saken?',
+    },
     journey: {
       standalone: 'Send dokumenter til Nav',
       form: 'Send inn dokumentasjon til skjema',
