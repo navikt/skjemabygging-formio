@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-dotenv.config({ path: './src/test/test.env' });
+dotenv.config({ path: './src/test/test.env', quiet: true });
 
 const realFetch = globalThis.fetch;
 
