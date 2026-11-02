@@ -8,10 +8,14 @@ import {
   SubmissionType,
   TranslationLang,
   attachmentUtils,
-  getNavId,
   resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
+
+const translateLabel = (
+  label: string,
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
+) => (translate ? translate(label) : label);
 
 const getAttachmentLabels = (
   form: Form,
@@ -20,7 +24,7 @@ const getAttachmentLabels = (
 ): string[] => {
   return attachmentUtils
     .getAttachmentsForCoverPage(submission, form)
-    .map((component) => (translate ? translate(component.label) : component.label));
+    .map((component) => translateLabel(component.label, translate));
 };
 
 const createAttachmentDocumentLists = (
@@ -28,17 +32,14 @@ const createAttachmentDocumentLists = (
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): Pick<CoverPageDownloadType, 'attachments' | 'archivedAttachments'> => {
-  const selected = attachmentUtils
-    .resolveSubmissionAttachments(form, submission)
-    .filter((attachment) => attachment.value === 'leggerVedNaa');
-  const documents = attachmentUtils.getAttachmentsForCoverPage(submission, form).flatMap((component) =>
-    selected
-      .filter((attachment) => attachment.navId === (getNavId(component) ?? component.key))
-      .map((attachment) => ({
-        printed: attachment.title || (translate ? translate(component.label) : component.label),
+  const documents = attachmentUtils
+    .getSelectedAttachmentsForCoverPage(submission, form)
+    .flatMap(({ component, attachments }) =>
+      attachments.map((attachment) => ({
+        printed: attachment.title || translateLabel(component.label, translate),
         archived: attachment.title || component.label,
       })),
-  );
+    );
 
   return {
     attachments: documents.map((document) => document.printed),

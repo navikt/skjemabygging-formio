@@ -17,6 +17,7 @@ import {
   translationService,
 } from '../../../services';
 import { requireBase64Decode } from '../../../utils/base64';
+import { isNewRenderForm } from '../../../utils/newRenderer';
 import { createPdfFooterVersion } from '../../../utils/pdfFooterVersion';
 
 const getCoverPageTitle = (
@@ -110,18 +111,20 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const recipient = await recipientService.getRecipient({
       recipientId: form?.properties?.mottaksadresseId,
     });
-    const coverPageData = coverPageMapper.createDownloadDataFromSubmission(
-      form,
-      submissionParsed,
-      language,
-      recipient,
-      enhetNummer,
-      translate,
-      submissionMethod as SubmissionMethod | undefined,
-    );
-    if (config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath)) {
-      Object.assign(coverPageData, coverPageMapper.createAttachmentDocumentLists(form, submissionParsed, translate));
-    }
+    const coverPageData = {
+      ...coverPageMapper.createDownloadDataFromSubmission(
+        form,
+        submissionParsed,
+        language,
+        recipient,
+        enhetNummer,
+        translate,
+        submissionMethod as SubmissionMethod | undefined,
+      ),
+      ...(isNewRenderForm(formPath)
+        ? coverPageMapper.createAttachmentDocumentLists(form, submissionParsed, translate)
+        : {}),
+    };
     const coverPageTitle = getCoverPageTitle(form, translate);
     const [coverPagePdfBase64, applicationPdfBase64] = await Promise.all([
       coverPageService.downloadCoverPage({

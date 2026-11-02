@@ -23,7 +23,7 @@ import AttachmentItem from './AttachmentItem';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
-import { toAttachmentValueValidationFields } from './attachmentValidation';
+import { requiresPaperAttachmentTitle, toAttachmentValueValidationFields } from './attachmentValidation';
 
 interface AttachmentProps extends BaseFieldProps {
   label: string;
@@ -65,7 +65,7 @@ const Attachment = ({
   const implicitValue = getImplicitAttachmentValue(values, uploadEnabled);
   const value = attachment?.value ?? implicitValue;
   const uploadSelected = uploadEnabled && !!values.find((option) => option.value === value)?.upload;
-  const paperTitleRequired = multiple && !uploadEnabled && value === 'leggerVedNaa';
+  const paperTitleRequired = requiresPaperAttachmentTitle({ type, value }, uploadEnabled);
   const counter = useRef(getLargestAttachmentIdCounter(attachments));
   const choicePath = attachmentFieldPath(statePath, attachmentId, 'value');
   const scope = useOptionalValidationScope();
@@ -191,6 +191,7 @@ const Attachment = ({
             <VStack gap="space-32">
               {documents.map((item) => (
                 <AttachmentItem
+                  uploadEnabled={uploadEnabled}
                   uploadSelected={uploadSelected}
                   key={item.attachmentId}
                   initialAttachment={item}
@@ -198,11 +199,11 @@ const Attachment = ({
                   submissionPath={statePath}
                   multipleAttachments={multiple}
                   multiple={!multiple}
-                  requireAttachmentTitle={multiple}
+                  showAttachmentTitle={multiple}
                   attachmentValue={value}
                   showDeleteAttachmentButton={multiple && documents.length > 1}
                   onDeleteAttachment={multiple ? deleteDocument : undefined}
-                  readMore={uploadSelected ? <FileUploadReadMore /> : undefined}
+                  readMore={<FileUploadReadMore />}
                   readOnly={readOnly}
                   downloadEnabled={downloadEnabled}
                 />

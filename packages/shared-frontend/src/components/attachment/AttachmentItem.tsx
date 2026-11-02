@@ -29,7 +29,7 @@ interface Props {
   submissionPath?: string;
   multipleAttachments?: boolean;
   attachmentValue?: SubmissionAttachment['value'];
-  requireAttachmentTitle?: boolean;
+  showAttachmentTitle?: boolean;
   showDeleteAttachmentButton?: boolean;
   onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
@@ -39,6 +39,7 @@ interface Props {
   onUpload?: (attachment: SubmissionAttachment) => void;
   downloadEnabled?: boolean;
   readOnly?: boolean;
+  uploadEnabled?: boolean;
   uploadSelected?: boolean;
   requiredFilesMessage?: string;
 }
@@ -49,7 +50,7 @@ const AttachmentItem = ({
   submissionPath,
   multipleAttachments = false,
   attachmentValue,
-  requireAttachmentTitle,
+  showAttachmentTitle,
   showDeleteAttachmentButton,
   onDeleteAttachment,
   multiple,
@@ -59,6 +60,7 @@ const AttachmentItem = ({
   onUpload,
   downloadEnabled,
   readOnly,
+  uploadEnabled = true,
   uploadSelected = true,
   requiredFilesMessage,
 }: Props) => {
@@ -71,7 +73,7 @@ const AttachmentItem = ({
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
   const pageKey = useOptionalValidationScope()?.pageKey;
 
-  const label = requireAttachmentTitle
+  const label = showAttachmentTitle
     ? translate(attachment?.title)
     : translate(TEXTS.statiske.uploadFile.singleFileUploadedLabel);
 
@@ -95,8 +97,8 @@ const AttachmentItem = ({
     attachmentId,
     label: attachmentLabel ?? label,
     attachment,
+    uploadEnabled,
     uploadSelected,
-    requireAttachmentTitle: requireAttachmentTitle && !uploadSelected,
     requiredFilesMessage,
   });
   const handleTitleChange = (title: string) => {
@@ -149,7 +151,7 @@ const AttachmentItem = ({
         <div>
           {(showButton || !uploadSelected) && (
             <VStack gap="space-16">
-              {requireAttachmentTitle && (
+              {showAttachmentTitle && (
                 <UnvalidatedFields>
                   <TextField
                     marginBottom="space-0"
@@ -171,7 +173,7 @@ const AttachmentItem = ({
                     submissionPath={submissionPath}
                     multipleAttachments={multipleAttachments}
                     variant={initialUpload ? 'primary' : 'secondary'}
-                    allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                    allowUpload={!showAttachmentTitle || !!attachment?.title?.trim()}
                     accept={accept}
                     maxFileSizeInBytes={maxFileSizeInBytes}
                     onSuccess={() => onUpload?.(initialAttachment)}

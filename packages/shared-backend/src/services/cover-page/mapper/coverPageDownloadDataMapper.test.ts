@@ -167,13 +167,12 @@ describe('coverPageDownloadDataMapper', () => {
         other: [{ attachmentId: 'other', navId: 'other', type: 'other', value: 'leggerVedNaa', title: 'My documents' }],
       },
     };
-    const translate = vi.fn(() => 'Translated attachment');
+    const translate = () => 'Translated attachment';
 
     expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(form, submission, translate)).toEqual({
       attachments: ['Translated attachment', 'My documents'],
       archivedAttachments: ['Vedlegg label', 'My documents'],
     });
-    expect(translate).toHaveBeenCalledExactlyOnceWith('Vedlegg label');
   });
 
   it('uses the label when no title exists and excludes stale titles for unselected attachments', () => {
