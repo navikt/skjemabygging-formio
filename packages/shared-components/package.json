@@ -29,7 +29,7 @@
     "@navikt/ds-css": "^8.20.0",
     "@navikt/ds-react": "^8.20.0",
     "@navikt/fnrvalidator": "^2.2.1",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/nav-dekoratoren-moduler": "^4.5.2",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
     "clsx": "^2.1.1",
@@ -46,7 +46,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-jss": "^10.10.0",
-    "react-router": "^7.18.4",
+    "react-router": "^8.5.0",
     "react-select": "^5.10.2"
   },
   "devDependencies": {
@@ -55,14 +55,14 @@
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.8",
     "@types/dompurify": "^3.2.0",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.5",
     "ejs-loader": "^0.5.0",
     "i18next": "^26.5.6",
     "lodash": "^4.18.1",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.18.1",
     "moment": "^2.31.0",
-    "nock": "^14.0.17",
+    "nock": "^15.0.5",
     "power-assert": "^1.6.1",
     "vitest-fetch-mock": "^0.4.5"
   }
