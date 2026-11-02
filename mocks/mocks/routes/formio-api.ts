@@ -303,6 +303,7 @@ import {
   selectDeprecatedForm,
   selectDeprecatedTranslations,
 } from '../data/forms-api/select-deprecated/selectDeprecatedForm';
+import { sendinnFormLoadingForm, sendinnFormLoadingTranslations } from '../data/forms-api/sendinn/formLoadingForm';
 import {
   submissionMethodForm,
   submissionMethodTranslations,
@@ -380,6 +381,7 @@ import {
 } from '../data/forms-api/your-information/yourInformationDeprecatedForm';
 
 const allForms = [
+  { form: sendinnFormLoadingForm(), translations: sendinnFormLoadingTranslations() },
   { form: a11yAxeForm(), translations: a11yAxeTranslations() },
   { form: accordionDeprecatedForm(), translations: accordionDeprecatedTranslations() },
   {

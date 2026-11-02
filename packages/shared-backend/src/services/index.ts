@@ -50,6 +50,8 @@ export { createRecipientService } from './recipient';
 export type { RecipientService } from './recipient';
 export { createRegisterDataService } from './register-data';
 export type { RegisterDataService } from './register-data';
+export { createSendinnFormService } from './sendinn-form';
+export type { SendinnFormService } from './sendinn-form';
 export { createStaticPdfService } from './static-pdf';
 export type { StaticPdfService } from './static-pdf';
 export { createPublishedTranslationService, createTranslationService } from './translation';

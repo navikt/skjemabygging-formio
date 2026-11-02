@@ -138,3 +138,33 @@ metadata or answers are logged or included in the public diagnostic.
 
 Existing Fyllut form/translation defaults and the legacy
 `PublishedTranslationService` cache/fallback contract are unchanged.
+
+### Sendinn paper form loading
+
+`GET /sendinn/api/forms/{formPath}?lang={nb|nn|en}&filter={code}`
+loads a canonical paper form through the configured content service.
+`lang` defaults to `nb`. Repeated `filter` values and comma-separated codes
+use `normalizeSendinnAttachmentFilter`; empty input means all attachments.
+`sub` has no effect. Paper eligibility comes from the source form's
+`properties.subsequentSubmissionTypes`, never from the converted form's
+`submissionTypes`.
+
+The response contains `form`, resolved `languages`, selected `language`,
+merged `translations` and normalized `attachmentFilter`. The form retains
+its source `publishedLanguages`. A requested language outside the resolved
+list falls back to Bokmål without fetching that language's translations.
+The response is not cached.
+
+A missing form or disabled paper ettersending returns standard `NOT_FOUND`
+(404). Dependency outages return correlated errors, not an empty form.
+Missing translations for an otherwise available form are
+`SERVICE_UNAVAILABLE` (503), not a missing-form result. An eligible form with
+no filter matches remains a successful canonical form with an empty
+`sendinnAttachments` panel.
+
+The shared frontend's `createSendinnFormService({ baseUrl, http })` adapter
+provides `loadForm(request)`. The form entry loads it before mounting the
+journey. `useSendinnForm()` reads the loaded response from
+`SendinnFormProvider`; it does not provide draft, upload or submission
+capabilities. Document preparation must independently reload and reconvert
+the trusted source with the same normalized filter.
