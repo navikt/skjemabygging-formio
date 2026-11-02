@@ -58,12 +58,8 @@ spec:
           namespace: nais-system
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
-          {{#if this.namespace}}
-          namespace: {{this.namespace}}
-          {{/if}}
-          {{#if this.cluster}}
-          cluster: {{this.cluster}}
-          {{/if}}
+          {{#if this.namespace}}namespace: {{this.namespace}}{{/if}}
+          {{#if this.cluster}}cluster: {{this.cluster}}{{/if}}
       {{/each}}
   env:
     - name: FORMS_API_URL
