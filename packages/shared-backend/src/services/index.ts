@@ -23,6 +23,8 @@ export { CAPTCHA_FAILURE_REASON, createCaptchaService } from './captcha';
 export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './captcha';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
+export { createContentService } from './content';
+export type { ContentService, ContentSource } from './content';
 export { coverPageMapper, createCoverPageService } from './cover-page';
 export type { CoverPagePartyData, CoverPageService, ForstesideRequestBody } from './cover-page';
 export { createFormService } from './form';

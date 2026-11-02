@@ -1,3 +1,4 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import request from 'supertest';
 import { createApp } from './app';
 
@@ -12,7 +13,7 @@ vi.mock('./services', async () => {
     decorator: { getDecorator: getDecoratorMock },
     idportenAuth: { authenticate: vi.fn() },
     metricsRegister: new Registry(),
-    publishedTranslationService: { getGlobalTranslations: getGlobalTranslationsMock },
+    contentService: { getGlobalTranslations: getGlobalTranslationsMock },
   };
 });
 
@@ -57,6 +58,30 @@ describe('sendinn-backend app', () => {
     it('rejects unsupported languages with 400', async () => {
       await request(createApp()).get('/sendinn/api/global-translations/se').expect(400);
       expect(getGlobalTranslationsMock).not.toHaveBeenCalled();
+    });
+
+    it('serves translations from the configured content service', async () => {
+      getGlobalTranslationsMock.mockResolvedValue({ Yes: { en: 'Yes' } });
+
+      const response = await request(createApp()).get('/sendinn/api/global-translations/en').expect(200);
+
+      expect(response.body).toEqual({ Yes: { en: 'Yes' } });
+      expect(getGlobalTranslationsMock).toHaveBeenCalledWith('en');
+    });
+
+    it('returns a correlated standard error when content loading fails', async () => {
+      getGlobalTranslationsMock.mockRejectedValue(
+        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load forms-api content'),
+      );
+
+      const response = await request(createApp()).get('/sendinn/api/global-translations/en').expect(503);
+
+      expect(response.body).toMatchObject({
+        errorCode: 'SERVICE_UNAVAILABLE',
+        message: 'Unable to load forms-api content',
+        correlationId: expect.any(String),
+      });
+      expect(response.header['x-correlation-id']).toBe(response.body.correlationId);
     });
 
     it('accepts frontend log entries', async () => {

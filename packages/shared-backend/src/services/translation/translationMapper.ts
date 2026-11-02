@@ -53,8 +53,15 @@ const convertI18nTranslationsToFormsApiTranslationMap = (
   return result;
 };
 
+const toTranslationMap = (
+  languageCode: TranslationLang,
+  translations: Record<string, string> | undefined,
+): FormsApiTranslationMap =>
+  Object.fromEntries(Object.entries(translations ?? {}).map(([key, value]) => [key, { [languageCode]: value }]));
+
 export {
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,
   getGlobalTranslationFilename,
+  toTranslationMap,
 };

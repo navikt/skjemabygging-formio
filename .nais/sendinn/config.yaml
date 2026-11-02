@@ -62,6 +62,8 @@ spec:
           cluster: {{this.cluster}}
       {{/each}}
   env:
+    - name: SENDINN_CONTENT_SOURCE
+      value: {{content-source}}
     - name: FORMS_API_URL
       value: http://forms-api.fyllut-sendinn
     - name: INNSENDING_API_AUDIENCE
