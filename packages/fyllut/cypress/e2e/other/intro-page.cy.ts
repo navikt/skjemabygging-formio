@@ -43,7 +43,7 @@ describe('Intro page', () => {
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });

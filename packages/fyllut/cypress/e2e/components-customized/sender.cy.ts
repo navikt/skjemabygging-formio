@@ -67,7 +67,7 @@ describe('Sender', () => {
     });
 
     it('shows the selector before any sender panel', () => {
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).shouldBeVisible();
       cy.findByRole('heading', { name: 'Person' }).should('not.exist');
       cy.findByRole('heading', { name: 'Organisasjon' }).should('not.exist');
       cy.findByRole('heading', { name: 'Organisasjon nested container' }).should('not.exist');
@@ -75,7 +75,7 @@ describe('Sender', () => {
     });
 
     it('navigates to the selected sender panel', () => {
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Organisasjon' }).click();
       });
       cy.clickNextStep();
@@ -89,7 +89,7 @@ describe('Sender', () => {
       cy.defaultWaits();
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Person' }).click();
       });
       cy.clickNextStep();
@@ -129,7 +129,7 @@ describe('Sender', () => {
       cy.visit(`${FORM_URL}/legitimasjon?sub=digitalnologin`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
         cy.findByLabelText('Norsk pass').check();
       });
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -137,7 +137,7 @@ describe('Sender', () => {
 
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Person' }).click();
       });
       cy.clickNextStep();
@@ -176,7 +176,7 @@ describe('Sender', () => {
       cy.defaultWaits();
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Organisasjon' }).click();
       });
       cy.clickNextStep();
@@ -216,7 +216,7 @@ describe('Sender', () => {
       cy.visit(`${FORM_URL}/legitimasjon?sub=digitalnologin`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
         cy.findByLabelText('Norsk pass').check();
       });
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -224,7 +224,7 @@ describe('Sender', () => {
 
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Organisasjon' }).click();
       });
       cy.clickNextStep();
@@ -262,7 +262,7 @@ describe('Sender', () => {
       cy.visit(`${FORM_URL}/legitimasjon?sub=digitalnologin`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
         cy.findByLabelText('Norsk pass').check();
       });
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -270,7 +270,7 @@ describe('Sender', () => {
 
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Organisasjon nested container' }).click();
       });
       cy.clickNextStep();
@@ -311,7 +311,7 @@ describe('Sender', () => {
       cy.defaultWaits();
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Valgstyrt avsender' }).click();
       });
       cy.clickNextStep();
@@ -319,7 +319,7 @@ describe('Sender', () => {
     });
 
     it('shows organization fields by default and hides them when person is selected', () => {
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).shouldBeVisible();
 
       PERSON_FIELDS.forEach(({ label }) => {
         cy.findByRole('textbox', { name: label }).should('not.exist');
@@ -331,7 +331,7 @@ describe('Sender', () => {
         cy.findByLabelText(label).should('not.have.attr', 'readonly');
       });
 
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Person' }).click();
       });
       PERSON_FIELDS.forEach(({ label }) => {
@@ -344,7 +344,7 @@ describe('Sender', () => {
         cy.findByRole('textbox', { name: label }).should('not.exist');
       });
 
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Organisasjon' }).click();
       });
       ORGANIZATION_FIELDS.forEach(({ label }) => {
@@ -362,7 +362,7 @@ describe('Sender', () => {
       cy.visit(`${FORM_URL}/legitimasjon?sub=digitalnologin`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
         cy.findByLabelText('Norsk pass').check();
       });
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -370,13 +370,13 @@ describe('Sender', () => {
 
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Valgstyrt avsender' }).click();
       });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Valgstyrt avsender' }).should('exist');
 
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
         cy.findByRole('radio', { name: 'Person' }).click();
       });
       CONDITIONAL_PERSON_FIELDS.forEach(({ label, value }) => {
@@ -416,7 +416,7 @@ describe('Sender', () => {
         cy.wait('@getPrefillData');
         cy.wait('@createMellomlagring');
 
-        cy.findByRole('group', { name: PANEL_SELECTOR_NAME }).within(() => {
+        cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME }).within(() => {
           cy.findByRole('radio', { name: 'Valgstyrt avsender' }).click();
         });
         cy.clickSaveAndContinue();
@@ -424,7 +424,7 @@ describe('Sender', () => {
       });
 
       it('submits with prefilled person as avsender', () => {
-        cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
+        cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
           cy.findByRole('radio', { name: 'Person' }).click();
         });
         PREFILLED_PERSON_FIELDS.forEach(({ label, value }) => {
@@ -452,7 +452,7 @@ describe('Sender', () => {
       });
 
       it('submits with organization as avsender', () => {
-        cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
+        cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME }).within(() => {
           cy.findByRole('radio', { name: 'Organisasjon' }).click();
         });
         ORGANIZATION_FIELDS.forEach(({ label, value }) => {
@@ -489,8 +489,8 @@ describe('Sender', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Velg avsenderpanel (en)' }).should('exist');
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME_EN }).shouldBeVisible();
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME_EN }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME_EN }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME_EN }).within(() => {
         cy.findByRole('radio', { name: 'Person (en)' }).click();
       });
       cy.clickNextStep();
@@ -507,14 +507,14 @@ describe('Sender', () => {
       cy.findByRole('checkbox', { name: INTRO_CONFIRMATION_NAME }).check();
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: PANEL_SELECTOR_NAME_EN }).within(() => {
+      cy.findByRole('radiogroup', { name: PANEL_SELECTOR_NAME_EN }).within(() => {
         cy.findByRole('radio', { name: 'Valgstyrt avsender (en)' }).click();
       });
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Valgstyrt avsender (en)' }).should('exist');
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME_EN }).shouldBeVisible();
-      cy.findByRole('group', { name: CONDITIONAL_SENDER_SELECTOR_NAME_EN }).within(() => {
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME_EN }).shouldBeVisible();
+      cy.findByRole('radiogroup', { name: CONDITIONAL_SENDER_SELECTOR_NAME_EN }).within(() => {
         cy.findByRole('radio', { name: 'Person (en)' }).should('exist');
         cy.findByRole('radio', { name: 'Organisasjon (en)' }).should('exist');
       });

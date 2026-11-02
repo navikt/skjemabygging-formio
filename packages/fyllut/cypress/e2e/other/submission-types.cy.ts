@@ -49,10 +49,10 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
         });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.clickNextStep();
@@ -67,11 +67,11 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
         cy.clickNextStep();
 
-        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
         });
 
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
 
@@ -123,7 +123,7 @@ describe('Submission Type', () => {
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.clickSaveAndContinue();
@@ -138,7 +138,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.clickSaveAndContinue();
@@ -220,7 +220,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.clickNextStep();
@@ -385,10 +385,10 @@ describe('Submission Type', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
       });
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
       });
       cy.clickNextStep();
@@ -409,11 +409,11 @@ describe('Submission Type', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
       });
 
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
       });
 
