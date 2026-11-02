@@ -1,3 +1,4 @@
+import { introPageTexts } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import {
   useFormDefinitionForm,
@@ -40,7 +41,7 @@ const IntroPage = ({ onStart }: Props) => {
 
   const validateSelfDeclaration = () => {
     if (isDynamic && !getLatestSubmission()?.selfDeclaration) {
-      setSelfDeclarationError(translate('introPage.selfDeclaration.validationError'));
+      setSelfDeclarationError(translate(introPageTexts.selfDeclaration.validationError));
       return false;
     }
     return true;

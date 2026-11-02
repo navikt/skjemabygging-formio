@@ -74,7 +74,7 @@ describe('Email', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findAllByRole('group')
+      cy.findAllByRole('radiogroup')
         .should('exist')
         .should('have.length', 4)
         .each((radiogroup) => {
