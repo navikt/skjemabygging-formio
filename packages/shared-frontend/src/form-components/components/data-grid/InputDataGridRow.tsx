@@ -13,8 +13,7 @@ import RenderInputForm from '../../RenderInputForm';
 interface InputDataGridRowProps {
   componentRegistry?: InputComponentRegistry;
   components: ComponentDefinition[];
-  index: number;
-  label: string;
+  label?: string;
   onRemove: () => void;
   removeLabel?: string;
   removable: boolean;
@@ -24,7 +23,6 @@ interface InputDataGridRowProps {
 const InputDataGridRow = ({
   componentRegistry,
   components,
-  index,
   label,
   onRemove,
   removeLabel,
@@ -39,7 +37,7 @@ const InputDataGridRow = ({
 
   return (
     <DataGridRow
-      title={`${translate(label)} ${index + 1}`}
+      title={label ? translate(label) : undefined}
       onRemove={removable ? onRemove : undefined}
       removeLabel={removeLabel}
     >

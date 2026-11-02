@@ -23,6 +23,7 @@ const fallbackAreaCodeOptions: ComponentValue[] = [{ value: DEFAULT_AREA_CODE, l
 interface PhoneNumberProps extends BaseFieldProps {
   label: string;
   showAreaCode?: boolean;
+  autoComplete?: string;
   validation?: PhoneNumberValidation;
 }
 
@@ -36,6 +37,7 @@ const PhoneNumber = ({
   fieldSize,
   marginBottom,
   showAreaCode = false,
+  autoComplete,
   validation,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
@@ -85,6 +87,7 @@ const PhoneNumber = ({
         fieldSize={fieldSize}
         marginBottom={marginBottom}
         type="tel"
+        autoComplete={autoComplete}
         inputMode="tel"
         formatKey="phoneNumber"
         validation={toPhoneNumberRules(false, undefined, validation)}
@@ -136,6 +139,7 @@ const PhoneNumber = ({
             readOnly={readOnly}
             readMore={readMore}
             type="tel"
+            autoComplete={autoComplete}
             inputMode="tel"
             formatKey={
               (selectedAreaCode ?? DEFAULT_AREA_CODE) === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'

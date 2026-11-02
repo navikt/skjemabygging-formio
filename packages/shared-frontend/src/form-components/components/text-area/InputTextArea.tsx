@@ -20,6 +20,7 @@ const InputTextArea = ({ component, submissionPath }: InputComponentProps<TextAr
       fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       maxLength={component.validate?.maxLength}
+      autoComplete={component.autocomplete}
       readMore={resolveReadMore(component)}
       validation={validation}
     />

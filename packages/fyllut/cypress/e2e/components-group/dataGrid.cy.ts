@@ -24,10 +24,27 @@ describe('DataGrid', () => {
         .and('have.css', 'margin', '0px');
     });
 
-    it('should render rowTitle per row', () => {
-      cy.findByRole('group', { name: groupName })
-        .findByRole('heading', { level: 3, name: 'Rad 1' })
-        .should('be.visible');
+    it('should render rowTitle per row without numbering', () => {
+      cy.findByRole('group', { name: groupName }).findByRole('heading', { level: 3, name: 'Rad' }).should('be.visible');
+    });
+
+    it('should not show remove button on the only row', () => {
+      cy.get('[data-component-key="datagrid1"]').within(() => {
+        cy.findByRole('button', { name: 'Fjern rad' }).should('not.exist');
+      });
+    });
+
+    it('should keep focus while typing in the first row after removing the second row', () => {
+      cy.get('[data-component-key="datagrid1"]')
+        .findByRole('button', { name: /Legg til rad/i })
+        .click();
+      cy.findAllByRole('button', { name: 'Fjern rad' }).last().click();
+      cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 1);
+      cy.findByRole('textbox', { name: 'Navn' }).type('Test');
+      cy.findByRole('textbox', { name: 'Navn' }).should('have.value', 'Test').and('have.focus');
+      cy.get('[data-component-key="datagrid1"]').within(() => {
+        cy.findByRole('button', { name: 'Fjern rad' }).should('not.exist');
+      });
     });
 
     it('should show custom addAnother button text', () => {
@@ -48,8 +65,7 @@ describe('DataGrid', () => {
         .click();
       cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 2);
       cy.findByRole('group', { name: groupName }).within(() => {
-        cy.findByRole('heading', { level: 3, name: 'Rad 1' }).should('be.visible');
-        cy.findByRole('heading', { level: 3, name: 'Rad 2' }).should('be.visible');
+        cy.findAllByRole('heading', { level: 3, name: 'Rad' }).should('have.length', 2);
         cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
       });
     });
@@ -59,11 +75,12 @@ describe('DataGrid', () => {
       cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
     });
 
-    it('should use compact blue row cards with the remove action below the fields', () => {
-      cy.findByRole('group', { name: groupName })
-        .find('[data-cy="fieldset-content"]')
-        .should('have.css', 'padding', '0px');
-      cy.findByRole('textbox', { name: 'Navn' })
+    it('should use blue row cards with the remove action below the fields', () => {
+      cy.get('[data-component-key="datagrid1"]')
+        .findByRole('button', { name: /Legg til rad/i })
+        .click();
+      cy.findAllByRole('textbox', { name: 'Navn' })
+        .first()
         .closest('[data-component-key]')
         .should(($field) => {
           const content = $field[0].parentElement!;
@@ -72,14 +89,11 @@ describe('DataGrid', () => {
           const remove = row.lastElementChild!;
           const rowStyle = getComputedStyle(row);
 
-          expect(rowStyle.padding).to.equal('16px');
           expect(rowStyle.backgroundColor).to.equal('rgb(238, 246, 252)');
           expect(getComputedStyle(fieldBox).marginBottom).to.equal('0px');
           expect(remove.textContent).to.equal('Fjern rad');
-          expect(getComputedStyle(remove).marginTop).to.equal('8px');
           expect(remove.getBoundingClientRect().top).to.be.at.least(content.getBoundingClientRect().bottom);
         });
-      cy.findByRole('button', { name: 'Legg til rad' }).should('have.css', 'min-height', '32px');
     });
   });
 
@@ -103,7 +117,7 @@ describe('DataGrid', () => {
 
     it('should translate rowTitle', () => {
       cy.findByRole('group', { name: translatedGroupName })
-        .findByRole('heading', { level: 3, name: 'Rad (en) 1' })
+        .findByRole('heading', { level: 3, name: 'Rad (en)' })
         .should('be.visible');
     });
 

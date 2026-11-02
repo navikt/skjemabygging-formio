@@ -43,8 +43,6 @@ const personGroup = {
         nationalIdentityNumber: 'Fødselsnummer eller d-nummer',
         firstName: 'Fornavn',
         surname: 'Etternavn',
-        organizationNumber: 'Organisasjonsnummeret til virksomheten / underenheten du representerer',
-        organizationName: 'Virksomhetens navn',
       },
       label: 'Avsender person',
       senderRole: 'person',

@@ -1,0 +1,9 @@
+.savedStatus {
+  margin-block-end: var(--ax-space-16);
+}
+
+@media print {
+  .savedStatus {
+    display: none;
+  }
+}

@@ -20,7 +20,6 @@ const InputCheckbox = ({ component, submissionPath }: InputComponentProps<Checkb
       fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
-      showInlineError
       validation={validation}
     />
   );

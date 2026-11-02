@@ -23,6 +23,7 @@ const InputNationalIdentityNumber = ({
       required={isRequired(component)}
       fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
+      autoComplete={component.autocomplete}
       readMore={resolveReadMore(component)}
       validation={validation}
     />

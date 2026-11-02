@@ -1,4 +1,4 @@
-import { BodyShort, Label } from '@navikt/ds-react';
+import { Label } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect } from 'react';
 import { UnvalidatedFields } from '../../context/validation/ValidationScopeContext';
@@ -6,6 +6,8 @@ import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
+import FieldError from '../shared/FieldError';
+import TranslatedDescription from '../shared/TranslatedDescription';
 import TextArea from '../text-area/TextArea';
 import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
@@ -15,7 +17,7 @@ import styles from './AttachmentOptionSelect.module.css';
 interface Props {
   title: ReactNode;
   required: boolean;
-  description: ReactNode;
+  description?: string;
   error?: ReactNode;
   value?: AttachmentChoice;
   values: AttachmentChoiceOption[];
@@ -92,12 +94,8 @@ const AttachmentOptionSelect = ({
         {implicitValueKey ? (
           <div className={styles.implicitChoice} id={inputId(statePath)} tabIndex={-1}>
             <Label>{title}</Label>
-            <BodyShort>{description}</BodyShort>
-            {error && (
-              <Alert variant="error" inline>
-                {error}
-              </Alert>
-            )}
+            {description && <TranslatedDescription translationKey={description} />}
+            {error && <FieldError id={`${inputId(statePath)}-error`} error={error} />}
           </div>
         ) : values.length === 1 ? (
           <CheckboxGroup
@@ -106,7 +104,7 @@ const AttachmentOptionSelect = ({
             legend={typeof title === 'string' ? title : ''}
             required={required}
             readOnly={readOnly}
-            description={typeof description === 'string' ? description : undefined}
+            description={description}
             values={values}
             value={selectedValueKey === values[0]?.value ? [selectedValueKey] : []}
             error={error}
@@ -120,7 +118,7 @@ const AttachmentOptionSelect = ({
             legend={typeof title === 'string' ? title : ''}
             required={required}
             readOnly={readOnly}
-            description={typeof description === 'string' ? description : undefined}
+            description={description}
             values={values}
             value={selectedValueKey ?? ''}
             error={error}

@@ -15,10 +15,7 @@ import {
 } from './formDefinitionUtils';
 import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 
-type PrefillMode = 'missing' | 'overwrite';
-
 interface ApplyInitialValuesOptions {
-  prefillMode?: PrefillMode;
   submissionMethod?: SubmissionMethod;
 }
 
@@ -102,7 +99,7 @@ const reconcileSubmissionValues = (
   formWithBaseSubmissionPath: Form,
   submission: Submission | undefined,
   currentLanguage: string,
-  { prefillMode = 'overwrite', submissionMethod }: ApplyInitialValuesOptions = {},
+  { submissionMethod }: ApplyInitialValuesOptions = {},
 ): Submission | undefined => {
   const { componentsWithInitialValues } = collectActiveComponentsWithInitialValues(
     formWithBaseSubmissionPath,
@@ -114,7 +111,8 @@ const reconcileSubmissionValues = (
       const prefillValue = getComponentPrefillValue(component, currentLanguage);
       const currentValue = submissionUtils.getSubmissionValue(submissionPath, currentSubmission);
 
-      if (prefillValue !== undefined && (prefillMode === 'overwrite' || currentValue === undefined)) {
+      // A non-empty prefill is the current source of truth and replaces values from saved drafts.
+      if (prefillValue !== undefined) {
         return isSameSubmissionValue(currentValue, prefillValue)
           ? currentSubmission
           : createUpdatedSubmission(currentSubmission, submissionPath, prefillValue);
@@ -199,4 +197,4 @@ const applyInitialValuesToSubmission = (
 };
 
 export { applyInitialValuesToSubmission };
-export type { ApplyInitialValuesOptions, PrefillMode };
+export type { ApplyInitialValuesOptions };

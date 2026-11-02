@@ -15,10 +15,12 @@ const NationalIdentityNumber = ({
   rawFormat = false,
   validation,
   required = true,
+  fieldSize = 'small',
   ...props
 }: NationalIdentityNumberProps) => (
   <InternalTextField
     {...props}
+    fieldSize={fieldSize}
     required={required}
     inputMode="numeric"
     formatKey={rawFormat ? 'identityNumberRaw' : 'identityNumber'}

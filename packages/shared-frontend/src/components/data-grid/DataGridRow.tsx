@@ -9,17 +9,19 @@ interface DataGridRowProps {
   children: ReactNode;
   onRemove?: () => void;
   removeLabel?: string;
-  title: ReactNode;
+  title?: ReactNode;
 }
 
 const DataGridRow = ({ children, onRemove, removeLabel, title }: DataGridRowProps) => {
   const { translate } = useLanguage();
 
   return (
-    <div className={styles.row}>
-      <Heading level="3" size="small" className={styles.rowHeading}>
-        {title}
-      </Heading>
+    <div className={`${styles.row}${onRemove ? ` ${styles.rowWithRemove}` : ''}`}>
+      {title && (
+        <Heading level="3" size="small" className={styles.rowHeading}>
+          {title}
+        </Heading>
+      )}
       <div className={styles.rowContent}>{children}</div>
       {onRemove && (
         <div className={styles.remove}>
