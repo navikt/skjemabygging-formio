@@ -1,5 +1,6 @@
 import globalTranslations from '../data/forms-api/global-translations.json';
 import publishedGlobalTranslations from '../data/forms-api/published-global-translations';
+import { sendinnJourneyForm } from '../data/forms-api/sendinn-journey/sendinnJourneyForm';
 import { sendinnFormLoadingForm } from '../data/forms-api/sendinn/formLoadingForm';
 import { latestSendinnGlobalTranslations } from '../data/forms-api/sendinn/latestGlobalTranslations';
 import { findTestdata } from './formio-api';
@@ -109,6 +110,35 @@ export default [
             res.status(200).json({
               ...form,
               properties: { ...form.properties, subsequentSubmissionTypes: ['DIGITAL'] },
+            });
+          },
+        },
+      },
+      {
+        id: 'sendinn-forced-unit',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            const form = sendinnJourneyForm();
+            res
+              .status(200)
+              .json({ ...form, properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: true } });
+          },
+        },
+      },
+      {
+        id: 'sendinn-hidden-collection',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            const form = sendinnJourneyForm();
+            res.status(200).json({
+              ...form,
+              properties: {
+                ...form.properties,
+                enhetMaVelgesVedPapirInnsending: true,
+                hideUserTypes: true,
+              },
             });
           },
         },

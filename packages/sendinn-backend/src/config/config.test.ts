@@ -32,6 +32,7 @@ describe('Sendinn content source configuration', () => {
   it('requires an explicit source outside development and test', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('FORMS_API_URL', 'https://forms-api.example.com');
+    vi.stubEnv('NORG2_URL', 'https://norg2.example.com');
     vi.stubEnv('SENDINN_CONTENT_SOURCE', undefined);
 
     await expect(import('./config')).rejects.toThrow('Missing required environment variable: SENDINN_CONTENT_SOURCE');

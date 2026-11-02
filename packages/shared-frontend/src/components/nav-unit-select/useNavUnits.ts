@@ -1,8 +1,8 @@
 import { Enhet, Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { filterNavUnits, sortNavUnits } from './navUnitUtils';
+import { useNavUnitService } from '../../context/runtime-services/RuntimeServicesContext';
+import { filterNavUnits, resolveNavUnits, sortNavUnits } from './navUnitUtils';
 
 interface UseNavUnitsOptions {
   enabled?: boolean;
@@ -11,8 +11,13 @@ interface UseNavUnitsOptions {
 
 const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => {
   const { logger } = useApplication();
-  const { formData } = useRuntimeServices();
+  const formData = useNavUnitService();
+  const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
+  const retry = useCallback(() => {
+    setResult(undefined);
+    setAttempt((previous) => previous + 1);
+  }, []);
 
   useEffect(() => {
     if (!enabled) {
@@ -34,24 +39,30 @@ const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => 
         }
 
         const resolvedError = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
-        logger?.error?.('Failed to load NAV units', { error: resolvedError.message });
+        logger?.error?.('Failed to load Nav units');
         setResult({ source: formData, error: resolvedError });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [enabled, formData, logger]);
+  }, [attempt, enabled, formData, logger]);
 
   const currentResult = enabled && result?.source === formData ? result : undefined;
   const allUnits = currentResult?.units;
   const error = currentResult?.error;
   const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
+  const availableUnits = useMemo(
+    () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
+    [allUnits, unitTypes],
+  );
 
   return {
     allUnits,
     units,
+    availableUnits,
     error,
+    retry,
     loading: enabled && allUnits === undefined && error === undefined,
   };
 };

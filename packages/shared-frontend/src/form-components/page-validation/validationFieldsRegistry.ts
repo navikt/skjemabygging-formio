@@ -8,6 +8,7 @@ import { toEmailValidation } from '../../components/email/emailValidation';
 import { toIbanValidation } from '../../components/iban/ibanValidation';
 import { toIdentityValidationFields } from '../../components/identity/identityValidation';
 import { toNationalIdentityNumberValidation } from '../../components/national-identity-number/nationalIdentityNumberValidation';
+import { toNavUnitValidation } from '../../components/nav-unit-select/navUnitValidation';
 import { toNumberFieldValidation } from '../../components/number-field/numberFieldValidation';
 import { toOrganizationNumberValidation } from '../../components/organization-number/organizationNumberValidation';
 import { toPhoneNumberValidationFields } from '../../components/phone-number/phoneNumberValidation';
@@ -153,6 +154,16 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
 
   select: choiceValidationFields,
   navSelect: choiceValidationFields,
+  navUnitSelect: (context) =>
+    toValidationFields(
+      context.submissionPath,
+      context.value,
+      toNavUnitValidation({
+        statePath: context.submissionPath,
+        label: context.component.label,
+        required: isRequired(context.component),
+      }),
+    ),
   radiopanel: choiceValidationFields,
 
   navDatepicker: (context) =>
