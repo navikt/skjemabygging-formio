@@ -1,7 +1,5 @@
-import nock from 'nock';
 import { mockRequest, mockResponse } from '../test/requestTestHelpers';
 
-const tokenEndpoint = 'https://azure.example.test';
 const localToken = 'local-token';
 const fetchedToken = 'fetched-token';
 
@@ -32,17 +30,17 @@ describe('azureTokenHandler', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
+    vi.restoreAllMocks();
   });
 
   it('uses the local token in development without requesting Azure', async () => {
-    const azureRequest = nock(tokenEndpoint).post('/token').reply(200, { access_token: fetchedToken });
+    const fetchSpy = vi.spyOn(global, 'fetch');
 
     const { req, next } = await runHandler(localToken);
 
     expect(req.headers.AzureAccessToken).toBe(localToken);
     expect(next).toHaveBeenCalledExactlyOnceWith();
-    expect(azureRequest.isDone()).toBe(false);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -52,12 +50,15 @@ describe('azureTokenHandler', () => {
   ])('requests a token from Azure when $name', async ({ isDevelopment, mocksEnabled, devToken }) => {
     config.isDevelopment = isDevelopment;
     config.mocksEnabled = mocksEnabled;
-    const azureRequest = nock(tokenEndpoint).post('/token').reply(200, { access_token: fetchedToken });
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValueOnce(Response.json({ access_token: fetchedToken }));
 
     const { req, next } = await runHandler(devToken);
 
     expect(req.headers.AzureAccessToken).toBe(fetchedToken);
     expect(next).toHaveBeenCalledExactlyOnceWith();
-    expect(azureRequest.isDone()).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledExactlyOnceWith(
+      config.azureOpenidTokenEndpoint,
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 });

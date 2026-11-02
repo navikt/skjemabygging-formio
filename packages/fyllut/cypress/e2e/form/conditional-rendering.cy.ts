@@ -36,7 +36,7 @@ describe('Conditional rendering', () => {
       it("adds the panel 'Pinnekjøtt' when radio option pinnekjøtt is selected", () => {
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('not.exist');
-        cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Pinnekjøtt').check({ force: true });
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
@@ -48,7 +48,7 @@ describe('Conditional rendering', () => {
       it("adds the panel 'Lutefisk' when radio option lutefisk is selected", () => {
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Lutefisk' }).should('not.exist');
-        cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Lutefisk').check({ force: true });
         });
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
@@ -61,7 +61,7 @@ describe('Conditional rendering', () => {
     describe('Summary page', () => {
       beforeEach(() => {
         cy.clickShowAllSteps();
-        cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Pinnekjøtt').check({ force: true });
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
@@ -88,7 +88,7 @@ describe('Conditional rendering', () => {
         cy.clickEditAnswer('Julemeny');
         cy.url().should('include', '/veiledning');
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
-        cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
+        cy.findByRole('radiogroup', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Lutefisk').check({ force: true });
         });
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
@@ -159,11 +159,11 @@ describe('Conditional rendering', () => {
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('03876399856');
-      cy.findAllByRole('group', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
+      cy.findAllByRole('radiogroup', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
         cy.findAllByRole('radio', { name: 'Ja' }).should('exist');
         cy.findAllByRole('radio', { name: 'Ja' }).click();
       });
@@ -176,7 +176,7 @@ describe('Conditional rendering', () => {
       cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).shouldBeVisible();
       cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer eller d-nummer' }).shouldBeVisible();
 
-      cy.findAllByRole('group', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
+      cy.findAllByRole('radiogroup', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
         cy.findAllByRole('radio', { name: 'Nei' }).should('exist');
         cy.findAllByRole('radio', { name: 'Nei' }).click();
       });
@@ -237,33 +237,33 @@ describe('Conditional rendering', () => {
 
     describe('component with custom conditional inside container', () => {
       beforeEach(() => {
-        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('not.exist');
+        cy.findByRole('radiogroup', { name: 'Bruker dyret medisiner?' }).should('not.exist');
       });
 
       it('is rendered when condition is true', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('10');
-        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('exist');
+        cy.findByRole('radiogroup', { name: 'Bruker dyret medisiner?' }).should('exist');
       });
 
       it('is not rendered when condition is false', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('9');
-        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('not.exist');
+        cy.findByRole('radiogroup', { name: 'Bruker dyret medisiner?' }).should('not.exist');
       });
     });
 
     describe('component with simple conditional outside container', () => {
       beforeEach(() => {
-        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
+        cy.findByRole('radiogroup', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
       });
 
       it('is rendered when condition is true', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('0');
-        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('exist');
+        cy.findByRole('radiogroup', { name: 'Har det blitt gjennomført øyelysing?' }).should('exist');
       });
 
       it('is not rendered when condition is false', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('1');
-        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
+        cy.findByRole('radiogroup', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
       });
     });
 
