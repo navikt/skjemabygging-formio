@@ -16,7 +16,6 @@ import { formService } from './services';
 import { QueryParamSub } from './types/custom';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
-import { isNewRenderForm } from './utils/newRenderer';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
 
 const redirectToSubmissionType = (req: Request, res: Response, sub: SubmissionMethod) => {
@@ -90,7 +89,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
-        const isAllowlistedNewRenderForm = isNewRenderForm(formPath);
+        const isAllowlistedNewRenderForm =
+          config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath);
         const staticPdfRoute = isStaticPdfRoute(req);
         const invalidLanguageParam = req.query.lang !== undefined && qpLang === undefined;
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
