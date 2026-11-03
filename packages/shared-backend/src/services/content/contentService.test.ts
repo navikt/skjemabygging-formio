@@ -6,6 +6,7 @@ import type { ContentSource } from './contentSource';
 
 const baseUrl = 'http://forms-api.test';
 const formPath = 'nav123456';
+const cacheTtlMs = 5 * 60 * 1000;
 const form: Form = {
   id: 1,
   path: formPath,
@@ -111,6 +112,41 @@ describe('createContentService', () => {
     });
   });
 
+  it('caches published content per form and language for five minutes', async () => {
+    let revision = 1;
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+      const path = String(url);
+      if (path.endsWith(`/${formPath}`)) return jsonResponse({ ...form, title: `Revision ${revision}` });
+      if (path.includes('/published-global-translations/')) return jsonResponse({ Yes: `Global ${revision}` });
+      return jsonResponse([{ key: 'Attachment', en: `Form ${revision}`, nn: `Form ${revision}` }]);
+    });
+    const now = vi.spyOn(Date, 'now').mockReturnValue(0);
+    const service = createContentService({ baseUrl, source: 'published' });
+
+    const [first] = await Promise.all([service.getForm({ formPath }), service.getForm({ formPath })]);
+    first.title = 'Changed by caller';
+    await service.getTranslations({ formPath, languageCode: 'en' });
+    revision = 2;
+    now.mockReturnValue(cacheTtlMs - 1);
+
+    await expect(service.getForm({ formPath })).resolves.toMatchObject({ title: 'Revision 1' });
+    await expect(service.getTranslations({ formPath, languageCode: 'en' })).resolves.toMatchObject({
+      Yes: { en: 'Global 1' },
+      Attachment: { en: 'Form 1' },
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
+    await expect(service.getTranslations({ formPath, languageCode: 'nn' })).resolves.toMatchObject({
+      Attachment: { nn: 'Form 2' },
+    });
+
+    now.mockReturnValue(cacheTtlMs);
+    await expect(service.getForm({ formPath })).resolves.toMatchObject({ title: 'Revision 2' });
+    await expect(service.getTranslations({ formPath, languageCode: 'en' })).resolves.toMatchObject({
+      Yes: { en: 'Global 2' },
+      Attachment: { en: 'Form 2' },
+    });
+  });
+
   it.each<ContentSource>(['published', 'latest'])(
     'rejects a failed %s refresh instead of serving stale or empty translations and retries the next request',
     async (source) => {
@@ -122,9 +158,11 @@ describe('createContentService', () => {
         )
         .mockResolvedValueOnce(jsonResponse(success));
       const warn = vi.spyOn(logger, 'warn');
+      const now = vi.spyOn(Date, 'now').mockReturnValue(0);
       const service = createContentService({ baseUrl, source });
 
       await expect(service.getGlobalTranslations('en')).resolves.toMatchObject({ Yes: { en: 'Yes' } });
+      now.mockReturnValue(cacheTtlMs);
       await expect(service.getGlobalTranslations('en')).rejects.toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
         message: 'Unable to load forms-api content',
