@@ -1,5 +1,5 @@
 import { test as base, expect, type Page } from '@playwright/test';
-import { restoreRouteVariants, useRouteVariant } from './mock-client';
+import { restoreRouteVariants, useRouteVariant } from '../../../../mocks/mock-client';
 
 type TestOptions = {
   mockAdminURL: string;

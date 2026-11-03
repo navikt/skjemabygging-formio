@@ -19,6 +19,7 @@ const InputEmail = ({ component, submissionPath }: InputComponentProps<EmailDefi
       required={isRequired(component)}
       fieldSize={resolveFieldSize(component)}
       autoComplete={component.autocomplete}
+      readOnly={component.readOnly}
       inputMode={component.inputType}
       spellCheck={component.spellCheck}
       readMore={resolveReadMore(component)}

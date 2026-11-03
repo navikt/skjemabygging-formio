@@ -17,10 +17,10 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
 
 const fillInAttachmentPage = () => {
   cy.findByRole('link', { name: /Vedlegg/ }).click();
-  cy.findByRole('group', { name: /Vedlegg/ }).within(() =>
+  cy.findByRole('radiogroup', { name: /Vedlegg/ }).within(() =>
     cy.findByLabelText(/Jeg har levert denne dokumentasjonen tidligere/).check(),
   );
-  cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() =>
+  cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() =>
     cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
   );
 };
@@ -31,7 +31,6 @@ describe('Pdf', () => {
   });
 
   beforeEach(() => {
-    cy.clock(new Date('2025-10-20'), ['Date']);
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
   });
@@ -89,7 +88,7 @@ describe('Pdf', () => {
       cy.clickStart();
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
         cy.findByLabelText('Ja').check();
       });
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
@@ -113,6 +112,7 @@ describe('Pdf', () => {
   describe('Check components', () => {
     describe('Paper', () => {
       beforeEach(() => {
+        cy.clock(new Date('2025-10-20'), ['Date']);
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();
         cy.clickShowAllSteps();
@@ -122,7 +122,7 @@ describe('Pdf', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc09');
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -142,7 +142,7 @@ describe('Pdf', () => {
 
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -160,7 +160,7 @@ describe('Pdf', () => {
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(select\)/ }).select('Ja');
         // Select formio (HTML5)
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(select HTML5\)/ }).select('0,50');
-        cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
 
@@ -253,6 +253,7 @@ describe('Pdf', () => {
 
     describe('Digital', () => {
       beforeEach(() => {
+        cy.clock(new Date('2025-10-20'), ['Date']);
         cy.defaultInterceptsMellomlagring();
         cy.visit('/fyllut/components?sub=digital');
         cy.defaultWaits();
@@ -267,7 +268,7 @@ describe('Pdf', () => {
         cy.findByRole('link', { name: 'Andre' }).click();
         cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
         // Not possible to set this as not required.
-        cy.findByRole('group', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
@@ -297,7 +298,7 @@ describe('Pdf', () => {
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(select\)/ }).select('Ja');
         // Select formio (HTML5)
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(select HTML5\)/ }).select('-0,50');
-        cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
 
@@ -378,7 +379,7 @@ describe('Pdf', () => {
         cy.findByRole('link', { name: 'Andre' }).click();
         cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
-        cy.findByRole('group', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
@@ -398,7 +399,7 @@ describe('Pdf', () => {
         cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
         cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-        cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
           cy.findByLabelText('Norsk pass').check(),
         );
         cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -411,7 +412,7 @@ describe('Pdf', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc11');
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
 
@@ -486,10 +487,10 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByRole('group', { name: /Nav skjema test/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Nav skjema test/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
         });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
         });
         cy.clickNextStep();
@@ -510,7 +511,7 @@ describe('Pdf', () => {
 
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -532,19 +533,19 @@ describe('Pdf', () => {
 
         cy.findByRoleWhenAttached('checkbox', { name: /I confirm that I will answer as accurately as I can/ }).click();
         cy.clickNextStep();
-        cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
-          () => {
-            cy.findByRole('radio', { name: 'Yes' }).check();
-          },
-        );
+        cy.findByRole('radiogroup', {
+          name: /Do you have a Norwegian national identification number or d number?/,
+        }).within(() => {
+          cy.findByRole('radio', { name: 'Yes' }).check();
+        });
         cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
         cy.clickNextStep();
 
         cy.findByRole('link', { name: /Attachments/ }).click();
-        cy.findByRole('group', { name: /Attachments/ }).within(() =>
+        cy.findByRole('radiogroup', { name: /Attachments/ }).within(() =>
           cy.findByLabelText(/I have provided this documentation previously/).check(),
         );
-        cy.findByRole('group', { name: /Other documentation/ }).within(() =>
+        cy.findByRole('radiogroup', { name: /Other documentation/ }).within(() =>
           cy.findByLabelText('No, I have no additional documentation to attach').check(),
         );
         cy.clickNextStep();
@@ -567,7 +568,7 @@ describe('Pdf', () => {
 
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -576,12 +577,12 @@ describe('Pdf', () => {
         cy.findByRole('link', { name: /Vedlegg/ }).click();
         cy.findByRole('heading', { name: /Vedlegg/ }).shouldBeVisible();
 
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Vedlegg/ }).within(() => {
           cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
         });
         cy.findByRole('textbox', { name: /Mer info/ }).type('Dette er en kommentar til vedlegget.');
 
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
         });
 
@@ -606,7 +607,7 @@ describe('Pdf', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc04');
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
-      cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
         cy.findByRole('radio', { name: 'Ja' }).check();
       });
       cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
@@ -641,7 +642,7 @@ describe('Pdf', () => {
       const fillFormAndDownloadPdf = (expectedHttpStatusCode: number = 200) => {
         cy.clickIntroPageConfirmation();
         cy.clickStart();
-        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');

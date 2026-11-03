@@ -60,7 +60,6 @@ const useFormDefinitionSubmissionSynchronization = ({ activeComponents, form, su
   useLayoutEffect(() => {
     setSubmission((previous) =>
       applyInitialValuesToSubmission(form, previous, currentLanguage, {
-        prefillMode: 'missing',
         submissionMethod,
       }),
     );

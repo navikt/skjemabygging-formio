@@ -100,19 +100,49 @@ export default tseslint.config(
     },
   },
   {
+    // Sendinn and the host-independent app shell must not depend on legacy shared-components or fyllut-specific code
+    files: ['packages/sendinn/**', 'packages/shared-frontend/src/app/**', 'packages/shared-frontend/src/sendinn/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@navikt/skjemadigitalisering-shared-components',
+                '@navikt/skjemadigitalisering-shared-components/*',
+              ],
+              message: 'shared-components is legacy. Move what you need to shared-frontend/src/app.',
+            },
+            {
+              group: ['**/fyllut', '**/fyllut/**'],
+              message: 'Do not depend on shared-frontend/src/fyllut from sendinn or the app shell.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/cypress/e2e/**'],
     ...pluginMocha.configs.recommended,
     rules: {
       '@typescript-eslint/no-unused-expressions': 'off',
       'mocha/no-exclusive-tests': 'error',
       'vitest/valid-expect': 'off', // Cypress uses Chai assertions, e.g. expect(x).to.be.closeTo(...)
+      'vitest/valid-expect-in-promise': 'off', // Cypress chains are not promises and must not be returned or awaited
     },
   },
   {
-    files: ['packages/fyllut/playwright/**/*.ts', 'packages/fyllut/playwright.config.ts'],
+    files: [
+      'packages/fyllut/playwright/**/*.ts',
+      'packages/fyllut/playwright.config.ts',
+      'packages/sendinn/playwright/**/*.ts',
+      'packages/sendinn/playwright.config.ts',
+    ],
     languageOptions: {
       parserOptions: {
-        project: './packages/fyllut/playwright/tsconfig.json',
+        project: ['./packages/fyllut/playwright/tsconfig.json', './packages/sendinn/playwright/tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

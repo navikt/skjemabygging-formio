@@ -56,7 +56,7 @@ the person submitting an application is an `applicant`.
 | `soknad`              | `application`                                                              |
 | `avsender`            | `sender`                                                                   |
 | `brukerId`            | `userId` or `applicantId`, depending on the role                           |
-| `innsendingsId`       | `applicationId`, except at the SendInn API boundary                        |
+| `innsendingsId`       | `submissionId`, except at the SendInn API boundary and in public URLs      |
 | `mellomlagring`       | `draft` or `draftSaving`, depending on the context                         |
 | `mottaksadresse`      | `recipientAddress`                                                         |
 | `preutfylling`        | `prefill`                                                                  |

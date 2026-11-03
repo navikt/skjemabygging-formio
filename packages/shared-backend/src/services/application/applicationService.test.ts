@@ -184,7 +184,7 @@ describe('createApplicationService', () => {
     );
   });
 
-  it('logs completed draft submission failures with the downstream response body', async () => {
+  it('logs completed draft submission failures with safe downstream metadata', async () => {
     const warnSpy = vi.spyOn(logger, 'warn');
     const infoSpy = vi.spyOn(logger, 'info');
     vi.spyOn(global, 'fetch').mockResolvedValue(
@@ -203,8 +203,13 @@ describe('createApplicationService', () => {
       correlationId,
     });
     expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Submitting completed draft`);
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 503'), {
-      body: { message: 'Downstream service unavailable' },
+    expect(warnSpy).toHaveBeenCalledExactlyOnceWith('Http request failed', {
+      service: 'send-inn.test',
+      endpoint: `${submittedDraftPath}/${innsendingsId}`,
+      upstream_status: 503,
+      error_code: 'SERVICE_UNAVAILABLE',
+      upstream_error_code: undefined,
+      upstream_correlation_id: correlationId,
     });
   });
 
@@ -554,12 +559,17 @@ describe('createApplicationService', () => {
     await expect(
       service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
     ).rejects.toMatchObject({ errorCode: 'BAD_REQUEST', message: 'Draft request failed' });
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 400'), {
-      body: { errorCode: 'validationFailure', message: 'Rejected draft state' },
+    expect(warnSpy).toHaveBeenCalledExactlyOnceWith('Http request failed', {
+      service: 'send-inn.test',
+      endpoint: `${draftPath}/${innsendingsId}`,
+      upstream_status: 400,
+      error_code: 'BAD_REQUEST',
+      upstream_error_code: 'validationFailure',
+      upstream_correlation_id: undefined,
     });
   });
 
-  it('logs rejected draft creation with the downstream response body', async () => {
+  it('logs rejected draft creation with safe downstream metadata', async () => {
     const warnSpy = vi.spyOn(logger, 'warn');
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ message: 'Downstream service unavailable' }), {
@@ -576,8 +586,13 @@ describe('createApplicationService', () => {
       message: 'Draft request failed',
       correlationId,
     });
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('failed with status 503'), {
-      body: { message: 'Downstream service unavailable' },
+    expect(warnSpy).toHaveBeenCalledExactlyOnceWith('Http request failed', {
+      service: 'send-inn.test',
+      endpoint: draftPath,
+      upstream_status: 503,
+      error_code: 'SERVICE_UNAVAILABLE',
+      upstream_error_code: undefined,
+      upstream_correlation_id: correlationId,
     });
   });
 });

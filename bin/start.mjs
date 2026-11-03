@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
- * Starts fyllut or bygger on automatically allocated free ports.
+ * Starts fyllut, bygger or sendinn on automatically allocated free ports.
  * Designed for sub-agents and CI environments where default ports may be occupied.
  *
  * Usage:
  *   node bin/start.mjs fyllut
  *   node bin/start.mjs bygger
+ *   node bin/start.mjs sendinn
  *   node bin/start.mjs fyllut --no-runtime-config
  *   node bin/start.mjs bygger --no-runtime-config
  *
  *   pnpm start:fyllut:mocks
  *   pnpm start:bygger:mocks
+ *   pnpm start:sendinn:mocks
  *
  * Output (printed after servers are ready, easy to parse):
  *   START_PID=12345
@@ -26,6 +28,7 @@ import { connect, createServer } from 'net';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { createFyllutServerConfig } from './fyllut-server-config.mjs';
+import { createSendinnServerConfig } from './sendinn-server-config.mjs';
 
 const isPortFree = (port) =>
   new Promise((resolve) => {
@@ -174,10 +177,26 @@ const configs = {
       onCleanup: shouldWriteRuntimeConfig ? () => rmSync(byggerCypressRuntimePath, { force: true }) : undefined,
     };
   },
+  sendinn: async () => {
+    const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
+    const mockUrl = `http://127.0.0.1:${mockPort}`;
+    const backendUrl = `http://127.0.0.1:${backendPort}/sendinn`;
+    const frontendUrl = `http://127.0.0.1:${frontendPort}/sendinn`;
+    return {
+      ...createSendinnServerConfig({ repoRoot, ports: [mockPort, mockAdminPort, backendPort, frontendPort] }),
+      ports: [mockPort, mockAdminPort, backendPort, frontendPort],
+      summaryLines: [
+        `SENDINN_MOCK_URL=${mockUrl}`,
+        `SENDINN_MOCK_ADMIN_PORT=${mockAdminPort}`,
+        `SENDINN_BACKEND_URL=${backendUrl}`,
+        `SENDINN_FRONTEND_URL=${frontendUrl}`,
+      ],
+    };
+  },
 };
 
 if (!configs[target] || unknownArgs.length > 0) {
-  console.error(`Usage: node bin/start.mjs <fyllut|bygger> [--no-runtime-config]`);
+  console.error(`Usage: node bin/start.mjs <fyllut|bygger|sendinn> [--no-runtime-config]`);
   process.exit(1);
 }
 

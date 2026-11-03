@@ -3,9 +3,8 @@ import {
   FyllutFrontendConfig,
   SubmissionMethod,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { FrontendLogger, http as baseHttp, type LoggerConfig } from '@navikt/skjemadigitalisering-shared-frontend';
 import React, { useContext, useMemo, useState } from 'react';
-import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
-import baseHttp from '../../api/util/http/http';
 import { LogEventFunction, umamiEventHandler } from '../../util/tracking/umami';
 
 type FeatureTogglesMap = {

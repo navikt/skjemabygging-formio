@@ -29,20 +29,20 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { level: 2, name: 'Diverse' }).should('exist');
-      cy.findByRole('group', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
+      cy.findByRole('radiogroup', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     });
 
     it('shows validation errors when files are not uploaded', () => {
-      cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Vedlegg 1/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
-      cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Vedlegg 2/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.clickSaveAndContinue();
@@ -82,6 +82,30 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           cy.findByText('Kommentar til vedlegg').should('exist');
           cy.findByText('Relevant kommentar').should('exist');
         });
+    });
+
+    it('renders the description as formatted text before and after upload', () => {
+      const description = 'Har du noen annen dokumentasjon du ønsker å legge ved?';
+      cy.findAttachment(/Annen dokumentasjon/).within(() => {
+        cy.findByText(description).should('be.visible');
+        cy.contains('<p>').should('not.exist');
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Annet vedlegg 1');
+        cy.uploadFile('test.txt');
+        cy.findByText(description).should('be.visible');
+        cy.contains('<p>').should('not.exist');
+      });
+    });
+
+    it('keeps the upload read more close to the upload button', () => {
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).then(($button) => {
+          cy.findByRole('button', { name: TEXTS.statiske.attachment.sizeAndFormatHeader }).should(($readMore) => {
+            const gap = $readMore[0].getBoundingClientRect().top - $button[0].getBoundingClientRect().bottom;
+            expect(gap).to.be.within(0, 16);
+          });
+        });
+      });
     });
 
     describe('uploading files', () => {

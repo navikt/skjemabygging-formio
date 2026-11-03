@@ -2,10 +2,14 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType, useEffect } from 'react';
 import Alert from '../components/alert/Alert';
 import { useApplication } from '../context/application/ApplicationContext';
-import { useFormDefinitionForm } from '../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../context/form-definition/FormDefinitionContext';
 import { UnvalidatedFields } from '../context/validation/ValidationScopeContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 import { InputComponentProps, InputComponentType } from './inputComponentUtils';
+import { withPrefillLock } from './prefillLock';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 interface Props {
@@ -19,6 +23,7 @@ interface Props {
 const RenderInputComponent = ({ component, submissionPath, componentRegistry = inputComponentRegistry }: Props) => {
   const { logger, environment } = useApplication();
   const form = useFormDefinitionForm();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   // Single boundary cast: indexing the mapped registry by the runtime `type`
   // yields a union of adapters with incompatible props that JSX cannot spread,
   // so we erase to the generic adapter shape here. Adapters remain fully typed.
@@ -49,7 +54,11 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
   }
 
   const input = (
-    <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+    <RegistryComponent
+      component={withPrefillLock(component, submissionMethod)}
+      submissionPath={submissionPath}
+      componentRegistry={componentRegistry}
+    />
   );
 
   return (

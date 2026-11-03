@@ -1,4 +1,5 @@
 import { Component, Submission, SubmissionData } from '../../models';
+import { validatorUtils } from '../form/validatorUtils';
 
 /**
  * Recursively searches for a value in a submission object based on the provided submissionPath.
@@ -127,6 +128,17 @@ const flattenComponentsWithPath = (
     ];
   }, []);
 
+/**
+ * Returns innsendingsId from the URL when it occurs exactly once and is a UUID, otherwise undefined.
+ */
+const getValidSubmissionId = (searchParams: URLSearchParams): string | undefined => {
+  const values = searchParams.getAll('innsendingsId');
+  if (values.length !== 1 || !validatorUtils.isValidUuid(values[0])) {
+    return undefined;
+  }
+  return values[0];
+};
+
 const submissionUtils = {
   getSubmissionValue,
   getPdfSubmissionValue,
@@ -134,6 +146,7 @@ const submissionUtils = {
   noChildValuesForDataGrid,
   getComponentSubmissionPath,
   flattenComponentsWithPath,
+  getValidSubmissionId,
 };
 
 export { submissionUtils };

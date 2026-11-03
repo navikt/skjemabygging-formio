@@ -1,11 +1,6 @@
-import express from 'express';
-import metrics from './metrics';
+import { createInternalRouter } from '@navikt/skjemadigitalisering-shared-backend';
+import { appMetrics } from '../../services';
 
-const internalRouter = express.Router();
-
-internalRouter.get(['/isAlive', '/isReady'], (req, res) => {
-  res.sendStatus(200);
-});
-internalRouter.get('/metrics', metrics.get);
+const internalRouter = createInternalRouter({ register: appMetrics.register });
 
 export default internalRouter;

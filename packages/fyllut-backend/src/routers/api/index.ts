@@ -1,7 +1,7 @@
+import { rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import { config as appConfig } from '../../config/config';
 import envQualifier from '../../middleware/envQualifier';
-import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
 import idportenAuthHandler from '../../security/idportenAuthHandler';
 import activeTasks from './active-tasks';

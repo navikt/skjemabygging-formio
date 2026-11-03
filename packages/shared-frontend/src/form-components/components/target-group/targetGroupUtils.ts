@@ -45,7 +45,7 @@ const calculateTargetGroupValue = (
   prefilledValue?: SendInnTargetGroup,
 ): SubmissionTargetGroup => ({
   calculated: { maalgruppetype: findSelectedTargetGroup(submissionData) ?? 'ANNET' },
-  prefilled: currentValue?.prefilled ?? prefilledValue,
+  prefilled: prefilledValue ?? currentValue?.prefilled,
 });
 
 const targetGroupValuesEqual = (left?: SubmissionTargetGroup, right?: SubmissionTargetGroup) =>

@@ -1,5 +1,4 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import { Backend } from '../Backend';
 import PublisherService from './PublisherService';
 
@@ -7,11 +6,6 @@ describe('PublisherService', () => {
   let publisherService: PublisherService;
 
   let backendMock: Backend;
-
-  afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
-  });
 
   describe('publishForm', () => {
     describe('when publishing succeeds', () => {

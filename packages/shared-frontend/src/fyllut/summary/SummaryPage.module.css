@@ -12,3 +12,7 @@
 .continueEditing {
   margin-block-end: var(--ax-space-40);
 }
+
+.description {
+  margin-block-end: var(--ax-space-32);
+}
