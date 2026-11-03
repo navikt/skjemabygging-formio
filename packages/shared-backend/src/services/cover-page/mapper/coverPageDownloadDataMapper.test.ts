@@ -171,7 +171,7 @@ describe('coverPageDownloadDataMapper', () => {
 
     expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(form, submission, translate)).toEqual({
       attachments: ['Translated attachment', 'My documents'],
-      archivedAttachments: ['Vedlegg label', 'My documents'],
+      attachmentsForArchiving: ['Vedlegg label', 'My documents'],
     });
   });
 
@@ -190,7 +190,7 @@ describe('coverPageDownloadDataMapper', () => {
 
     expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(formWithAttachments, submission)).toEqual({
       attachments: ['Vedlegg label'],
-      archivedAttachments: ['Vedlegg label'],
+      attachmentsForArchiving: ['Vedlegg label'],
     });
   });
 

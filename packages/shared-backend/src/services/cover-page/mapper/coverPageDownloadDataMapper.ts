@@ -31,19 +31,19 @@ const createAttachmentDocumentLists = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-): Pick<CoverPageDownloadType, 'attachments' | 'archivedAttachments'> => {
+): Pick<CoverPageDownloadType, 'attachments' | 'attachmentsForArchiving'> => {
   const documents = attachmentUtils
     .getSelectedAttachmentsForCoverPage(submission, form)
     .flatMap(({ component, attachments }) =>
       attachments.map((attachment) => ({
         printed: attachment.title || translateLabel(component.label, translate),
-        archived: attachment.title || component.label,
+        forArchiving: attachment.title || component.label,
       })),
     );
 
   return {
     attachments: documents.map((document) => document.printed),
-    archivedAttachments: documents.map((document) => document.archived),
+    attachmentsForArchiving: documents.map((document) => document.forArchiving),
   };
 };
 
