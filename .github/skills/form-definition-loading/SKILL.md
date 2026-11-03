@@ -92,13 +92,23 @@ repository.
 ## Sendinn content source
 
 Sendinn uses `SENDINN_CONTENT_SOURCE`, not Fyllut's `FORMS_SOURCE`.
-The value is required at startup in every environment. Missing, empty or
-unknown values fail startup. `prod-gcp` also rejects `latest`.
+The value is required when `NODE_ENV=production`. In development and test it
+defaults to `latest`. Empty or unknown values fail startup, and `prod-gcp`
+also rejects `latest`.
 
 | Value       | Form definition                | Form translations                           | Global translations                                |
 | ----------- | ------------------------------ | ------------------------------------------- | -------------------------------------------------- |
 | `published` | `/v1/form-publications/{path}` | `/v1/form-publications/{path}/translations` | `/v1/published-global-translations/{language}`     |
 | `latest`    | `/v1/forms/{path}`             | `/v1/forms/{path}/translations`             | `/v1/global-translations?languageCodes={language}` |
+
+The two sources return translations in different shapes. `latest` returns
+translation rows (`[{ key, nb, nn, en }]`). Published form translations
+return `{ publishedAt, publishedBy, translations: { [language]: { [key]: text } } }`,
+with `translations: {}` when the language has no published translations.
+Published global translations return a flat `{ [key]: text }` dictionary.
+The service converts dictionaries to rows and maps both shapes with
+`convertToFormsApiTranslationMap`, so validation keys such as `required` also
+get an entry under their Bokmål text and an `nb` fallback for both sources.
 
 Both sources fetch the whole form without `select`. Sendinn never loads
 static snapshots. `latest` returns the current revision, including pending
@@ -123,8 +133,11 @@ fallback on failure. Requests are not revision-pinned: content can change
 between a form request and a translation request, and a new publication can
 take up to five minutes to appear.
 
-`createContentService({ baseUrl, source })` and the `ContentService` and
-`ContentSource` types are exported through shared-backend's services barrel.
+`createContentService({ baseUrl, source })`, `isContentSource` and the
+`ContentService` and `ContentSource` types are exported through
+shared-backend's services barrel. The private clients have separate published
+functions (`getPublishedForm`, `getPublishedFormTranslations`,
+`getPublishedGlobalTranslations`) instead of a source parameter.
 Sendinn initializes `contentService` once in `src/services/index.ts`.
 Downstream form loading and document preparation use `getForm({ formPath })`
 and `getTranslations({ formPath, languageCode })`. The service also exposes
@@ -134,10 +147,14 @@ and `getTranslations({ formPath, languageCode })`. The service also exposes
 keys in `getTranslations`. Forms include resolved `languages`, using the
 existing published/unpublished language rules.
 
-Upstream missing content remains `NOT_FOUND`. Other HTTP dependency errors,
+The service rejects a form path that is not lowercase letters and digits with
+`BAD_REQUEST` before calling forms-api. Upstream missing content remains
+`NOT_FOUND`. Other HTTP dependency errors,
 connection failures and timeouts become `SERVICE_UNAVAILABLE` with a safe
 English message. Malformed content responses also fail explicitly.
-The centralized handler returns the standard correlated error. Upstream
+Connection failures and timeouts are logged as warnings with the resource,
+source and error name. The centralized handler returns the standard correlated
+error. Upstream
 correlation IDs are preserved for HTTP failures. No upstream body, author
 metadata or answers are logged or included in the public diagnostic.
 

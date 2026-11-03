@@ -1,4 +1,4 @@
-import type { ContentSource } from '@navikt/skjemadigitalisering-shared-backend';
+import { type ContentSource, isContentSource } from '@navikt/skjemadigitalisering-shared-backend';
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'test') {
@@ -22,7 +22,7 @@ const env = (name: string, developmentValue?: string) => {
 
 const readContentSource = (): ContentSource => {
   const source = env('SENDINN_CONTENT_SOURCE', 'latest');
-  if (source !== 'published' && source !== 'latest') {
+  if (!isContentSource(source)) {
     throw new Error('SENDINN_CONTENT_SOURCE must be published or latest');
   }
   if (process.env.NAIS_CLUSTER_NAME === 'prod-gcp' && source !== 'published') {
