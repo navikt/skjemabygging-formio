@@ -21,9 +21,14 @@ import TranslatedDescription from '../shared/TranslatedDescription';
 import { BaseFieldProps, ChoiceValidation } from '../types';
 import AttachmentItem from './AttachmentItem';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
+import AttachmentTitleField from './AttachmentTitleField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
-import { requiresPaperAttachmentTitle, toAttachmentValueValidationFields } from './attachmentValidation';
+import {
+  requiresPaperAttachmentTitle,
+  toAttachmentFilesValidationFields,
+  toAttachmentValueValidationFields,
+} from './attachmentValidation';
 
 interface AttachmentProps extends BaseFieldProps {
   label: string;
@@ -128,6 +133,17 @@ const Attachment = ({
   };
   const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
   const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
+  const paperTitleFields = paperTitleRequired
+    ? documents.flatMap((item) =>
+        toAttachmentFilesValidationFields({
+          submissionPath: statePath,
+          attachmentId: item.attachmentId,
+          label,
+          attachment: item,
+          uploadEnabled,
+        }),
+      )
+    : [];
   const deleteDocument = async (id: string) => {
     try {
       await handleDeleteAttachment(id, statePath, multiple);
@@ -138,7 +154,7 @@ const Attachment = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {fields.map((field) => (
+      {[...fields, ...paperTitleFields].map((field) => (
         <ValidationRegistration
           key={field.statePath}
           label={field.field}
@@ -176,9 +192,9 @@ const Attachment = ({
           )}
           {readMore && <ReadMore {...readMore} />}
         </div>
-        {(uploadSelected || paperTitleRequired) && (
+        {uploadSelected && (
           <VStack gap="space-8">
-            {uploadSelected && uploadedFiles.length > 0 && (
+            {uploadedFiles.length > 0 && (
               <div>
                 <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
                 {!multiple && uploadedFiles.length > 1 && !readOnly && (
@@ -191,7 +207,6 @@ const Attachment = ({
             <VStack gap="space-32">
               {documents.map((item) => (
                 <AttachmentItem
-                  uploadEnabled={uploadEnabled}
                   uploadSelected={uploadSelected}
                   key={item.attachmentId}
                   initialAttachment={item}
@@ -199,7 +214,7 @@ const Attachment = ({
                   submissionPath={statePath}
                   multipleAttachments={multiple}
                   multiple={!multiple}
-                  showAttachmentTitle={multiple}
+                  requireAttachmentTitle={multiple}
                   attachmentValue={value}
                   showDeleteAttachmentButton={multiple && documents.length > 1}
                   onDeleteAttachment={multiple ? deleteDocument : undefined}
@@ -208,7 +223,7 @@ const Attachment = ({
                   downloadEnabled={downloadEnabled}
                 />
               ))}
-              {uploadSelected && multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
+              {multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
                 <Button
                   variant="tertiary"
                   icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
@@ -234,6 +249,18 @@ const Attachment = ({
             </VStack>
           </VStack>
         )}
+        {paperTitleRequired &&
+          documents.map((item) => (
+            <AttachmentTitleField
+              key={item.attachmentId}
+              initialAttachment={item}
+              title={item.title}
+              submissionPath={statePath}
+              multipleAttachments={multiple}
+              attachmentValue={value}
+              readOnly={readOnly}
+            />
+          ))}
       </VStack>
     </FormElementBox>
   );
