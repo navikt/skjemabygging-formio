@@ -80,7 +80,7 @@ describe('Email', () => {
         .each((radiogroup) => {
           cy.wrap(radiogroup).findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
         });
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

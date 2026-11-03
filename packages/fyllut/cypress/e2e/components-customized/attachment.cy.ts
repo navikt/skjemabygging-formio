@@ -113,16 +113,16 @@ describe('Attachment', () => {
       cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle })
         .should('have.value', 'a'.repeat(50))
         .clear();
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documents');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
       cy.findAllByErrorMessageRequired(TEXTS.statiske.attachment.attachmentTitle).should('have.length', 0);
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
-      cy.findByText('Supporting documents').should('be.visible');
+      cy.findByText('Dokumentasjon av utgifter').should('be.visible');
       cy.findByRole('link', { name: 'Annet' }).click();
       cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).should(
         'have.value',
-        'Supporting documents',
+        'Dokumentasjon av utgifter',
       );
     });
 
@@ -130,7 +130,7 @@ describe('Attachment', () => {
       cy.withinComponent(LABEL_OTHER, () => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
       });
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Previous description');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Tidligere beskrivelse');
       cy.withinComponent(LABEL_OTHER, () => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
       });
