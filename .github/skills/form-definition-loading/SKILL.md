@@ -112,11 +112,16 @@ There is no production Sendinn manifest yet. When #2283 adds it, select
 `published` and add forms-api production inbound access in `navikt/forms-api`
 before exposing the journey.
 
-Neither source has an application content cache. Every call fetches fresh
-content, with a five-second timeout per outbound request, including reading
-the response body. There is no stale, static, cross-source or empty-success
+`published` caches successful form, form-translation and global-translation
+responses in memory for five minutes per form path and language. Concurrent
+requests share one fetch, and callers get a copy of the cached value. `latest`
+has no cache, so edits show immediately. Failures are never cached, so the
+next request retries, and unknown paths from user input do not grow the
+cache. Each outbound request has a five-second timeout, including reading the
+response body. There is no stale, static, cross-source or empty-success
 fallback on failure. Requests are not revision-pinned: content can change
-between a form request and a translation request.
+between a form request and a translation request, and a new publication can
+take up to five minutes to appear.
 
 `createContentService({ baseUrl, source })` and the `ContentService` and
 `ContentSource` types are exported through shared-backend's services barrel.
@@ -136,5 +141,4 @@ The centralized handler returns the standard correlated error. Upstream
 correlation IDs are preserved for HTTP failures. No upstream body, author
 metadata or answers are logged or included in the public diagnostic.
 
-Existing Fyllut form/translation defaults and the legacy
-`PublishedTranslationService` cache/fallback contract are unchanged.
+Existing Fyllut form/translation defaults are unchanged.
