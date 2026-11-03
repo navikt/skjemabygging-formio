@@ -136,6 +136,23 @@ describe('assembleSubmitApplicationRequest', () => {
     expect(request).not.toHaveProperty('grantUserDigitalAccess');
   });
 
+  it('includes language, form revision and submission in mainDocumentAlt', () => {
+    const request = assembleSubmitApplicationRequest(
+      'id',
+      { ...createDigitalAccessForm(), revision: 38 },
+      submission,
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(JSON.parse(Buffer.from(request.mainDocumentAlt, 'base64').toString('utf-8'))).toEqual({
+      language: 'nb',
+      formRevision: 38,
+      data: submission,
+    });
+  });
+
   it.each([
     ['leggerVedNaa', 'ettersender', 'SendSenere'],
     ['ettersender', 'leggerVedNaa', 'LastetOpp'],

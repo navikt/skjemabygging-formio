@@ -2,7 +2,7 @@ import type { ContentSource } from '@navikt/skjemadigitalisering-shared-backend'
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'test') {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
 
 const nodeEnv = process.env.NODE_ENV ?? 'development';

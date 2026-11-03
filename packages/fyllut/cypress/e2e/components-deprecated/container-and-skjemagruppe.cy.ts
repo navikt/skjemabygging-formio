@@ -24,10 +24,10 @@ describe('Container/Beholder og skjemagruppe', () => {
       cy.defaultWaits();
       cy.clickStart();
       cy.clickSaveAndContinue();
-      cy.findByRole('group', { name: 'Vis ytre container' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Vis ytre container' }).within(() => {
         cy.findByRole('radio', { name: 'Ja' }).check();
       });
-      cy.findByRole('group', { name: 'Vis indre container' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Vis indre container' }).within(() => {
         cy.findByRole('radio', { name: 'Ja' }).check();
       });
       cy.findByRole('textbox', { name: 'Ytre tekstfelt (valgfritt)' }).type('Eple');
@@ -83,7 +83,7 @@ describe('Container/Beholder og skjemagruppe', () => {
       cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
       });
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl')

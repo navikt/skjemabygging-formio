@@ -1,6 +1,6 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { FieldsetErrorMessage, Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
@@ -36,11 +36,11 @@ export function OutOfScope({ form, handleChange, errors, refMap }: Props) {
             onChange={(value) => updateSection(form, 'outOfScope', 'title', value, handleChange)}
             error={errors?.sections?.outOfScope?.title}
           >
-            <Radio value="introPage.outOfScope.title.alt1" ref={refMap['sections.outOfScope.title']}>
+            <Radio value={introPageTexts.outOfScope.titles[0]} ref={refMap['sections.outOfScope.title']}>
               Dette kan du ikke søke om her
             </Radio>
-            <Radio value="introPage.outOfScope.title.alt2">Dette kan du ikke gjøre her</Radio>
-            <Radio value="introPage.outOfScope.title.alt3">Her kan du ikke</Radio>
+            <Radio value={introPageTexts.outOfScope.titles[1]}>Dette kan du ikke gjøre her</Radio>
+            <Radio value={introPageTexts.outOfScope.titles[2]}>Her kan du ikke</Radio>
           </RadioGroup>
           <Box>
             <IngressBulletPointRow

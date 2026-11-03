@@ -73,7 +73,7 @@ describe('coverPageRequestBodyMapper', () => {
         ...defaultData,
         type,
         attachments: ['Attachment one', 'User description'],
-        archivedAttachments: ['Vedlegg 1', 'User description'],
+        attachmentsForArchiving: ['Vedlegg 1', 'User description'],
       });
 
       expect(actual.vedleggsliste).toEqual(['Vedlegg 1', 'User description']);
