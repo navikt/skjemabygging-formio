@@ -111,7 +111,7 @@ describe('coverPageDownloadDataMapper', () => {
       'nb-NO',
       { recipientId: '001', name: 'NAV Test', poBoxAddress: '1234', postalCode: '0101', postalName: 'Oslo' },
       undefined,
-      (text) => text,
+      (text) => (text === 'Vedlegg label' ? 'Attachment label' : text),
       'paper',
     );
 
@@ -144,7 +144,8 @@ describe('coverPageDownloadDataMapper', () => {
         postalCode: '0101',
         postalName: 'Oslo',
       },
-      attachments: ['Vedlegg label'],
+      attachments: ['Attachment label'],
+      attachmentsForArchiving: ['Vedlegg label'],
     });
   });
 

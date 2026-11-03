@@ -17,16 +17,6 @@ const translateLabel = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ) => (translate ? translate(label) : label);
 
-const getAttachmentLabels = (
-  form: Form,
-  submission: Submission,
-  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-): string[] => {
-  return attachmentUtils
-    .getAttachmentsForCoverPage(submission, form)
-    .map((component) => translateLabel(component.label, translate));
-};
-
 const createAttachmentDocumentLists = (
   form: Form,
   submission: Submission,
@@ -120,7 +110,7 @@ const createDownloadDataFromSubmission = (
     },
     user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
-    attachments: getAttachmentLabels(form, submission, translate),
+    ...createAttachmentDocumentLists(form, submission, translate),
   };
 };
 
