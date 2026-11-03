@@ -158,7 +158,7 @@ const mapToAttachmentSummary = ({
 };
 
 const getSelectedAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>) => {
-  const attachments = resolveSubmissionAttachments(form, submission).filter(
+  const selectedAttachments = resolveSubmissionAttachments(form, submission).filter(
     (attachment) => attachment.value === 'leggerVedNaa',
   );
 
@@ -167,8 +167,8 @@ const getSelectedAttachmentsForCoverPage = (submission: Submission, form: Pick<N
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .flatMap((component) => {
       const attachmentId = navFormUtils.getNavId(component) ?? component.key;
-      const selected = attachments.filter((attachment) => attachment.navId === attachmentId);
-      return selected.length ? [{ component, attachments: selected }] : [];
+      const componentAttachments = selectedAttachments.filter((attachment) => attachment.navId === attachmentId);
+      return componentAttachments.length ? [{ component, attachments: componentAttachments }] : [];
     });
 };
 
