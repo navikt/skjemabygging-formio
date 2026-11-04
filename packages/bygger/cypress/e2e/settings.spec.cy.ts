@@ -131,6 +131,45 @@ describe('FormSettingsPage', () => {
     });
   });
 
+  describe('Skyra slug', () => {
+    const SKYRA_SLUG_LABEL = 'Skyra slug';
+
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
+      cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
+      cy.visit('forms/cypresssettings/settings');
+      cy.wait('@getForm');
+    });
+
+    it('saves the trimmed slug', () => {
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties.skyraSlug).to.equal('min-undersokelse');
+        req.reply(req.body);
+      }).as('saveForm');
+
+      cy.findByRole('textbox', { name: SKYRA_SLUG_LABEL }).type('  min-undersokelse  ');
+      cy.findByRole('textbox', { name: SKYRA_SLUG_LABEL }).should('have.value', 'min-undersokelse');
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('removes the slug when the field is cleared', () => {
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties).to.not.have.property('skyraSlug');
+        req.reply(req.body);
+      }).as('saveForm');
+
+      cy.findByRole('textbox', { name: SKYRA_SLUG_LABEL }).type('min-undersokelse');
+      cy.findByRole('textbox', { name: SKYRA_SLUG_LABEL }).clear();
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+  });
+
   describe('Published form', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/nav112233', { fixture: 'nav112233-published.json' }).as('getForm');
