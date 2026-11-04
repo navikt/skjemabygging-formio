@@ -10,6 +10,12 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
+  formatDraftLogMessage,
+  getDraftFailureMetadata,
+  getSubmissionFailureLog,
+  shouldLogDraftFailure,
+} from '@navikt/skjemadigitalisering-shared-frontend';
+import {
   createContext,
   Dispatch,
   ReactNode,
@@ -37,12 +43,6 @@ import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
-import {
-  formatDraftLogMessage,
-  getDraftFailureMetadata,
-  getSubmissionFailureLog,
-  shouldLogDraftFailure,
-} from './draftFailure';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 

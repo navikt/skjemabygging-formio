@@ -5,7 +5,7 @@ import {
   getDraftFailureMetadata,
   getSubmissionFailureLog,
   shouldLogDraftFailure,
-} from './draftFailure';
+} from './draftFailureUtils';
 
 describe('draft failure metadata', () => {
   it('prefixes draft messages when the submission ID is available', () => {
