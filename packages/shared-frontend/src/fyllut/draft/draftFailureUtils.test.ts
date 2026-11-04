@@ -24,6 +24,17 @@ describe('draft failure metadata', () => {
     });
   });
 
+  it('records too-many-pages rejections as HTTP 400 like the backend error handler', () => {
+    expect(
+      getDraftFailureMetadata('update', new ResponseError('FILE_TOO_MANY_PAGES', 'Rejected', 'correlation-123')),
+    ).toEqual({
+      operation: 'update',
+      errorCode: 'FILE_TOO_MANY_PAGES',
+      status: 400,
+      correlationId: 'correlation-123',
+    });
+  });
+
   it('explains failures without response metadata instead of treating them as a successful save', () => {
     expect(getDraftFailureMetadata('create', new Error('Contains a submitted answer'))).toEqual({
       operation: 'create',

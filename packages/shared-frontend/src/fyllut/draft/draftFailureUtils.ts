@@ -10,7 +10,12 @@ const getDraftFailureMetadata = (operation: DraftOperation, error: unknown) => {
     return {
       operation,
       errorCode: error.errorCode,
-      status: error.errorCode === 'ERROR' ? 'UNKNOWN' : getStatusFromErrorCode(error.errorCode),
+      status:
+        error.errorCode === 'ERROR'
+          ? 'UNKNOWN'
+          : error.errorCode === 'FILE_TOO_MANY_PAGES'
+            ? 400
+            : getStatusFromErrorCode(error.errorCode),
       ...(error.correlationId && { correlationId: error.correlationId }),
     };
   }
