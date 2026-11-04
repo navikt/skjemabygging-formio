@@ -83,6 +83,7 @@ const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
 
   try {
     return await http.get<T>(getDraftUrl(baseUrl, innsendingsId), {
+      suppressTransportLogs: true,
       accessToken,
       accept: 'application/json',
       headers: createHeaders({ correlationId, innsendingsId }),
@@ -104,6 +105,7 @@ const createApplication = async <T>(props: CreateApplicationProps): Promise<Draf
 
   try {
     const response = await http.post<T>(`${getDraftUrl(baseUrl)}${forceParam}`, body, {
+      suppressTransportLogs: true,
       accessToken,
       responseType: 'metadata',
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
@@ -123,6 +125,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
 
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
+      suppressTransportLogs: true,
       accessToken,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
@@ -141,6 +144,7 @@ const submitCompletedApplication = async (props: SubmitCompletedApplicationProps
   let response;
   try {
     response = await http.put(getSubmittedDraftUrl(baseUrl, innsendingsId), body, {
+      suppressTransportLogs: true,
       accessToken,
       redirect: 'manual',
       responseType: 'metadata',
