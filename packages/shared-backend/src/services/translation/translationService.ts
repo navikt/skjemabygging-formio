@@ -8,14 +8,8 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
-import translationClient from './translationClient';
-import {
-  convertI18nTranslationsToFormsApiTranslationMap,
-  convertToFormsApiTranslationMap,
-  getGlobalTranslationFilename,
-} from './translationMapper';
-
-type TranslationClient = Pick<typeof translationClient, 'getFormTranslations' | 'getGlobalTranslations'>;
+import { loadFormTranslations, loadGlobalTranslations, TranslationClient } from './translationLoader';
+import { convertI18nTranslationsToFormsApiTranslationMap, getGlobalTranslationFilename } from './translationMapper';
 
 interface GetFormTranslationsProps {
   formPath: string;
@@ -57,23 +51,13 @@ const createTranslationService = ({
   mocksEnabled,
   translationsLocation,
   globalTranslationsLocation,
-  client = translationClient,
+  client,
 }: CreateTranslationServiceProps): TranslationService => {
   const getFormTranslations = async (props: GetFormTranslationsProps) => {
     const { formPath, languageCodes } = props;
 
     if (formsApiStaging || mocksEnabled) {
-      const translations = await client.getFormTranslations({
-        baseUrl,
-        formPath,
-        languageCodes,
-      });
-
-      if (!translations) {
-        return {};
-      }
-
-      return convertToFormsApiTranslationMap(translations);
+      return (await loadFormTranslations({ baseUrl, source: 'latest', formPath, languageCodes, client })) ?? {};
     }
 
     const translations: I18nTranslations | undefined = await fileUtil.loadJsonFileFromDirectory(
@@ -88,16 +72,7 @@ const createTranslationService = ({
 
   const getGlobalTranslations = async (languageCodes?: TranslationLang[]) => {
     if (formsApiStaging || mocksEnabled) {
-      const translations = await client.getGlobalTranslations({
-        baseUrl,
-        languageCodes,
-      });
-
-      if (!translations) {
-        return {};
-      }
-
-      return convertToFormsApiTranslationMap(translations);
+      return (await loadGlobalTranslations({ baseUrl, source: 'latest', languageCodes, client })) ?? {};
     }
 
     const langsToLoad: TranslationLang[] = languageCodes ?? ['nb', 'nn', 'en'];
