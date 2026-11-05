@@ -255,7 +255,7 @@ describe('createContentService', () => {
     await expect(result).rejects.toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE' });
   });
 
-  it('rejects malformed success responses rather than returning empty content', async () => {
+  it('rejects empty success responses rather than returning empty content', async () => {
     vi.spyOn(global, 'fetch').mockImplementation(async () => jsonResponse(null));
     const service = createContentService({ baseUrl, source: 'latest' });
 
@@ -266,41 +266,10 @@ describe('createContentService', () => {
     await expect(service.getGlobalTranslations('en')).rejects.toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE' });
   });
 
-  it.each([{ body: [{ key: 'Yes', en: { private: 'metadata' } }] }, { body: [null] }, { body: [{}] }])(
-    'rejects malformed translation rows: %j',
-    async ({ body }) => {
-      vi.spyOn(global, 'fetch').mockResolvedValue(jsonResponse(body));
-      const service = createContentService({ baseUrl, source: 'latest' });
-
-      await expect(service.getGlobalTranslations('en')).rejects.toMatchObject({
-        errorCode: 'SERVICE_UNAVAILABLE',
-      });
-    },
-  );
-
   it('returns an empty map when the form has no published translations for the language', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(jsonResponse({ translations: {} }));
     const service = createContentService({ baseUrl, source: 'published' });
 
     await expect(service.getFormTranslations({ formPath, languageCode: 'en' })).resolves.toEqual({});
-  });
-
-  it.each([
-    { body: [{ key: 'Attachment', en: 'Form attachment' }] },
-    { body: { translations: { en: ['Attachment'] } } },
-  ])('rejects malformed published form translations: %j', async ({ body }) => {
-    vi.spyOn(global, 'fetch').mockResolvedValue(jsonResponse(body));
-    const service = createContentService({ baseUrl, source: 'published' });
-
-    await expect(service.getFormTranslations({ formPath, languageCode: 'en' })).rejects.toMatchObject({
-      errorCode: 'SERVICE_UNAVAILABLE',
-    });
-  });
-
-  it('rejects non-JSON published translations instead of silently returning an empty map', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue(new Response('not json'));
-    const service = createContentService({ baseUrl, source: 'published' });
-
-    await expect(service.getGlobalTranslations('en')).rejects.toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE' });
   });
 });

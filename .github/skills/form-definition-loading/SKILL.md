@@ -106,9 +106,15 @@ translation rows (`[{ key, nb, nn, en }]`). Published form translations
 return `{ publishedAt, publishedBy, translations: { [language]: { [key]: text } } }`,
 with `translations: {}` when the language has no published translations.
 Published global translations return a flat `{ [key]: text }` dictionary.
-The service converts dictionaries to rows and maps both shapes with
-`convertToFormsApiTranslationMap`, so validation keys such as `required` also
-get an entry under their Bokmål text and an `nb` fallback for both sources.
+`loadFormTranslations` and `loadGlobalTranslations` in
+`services/translation/translationLoader.ts` read both shapes for one or more
+languages. They build one row per key across the requested languages and map
+the rows with `convertToFormsApiTranslationMap`, so validation keys such as
+`required` also get an entry under their Bokmål text and an `nb` fallback for
+both sources. A published `nb` value wins over that fallback. `published`
+requires explicit `languageCodes` and fetches global translations once per
+language. A missing response returns `undefined`, so each service decides
+how to handle it.
 
 Both sources fetch the whole form without `select`. Sendinn never loads
 static snapshots. `latest` returns the current revision, including pending
@@ -151,11 +157,15 @@ The service rejects a form path that is not lowercase letters and digits with
 `BAD_REQUEST` before calling forms-api. Upstream missing content remains
 `NOT_FOUND`. Other HTTP dependency errors,
 connection failures and timeouts become `SERVICE_UNAVAILABLE` with a safe
-English message. Malformed content responses also fail explicitly.
+English message. Malformed form responses and missing translation responses
+also fail explicitly.
 Connection failures and timeouts are logged as warnings with the resource,
 source and error name. The centralized handler returns the standard correlated
 error. Upstream
 correlation IDs are preserved for HTTP failures. No upstream body, author
 metadata or answers are logged or included in the public diagnostic.
 
-Existing Fyllut form/translation defaults are unchanged.
+Existing Fyllut form/translation defaults are unchanged. When Fyllut loads
+from forms-api (`FORMS_SOURCE=formsapi-staging` or mocks), `translationService`
+uses the same loader with `latest`. A missing response still gives no
+translations. Static-file loading is unchanged.

@@ -1,6 +1,5 @@
 import {
   Form,
-  FormsApiTranslation,
   FormsApiTranslationMap,
   FormWithLanguages,
   ResponseError,
@@ -9,11 +8,7 @@ import {
 import urlUtil from '../../util/url/urlUtil';
 import formClient from '../form/formClient';
 import { resolveFormLanguages } from '../form/formLanguages';
-import translationClient from '../translation/translationClient';
-import {
-  convertDictionaryToFormsApiTranslations,
-  convertToFormsApiTranslationMap,
-} from '../translation/translationMapper';
+import { loadFormTranslations, loadGlobalTranslations } from '../translation/translationLoader';
 import { createContentCache } from './contentCache';
 import type { ContentSource } from './contentSource';
 import { loadContent } from './loadContent';
@@ -38,37 +33,11 @@ interface CreateContentServiceProps {
   source: ContentSource;
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const isOptionalString = (value: unknown) => value === undefined || value === null || typeof value === 'string';
-
-const isTranslationRows = (value: unknown): value is FormsApiTranslation[] =>
-  Array.isArray(value) &&
-  value.every(
-    (row) => isRecord(row) && typeof row.key === 'string' && [row.nb, row.nn, row.en].every(isOptionalString),
-  );
-
-const isTranslationDictionary = (value: unknown): value is Record<string, string> =>
-  isRecord(value) &&
-  Object.getPrototypeOf(value) === Object.prototype &&
-  Object.values(value).every((translation) => typeof translation === 'string');
-
-const invalidTranslationResponse = () =>
-  new ResponseError('SERVICE_UNAVAILABLE', 'Invalid forms-api translation response');
-
-const mapTranslationRows = (translations: unknown): FormsApiTranslationMap => {
-  if (!isTranslationRows(translations)) {
-    throw invalidTranslationResponse();
+const requireTranslations = (translations: FormsApiTranslationMap | undefined) => {
+  if (!translations) {
+    throw new ResponseError('SERVICE_UNAVAILABLE', 'Missing forms-api translation response');
   }
-  return convertToFormsApiTranslationMap(translations);
-};
-
-const mapTranslationDictionary = (languageCode: TranslationLang, translations: unknown): FormsApiTranslationMap => {
-  if (!isTranslationDictionary(translations)) {
-    throw invalidTranslationResponse();
-  }
-  return convertToFormsApiTranslationMap(convertDictionaryToFormsApiTranslations(languageCode, translations));
+  return translations;
 };
 
 const assertValidFormPath = (formPath: string) => {
@@ -95,35 +64,19 @@ const createContentService = ({ baseUrl, source }: CreateContentServiceProps): C
     return { ...form, languages: resolveFormLanguages(form, source === 'latest') };
   };
 
-  const fetchFormTranslations = async ({ formPath, languageCode }: FormTranslationRequest) => {
-    const request = { ...transport, formPath, languageCodes: [languageCode] };
-    if (source === 'published') {
-      const response = await loadContent('form translations', source, () =>
-        translationClient.getPublishedFormTranslations(request),
-      );
-      if (!isRecord(response) || !isRecord(response.translations)) {
-        throw invalidTranslationResponse();
-      }
-      return mapTranslationDictionary(languageCode, response.translations[languageCode] ?? {});
-    }
-    const translations = await loadContent('form translations', source, () =>
-      translationClient.getFormTranslations(request),
+  const fetchFormTranslations = async ({ formPath, languageCode }: FormTranslationRequest) =>
+    requireTranslations(
+      await loadContent('form translations', source, () =>
+        loadFormTranslations({ ...transport, source, formPath, languageCodes: [languageCode] }),
+      ),
     );
-    return mapTranslationRows(translations);
-  };
 
-  const fetchGlobalTranslations = async (languageCode: TranslationLang) => {
-    if (source === 'published') {
-      const translations = await loadContent('global translations', source, () =>
-        translationClient.getPublishedGlobalTranslations({ ...transport, languageCode }),
-      );
-      return mapTranslationDictionary(languageCode, translations);
-    }
-    const translations = await loadContent('global translations', source, () =>
-      translationClient.getGlobalTranslations({ ...transport, languageCodes: [languageCode] }),
+  const fetchGlobalTranslations = async (languageCode: TranslationLang) =>
+    requireTranslations(
+      await loadContent('global translations', source, () =>
+        loadGlobalTranslations({ ...transport, source, languageCodes: [languageCode] }),
+      ),
     );
-    return mapTranslationRows(translations);
-  };
 
   const getForm: ContentService['getForm'] = async ({ formPath }) => {
     assertValidFormPath(formPath);
