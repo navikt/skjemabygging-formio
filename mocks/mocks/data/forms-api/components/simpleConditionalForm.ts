@@ -1,4 +1,4 @@
-import { checkbox, dataGrid, formGroup, panel, textField } from '../../../form-builder/components';
+import { alert, checkbox, dataGrid, formGroup, panel, textField } from '../../../form-builder/components';
 import container from '../../../form-builder/components/group/container';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -30,6 +30,19 @@ const simpleConditionalForm = () => {
               show: false,
               when: 'checkbox1',
             },
+          }),
+          textField({
+            label: 'Tekstfelt vist når ikke avkrysset',
+            conditional: {
+              eq: 'false',
+              show: true,
+              when: 'checkbox1',
+            },
+          }),
+          alert({
+            key: 'alertNotChecked',
+            content: '<p>Boksen er ikke avkrysset</p>',
+            customConditional: 'show = data.checkbox1 === false;',
           }),
         ],
       }),
