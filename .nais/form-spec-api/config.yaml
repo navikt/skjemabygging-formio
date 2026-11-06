@@ -56,8 +56,8 @@ spec:
       rules:
       {{#each accessPolicy.inbound.rules}}
         - application: {{this.application}}
-          namespace: {{this.namespace}}
-          cluster: {{this.cluster}}
+          {{#if this.namespace}}namespace: {{this.namespace}}{{/if}}
+          {{#if this.cluster}}cluster: {{this.cluster}}{{/if}}
       {{/each}}
     outbound:
       rules:

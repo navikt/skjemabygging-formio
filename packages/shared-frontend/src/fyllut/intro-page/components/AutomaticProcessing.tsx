@@ -1,4 +1,4 @@
-import { IntroPageSection, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPageSection, introPageTexts, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroAccordion from './IntroAccordion';
 
 interface Props {
@@ -15,7 +15,7 @@ const AutomaticProcessing = ({ properties, translate, className, defaultOpen }: 
 
   return (
     <IntroAccordion
-      title={translate('introPage.automaticProcessing.title')}
+      title={translate(introPageTexts.automaticProcessing.title)}
       description={translate(properties.description)}
       bulletPoints={(properties.bulletPoints ?? []).map((bulletPoint) => translate(bulletPoint))}
       className={className}
