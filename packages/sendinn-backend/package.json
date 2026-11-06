@@ -18,7 +18,7 @@
     "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
-    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/nav-dekoratoren-moduler": "^4.5.2",
     "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "csp-header": "^6.4.0",
@@ -34,9 +34,9 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/mustache-express": "^1.2.5",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.5",
     "@types/supertest": "^7.2.1",
     "supertest": "^7.3.1",
-    "vite-plugin-node": "^7.0.0"
+    "vite-plugin-node": "^8.0.0"
   }
 }
