@@ -1,6 +1,6 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { FieldsetErrorMessage, Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
@@ -36,11 +36,11 @@ export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
             onChange={(value) => updateSection(form, 'prerequisites', 'title', value, handleChange)}
             error={errors?.sections?.prerequisites?.title}
           >
-            <Radio value="introPage.prerequisites.title.alt1" ref={refMap['sections.prerequisites.title']}>
+            <Radio value={introPageTexts.prerequisites.titles[0]} ref={refMap['sections.prerequisites.title']}>
               Før du søker
             </Radio>
-            <Radio value="introPage.prerequisites.title.alt2">Før du svarer</Radio>
-            <Radio value="introPage.prerequisites.title.alt3">Før du fyller ut</Radio>
+            <Radio value={introPageTexts.prerequisites.titles[1]}>Før du svarer</Radio>
+            <Radio value={introPageTexts.prerequisites.titles[2]}>Før du fyller ut</Radio>
           </RadioGroup>
           <Box>
             <IngressBulletPointRow
