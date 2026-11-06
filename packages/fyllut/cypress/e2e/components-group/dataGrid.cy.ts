@@ -97,6 +97,42 @@ describe('DataGrid', () => {
     });
   });
 
+  describe('Max rows', () => {
+    const addPeriod = () => cy.findByRole('button', { name: 'Legg til periode' }).click();
+
+    beforeEach(() => {
+      cy.visit('/fyllut/datagrid/visning?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('should hide the add button when the max number of rows is reached', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 3);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
+      });
+    });
+
+    it('should move focus to the last row when the add button disappears', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).last().should('have.focus');
+      });
+    });
+
+    it('should show the add button again after removing a row', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('button', { name: 'Fjern periode' }).last().click();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 2);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('exist');
+      });
+    });
+  });
+
   describe('Translation', () => {
     beforeEach(() => {
       cy.visit('/fyllut/datagrid/visning?sub=paper&lang=en');
