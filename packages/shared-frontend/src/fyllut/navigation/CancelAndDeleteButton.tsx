@@ -8,6 +8,7 @@ import { useFormDefinitionSubmissionMethod } from '../../context/form-definition
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionActions } from '../../context/state/SubmissionStateContext';
+import { formatDraftLogMessage, getDraftFailureMetadata, shouldLogDraftFailure } from '../draft/draftFailureUtils';
 import ConfirmationModal from './ConfirmationModal';
 import { getExitUrl } from './navUrls';
 
@@ -41,7 +42,12 @@ const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
 
   const handleCancelError = (error: unknown) => {
     setDeleteError(TEXTS.statiske.mellomlagringError.delete.message);
-    logger?.error?.(`Failed to delete mellomlagring ${innsendingsId}`, error as Error);
+    if (shouldLogDraftFailure(error)) {
+      logger?.error?.(
+        formatDraftLogMessage(innsendingsId, 'Failed to delete draft'),
+        getDraftFailureMetadata('delete', error),
+      );
+    }
   };
 
   const handleExit = () => {

@@ -7,6 +7,38 @@ describe('http', () => {
     vi.restoreAllMocks();
   });
 
+  it.each(['get', 'post', 'put', 'delete', 'postMultipart'] as const)(
+    'suppresses transport logs for %s without changing error propagation',
+    async (method) => {
+      const debugSpy = vi.spyOn(logger, 'debug');
+      const warnSpy = vi.spyOn(logger, 'warn');
+      const errorBody = { message: 'private-response', correlationId: 'upstream-correlation-id' };
+      vi.spyOn(global, 'fetch').mockResolvedValue(
+        new Response(JSON.stringify(errorBody), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+      const url = 'https://example.test/private-path';
+      const options = { suppressTransportLogs: true };
+      const request =
+        method === 'get'
+          ? http.get(url, options)
+          : method === 'postMultipart'
+            ? http.postMultipart(url, new FormData(), options)
+            : http[method](url, undefined, options);
+
+      await expect(request).rejects.toMatchObject({
+        errorCode: 'SERVICE_UNAVAILABLE',
+        message: errorBody.message,
+        correlationId: errorBody.correlationId,
+        body: errorBody,
+      });
+      expect(debugSpy).not.toHaveBeenCalled();
+      expect(warnSpy).not.toHaveBeenCalled();
+    },
+  );
+
   it('returns status and headers for manual redirect responses', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(null, {
