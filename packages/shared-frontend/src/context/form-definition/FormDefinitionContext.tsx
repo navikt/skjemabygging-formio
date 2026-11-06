@@ -34,6 +34,7 @@ interface FormDefinitionStore {
 }
 
 const FormDefinitionContext = createContext<FormDefinitionStore | undefined>(undefined);
+FormDefinitionContext.displayName = 'FormDefinitionContext';
 
 const reuseActiveComponentReferences = <T extends Component>(previous: T[], next: T[]): T[] => {
   if (previous.length !== next.length) {
