@@ -42,6 +42,21 @@ describe('PhoneNumber', () => {
         });
     });
 
+    it('should preserve the selected country code while entering a number and navigating', () => {
+      cy.findByRole('textbox', { name: /^Telefonnummer$/ }).type('12345678');
+      cy.findByRole('combobox', { name: 'Landskode' }).select('+46');
+      cy.findByRole('textbox', { name: 'Telefonnummer med landkode' }).type('12345678');
+      cy.findByRole('combobox', { name: 'Landskode' }).should('have.value', '+46');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Validering' }).should('exist');
+      cy.clickPreviousStep();
+
+      cy.findByRole('heading', { name: 'Visning' }).should('exist');
+      cy.findByRole('combobox', { name: 'Landskode' }).should('have.value', '+46');
+      cy.findByRole('textbox', { name: 'Telefonnummer med landkode' }).should('have.value', '12345678');
+    });
+
     it('should keep country code and phone number on one line on a narrow screen', () => {
       cy.viewport(320, 800);
       cy.contains('label', 'Telefonnummer med landkode')
