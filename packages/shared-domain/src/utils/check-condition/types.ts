@@ -51,14 +51,6 @@ type EvaluateFunction = (
   tokenize?: boolean,
 ) => ConditionResult;
 
-type OriginalCheckCondition = (
-  component: Partial<Component>,
-  row: ConditionRow,
-  data: ConditionData | undefined,
-  form?: Form,
-  instance?: ConditionComponent,
-) => boolean;
-
 type ConditionComponent = Partial<Component> & {
   data?: ConditionInstanceData;
   parent?: ConditionComponent;
@@ -85,5 +77,4 @@ export type {
   ConditionRow,
   ConditionUtils,
   EvaluateFunction,
-  OriginalCheckCondition,
 };
