@@ -7,6 +7,7 @@ interface Props {
 }
 
 const RuntimeServicesContext = createContext<RuntimeServices | undefined>(undefined);
+RuntimeServicesContext.displayName = 'RuntimeServicesContext';
 
 const RuntimeServicesProvider = ({ children, services }: Props) => (
   <RuntimeServicesContext.Provider value={services}>{children}</RuntimeServicesContext.Provider>

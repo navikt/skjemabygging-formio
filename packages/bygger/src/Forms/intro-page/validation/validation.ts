@@ -1,4 +1,12 @@
-import { IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPage, supportedIntroPageSectionKeys } from '@navikt/skjemadigitalisering-shared-domain';
+
+const errorMessages = {
+  introduction: 'Velkomstmelding må fylles ut',
+  title: 'Overskrift må fylles ut',
+  description: 'Ingress må fylles ut',
+  bulletPoint: 'Kulepunktet må fylles ut',
+  importantInformationDescription: 'Brødtekst må fylles ut',
+} as const;
 
 export type BulletPointErrors = Record<number, string>;
 
@@ -25,7 +33,7 @@ export function validateIntroPage(
   getKeybasedText?: (value: string) => string,
 ): IntroPageError {
   const hasEmptyValue = (text?: string): boolean =>
-    text !== undefined && (text.trim() === '' || (!!getKeybasedText && !getKeybasedText(text)));
+    text !== undefined && (text.trim() === '' || (!!getKeybasedText && !getKeybasedText(text).trim()));
 
   if (!introPage) return {};
 
@@ -37,7 +45,7 @@ export function validateIntroPage(
   const fieldWithoutDescription = ['dataDisclosure'];
 
   if (introPage.introduction === undefined || hasEmptyValue(introPage.introduction)) {
-    errors.introduction = 'Velkomstmelding må fylles ut';
+    errors.introduction = errorMessages.introduction;
   }
 
   if (!introPage.selfDeclaration?.trim()) {
@@ -55,17 +63,17 @@ export function validateIntroPage(
       (!fieldsWithoutTitle.includes(sectionKey) && !section?.title?.trim()) ||
       (fieldsWithTextFieldTitle.includes(sectionKey) && hasEmptyValue(section.title))
     ) {
-      sectionErrors.title = 'Overskrift må fylles ut';
+      sectionErrors.title = errorMessages.title;
     }
 
     if (!fieldWithoutDescription.includes(sectionKey) && hasEmptyValue(section?.description)) {
-      sectionErrors.description = 'Ingress må fylles ut';
+      sectionErrors.description = errorMessages.description;
     }
 
     if (Array.isArray(section?.bulletPoints)) {
       section.bulletPoints.forEach((bp: string, index: number) => {
         if (hasEmptyValue(bp)) {
-          bulletPointErrors[index] = 'Kulepunktet må fylles ut';
+          bulletPointErrors[index] = errorMessages.bulletPoint;
         }
       });
 
@@ -93,45 +101,24 @@ export function validateIntroPage(
     return Object.keys(sectionErrors).length > 0 ? sectionErrors : undefined;
   };
 
-  const requiredSections: (keyof IntroPage['sections'])[] = [];
-  const optionalSections: (keyof IntroPage['sections'])[] = [
-    'prerequisites',
-    'scope',
-    'outOfScope',
-    'dataDisclosure',
-    'optional',
-    'automaticProcessing',
-  ];
-
-  const validateSections = (sectionKeys: (keyof IntroPage['sections'])[], optional = false) => {
-    for (const sectionKey of sectionKeys) {
-      const section = introPage.sections?.[sectionKey];
-      if (!optional || (optional && section)) {
-        const sectionErrors = validateSection(section, sectionKey);
-        if (sectionErrors) {
-          if (!errors.sections) errors.sections = {};
-          errors.sections[sectionKey] = sectionErrors;
-        }
-      }
+  supportedIntroPageSectionKeys.forEach((sectionKey) => {
+    const section = introPage.sections?.[sectionKey];
+    const sectionErrors = section && validateSection(section, sectionKey);
+    if (sectionErrors) {
+      errors.sections = { ...errors.sections, [sectionKey]: sectionErrors };
     }
-  };
-
-  validateSections(requiredSections);
-  validateSections(optionalSections, true);
+  });
 
   if (introPage.importantInformation) {
     const importantErrors: NonNullable<IntroPageError['importantInformation']> = {};
-    if (
-      hasEmptyValue(introPage.importantInformation.description) &&
-      hasEmptyValue(introPage.importantInformation.title)
-    ) {
-      importantErrors.title = 'Overskrift må fylles ut';
+    if (hasEmptyValue(introPage.importantInformation.title)) {
+      importantErrors.title = errorMessages.title;
     }
     if (
       introPage.importantInformation.description === undefined ||
       hasEmptyValue(introPage.importantInformation.description)
     ) {
-      importantErrors.description = 'Brødtekst må fylles ut';
+      importantErrors.description = errorMessages.importantInformationDescription;
     }
     if (Object.keys(importantErrors).length > 0) {
       errors.importantInformation = importantErrors;
