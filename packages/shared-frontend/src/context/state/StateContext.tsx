@@ -21,6 +21,7 @@ interface FieldStateStore {
 }
 
 const StateContext = createContext<FieldStateStore | undefined>(undefined);
+StateContext.displayName = 'StateContext';
 
 interface Props {
   store: FieldStateStore;

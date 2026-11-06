@@ -26,6 +26,7 @@ const getTitle = (title: string, number: string) => {
   return stringUtils.normalizeUnicode(`${number} ${title}`);
 };
 
+// The cover page service only supports NB, NN and EN, so Sami defaults to Norwegian Bokmål.
 const parseLanguage = (language: string) => {
   switch (language) {
     case 'nn':
@@ -35,6 +36,7 @@ const parseLanguage = (language: string) => {
     case 'nb':
     case 'NB':
     case 'nb-NO':
+    case 'se':
       return 'NB';
     default:
       return 'EN';
