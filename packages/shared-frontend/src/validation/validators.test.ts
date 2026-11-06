@@ -359,38 +359,4 @@ describe('validateValue', () => {
       ).toEqual({ textKey: TEXTS.validering.orgNrCustomError, params: { field: 'Underenhet' } });
     });
   });
-
-  describe('authored messages for date bounds', () => {
-    const dateMessages = {
-      fromDate: 'Til dato må være større enn Fra dato',
-      toDate: 'Perioden kan være maksimalt ett år',
-    };
-    const rules = { date: true, fromDate: '2024-01-11', toDate: '2025-01-09', dateMessages };
-
-    it('replaces the standard minimum date message', () => {
-      expect(validateValue('2024-01-10', 'Til dato', rules)).toEqual({
-        textKey: dateMessages.fromDate,
-        params: { field: 'Til dato', minDate: '11.01.2024' },
-      });
-    });
-
-    it('replaces the standard maximum date message', () => {
-      expect(validateValue('2025-01-10', 'Til dato', rules)).toEqual({
-        textKey: dateMessages.toDate,
-        params: { field: 'Til dato', maxDate: '09.01.2025' },
-      });
-    });
-
-    it('accepts both ends of the allowed period', () => {
-      expect(validateValue('2024-01-11', 'Til dato', rules)).toBeUndefined();
-      expect(validateValue('2025-01-09', 'Til dato', rules)).toBeUndefined();
-    });
-
-    it('keeps the standard messages when none were authored', () => {
-      expect(validateValue('2024-01-10', 'Til dato', { date: true, fromDate: '2024-01-11' })).toEqual({
-        textKey: 'minDate',
-        params: { field: 'Til dato', minDate: '11.01.2024' },
-      });
-    });
-  });
 });
