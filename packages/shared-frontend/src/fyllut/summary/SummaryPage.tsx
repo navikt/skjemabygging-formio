@@ -16,7 +16,7 @@ import { useValidationActions, useValidationErrorsForPages } from '../../context
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { inputId } from '../../utils/inputId';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
-import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY } from '../form-flow/constants';
+import { APPLICATION_DOWNLOAD_KEY, INTRO_KEY, PAPER_SUBMISSION_KEY } from '../form-flow/constants';
 import { useFormNavigation } from '../form-flow/useFormNavigation';
 import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
@@ -41,7 +41,10 @@ const SummaryPage = () => {
   const isNoSubmissionFlow =
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
-  const validationPageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
+  const validationPageKeys = useMemo(
+    () => [...(form.introPage?.enabled ? [INTRO_KEY] : []), ...panels.map((panel) => panel.key)],
+    [form.introPage?.enabled, panels],
+  );
   const validationErrors = useValidationErrorsForPages(validationPageKeys);
   const panelValidationList = useMemo<PanelValidation[]>(
     () =>
