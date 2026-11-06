@@ -26,15 +26,6 @@ interface NotEqualRule {
   comparison: 'strict' | 'string';
 }
 
-/**
- * Messages that replace the standard `minDate`/`maxDate` wording for the bounds in the same rule
- * set, for the few authored constraints that came with their own wording.
- */
-interface DateMessages {
-  fromDate?: string;
-  toDate?: string;
-}
-
 interface ValidationRules {
   required?: boolean;
   /** Replaces the standard required message, for a field whose own wording says what is missing. */
@@ -54,7 +45,6 @@ interface ValidationRules {
   date?: boolean;
   fromDate?: string;
   toDate?: string;
-  dateMessages?: DateMessages;
   month?: boolean;
   monthMinYear?: number;
   monthMaxYear?: number;
@@ -227,13 +217,13 @@ const validateValue = (
     }
     if (rules.fromDate && dateUtils.isBeforeDate(normalizedDate, rules.fromDate)) {
       return {
-        textKey: rules.dateMessages?.fromDate ?? 'minDate',
+        textKey: 'minDate',
         params: { field, minDate: dateUtils.toLocaleDate(rules.fromDate) },
       };
     }
     if (rules.toDate && dateUtils.isBeforeDate(rules.toDate, normalizedDate)) {
       return {
-        textKey: rules.dateMessages?.toDate ?? 'maxDate',
+        textKey: 'maxDate',
         params: { field, maxDate: dateUtils.toLocaleDate(rules.toDate) },
       };
     }
@@ -305,4 +295,4 @@ const validateValue = (
 };
 
 export { validateValue };
-export type { DateMessages, NotEqualRule, PatternRule, RuleViolation, ValidationOptions, ValidationRules };
+export type { NotEqualRule, PatternRule, RuleViolation, ValidationOptions, ValidationRules };

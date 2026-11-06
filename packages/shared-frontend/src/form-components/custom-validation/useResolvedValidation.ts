@@ -1,7 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { FieldValidationProp } from '../../components/types';
-import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useFieldStateValue } from '../../context/state/StateContext';
 import { useSubmissionActions } from '../../context/state/SubmissionStateContext';
 import { resolveValidation } from '../inputComponentUtils';
@@ -19,22 +18,18 @@ import { getCustomValidationDependencyPath, resolveCustomValidationRules } from 
  */
 const useResolvedValidation = (component: Component): FieldValidationProp => {
   const { getLatestSubmission } = useSubmissionActions();
-  const { components: formComponents } = useFormDefinitionForm();
-  const dependencyPath = useMemo(
-    () => getCustomValidationDependencyPath(component, formComponents),
-    [component, formComponents],
-  );
+  const dependencyPath = useMemo(() => getCustomValidationDependencyPath(component), [component]);
   const dependencyValue = useFieldStateValue(dependencyPath ?? '', dependencyPath !== undefined);
 
   return useMemo(
     () => ({
       ...resolveValidation(component),
-      ...resolveCustomValidationRules(component, { submission: getLatestSubmission(), formComponents }),
+      ...resolveCustomValidationRules(component, { submission: getLatestSubmission() }),
     }),
     // `dependencyValue` is the one value the custom rules read. It is not used directly, but tells
     // React when to rebuild the rules from the latest submission.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [component, dependencyValue, formComponents, getLatestSubmission],
+    [component, dependencyValue, getLatestSubmission],
   );
 };
 
