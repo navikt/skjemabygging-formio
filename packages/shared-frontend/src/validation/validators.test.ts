@@ -172,6 +172,22 @@ describe('validateValue', () => {
       textKey: TEXTS.validering.invalidPostalCode,
       params: { field: 'Postnummer' },
     });
+    expect(validateValue('-123', 'Postnummer', { postalCode: true })).toEqual({
+      textKey: TEXTS.validering.invalidPostalCode,
+      params: { field: 'Postnummer' },
+    });
+  });
+
+  it('accepts only digits when the field is limited to digits', () => {
+    expect(validateValue('0123', 'HMS-artikkelnummer', { digitsOnly: true })).toBeUndefined();
+    expect(validateValue('-123', 'HMS-artikkelnummer', { digitsOnly: true })).toEqual({
+      textKey: TEXTS.validering.digitsOnly,
+      params: { field: 'HMS-artikkelnummer' },
+    });
+    expect(validateValue('12a', 'HMS-artikkelnummer', { digitsOnly: true })).toEqual({
+      textKey: TEXTS.validering.digitsOnly,
+      params: { field: 'HMS-artikkelnummer' },
+    });
   });
 
   it('validates account number values', () => {
@@ -226,6 +242,14 @@ describe('validateValue', () => {
     ).toBeUndefined();
     expect(
       validateValue('12ab5678', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.digitsOnly,
+      params: { field: 'Telefonnummer' },
+    });
+    expect(
+      validateValue('-1234567', 'Telefonnummer', {
         phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toEqual({
