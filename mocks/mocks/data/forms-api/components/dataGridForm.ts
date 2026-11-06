@@ -32,7 +32,7 @@ const dataGridForm = () => {
             key: 'datagrid3',
             addAnother: 'Legg til periode',
             removeAnother: 'Fjern periode',
-            validate: { maxLength: '3' },
+            validate: { maxLength: 3 },
             components: [textField({ label: 'Periode' })],
           }),
         ],

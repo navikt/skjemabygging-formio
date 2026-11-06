@@ -123,7 +123,6 @@ export {
   getValues,
   isRequired,
   resolveFieldSize,
-  resolveNumericConstraint,
   resolvePattern,
   resolveReadMore,
   resolveSelectType,
