@@ -126,6 +126,14 @@ describe('validateValue', () => {
     });
   });
 
+  it('validates email addresses without surrounding whitespace', () => {
+    expect(validateValue(' ola@nav.no ', 'Email', { email: true })).toBeUndefined();
+    expect(validateValue('ola@nav.no.', 'Email', { email: true })).toEqual({
+      textKey: TEXTS.validering.invalid_email,
+      params: { field: 'Email' },
+    });
+  });
+
   it('validates organization number values', () => {
     expect(validateValue('889640782', 'Organization number', { organizationNumber: true })).toBeUndefined();
     expect(validateValue('889 640 782', 'Organization number', { organizationNumber: true })).toBeUndefined();
