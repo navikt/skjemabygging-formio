@@ -1,5 +1,10 @@
 import { Heading } from '@navikt/ds-react';
-import { SubmissionMethod, TranslateFunction, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  SubmissionMethod,
+  TranslateFunction,
+  dateUtils,
+  introPageTexts,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import IntroBulletPoints from './IntroBulletPoints';
 
 interface Props {
@@ -12,21 +17,21 @@ interface Props {
 const BeAwareOf = ({ tokenExp, translate, submissionMethod, className }: Props) => {
   const tokenExpirationTime = tokenExp ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenExp) : 'XX.XX';
   const values = [
-    ...(submissionMethod === 'paper' ? ['introPage.beAwareOf.sendByMail', 'introPage.beAwareOf.timeLimit'] : []),
+    ...(submissionMethod === 'paper' ? [introPageTexts.beAwareOf.sendByMail, introPageTexts.beAwareOf.timeLimit] : []),
     ...(submissionMethod === 'digitalnologin'
       ? [
-          { key: 'introPage.beAwareOf.timeLimitNologin', params: { tokenExpirationTime } },
-          'introPage.beAwareOf.notSave',
+          { key: introPageTexts.beAwareOf.timeLimitNologin, params: { tokenExpirationTime } },
+          introPageTexts.beAwareOf.notSave,
         ]
       : []),
-    'introPage.beAwareOf.mandatoryFields',
-    'introPage.beAwareOf.useOfPublicComputers',
+    introPageTexts.beAwareOf.mandatoryFields,
+    introPageTexts.beAwareOf.useOfPublicComputers,
   ];
 
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>
-        {translate('introPage.beAwareOf.title')}
+        {translate(introPageTexts.beAwareOf.title)}
       </Heading>
       <IntroBulletPoints
         values={values.map((value) =>

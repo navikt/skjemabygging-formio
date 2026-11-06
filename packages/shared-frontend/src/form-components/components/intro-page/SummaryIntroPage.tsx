@@ -1,5 +1,5 @@
 import { FormSummary } from '@navikt/ds-react';
-import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts, Submission, TEXTS, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 
@@ -17,7 +17,7 @@ const SummaryIntroPage = (props: Props) => {
     return null;
   }
 
-  const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
+  const inputLabel = introPageTexts.selfDeclaration.inputLabel;
 
   return (
     <FormSummary>
