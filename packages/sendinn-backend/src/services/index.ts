@@ -1,8 +1,8 @@
 import { fetchDecoratorHtml } from '@navikt/nav-dekoratoren-moduler/ssr';
 import {
+  createContentService,
   createDecorator,
   createIdportenAuth,
-  createPublishedTranslationService,
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { sendinnLanguageUtils } from '@navikt/skjemadigitalisering-shared-domain';
@@ -13,7 +13,7 @@ import { logger } from '../logger';
 const metricsRegister = new Registry();
 collectDefaultMetrics({ register: metricsRegister });
 
-const publishedTranslationService = createPublishedTranslationService({ baseUrl: config.formsApiUrl });
+const contentService = createContentService({ baseUrl: config.formsApiUrl, source: config.contentSource });
 
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
@@ -38,4 +38,4 @@ const decorator = createDecorator({
   },
 });
 
-export { decorator, idportenAuth, metricsRegister, publishedTranslationService, tokenxForInnsendingApi };
+export { contentService, decorator, idportenAuth, metricsRegister, tokenxForInnsendingApi };

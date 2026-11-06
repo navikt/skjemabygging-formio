@@ -53,8 +53,23 @@ const convertI18nTranslationsToFormsApiTranslationMap = (
   return result;
 };
 
+type TranslationDictionaries = Partial<Record<TranslationLang, Record<string, string>>>;
+
+// Builds one row per key, so every language for a key reaches convertToFormsApiTranslationMap together.
+const convertDictionariesToFormsApiTranslations = (dictionaries: TranslationDictionaries): FormsApiTranslation[] => {
+  const rows = new Map<string, FormsApiTranslation>();
+  for (const [languageCode, translations] of Object.entries(dictionaries)) {
+    for (const [key, value] of Object.entries(translations)) {
+      rows.set(key, { ...rows.get(key), key, [languageCode]: value });
+    }
+  }
+  return [...rows.values()];
+};
+
 export {
+  convertDictionariesToFormsApiTranslations,
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,
   getGlobalTranslationFilename,
 };
+export type { TranslationDictionaries };
