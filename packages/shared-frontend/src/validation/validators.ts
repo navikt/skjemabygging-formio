@@ -84,6 +84,8 @@ interface ValidationOptions {
   allowTestTypes?: boolean;
 }
 
+const isDigitsOnly = (value: string) => /^\d+$/.test(value);
+
 const isEqualToRuleValue = (value: unknown, rule: NotEqualRule): boolean => {
   const other: unknown = rule.value;
   return rule.comparison === 'string' ? (String(value) as unknown) === other : value === other;
@@ -124,7 +126,7 @@ const validateValue = (
       return undefined;
     }
 
-    if (!/^\d+$/.test(value.trim())) {
+    if (!isDigitsOnly(value.trim())) {
       return {
         textKey: TEXTS.validering.validParkingExpenses,
         params: { dato: dateUtils.toLocaleDate(rules.drivingListParkingExpense.date) },
@@ -168,7 +170,7 @@ const validateValue = (
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
     return { textKey: TEXTS.validering.containsInvalidCharacters, params: { field } };
   }
-  if (rules.postalCode && typeof value === 'string' && (value.length !== 4 || !numberUtils.isValidInteger(value))) {
+  if (rules.postalCode && typeof value === 'string' && (value.length !== 4 || !isDigitsOnly(value))) {
     return { textKey: TEXTS.validering.invalidPostalCode, params: { field } };
   }
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
@@ -180,7 +182,7 @@ const validateValue = (
   if (rules.iban && typeof value === 'string') {
     return toIbanViolation(value, field);
   }
-  if (rules.digitsOnly && typeof value === 'string' && !numberUtils.isValidInteger(value)) {
+  if (rules.digitsOnly && typeof value === 'string' && !isDigitsOnly(value)) {
     return { textKey: TEXTS.validering.digitsOnly, params: { field } };
   }
   if (
@@ -197,7 +199,7 @@ const validateValue = (
     const { showAreaCode, countryCallingCode } = rules.phoneNumber;
 
     if (showAreaCode && countryCallingCode === '+47') {
-      if (!numberUtils.isValidInteger(value)) {
+      if (!isDigitsOnly(value)) {
         return { textKey: TEXTS.validering.digitsOnly, params: { field } };
       }
       if (value.length !== 8) {
