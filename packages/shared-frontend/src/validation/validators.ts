@@ -1,6 +1,7 @@
 import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
 import { getMonthLocale } from '../components/date/dateFieldUtils';
+import { isValidEmailAddress } from '../components/email/emailAddressUtils';
 
 /**
  * An authored regular expression the value must match, with the message the author wrote for it.
@@ -161,7 +162,7 @@ const validateValue = (
       params: { field, pattern: rules.pattern.expression },
     };
   }
-  if (rules.email && typeof value === 'string' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+  if (rules.email && typeof value === 'string' && !isValidEmailAddress(value.trim())) {
     return { textKey: TEXTS.validering.invalid_email, params: { field } };
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
