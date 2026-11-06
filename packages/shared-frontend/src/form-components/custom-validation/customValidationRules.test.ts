@@ -18,7 +18,6 @@ const notEqualComponent = {
   validate: { custom: "valid = (input !== data.first) ? true : 'Must differ'" },
 } as Component;
 
-const fromDateComponent = { key: 'from', type: 'navDatepicker', input: true } as Component;
 const toDateComponent = {
   key: 'to',
   type: 'navDatepicker',
@@ -32,20 +31,17 @@ const fullSubmission: Submission = {
 };
 
 describe('getCustomValidationDependencyPath', () => {
-  it.each([
-    { name: 'notEqual', component: notEqualComponent, dependencyPath: 'first', dependencyValue: 'same' },
-    { name: 'datePeriod', component: toDateComponent, dependencyPath: 'from', dependencyValue: '2026-01-10' },
-  ])('$name rules only read the dependency path', ({ component, dependencyPath, dependencyValue }) => {
-    const formComponents = [notEqualComponent, fromDateComponent, toDateComponent];
-    const onlyDependency: Submission = { data: { [dependencyPath]: dependencyValue } };
-    const fullRules = resolveCustomValidationRules(component, { submission: fullSubmission, formComponents });
+  it('notEqual rules only read the dependency path', () => {
+    const onlyDependency: Submission = { data: { first: 'same' } };
+    const fullRules = resolveCustomValidationRules(notEqualComponent, { submission: fullSubmission });
 
-    expect(getCustomValidationDependencyPath(component, formComponents)).toBe(dependencyPath);
+    expect(getCustomValidationDependencyPath(notEqualComponent)).toBe('first');
     expect(fullRules).not.toEqual({});
-    expect(resolveCustomValidationRules(component, { submission: onlyDependency, formComponents })).toEqual(fullRules);
+    expect(resolveCustomValidationRules(notEqualComponent, { submission: onlyDependency })).toEqual(fullRules);
   });
 
-  it('has no dependency without recognized custom rules', () => {
-    expect(getCustomValidationDependencyPath(fromDateComponent, [fromDateComponent])).toBeUndefined();
+  it('ignores a date picker script, which the old renderer never ran', () => {
+    expect(getCustomValidationDependencyPath(toDateComponent)).toBeUndefined();
+    expect(resolveCustomValidationRules(toDateComponent, { submission: fullSubmission })).toEqual({});
   });
 });

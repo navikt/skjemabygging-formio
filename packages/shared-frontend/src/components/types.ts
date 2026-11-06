@@ -27,7 +27,7 @@ type TextFieldValidation = Pick<
 
 type TextAreaValidation = Pick<FieldValidationProp, 'minLength' | 'maxLength' | 'pattern' | 'notEqual'>;
 type ChoiceValidation = Pick<FieldValidationProp, 'minLength' | 'maxLength' | 'pattern' | 'notEqual'>;
-type DatePickerValidation = Pick<FieldValidationProp, 'fromDate' | 'toDate' | 'dateMessages'>;
+type DatePickerValidation = Pick<FieldValidationProp, 'fromDate' | 'toDate'>;
 type MonthPickerValidation = Pick<FieldValidationProp, 'monthMinYear' | 'monthMaxYear'>;
 type PhoneNumberValidation = Pick<FieldValidationProp, 'minLength' | 'maxLength' | 'pattern' | 'notEqual'>;
 
