@@ -90,7 +90,7 @@ describe('Your information', () => {
         });
 
         it('Lives abroad', () => {
-          cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+          cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('not.exist');
           cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'John');
           cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Doe');
           cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '068825 49354');
@@ -168,12 +168,12 @@ describe('Your information', () => {
     });
 
     it('Social security number', () => {
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
         cy.findByLabelText('Ja').check(),
       );
       cy.get('.aksel-alert').should('have.length', 1);
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('not.exist');
 
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Navn' }).should('exist');
@@ -181,7 +181,7 @@ describe('Your information', () => {
 
     describe('No social security number', () => {
       beforeEach(() => {
-        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
+        cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
           cy.findByLabelText('Nei').check(),
         );
       });
@@ -193,7 +193,7 @@ describe('Your information', () => {
 
       it('Lives abroad', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
         cy.findByRole('textbox', { name: 'Vegnavn og husnummer, eller postboks' }).type('Testveien 1C');
@@ -213,10 +213,10 @@ describe('Your information', () => {
 
       it('Lives in Norway with address', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
-          cy.findByLabelText('Vegadresse').check(),
+        cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(
+          ($radio) => cy.findByLabelText('Vegadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
@@ -237,10 +237,10 @@ describe('Your information', () => {
 
       it('Lives in Norway with po address', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
-          cy.findByLabelText('Postboksadresse').check(),
+        cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(
+          ($radio) => cy.findByLabelText('Postboksadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
@@ -279,7 +279,7 @@ describe('Your information', () => {
               ).should('contain.text', 'Du må fylle ut: Fødselsdato (dd.mm.åååå)');
             });
 
-          cy.findByRole('group', { name: 'Bor du i Norge?' })
+          cy.findByRole('radiogroup', { name: 'Bor du i Norge?' })
             .should('exist')
             .within(() => {
               cy.findByRole('radio', { name: 'Ja' })
@@ -303,19 +303,19 @@ describe('Your information', () => {
               cy.findAllByRole('link', { name: /^Du må fylle ut: .*/ }).should('have.length', 2);
               cy.findByRole('link', { name: 'Du må fylle ut: Bor du i Norge?' }).should('exist').click();
             });
-          cy.findByRole('group', { name: 'Bor du i Norge?' }).should('have.focus');
+          cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('have.focus');
         });
       });
 
       describe('Validation of Street address or Po radio', () => {
         beforeEach(() => {
           cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-          cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+          cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
           cy.clickNextStep();
         });
 
         it('Shows validation message beneath radio', () => {
-          cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
+          cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
             .should('exist')
             .within(() => {
               cy.findByRole('radio', { name: 'Postboksadresse' })
@@ -343,7 +343,7 @@ describe('Your information', () => {
                 .should('exist')
                 .click();
             });
-          cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).should(
+          cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).should(
             'have.focus',
           );
         });
@@ -358,16 +358,16 @@ describe('Your information', () => {
         cy.defaultWaits();
         startFromIntroPage();
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
-        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
+        cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
           cy.findByLabelText('Nei').check(),
         );
       });
 
       it('validates invalid characters for Norwegian street address fields', () => {
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
-          cy.findByLabelText('Vegadresse').check(),
+        cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(
+          ($radio) => cy.findByLabelText('Vegadresse').check(),
         );
 
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
@@ -404,10 +404,10 @@ describe('Your information', () => {
       });
 
       it('validates invalid characters for Norwegian PO box address fields', () => {
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
-          cy.findByLabelText('Postboksadresse').check(),
+        cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(
+          ($radio) => cy.findByLabelText('Postboksadresse').check(),
         );
 
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
@@ -444,7 +444,7 @@ describe('Your information', () => {
       });
 
       it('validates invalid characters for Foreign address fields', () => {
-        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
+        cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
 
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
         cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann #<}');
@@ -500,9 +500,9 @@ describe('Your information', () => {
       });
 
       it('renders validation messages in error summary when no ssn', () => {
-        cy.findByRole('group', { name: 'Do you have a Norwegian national identification number or d number?' }).within(
-          () => cy.findByLabelText('No').check(),
-        );
+        cy.findByRole('radiogroup', {
+          name: 'Do you have a Norwegian national identification number or d number?',
+        }).within(() => cy.findByLabelText('No').check());
 
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]')
@@ -518,9 +518,9 @@ describe('Your information', () => {
       });
 
       it('renders validation messages in error summary when ssn', () => {
-        cy.findByRole('group', { name: 'Do you have a Norwegian national identification number or d number?' }).within(
-          () => cy.findByLabelText('Yes').check(),
-        );
+        cy.findByRole('radiogroup', {
+          name: 'Do you have a Norwegian national identification number or d number?',
+        }).within(() => cy.findByLabelText('Yes').check());
 
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]')

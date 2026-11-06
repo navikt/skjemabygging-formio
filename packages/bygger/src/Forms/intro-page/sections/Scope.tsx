@@ -1,6 +1,6 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { FieldsetErrorMessage, Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
@@ -36,11 +36,11 @@ export function Scope({ form, handleChange, errors, refMap }: Props) {
             onChange={(value) => updateSection(form, 'scope', 'title', value, handleChange)}
             error={errors?.sections?.scope?.title}
           >
-            <Radio value="introPage.scope.title.alt1" ref={refMap['sections.scope.title']}>
+            <Radio value={introPageTexts.scope.titles[0]} ref={refMap['sections.scope.title']}>
               Her kan du søke om
             </Radio>
-            <Radio value="introPage.scope.title.alt2">Her kan du melde om</Radio>
-            <Radio value="introPage.scope.title.alt3">Her kan du</Radio>
+            <Radio value={introPageTexts.scope.titles[1]}>Her kan du melde om</Radio>
+            <Radio value={introPageTexts.scope.titles[2]}>Her kan du</Radio>
           </RadioGroup>
           <IngressBulletPointRow
             field="scope"
