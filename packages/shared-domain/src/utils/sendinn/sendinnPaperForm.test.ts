@@ -184,6 +184,31 @@ describe('convertToSendinnPaperForm', () => {
     ]);
   });
 
+  it('converts legacy other-documentation definitions with values instead of attachmentValues', () => {
+    const source = createSource();
+    const legacyAttachment = getAttachments(source)[1];
+    delete legacyAttachment.attachmentType;
+    legacyAttachment.otherDocumentation = true;
+    legacyAttachment.values = [
+      { value: 'leggerVedNaa', label: 'I am enclosing the document' },
+      { value: 'ettersender', label: 'I will submit the document later' },
+    ];
+
+    const form = convert(source, 'N6');
+    const submission = { data: { sendinnAttachment2: { otherDocumentation: 'leggerVedNaa' } } };
+
+    expect(getAttachments(form)[0].attachmentValues).toEqual({ leggerVedNaa: { enabled: true } });
+    expect(attachmentUtils.resolveSubmissionAttachments(form, submission)).toEqual([
+      {
+        attachmentId: 'other-document-id',
+        navId: 'other-document-id',
+        type: 'other',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+    ]);
+  });
+
   it('keeps duplicate source keys and collection-name collisions in distinct stable attachment paths', () => {
     const source = createSource();
     const originals = getAttachments(source);

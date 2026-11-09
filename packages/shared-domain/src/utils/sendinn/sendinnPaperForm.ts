@@ -1,5 +1,6 @@
 import { Component, Form, Panel } from '../../models';
 import { TEXTS } from '../../texts';
+import { createAttachmentCodeFilter } from '../attachment/attachmentCodeFilter';
 import { flattenComponents } from '../form/componentUtil';
 import { createSendinnPaperCollection } from './sendinnPaperCollection';
 
@@ -39,11 +40,11 @@ const createPanel = (key: string, label: string, components: Component[]): Panel
 const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPaperFormContext): Form => {
   const form = structuredClone(source);
   const collection = createSendinnPaperCollection(form.properties);
-  const allowedCodes = new Set(attachmentFilter);
+  const matchesAttachmentCode = createAttachmentCodeFilter(attachmentFilter);
   const attachments = flattenComponents(form.components)
     .filter((component) => component.type === 'attachment')
     .flatMap((component, index): Component[] =>
-      allowedCodes.size === 0 || allowedCodes.has(component.properties?.vedleggskode?.trim() ?? '')
+      matchesAttachmentCode(component)
         ? [
             {
               type: 'container',
