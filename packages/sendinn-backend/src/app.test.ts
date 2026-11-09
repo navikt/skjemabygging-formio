@@ -2,11 +2,11 @@ import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import request from 'supertest';
 import { createApp } from './app';
 
-const { getDecoratorMock, getGlobalTranslationsMock, getFormMock, getNavUnitsMock } = vi.hoisted(() => ({
+const { getDecoratorMock, getGlobalTranslationsMock, getFormMock, getSupportedNavUnitsMock } = vi.hoisted(() => ({
   getDecoratorMock: vi.fn(),
   getGlobalTranslationsMock: vi.fn(),
   getFormMock: vi.fn(),
-  getNavUnitsMock: vi.fn(),
+  getSupportedNavUnitsMock: vi.fn(),
 }));
 
 vi.mock('./services', async () => {
@@ -17,7 +17,7 @@ vi.mock('./services', async () => {
     metricsRegister: new Registry(),
     contentService: { getGlobalTranslations: getGlobalTranslationsMock },
     sendinnFormService: { getForm: getFormMock },
-    navUnitService: { getNavUnits: getNavUnitsMock },
+    navUnitService: { getSupportedNavUnits: getSupportedNavUnitsMock },
   };
 });
 
@@ -52,21 +52,21 @@ describe('sendinn-backend app', () => {
   describe('api', () => {
     it('serves Nav units through the composed shared service without accepting client lookup parameters', async () => {
       const units = [{ enhetNr: '0101', navn: 'Nav Test', type: 'LOKAL' }];
-      getNavUnitsMock.mockResolvedValue(units);
+      getSupportedNavUnitsMock.mockResolvedValue(units);
       const response = await request(createApp()).get('/sendinn/api/nav-units?unitTypes=HMS').expect(200);
       expect(response.body).toEqual(units);
       expect(response.headers['cache-control']).toBe('no-store');
-      expect(getNavUnitsMock).toHaveBeenCalledWith();
+      expect(getSupportedNavUnitsMock).toHaveBeenCalledWith();
     });
 
     it('preserves a correlated Nav unit dependency failure and recovers without an empty-success fallback', async () => {
-      getNavUnitsMock.mockRejectedValueOnce(
+      getSupportedNavUnitsMock.mockRejectedValueOnce(
         new ResponseError('SERVICE_UNAVAILABLE', 'Nav unit service unavailable', 'nav-unit-upstream'),
       );
       const response = await request(createApp()).get('/sendinn/api/nav-units').expect(503);
       expect(response.body).toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE', correlationId: 'nav-unit-upstream' });
       expect(response.headers['x-correlation-id']).toBe('nav-unit-upstream');
-      getNavUnitsMock.mockResolvedValue([]);
+      getSupportedNavUnitsMock.mockResolvedValue([]);
       expect((await request(createApp()).get('/sendinn/api/nav-units').expect(200)).body).toEqual([]);
     });
 

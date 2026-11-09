@@ -148,7 +148,7 @@ test.describe('Generated paper journey', () => {
     await expect(identity(page)).toHaveValue('');
   });
 
-  test('falls back to all successful units and never turns a lookup failure into success', async ({
+  test('falls back to all supported units and never turns a lookup failure into success', async ({
     readyPage: page,
     useRouteVariant,
   }) => {
