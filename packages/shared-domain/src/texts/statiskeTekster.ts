@@ -272,6 +272,7 @@ export const statiske = {
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
   },
   address: {
+    address: 'Adresse',
     livesInNorway: 'Bor du i Norge?',
     yourContactAddress: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',

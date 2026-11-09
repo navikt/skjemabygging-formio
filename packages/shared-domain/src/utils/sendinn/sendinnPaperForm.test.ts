@@ -299,7 +299,7 @@ describe('convertToSendinnPaperForm', () => {
     );
     const multiple = activeKeys(form, { collectionType: 'multiple-people', hasNavContact: 'ja' });
     expect(multiple).toContain('navUnit');
-    expect(multiple).not.toContain('yourInformation');
+    expect(multiple).not.toContain('dineOpplysninger');
     expect(multiple).not.toContain('hasNavContact');
     expect(multiple).not.toContain('navContactUnit');
     const units = flattenComponents(form.components).filter(({ type }) => type === 'navUnitSelect');
@@ -329,7 +329,7 @@ describe('convertToSendinnPaperForm', () => {
     },
   ])('resolves $collectionType through the existing party resolver', ({ collectionType, information, expected }) => {
     const form = convert();
-    const data = { collectionType, yourInformation: information };
+    const data = { collectionType, dineOpplysninger: information };
     expect(resolveParty(getActiveForm(form, data), { data })).toMatchObject({ onBehalfOf: 'self', user: expected });
     const multipleData = { ...data, collectionType: 'multiple-people', navUnit: '1234' };
     expect(resolveParty(getActiveForm(form, multipleData), { data: multipleData })).toBeUndefined();

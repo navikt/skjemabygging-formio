@@ -1,4 +1,5 @@
-import { Component, Form, Panel } from '../../models';
+import { createContainer, createPanel } from '../../form-components';
+import { Component, Form } from '../../models';
 import { TEXTS } from '../../texts';
 import { createAttachmentCodeFilter } from '../attachment/attachmentCodeFilter';
 import { flattenComponents } from '../form/componentUtil';
@@ -25,13 +26,8 @@ const toSendinnAttachment = (source: Component): Component => ({
   attachmentValues: { leggerVedNaa: { enabled: true } },
 });
 
-const createPanel = (key: string, label: string, components: Component[]): Panel => ({
-  type: 'panel',
-  key,
-  label,
-  title: label,
-  components,
-});
+const createSendinnPanel = (key: string, label: string, components: Component[]): Component =>
+  createPanel({ key, label, title: label, components });
 
 /**
  * Both server paths must pass the same normalized filter. Eligibility is checked against the
@@ -46,21 +42,20 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
     .flatMap((component, index): Component[] =>
       matchesAttachmentCode(component)
         ? [
-            {
-              type: 'container',
+            createContainer({
               // Keep source keys intact without colliding with collection fields or other source scopes.
               key: `sendinnAttachment${index + 1}`,
               label: '',
-              input: true,
-              tree: true,
               components: [toSendinnAttachment(component)],
-            },
+            }),
           ]
         : [],
     );
   const components = [
-    ...(collection.length ? [createPanel('sendinnCollection', TEXTS.statiske.identity.submissionFor, collection)] : []),
-    createPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
+    ...(collection.length
+      ? [createSendinnPanel('sendinnCollection', TEXTS.statiske.identity.submissionFor, collection)]
+      : []),
+    createSendinnPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
   ];
 
   return {

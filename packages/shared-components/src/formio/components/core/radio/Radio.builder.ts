@@ -1,3 +1,4 @@
+import { createRadioPanel } from '@navikt/skjemadigitalisering-shared-domain';
 import Radio from './Radio';
 
 const radioBuilder = () => {
@@ -6,10 +7,7 @@ const radioBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
-      validateOn: 'blur',
-      validate: {
-        required: true,
-      },
+      ...createRadioPanel(),
     },
   };
 };

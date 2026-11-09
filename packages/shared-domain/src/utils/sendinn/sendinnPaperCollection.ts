@@ -1,3 +1,12 @@
+import {
+  createAddress,
+  createContainer,
+  createFirstName,
+  createFormGroup,
+  createNationalIdentityNumber,
+  createRadioPanel,
+  createSurname,
+} from '../../form-components';
 import { Component, ComponentConditional, Enhetstype, FormPropertiesType } from '../../models';
 import { TEXTS } from '../../texts';
 
@@ -36,100 +45,52 @@ const createSendinnPaperCollection = (properties: FormPropertiesType): Component
   }
 
   return [
-    {
-      type: 'radiopanel',
+    createRadioPanel({
       key: 'collectionType',
       label: TEXTS.statiske.identity.submissionFor,
-      input: true,
       validate: { required: true, onlyAvailableItems: true },
       values: [
         { value: 'identified-person', label: TEXTS.statiske.identity.personIdentityNumber },
         { value: 'unidentified-person', label: TEXTS.statiske.identity.personNoIdentityNumber },
         { value: 'multiple-people', label: TEXTS.statiske.sendinn.collection.multiplePeople },
       ],
-    },
-    {
-      type: 'container',
-      key: 'yourInformation',
-      label: TEXTS.statiske.identity.submissionFor,
-      input: true,
-      tree: true,
+    }),
+    createContainer({
+      key: 'dineOpplysninger',
+      label: 'Dine opplysninger',
       yourInformation: true,
-      clearOnHide: true,
       conditional: collectionCondition('multiple-people', false),
       components: [
-        {
-          type: 'container',
+        createContainer({
           key: 'identitet',
-          label: TEXTS.statiske.identity.identityNumber,
-          input: true,
-          tree: true,
-          clearOnHide: true,
+          label: 'Identitet',
           conditional: collectionCondition('identified-person'),
-          components: [
-            {
-              type: 'fnrfield',
-              key: 'identitetsnummer',
-              label: TEXTS.statiske.identity.identityNumber,
-              input: true,
-              validate: { required: true },
-            },
-          ],
-        },
-        {
-          type: 'firstName',
-          key: 'fornavn',
-          label: TEXTS.statiske.identity.firstName,
-          input: true,
-          clearOnHide: true,
-          validate: { required: true },
-          conditional: collectionCondition('unidentified-person'),
-        },
-        {
-          type: 'surname',
-          key: 'etternavn',
-          label: TEXTS.statiske.identity.surname,
-          input: true,
-          clearOnHide: true,
-          validate: { required: true },
-          conditional: collectionCondition('unidentified-person'),
-        },
-        {
-          type: 'navAddress',
-          key: 'adresse',
-          label: TEXTS.statiske.address.yourContactAddress,
-          input: true,
-          clearOnHide: true,
-          addressTypeWizard: 'user',
-          validate: { required: true },
-          conditional: collectionCondition('unidentified-person'),
-        },
+          components: [createNationalIdentityNumber({ key: 'identitetsnummer' })],
+        }),
+        createFirstName({ conditional: collectionCondition('unidentified-person') }),
+        createSurname({ conditional: collectionCondition('unidentified-person') }),
+        createAddress({ addressTypeWizard: 'user', conditional: collectionCondition('unidentified-person') }),
       ],
-    },
-    {
-      type: 'fieldset',
+    }),
+    createFormGroup({
       key: 'navContact',
       label: TEXTS.statiske.navUnit.choose,
+      legend: TEXTS.statiske.navUnit.choose,
+      hideLabel: true,
+      backgroundColor: false,
       conditional: collectionCondition('unidentified-person'),
       components: [
-        {
-          type: 'radiopanel',
+        createRadioPanel({
           key: 'hasNavContact',
           label: TEXTS.statiske.sendinn.collection.hasNavContact,
-          input: true,
-          clearOnHide: true,
           validate: { required: true, onlyAvailableItems: true },
-          values: [
-            { value: 'ja', label: TEXTS.common.yes },
-            { value: 'nei', label: TEXTS.common.no },
-          ],
-        },
+        }),
         {
           ...createNavUnitField('navContactUnit', properties),
           conditional: { when: 'hasNavContact', eq: 'ja', show: true },
         },
       ],
-    },
+    }),
     {
       ...createNavUnitField('navUnit', properties),
       conditional: collectionCondition('multiple-people'),
