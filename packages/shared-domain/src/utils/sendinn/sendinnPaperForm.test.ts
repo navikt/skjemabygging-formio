@@ -1,9 +1,8 @@
 import { Form, FormPropertiesType, Submission } from '../../models';
 import { TEXTS } from '../../texts';
-import { attachmentUtils } from '../attachment';
+import { attachmentUtils, normalizeAttachmentCodeFilter } from '../attachment';
 import { flattenComponents, navFormUtils } from '../form';
 import { resolveParty } from '../party';
-import { normalizeSendinnAttachmentFilter } from './sendinnAttachmentFilter';
 import { SendinnCollectionType } from './sendinnPaperCollection';
 import { convertToSendinnPaperForm } from './sendinnPaperForm';
 
@@ -86,7 +85,7 @@ const createSource = (properties: Partial<FormPropertiesType> = {}): Form => ({
 });
 
 const convert = (source = createSource(), filter?: string | readonly string[]) =>
-  convertToSendinnPaperForm(source, { attachmentFilter: normalizeSendinnAttachmentFilter(filter) });
+  convertToSendinnPaperForm(source, { attachmentFilter: normalizeAttachmentCodeFilter(filter) });
 
 const getAttachments = (form: Form) => flattenComponents(form.components).filter(({ type }) => type === 'attachment');
 const getCollection = (form: Form) => form.components.find(({ key }) => key === 'sendinnCollection')?.components ?? [];

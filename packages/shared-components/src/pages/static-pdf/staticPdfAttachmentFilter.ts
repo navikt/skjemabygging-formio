@@ -10,8 +10,4 @@ const getFilteredStaticPdfAttachments = (components: Component[], filterValue: s
   return filterAttachmentsByCode(attachments, normalizeAttachmentCodeFilter(filterValue));
 };
 
-export {
-  filterAttachmentsByCode as filterStaticPdfAttachments,
-  getFilteredStaticPdfAttachments,
-  normalizeAttachmentCodeFilter as normalizeStaticPdfAttachmentCodeFilter,
-};
+export { getFilteredStaticPdfAttachments };
