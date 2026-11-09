@@ -1,7 +1,7 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, HTMLAttributes, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
+import { isChangedOnBlur, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
@@ -113,7 +113,7 @@ const InternalTextField = ({
     const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
     if (controlledOnChange) {
       controlledOnChange(formatted);
-    } else if (!Object.is(stateValue, nextStateValue)) {
+    } else if (isChangedOnBlur(stateValue, nextStateValue)) {
       setStateValue(nextStateValue);
     }
   };

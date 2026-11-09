@@ -7,7 +7,8 @@ import { Formatter, formatters, submissionFormatters } from './formatters';
  *  - the value stored in state is trimmed and normalized to submission format on every change, so
  *    consumers (validation, conditionals, autosave) always see canonical data. Formatters are
  *    forgiving, so a partial/invalid value passes through ~unchanged until it becomes valid,
- *  - trim and reformat the displayed value to the component default on blur,
+ *  - trim and reformat the displayed value to the component default on blur. Leaving an unanswered
+ *    field empty stores nothing (see isChangedOnBlur),
  *  - convert submission value to input format when a field first shows on a page.
  *
  * Input and submission format are the same default string today, so a missing formatter is
@@ -39,4 +40,13 @@ const toSubmissionNumber = (value: string, isInteger: boolean): number | undefin
   return isValid ? Number(normalizedValue) : undefined;
 };
 
-export { toInputFormat, toSubmissionFormat, toSubmissionNumber };
+/**
+ * Whether leaving a field should store the value it shows. A field the user only focused and left
+ * empty is still unanswered, so it gets no value.
+ */
+const isChangedOnBlur = (stateValue: unknown, nextStateValue: unknown): boolean => {
+  const isStillUnanswered = (stateValue === undefined || stateValue === null) && nextStateValue === '';
+  return !isStillUnanswered && !Object.is(stateValue, nextStateValue);
+};
+
+export { isChangedOnBlur, toInputFormat, toSubmissionFormat, toSubmissionNumber };

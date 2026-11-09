@@ -127,6 +127,30 @@ describe('TextArea', () => {
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.testDownloadPdf();
     });
+
+    it('should not store an optional field the user only focused', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('textbox', { name: 'Tekstområde' }).type('vis1');
+      cy.findByRole('textbox', { name: 'Tekstområde med beskrivelse' }).type('vis2');
+      cy.findByRole('textbox', { name: 'Tekstområde fast høyde' }).type('vis3');
+      cy.clickNextStep();
+
+      cy.findByRole('textbox', { name: 'Tekstområde påkrevd' }).type('valid1');
+      cy.findByRole('textbox', { name: 'Tekstområde ikke påkrevd (valgfritt)' }).focus();
+      cy.findByRole('textbox', { name: 'Tekstområde min og max' }).type('valid3');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickDownloadInstructions();
+      cy.testDownloadPdf();
+      cy.get('@downloadPdf')
+        .its('request.body.submission')
+        .then((submission) => {
+          expect(Object.values(JSON.parse(submission).data)).not.to.include('');
+        });
+    });
   });
 
   describe('Translation', () => {
