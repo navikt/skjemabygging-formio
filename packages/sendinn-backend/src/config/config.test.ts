@@ -53,7 +53,7 @@ describe('Sendinn content source configuration', () => {
     vi.stubEnv('NAIS_CLUSTER_NAME', 'prod-gcp');
     vi.stubEnv('SENDINN_CONTENT_SOURCE', 'latest');
 
-    await expect(import('./config')).rejects.toThrow('SENDINN_CONTENT_SOURCE must be published in prod-gcp');
+    await expect(import('./config')).rejects.toThrow("SENDINN_CONTENT_SOURCE must be 'published' in prod-gcp");
   });
 
   it('accepts published content in the production cluster', async () => {

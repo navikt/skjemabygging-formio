@@ -23,10 +23,10 @@ const env = (name: string, developmentValue?: string) => {
 const readContentSource = (): ContentSource => {
   const source = env('SENDINN_CONTENT_SOURCE', 'latest');
   if (!isContentSource(source)) {
-    throw new Error('SENDINN_CONTENT_SOURCE must be published or latest');
+    throw new Error("SENDINN_CONTENT_SOURCE must be 'published' or 'latest'");
   }
   if (process.env.NAIS_CLUSTER_NAME === 'prod-gcp' && source !== 'published') {
-    throw new Error('SENDINN_CONTENT_SOURCE must be published in prod-gcp');
+    throw new Error("SENDINN_CONTENT_SOURCE must be 'published' in prod-gcp");
   }
   return source;
 };
