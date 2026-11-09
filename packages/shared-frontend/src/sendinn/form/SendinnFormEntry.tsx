@@ -1,5 +1,5 @@
 import {
-  normalizeSendinnAttachmentFilter,
+  normalizeAttachmentCodeFilter,
   sendinnEntryUtils,
   sendinnLanguageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -39,7 +39,7 @@ const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
   const services = useMemo(() => createSendinnRuntimeServices({ baseUrl, http }), [baseUrl, http]);
   const params = new URLSearchParams(search);
   const language = sendinnLanguageUtils.getSelectedLanguage(params);
-  const filterKey = JSON.stringify(normalizeSendinnAttachmentFilter(params.getAll('filter')));
+  const filterKey = JSON.stringify(normalizeAttachmentCodeFilter(params.getAll('filter')));
   const request = useMemo(() => {
     return {
       formPath,

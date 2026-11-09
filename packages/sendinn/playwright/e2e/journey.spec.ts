@@ -17,7 +17,7 @@ test.describe('Generated paper journey', () => {
     });
     await page.goto('/sendinn/sendinnjourney?filter=N1&sub=digital');
     await expect(page).toHaveURL(
-      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnCollection' && !url.searchParams.has('step'),
+      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnUserType' && !url.searchParams.has('step'),
     );
     await next(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
@@ -82,8 +82,7 @@ test.describe('Generated paper journey', () => {
     ).toBeFocused();
     await expect(errorSummary(page)).toBeHidden();
     await expect(page).toHaveURL(
-      (url) =>
-        url.pathname === '/sendinn/sendinnjourney/sendinnCollection' && !url.searchParams.has('step') && !url.hash,
+      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnUserType' && !url.searchParams.has('step') && !url.hash,
     );
   });
 
@@ -91,7 +90,7 @@ test.describe('Generated paper journey', () => {
     readyPage: page,
     useRouteVariant,
   }) => {
-    await useRouteVariant('get-form:sendinn-hidden-collection');
+    await useRouteVariant('get-form:sendinn-hidden-user-type');
     await page.goto('/sendinn/sendinnjourney/sendinnAttachments?filter=N6');
     await expect(page.getByRole('radio')).toHaveCount(0);
     await expect(page.getByRole('combobox')).toHaveCount(0);
@@ -219,17 +218,17 @@ test.describe('Generated paper journey', () => {
     await page.getByRole('textbox', { name: 'Fornavn', exact: true }).fill('Alex');
     await page.getByRole('textbox', { name: 'Etternavn', exact: true }).fill('Example');
     await page
-      .getByRole('group', { name: 'Bor du i Norge?', exact: true })
+      .getByRole('radiogroup', { name: 'Bor du i Norge?', exact: true })
       .getByRole('radio', { name: 'Ja', exact: true })
       .check();
     await page
-      .getByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?', exact: true })
+      .getByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?', exact: true })
       .getByRole('radio', { name: 'Vegadresse', exact: true })
       .check();
     await page.getByRole('textbox', { name: 'Vegadresse', exact: true }).fill('Example street 1');
     await page.getByRole('textbox', { name: 'Postnummer', exact: true }).fill('0123');
     await page.getByRole('textbox', { name: 'Poststed', exact: true }).fill('Oslo');
-    const contact = page.getByRole('group', { name: 'Har du vært i kontakt med Nav om saken?', exact: true });
+    const contact = page.getByRole('radiogroup', { name: 'Har du vært i kontakt med Nav om saken?', exact: true });
     await contact.getByRole('radio', { name: 'Ja', exact: true }).check();
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
     await next(page);
@@ -245,20 +244,20 @@ test.describe('Generated paper journey', () => {
     await unitSelect(page).selectOption('0101');
     await next(page);
     await next(page);
-    const collectionSummary = page.getByTestId('form-summary-panel').first();
-    await expect(collectionSummary).toContainText('Alex');
-    await expect(collectionSummary).toContainText('Example street 1');
-    await expect(collectionSummary).toContainText('Nav Alpha');
+    const userTypeSummary = page.getByTestId('form-summary-panel').first();
+    await expect(userTypeSummary).toContainText('Alex');
+    await expect(userTypeSummary).toContainText('Example street 1');
+    await expect(userTypeSummary).toContainText('Nav Alpha');
     await previous(page);
     await previous(page);
     await page.getByRole('radio', { name: 'Flere personer / Nav-enhet', exact: true }).check();
     await unitSelect(page).selectOption('0202');
     await next(page);
     await next(page);
-    await expect(collectionSummary).toContainText('Nav Beta');
-    await expect(collectionSummary).not.toContainText('Alex');
-    await expect(collectionSummary).not.toContainText('Example street');
-    await expect(collectionSummary).not.toContainText('Nav Alpha');
+    await expect(userTypeSummary).toContainText('Nav Beta');
+    await expect(userTypeSummary).not.toContainText('Alex');
+    await expect(userTypeSummary).not.toContainText('Example street');
+    await expect(userTypeSummary).not.toContainText('Nav Alpha');
   });
 
   test('recovers unit names on the summary without a number-only or empty-success fallback', async ({

@@ -1,12 +1,15 @@
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import {
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
 } from '../../components/attachment/attachmentValidation';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
+import { INTRO_KEY } from '../form-flow/constants';
+import { toSelfDeclarationValidationFields } from '../intro-page/selfDeclarationValidation';
 
-const resolveSpecialPageFields = (pageKey: string, submission?: Submission) => {
+const resolveSpecialPageFields = (pageKey: string, submission: Submission | undefined, form: Form) => {
+  if (pageKey === INTRO_KEY) return toSelfDeclarationValidationFields(form, submission);
   if (pageKey !== 'personal-id') return undefined;
   const input = {
     attachmentId: 'personal-id',

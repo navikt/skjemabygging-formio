@@ -39,7 +39,7 @@ describe('sendinn-backend app', () => {
       ['/sendinn/nav123456?lang=en', 'en'],
       ['/sendinn/nav123456?lang=nn-NO', 'nn'],
       ['/sendinn/nav123456?lang=pl', 'nb'],
-      ['/sendinn/nav123456/sendinnCollection', 'nb'],
+      ['/sendinn/nav123456/sendinnUserType', 'nb'],
       ['/sendinn/nav123456/sendinnAttachments?filter=N1&filter=N2', 'nb'],
       ['/sendinn/nav123456/oppsummering?lang=en&filter=N1', 'en'],
     ])('renders the decorator for %s in %s', async (url, language) => {
@@ -98,14 +98,14 @@ describe('sendinn-backend app', () => {
 
     it('returns a correlated standard error when content loading fails', async () => {
       getGlobalTranslationsMock.mockRejectedValue(
-        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load forms-api content'),
+        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load global translations'),
       );
 
       const response = await request(createApp()).get('/sendinn/api/global-translations/en').expect(503);
 
       expect(response.body).toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load global translations',
         correlationId: expect.any(String),
       });
       expect(response.header['x-correlation-id']).toBe(response.body.correlationId);
@@ -178,11 +178,11 @@ describe('sendinn-backend app', () => {
       ['NOT_FOUND', 404],
       ['SERVICE_UNAVAILABLE', 503],
     ] as const)('returns the standard correlated %s error', async (errorCode, status) => {
-      getFormMock.mockRejectedValue(new ResponseError(errorCode, 'Unable to load forms-api content', 'upstream-id'));
+      getFormMock.mockRejectedValue(new ResponseError(errorCode, 'Unable to load form', 'upstream-id'));
       const response = await request(createApp()).get('/sendinn/api/forms/nav123456').expect(status);
       expect(response.body).toMatchObject({
         errorCode,
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load form',
         correlationId: 'upstream-id',
       });
       expect(response.header['x-correlation-id']).toBe('upstream-id');

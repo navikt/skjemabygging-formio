@@ -131,6 +131,30 @@ describe('attachment resolution shared by summary, PDF and submission metadata',
     expect(attachmentUtils.getAttachmentsForCoverPage(submission, otherForm)).toEqual([]);
   });
 
+  it('groups selected documents in form order and excludes attachments without a document code', () => {
+    const secondComponent = { ...component, key: 'second', navId: 'second-doc' };
+    const unrelatedComponent = { ...component, key: 'unrelated', navId: 'unrelated-doc', properties: {} };
+    const first = createAttachment('leggerVedNaa', 'first', 'other');
+    const second = createAttachment('leggerVedNaa', 'second', 'other');
+    const later = { ...createAttachment('leggerVedNaa', 'later'), navId: 'second-doc' };
+    const submission: Submission = {
+      data: {
+        second: later,
+        documentation: [first, createAttachment('ettersender', 'unselected', 'other'), second],
+        unrelated: { ...createAttachment('leggerVedNaa'), navId: 'unrelated-doc' },
+      },
+    };
+
+    expect(
+      attachmentUtils.getSelectedAttachmentsForCoverPage(submission, {
+        components: [component, secondComponent, unrelatedComponent],
+      }),
+    ).toEqual([
+      { component, attachments: [first, second] },
+      { component: secondComponent, attachments: [later] },
+    ]);
+  });
+
   describe('row scope', () => {
     const rowForm = {
       components: [{ key: 'rows', type: 'datagrid', input: true, components: [component] }],

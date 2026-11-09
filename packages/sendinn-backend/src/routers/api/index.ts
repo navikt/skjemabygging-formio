@@ -1,4 +1,4 @@
-import { createFrontendLogHandler, rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
+import { createFrontendLogHandler, paramValidation, rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import { logger } from '../../logger';
 import config from './config';
@@ -7,6 +7,8 @@ import globalTranslations from './global-translations';
 import { getNavUnits } from './nav-units';
 
 const apiRouter = express.Router();
+
+apiRouter.param('formPath', paramValidation.formPath);
 
 apiRouter.get('/config', config.get);
 apiRouter.get('/forms/:formPath', getForm);

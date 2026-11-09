@@ -1,7 +1,9 @@
-import { Component, Form, Panel } from '../../models';
+import { createContainer, createPanel } from '../../form-components';
+import { Component, Form } from '../../models';
 import { TEXTS } from '../../texts';
+import { createAttachmentCodeFilter } from '../attachment/attachmentCodeFilter';
 import { flattenComponents } from '../form/componentUtil';
-import { createSendinnPaperCollection } from './sendinnPaperCollection';
+import { createSendinnUserTypeComponents } from './sendinnUserType';
 
 interface SendinnPaperFormContext {
   attachmentFilter: readonly string[];
@@ -24,13 +26,8 @@ const toSendinnAttachment = (source: Component): Component => ({
   attachmentValues: { leggerVedNaa: { enabled: true } },
 });
 
-const createPanel = (key: string, label: string, components: Component[]): Panel => ({
-  type: 'panel',
-  key,
-  label,
-  title: label,
-  components,
-});
+const createSendinnPanel = (key: string, label: string, components: Component[]): Component =>
+  createPanel({ key, label, title: label, components });
 
 /**
  * Both server paths must pass the same normalized filter. Eligibility is checked against the
@@ -38,28 +35,27 @@ const createPanel = (key: string, label: string, components: Component[]): Panel
  */
 const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPaperFormContext): Form => {
   const form = structuredClone(source);
-  const collection = createSendinnPaperCollection(form.properties);
-  const allowedCodes = new Set(attachmentFilter);
+  const userTypeComponents = createSendinnUserTypeComponents(form.properties);
+  const matchesAttachmentCode = createAttachmentCodeFilter(attachmentFilter);
   const attachments = flattenComponents(form.components)
     .filter((component) => component.type === 'attachment')
     .flatMap((component, index): Component[] =>
-      allowedCodes.size === 0 || allowedCodes.has(component.properties?.vedleggskode?.trim() ?? '')
+      matchesAttachmentCode(component)
         ? [
-            {
-              type: 'container',
-              // Keep source keys intact without colliding with collection fields or other source scopes.
+            createContainer({
+              // Keep source keys intact without colliding with user type fields or other source scopes.
               key: `sendinnAttachment${index + 1}`,
               label: '',
-              input: true,
-              tree: true,
               components: [toSendinnAttachment(component)],
-            },
+            }),
           ]
         : [],
     );
   const components = [
-    ...(collection.length ? [createPanel('sendinnCollection', TEXTS.statiske.identity.submissionFor, collection)] : []),
-    createPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
+    ...(userTypeComponents.length
+      ? [createSendinnPanel('sendinnUserType', TEXTS.statiske.identity.submissionFor, userTypeComponents)]
+      : []),
+    createSendinnPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
   ];
 
   return {

@@ -41,6 +41,11 @@ const phoneNumberForm = () => {
             showAreaCode: true,
             validate: { required: true },
           }),
+          phoneNumber({
+            label: 'Telefonnummer landkode ikke påkrevd',
+            showAreaCode: true,
+            validate: { required: false },
+          }),
         ],
       }),
     ],

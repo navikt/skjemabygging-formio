@@ -9,6 +9,7 @@ interface Props {
 }
 
 const RuntimeServicesContext = createContext<RuntimeServices | NavUnitRuntimeServices | undefined>(undefined);
+RuntimeServicesContext.displayName = 'RuntimeServicesContext';
 
 const RuntimeServicesProvider = ({ children, services }: Props) => (
   <RuntimeServicesContext.Provider value={services}>{children}</RuntimeServicesContext.Provider>

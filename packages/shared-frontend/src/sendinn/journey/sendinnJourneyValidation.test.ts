@@ -72,17 +72,17 @@ describe('Sendinn generated journey validation', () => {
     expect(invalidPaths(form, { data: { navUnit: '0101' } })).toEqual([]);
   });
 
-  it('validates only the active collection branch, including conditional Nav contact', () => {
+  it('validates only the active user type branch, including conditional Nav contact', () => {
     const form = createForm();
-    expect(invalidPaths(form, { data: {} })).toEqual(['collectionType']);
-    expect(invalidPaths(form, { data: { collectionType: 'multiple-people' } })).toEqual(['navUnit']);
-    expect(invalidPaths(form, { data: { collectionType: 'identified-person' } })).toEqual([
-      'yourInformation.identitet.identitetsnummer',
+    expect(invalidPaths(form, { data: {} })).toEqual(['userType']);
+    expect(invalidPaths(form, { data: { userType: 'multiple-people' } })).toEqual(['navUnit']);
+    expect(invalidPaths(form, { data: { userType: 'identified-person' } })).toEqual([
+      'dineOpplysninger.identitet.identitetsnummer',
     ]);
-    expect(invalidPaths(form, { data: { collectionType: 'unidentified-person', hasNavContact: 'ja' } })).toEqual(
-      expect.arrayContaining(['yourInformation.fornavn', 'yourInformation.etternavn', 'navContactUnit']),
+    expect(invalidPaths(form, { data: { userType: 'unidentified-person', hasNavContact: 'ja' } })).toEqual(
+      expect.arrayContaining(['dineOpplysninger.fornavn', 'dineOpplysninger.etternavn', 'navContactUnit']),
     );
-    expect(invalidPaths(form, { data: { collectionType: 'unidentified-person', hasNavContact: 'nei' } })).not.toContain(
+    expect(invalidPaths(form, { data: { userType: 'unidentified-person', hasNavContact: 'nei' } })).not.toContain(
       'navContactUnit',
     );
   });
@@ -93,8 +93,8 @@ describe('Sendinn generated journey validation', () => {
       form,
       {
         data: {
-          collectionType: 'multiple-people',
-          yourInformation: { identitet: { identitetsnummer: '03876399856' }, fornavn: 'Test' },
+          userType: 'multiple-people',
+          dineOpplysninger: { identitet: { identitetsnummer: '03876399856' }, fornavn: 'Test' },
           hasNavContact: 'ja',
           navContactUnit: '0202',
           navUnit: '0101',
@@ -103,8 +103,8 @@ describe('Sendinn generated journey validation', () => {
       'nb',
       { submissionMethod: 'paper' },
     );
-    expect(result?.data).toMatchObject({ collectionType: 'multiple-people', navUnit: '0101' });
-    expect(result?.data).not.toHaveProperty('yourInformation');
+    expect(result?.data).toMatchObject({ userType: 'multiple-people', navUnit: '0101' });
+    expect(result?.data).not.toHaveProperty('dineOpplysninger');
     expect(result?.data).not.toHaveProperty('hasNavContact');
     expect(result?.data).not.toHaveProperty('navContactUnit');
   });
