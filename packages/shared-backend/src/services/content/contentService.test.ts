@@ -211,7 +211,7 @@ describe('createContentService', () => {
   });
 
   it('maps connection failures to SERVICE_UNAVAILABLE and logs the failing resource', async () => {
-    vi.spyOn(global, 'fetch').mockRejectedValue(new TypeError('fetch failed'));
+    vi.spyOn(global, 'fetch').mockRejectedValue(new TypeError('fetch failed', { cause: new Error('ECONNREFUSED') }));
     const warn = vi.spyOn(logger, 'warn');
     const service = createContentService({ baseUrl, source: 'latest' });
 
@@ -221,6 +221,14 @@ describe('createContentService', () => {
       source: 'latest',
       errorName: 'TypeError',
     });
+  });
+
+  it('rethrows a TypeError without cause unchanged since it is not a connection failure', async () => {
+    const bug = new TypeError("Cannot read properties of undefined (reading 'translations')");
+    vi.spyOn(global, 'fetch').mockRejectedValue(bug);
+    const service = createContentService({ baseUrl, source: 'latest' });
+
+    await expect(service.getForm({ formPath })).rejects.toBe(bug);
   });
 
   it.each(['.', '..', 'NAV123456', 'nav123456/translations'])(
