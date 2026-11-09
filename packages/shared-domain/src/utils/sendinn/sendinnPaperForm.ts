@@ -3,7 +3,7 @@ import { Component, Form } from '../../models';
 import { TEXTS } from '../../texts';
 import { createAttachmentCodeFilter } from '../attachment/attachmentCodeFilter';
 import { flattenComponents } from '../form/componentUtil';
-import { createSendinnPaperCollection } from './sendinnPaperCollection';
+import { createSendinnUserTypeComponents } from './sendinnUserType';
 
 interface SendinnPaperFormContext {
   attachmentFilter: readonly string[];
@@ -35,7 +35,7 @@ const createSendinnPanel = (key: string, label: string, components: Component[])
  */
 const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPaperFormContext): Form => {
   const form = structuredClone(source);
-  const collection = createSendinnPaperCollection(form.properties);
+  const userTypeComponents = createSendinnUserTypeComponents(form.properties);
   const matchesAttachmentCode = createAttachmentCodeFilter(attachmentFilter);
   const attachments = flattenComponents(form.components)
     .filter((component) => component.type === 'attachment')
@@ -43,7 +43,7 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
       matchesAttachmentCode(component)
         ? [
             createContainer({
-              // Keep source keys intact without colliding with collection fields or other source scopes.
+              // Keep source keys intact without colliding with user type fields or other source scopes.
               key: `sendinnAttachment${index + 1}`,
               label: '',
               components: [toSendinnAttachment(component)],
@@ -52,8 +52,8 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
         : [],
     );
   const components = [
-    ...(collection.length
-      ? [createSendinnPanel('sendinnCollection', TEXTS.statiske.identity.submissionFor, collection)]
+    ...(userTypeComponents.length
+      ? [createSendinnPanel('sendinnUserType', TEXTS.statiske.identity.submissionFor, userTypeComponents)]
       : []),
     createSendinnPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
   ];

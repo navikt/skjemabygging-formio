@@ -10,7 +10,7 @@ import {
 import { Component, ComponentConditional, Enhetstype, FormPropertiesType } from '../../models';
 import { TEXTS } from '../../texts';
 
-type SendinnCollectionType = 'identified-person' | 'unidentified-person' | 'multiple-people';
+type SendinnUserType = 'identified-person' | 'unidentified-person' | 'multiple-people';
 
 interface NavUnitSelectComponent extends Component {
   type: 'navUnitSelect';
@@ -18,8 +18,8 @@ interface NavUnitSelectComponent extends Component {
   unitTypes?: Enhetstype[];
 }
 
-const collectionCondition = (type: SendinnCollectionType, show = true): ComponentConditional => ({
-  when: 'collectionType',
+const userTypeCondition = (type: SendinnUserType, show = true): ComponentConditional => ({
+  when: 'userType',
   eq: type,
   show,
 });
@@ -35,7 +35,7 @@ const createNavUnitField = (key: string, properties: FormPropertiesType): NavUni
   ...(properties.enhetstyper ? { unitTypes: [...properties.enhetstyper] } : {}),
 });
 
-const createSendinnPaperCollection = (properties: FormPropertiesType): Component[] => {
+const createSendinnUserTypeComponents = (properties: FormPropertiesType): Component[] => {
   if (properties.hideUserTypes === true) {
     return [];
   }
@@ -46,30 +46,30 @@ const createSendinnPaperCollection = (properties: FormPropertiesType): Component
 
   return [
     createRadioPanel({
-      key: 'collectionType',
+      key: 'userType',
       label: TEXTS.statiske.identity.submissionFor,
       validate: { required: true, onlyAvailableItems: true },
       values: [
         { value: 'identified-person', label: TEXTS.statiske.identity.personIdentityNumber },
         { value: 'unidentified-person', label: TEXTS.statiske.identity.personNoIdentityNumber },
-        { value: 'multiple-people', label: TEXTS.statiske.sendinn.collection.multiplePeople },
+        { value: 'multiple-people', label: TEXTS.statiske.sendinn.userType.multiplePeople },
       ],
     }),
     createContainer({
       key: 'dineOpplysninger',
       label: 'Dine opplysninger',
       yourInformation: true,
-      conditional: collectionCondition('multiple-people', false),
+      conditional: userTypeCondition('multiple-people', false),
       components: [
         createContainer({
           key: 'identitet',
           label: 'Identitet',
-          conditional: collectionCondition('identified-person'),
+          conditional: userTypeCondition('identified-person'),
           components: [createNationalIdentityNumber({ key: 'identitetsnummer' })],
         }),
-        createFirstName({ conditional: collectionCondition('unidentified-person') }),
-        createSurname({ conditional: collectionCondition('unidentified-person') }),
-        createAddress({ addressTypeWizard: 'user', conditional: collectionCondition('unidentified-person') }),
+        createFirstName({ conditional: userTypeCondition('unidentified-person') }),
+        createSurname({ conditional: userTypeCondition('unidentified-person') }),
+        createAddress({ addressTypeWizard: 'user', conditional: userTypeCondition('unidentified-person') }),
       ],
     }),
     createFormGroup({
@@ -78,11 +78,11 @@ const createSendinnPaperCollection = (properties: FormPropertiesType): Component
       legend: TEXTS.statiske.navUnit.choose,
       hideLabel: true,
       backgroundColor: false,
-      conditional: collectionCondition('unidentified-person'),
+      conditional: userTypeCondition('unidentified-person'),
       components: [
         createRadioPanel({
           key: 'hasNavContact',
-          label: TEXTS.statiske.sendinn.collection.hasNavContact,
+          label: TEXTS.statiske.sendinn.userType.hasNavContact,
           validate: { required: true, onlyAvailableItems: true },
         }),
         {
@@ -93,10 +93,10 @@ const createSendinnPaperCollection = (properties: FormPropertiesType): Component
     }),
     {
       ...createNavUnitField('navUnit', properties),
-      conditional: collectionCondition('multiple-people'),
+      conditional: userTypeCondition('multiple-people'),
     },
   ];
 };
 
-export { createSendinnPaperCollection };
-export type { NavUnitSelectComponent, SendinnCollectionType };
+export { createSendinnUserTypeComponents };
+export type { NavUnitSelectComponent, SendinnUserType };

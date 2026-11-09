@@ -398,7 +398,7 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
-    collection: {
+    userType: {
       multiplePeople: 'Flere personer / Nav-enhet',
       hasNavContact: 'Har du vært i kontakt med Nav om saken?',
     },

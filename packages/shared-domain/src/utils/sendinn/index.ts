@@ -1,4 +1,4 @@
 export * from './sendinnEntryUtils';
 export * from './sendinnLanguageUtils';
-export type { NavUnitSelectComponent, SendinnCollectionType } from './sendinnPaperCollection';
 export * from './sendinnPaperForm';
+export type { NavUnitSelectComponent, SendinnUserType } from './sendinnUserType';
