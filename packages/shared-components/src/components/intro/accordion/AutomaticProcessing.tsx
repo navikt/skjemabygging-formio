@@ -1,4 +1,4 @@
-import { IntroPageSection, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPageSection, introPageTexts, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroAccordion from '../shared/IntroAccordion';
 
 interface Props {
@@ -13,7 +13,7 @@ const AutomaticProcessing = ({ properties, translate, className, defaultOpen }: 
     return null;
   }
 
-  const title: Tkey = 'introPage.automaticProcessing.title';
+  const title: Tkey = introPageTexts.automaticProcessing.title;
   const bulletPoints = (properties?.bulletPoints ?? []).map(translate);
 
   return (

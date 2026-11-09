@@ -40,7 +40,7 @@ const resolveDefaultSubmissionValue = (
     case 'currency':
       return component.defaultValue === 0 || component.defaultValue ? component.defaultValue : undefined;
     case 'navCheckbox':
-      return typeof component.defaultValue === 'boolean' ? component.defaultValue : undefined;
+      return component.defaultValue === true;
     case 'radiopanel':
       return typeof component.defaultValue === 'string' && component.defaultValue ? component.defaultValue : undefined;
     case 'select':

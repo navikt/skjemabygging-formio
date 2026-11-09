@@ -41,6 +41,15 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it.each([
+    ['se', 'NB'],
+    ['en', 'EN'],
+  ])('maps language %s to cover page language %s', (languageCode, expected) => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(defaultData, languageCode);
+
+    expect(actual.spraakkode).toBe(expected);
+  });
+
   it('creates an ettersending archive title and attachment-only document list', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
       ...defaultData,
@@ -73,7 +82,7 @@ describe('coverPageRequestBodyMapper', () => {
         ...defaultData,
         type,
         attachments: ['Attachment one', 'User description'],
-        archivedAttachments: ['Vedlegg 1', 'User description'],
+        attachmentsForArchiving: ['Vedlegg 1', 'User description'],
       });
 
       expect(actual.vedleggsliste).toEqual(['Vedlegg 1', 'User description']);

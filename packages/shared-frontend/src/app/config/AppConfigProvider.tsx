@@ -18,6 +18,7 @@ interface Props<TConfig extends SharedFrontendConfig> {
 }
 
 const AppConfigContext = createContext<AppConfigContextValue | undefined>(undefined);
+AppConfigContext.displayName = 'AppConfigContext';
 
 /**
  * Host-independent app config shared by all hosts. Each host fetches its own config, passes its own HTTP client

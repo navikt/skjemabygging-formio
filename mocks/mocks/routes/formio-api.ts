@@ -304,6 +304,11 @@ import {
   selectDeprecatedTranslations,
 } from '../data/forms-api/select-deprecated/selectDeprecatedForm';
 import { sendinnFormLoadingForm, sendinnFormLoadingTranslations } from '../data/forms-api/sendinn/formLoadingForm';
+import { skyraSurveyForm, skyraSurveyTranslations } from '../data/forms-api/skyra-survey/skyraSurveyForm';
+import {
+  skyraSurveyNoSlugForm,
+  skyraSurveyNoSlugTranslations,
+} from '../data/forms-api/skyra-survey/skyraSurveyNoSlugForm';
 import {
   submissionMethodForm,
   submissionMethodTranslations,
@@ -546,6 +551,8 @@ const allForms = [
   { form: navUnitSelectionForm(), translations: navUnitSelectionTranslations() },
   { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
+  { form: skyraSurveyForm(), translations: skyraSurveyTranslations() },
+  { form: skyraSurveyNoSlugForm(), translations: skyraSurveyNoSlugTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },

@@ -1,6 +1,6 @@
 import {
   flattenComponents,
-  normalizeSendinnAttachmentFilter,
+  normalizeAttachmentCodeFilter,
   sendinnEntryUtils,
   sendinnLanguageUtils,
   TEXTS,
@@ -39,7 +39,7 @@ const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
     return {
       formPath,
       language: sendinnLanguageUtils.getSelectedLanguage(params),
-      attachmentFilter: normalizeSendinnAttachmentFilter(params.getAll('filter')),
+      attachmentFilter: normalizeAttachmentCodeFilter(params.getAll('filter')),
     };
   }, [formPath, search]);
   const loginUrl = sendinnEntryUtils.createLoginUrl(`${sendinnEntryUtils.basePath}${pathname}${search}`);

@@ -92,7 +92,7 @@ describe('createSendinnFormService', () => {
   it.each(['NOT_FOUND', 'SERVICE_UNAVAILABLE'] as const)(
     'preserves a correlated %s form failure',
     async (errorCode) => {
-      const error = new ResponseError(errorCode, 'Unable to load forms-api content', 'upstream-form-id');
+      const error = new ResponseError(errorCode, 'Unable to load form', 'upstream-form-id');
       getForm.mockRejectedValue(error);
 
       await expect(service.getForm(request)).rejects.toBe(error);
@@ -103,7 +103,7 @@ describe('createSendinnFormService', () => {
   it('preserves a correlated translation outage rather than returning an empty form', async () => {
     const error = new ResponseError(
       'SERVICE_UNAVAILABLE',
-      'Unable to load forms-api content',
+      'Unable to load form translations',
       'upstream-translations-id',
     );
     getTranslations.mockRejectedValue(error);

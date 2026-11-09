@@ -1,9 +1,9 @@
 import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, it, vi } from 'vitest';
 import { createApp } from './app';
 import { config } from './config/config';
+import { fetchedUrls } from './test/testHelpers';
 
 vi.mock('./dekorator', () => ({
   getDecorator: () => {},
@@ -13,17 +13,19 @@ vi.mock('./dekorator', () => ({
 const { formsApiUrl } = config;
 const defaultNewRenderForms = [...config.newRenderForms];
 
+let expectedFormUrls: string[] = [];
+
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
-  nock(formsApiUrl)
-    .get(`/v1/forms/${formPath}`)
-    .query(true)
-    .reply(200, {
+  expectedFormUrls.push(`${formsApiUrl}/v1/forms/${formPath}`);
+  vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+    Response.json({
       path: formPath,
       title: `Title for ${formPath}`,
       properties: {
         submissionTypes,
       },
-    } as Partial<Form>);
+    } as Partial<Form>),
+  );
 };
 
 const authenticatedGet = (path: string) => request(createApp()).get(path).set('Authorization', 'Bearer test-token');
@@ -32,13 +34,13 @@ describe('Fyllut backend :: query param sub', () => {
   afterEach(() => {
     config.newRenderForms = [...defaultNewRenderForms];
 
-    if (!nock.isDone()) {
-      nock.cleanAll();
-      throw new Error('Pending nock interceptors not used');
+    const requestedUrls = vi.isMockFunction(fetch) ? fetchedUrls(vi.mocked(fetch)) : [];
+    const expectedUrls = expectedFormUrls;
+    expectedFormUrls = [];
+    vi.restoreAllMocks();
+    if (JSON.stringify(requestedUrls) !== JSON.stringify(expectedUrls)) {
+      throw new Error(`Expected fetch to ${expectedUrls.join(', ')}, got ${requestedUrls.join(', ')}`);
     }
-
-    nock.abortPendingRequests();
-    nock.cleanAll();
   });
 
   describe('when submissionTypes resolves a missing sub param', () => {

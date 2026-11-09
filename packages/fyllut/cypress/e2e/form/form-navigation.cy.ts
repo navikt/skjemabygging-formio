@@ -20,7 +20,7 @@ function fillPaperNoCoverPageToSummary(fieldName: string | RegExp = 'Tekstfelt',
 }
 
 const fillNoLoginPersonalInformationPage = () => {
-  cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+  cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
     cy.findByLabelText('Ja').check(),
   );
   cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
@@ -59,10 +59,10 @@ describe('Form navigation', () => {
   });
 
   const selectPaperAttachments = () => {
-    cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+    cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
     });
-    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
     });
   };
@@ -370,7 +370,7 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/vedlegg?sub=digital');
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
@@ -459,7 +459,7 @@ describe('Form navigation', () => {
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
         cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
@@ -507,19 +507,19 @@ describe('Form navigation', () => {
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Diverse' }).should('exist');
-        cy.findByRole('group', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
+        cy.findByRole('radiogroup', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
         cy.clickSaveAndContinue();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-        cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Vedlegg 1/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
-        cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Vedlegg 2/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
         uploadInAttachment('Vedlegg upload-only');
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
         });
         cy.clickSaveAndContinue();
@@ -547,7 +547,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Legitimasjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/legitimasjon?sub=digitalnologin');
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
@@ -670,7 +670,7 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/vedlegg');
-        cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
+        cy.findByRole('radiogroup', { name: /Nav skjema test/ }).within(() =>
           cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
         );
         cy.findByLabelText('Annen dokumentasjon').within(() => {

@@ -8,6 +8,7 @@ interface ValidationStore {
 }
 
 const ValidationContext = createContext<ValidationStore | undefined>(undefined);
+ValidationContext.displayName = 'ValidationContext';
 
 const useValidationStore = (): ValidationStore => {
   const store = useContext(ValidationContext);

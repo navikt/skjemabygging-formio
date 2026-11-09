@@ -1,11 +1,10 @@
 import { Form, FormPropertiesType, Submission } from '../../models';
 import { TEXTS } from '../../texts';
-import { attachmentUtils } from '../attachment';
+import { attachmentUtils, normalizeAttachmentCodeFilter } from '../attachment';
 import { flattenComponents, navFormUtils } from '../form';
 import { resolveParty } from '../party';
-import { normalizeSendinnAttachmentFilter } from './sendinnAttachmentFilter';
-import { SendinnCollectionType } from './sendinnPaperCollection';
 import { convertToSendinnPaperForm } from './sendinnPaperForm';
+import { SendinnUserType } from './sendinnUserType';
 
 const createSource = (properties: Partial<FormPropertiesType> = {}): Form => ({
   id: 123,
@@ -86,10 +85,11 @@ const createSource = (properties: Partial<FormPropertiesType> = {}): Form => ({
 });
 
 const convert = (source = createSource(), filter?: string | readonly string[]) =>
-  convertToSendinnPaperForm(source, { attachmentFilter: normalizeSendinnAttachmentFilter(filter) });
+  convertToSendinnPaperForm(source, { attachmentFilter: normalizeAttachmentCodeFilter(filter) });
 
 const getAttachments = (form: Form) => flattenComponents(form.components).filter(({ type }) => type === 'attachment');
-const getCollection = (form: Form) => form.components.find(({ key }) => key === 'sendinnCollection')?.components ?? [];
+const getUserTypeComponents = (form: Form) =>
+  form.components.find(({ key }) => key === 'sendinnUserType')?.components ?? [];
 const getActiveForm = (form: Form, data: Submission['data']): Form => ({
   ...form,
   components: navFormUtils.getAllActivePanelsFromForm(form, { data }, { submissionMethod: 'paper' }),
@@ -111,10 +111,10 @@ describe('convertToSendinnPaperForm', () => {
       title: source.title,
       publishedLanguages: source.publishedLanguages,
       properties: { ...source.properties, submissionTypes: ['PAPER'] },
-      firstPanelSlug: 'sendinnCollection',
+      firstPanelSlug: 'sendinnUserType',
     });
     expect(result.introPage).toBeUndefined();
-    expect(result.components.map(({ key }) => key)).toEqual(['sendinnCollection', 'sendinnAttachments']);
+    expect(result.components.map(({ key }) => key)).toEqual(['sendinnUserType', 'sendinnAttachments']);
     expect(flattenComponents(result.components).map(({ key }) => key)).not.toContain('unrelatedQuestion');
     expect(flattenComponents(result.components).some(({ type }) => type === 'sender' || type === 'orgNr')).toBe(false);
   });
@@ -184,24 +184,49 @@ describe('convertToSendinnPaperForm', () => {
     ]);
   });
 
-  it('keeps duplicate source keys and collection-name collisions in distinct stable attachment paths', () => {
+  it('converts legacy other-documentation definitions with values instead of attachmentValues', () => {
+    const source = createSource();
+    const legacyAttachment = getAttachments(source)[1];
+    delete legacyAttachment.attachmentType;
+    legacyAttachment.otherDocumentation = true;
+    legacyAttachment.values = [
+      { value: 'leggerVedNaa', label: 'I am enclosing the document' },
+      { value: 'ettersender', label: 'I will submit the document later' },
+    ];
+
+    const form = convert(source, 'N6');
+    const submission = { data: { sendinnAttachment2: { otherDocumentation: 'leggerVedNaa' } } };
+
+    expect(getAttachments(form)[0].attachmentValues).toEqual({ leggerVedNaa: { enabled: true } });
+    expect(attachmentUtils.resolveSubmissionAttachments(form, submission)).toEqual([
+      {
+        attachmentId: 'other-document-id',
+        navId: 'other-document-id',
+        type: 'other',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+    ]);
+  });
+
+  it('keeps duplicate source keys and user-type-name collisions in distinct stable attachment paths', () => {
     const source = createSource();
     const originals = getAttachments(source);
     originals[1].key = originals[0].key;
-    originals[2].key = 'collectionType';
+    originals[2].key = 'userType';
     const form = convert(source);
     const submission = {
       data: {
-        collectionType: 'identified-person',
+        userType: 'identified-person',
         sendinnAttachment1: { secondAlphabetically: 'leggerVedNaa' },
         sendinnAttachment2: { secondAlphabetically: 'leggerVedNaa' },
-        sendinnAttachment3: { collectionType: 'leggerVedNaa' },
+        sendinnAttachment3: { userType: 'leggerVedNaa' },
       },
     };
     expect(attachmentUtils.resolveSubmissionAttachments(form, submission).map(({ navId }) => navId)).toEqual([
       'document-z',
       'other-document-id',
-      'collectionType',
+      'userType',
     ]);
     const filtered = convert(source, 'N6');
     expect(filtered.components.find(({ key }) => key === 'sendinnAttachments')?.components?.[0].key).toBe(
@@ -221,7 +246,7 @@ describe('convertToSendinnPaperForm', () => {
     'offers all three branches with hideUserTypes=$hideUserTypes and override=$override',
     ({ hideUserTypes, override }) => {
       const form = convert(createSource({ hideUserTypes, enhetMaVelgesVedPapirInnsending: override }));
-      const choice = getCollection(form).find(({ key }) => key === 'collectionType');
+      const choice = getUserTypeComponents(form).find(({ key }) => key === 'userType');
       expect(choice?.values?.map(({ value }) => value)).toEqual([
         'identified-person',
         'unidentified-person',
@@ -234,7 +259,7 @@ describe('convertToSendinnPaperForm', () => {
 
   it.each([undefined, false])('collects only a required unit when forced and hideUserTypes is %s', (hideUserTypes) => {
     const form = convert(createSource({ hideUserTypes, enhetMaVelgesVedPapirInnsending: true }));
-    expect(getCollection(form)).toEqual([
+    expect(getUserTypeComponents(form)).toEqual([
       {
         type: 'navUnitSelect',
         key: 'navUnit',
@@ -249,7 +274,7 @@ describe('convertToSendinnPaperForm', () => {
     expect(resolveParty(form, { data: { navUnit: '1234' } })).toBeUndefined();
   });
 
-  it.each([undefined, false, true])('hides all collection regardless of unit override %s', (override) => {
+  it.each([undefined, false, true])('hides all user type fields regardless of unit override %s', (override) => {
     const form = convert(createSource({ hideUserTypes: true, enhetMaVelgesVedPapirInnsending: override }));
     expect(form.components.map(({ key }) => key)).toEqual(['sendinnAttachments']);
     expect(form.firstPanelSlug).toBe('sendinnAttachments');
@@ -259,22 +284,20 @@ describe('convertToSendinnPaperForm', () => {
 
   it('uses shared conditions to separate person branches and Nav-contact routing', () => {
     const form = convert();
-    const identified = activeKeys(form, { collectionType: 'identified-person' });
+    const identified = activeKeys(form, { userType: 'identified-person' });
     expect(identified).toContain('identitetsnummer');
     expect(identified).not.toContain('fornavn');
     expect(identified).not.toContain('hasNavContact');
     expect(identified).not.toContain('navUnit');
-    const unidentified = activeKeys(form, { collectionType: 'unidentified-person', hasNavContact: 'nei' });
+    const unidentified = activeKeys(form, { userType: 'unidentified-person', hasNavContact: 'nei' });
     expect(unidentified).toEqual(expect.arrayContaining(['fornavn', 'etternavn', 'adresse', 'hasNavContact']));
     expect(unidentified).not.toContain('identitet');
     expect(unidentified).not.toContain('navContactUnit');
     expect(unidentified).not.toContain('navUnit');
-    expect(activeKeys(form, { collectionType: 'unidentified-person', hasNavContact: 'ja' })).toContain(
-      'navContactUnit',
-    );
-    const multiple = activeKeys(form, { collectionType: 'multiple-people', hasNavContact: 'ja' });
+    expect(activeKeys(form, { userType: 'unidentified-person', hasNavContact: 'ja' })).toContain('navContactUnit');
+    const multiple = activeKeys(form, { userType: 'multiple-people', hasNavContact: 'ja' });
     expect(multiple).toContain('navUnit');
-    expect(multiple).not.toContain('yourInformation');
+    expect(multiple).not.toContain('dineOpplysninger');
     expect(multiple).not.toContain('hasNavContact');
     expect(multiple).not.toContain('navContactUnit');
     const units = flattenComponents(form.components).filter(({ type }) => type === 'navUnitSelect');
@@ -282,14 +305,14 @@ describe('convertToSendinnPaperForm', () => {
     units.forEach((unit) => expect(unit).toMatchObject({ validate: { required: true }, clearOnHide: true }));
   });
 
-  it.each<{ collectionType: SendinnCollectionType; information: object; expected: object }>([
+  it.each<{ userType: SendinnUserType; information: object; expected: object }>([
     {
-      collectionType: 'identified-person',
+      userType: 'identified-person',
       information: { identitet: { identitetsnummer: '12345678911' } },
       expected: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
     },
     {
-      collectionType: 'unidentified-person',
+      userType: 'unidentified-person',
       information: {
         fornavn: 'Test',
         etternavn: 'Testesen',
@@ -302,11 +325,11 @@ describe('convertToSendinnPaperForm', () => {
         address: { streetAddress: 'Test street', postalCode: '0101', country: { value: 'NO', label: 'Norway' } },
       },
     },
-  ])('resolves $collectionType through the existing party resolver', ({ collectionType, information, expected }) => {
+  ])('resolves $userType through the existing party resolver', ({ userType, information, expected }) => {
     const form = convert();
-    const data = { collectionType, yourInformation: information };
+    const data = { userType, dineOpplysninger: information };
     expect(resolveParty(getActiveForm(form, data), { data })).toMatchObject({ onBehalfOf: 'self', user: expected });
-    const multipleData = { ...data, collectionType: 'multiple-people', navUnit: '1234' };
+    const multipleData = { ...data, userType: 'multiple-people', navUnit: '1234' };
     expect(resolveParty(getActiveForm(form, multipleData), { data: multipleData })).toBeUndefined();
   });
 
