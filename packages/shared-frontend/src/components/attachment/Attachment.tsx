@@ -25,7 +25,7 @@ import AttachmentTitleField from './AttachmentTitleField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
 import {
-  requiresPaperAttachmentTitle,
+  requiresAttachmentTitleWithoutUpload,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
 } from './attachmentValidation';
@@ -70,7 +70,7 @@ const Attachment = ({
   const implicitValue = getImplicitAttachmentValue(values, uploadEnabled);
   const value = attachment?.value ?? implicitValue;
   const uploadSelected = uploadEnabled && !!values.find((option) => option.value === value)?.upload;
-  const paperTitleRequired = requiresPaperAttachmentTitle({ type, value }, uploadEnabled);
+  const titleWithoutUploadRequired = requiresAttachmentTitleWithoutUpload({ type, value }, uploadEnabled);
   const counter = useRef(getLargestAttachmentIdCounter(attachments));
   const choicePath = attachmentFieldPath(statePath, attachmentId, 'value');
   const scope = useOptionalValidationScope();
@@ -133,7 +133,7 @@ const Attachment = ({
   };
   const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
   const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
-  const paperTitleFields = paperTitleRequired
+  const titleWithoutUploadFields = titleWithoutUploadRequired
     ? documents.flatMap((item) =>
         toAttachmentFilesValidationFields({
           submissionPath: statePath,
@@ -154,7 +154,7 @@ const Attachment = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {[...fields, ...paperTitleFields].map((field) => (
+      {[...fields, ...titleWithoutUploadFields].map((field) => (
         <ValidationRegistration
           key={field.statePath}
           label={field.field}
@@ -249,7 +249,7 @@ const Attachment = ({
             </VStack>
           </VStack>
         )}
-        {paperTitleRequired &&
+        {titleWithoutUploadRequired &&
           documents.map((item) => (
             <AttachmentTitleField
               key={item.attachmentId}

@@ -23,7 +23,7 @@ const attachmentValueRules = (required = false): ValidationRules => ({ required 
 const requiresUploadedFiles = (attachment?: SubmissionAttachment) =>
   attachment?.value === 'leggerVedNaa' || (attachment?.type === 'personal-id' && !!attachment.value);
 
-const requiresPaperAttachmentTitle = (
+const requiresAttachmentTitleWithoutUpload = (
   attachment: Pick<SubmissionAttachment, 'type' | 'value'> | undefined,
   uploadEnabled: boolean,
 ) => !uploadEnabled && attachment?.type === 'other' && attachment.value === 'leggerVedNaa';
@@ -78,7 +78,7 @@ const toAttachmentFilesValidationFields = ({
           }),
         )
       : []),
-    ...(requiresPaperAttachmentTitle(attachment, uploadEnabled) ||
+    ...(requiresAttachmentTitleWithoutUpload(attachment, uploadEnabled) ||
     (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
       ? toValidationFields(
           attachmentFieldPath(submissionPath, attachmentId, 'title'),
@@ -97,7 +97,7 @@ const toAttachmentFilesValidationFields = ({
 export {
   attachmentFilesRules,
   attachmentValueRules,
-  requiresPaperAttachmentTitle,
+  requiresAttachmentTitleWithoutUpload,
   requiresUploadedFiles,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
