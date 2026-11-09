@@ -14,6 +14,8 @@ import { useSubmissionActions } from '../../context/state/SubmissionStateContext
 import { ValidationProvider } from '../../context/validation/ValidationContext';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
+import { INTRO_KEY } from '../form-flow/constants';
+import { toSelfDeclarationValidationFields } from '../intro-page/selfDeclarationValidation';
 
 interface Props {
   children: ReactNode;
@@ -71,7 +73,9 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
       }
 
       let fields: ValidationField[];
-      if (pageKey === 'personal-id') {
+      if (pageKey === INTRO_KEY) {
+        fields = toSelfDeclarationValidationFields(form, submission);
+      } else if (pageKey === 'personal-id') {
         const attachment = submission?.attachments?.find((item) => item.attachmentId === 'personal-id');
         const input = {
           attachmentId: 'personal-id',

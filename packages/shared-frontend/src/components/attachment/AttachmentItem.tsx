@@ -12,13 +12,13 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
 import ValidationRegistration from '../../context/validation/ValidationRegistration';
-import { UnvalidatedFields, useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
+import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
 import FileList from '../file-upload/FileList';
 import UploadButton from '../file-upload/UploadButton';
 import FieldError from '../shared/FieldError';
-import TextField from '../text-field/TextField';
 import { attachmentFieldPath } from './attachmentFieldPath';
+import AttachmentTitleField from './AttachmentTitleField';
 import { toAttachmentFilesValidationFields } from './attachmentValidation';
 
 const noFiles: UploadedFile[] = [];
@@ -64,7 +64,7 @@ const AttachmentItem = ({
 }: Props) => {
   const { translate } = useLanguage();
   const { stateValue } = useFieldBinding({ statePath: submissionPath ?? standaloneAttachmentsPath });
-  const { changeAttachmentValue, handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
+  const { handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const uploadsInProgress = useAttachmentUploadsInProgress(attachmentId);
   const submissionAttachments = readAttachments(stateValue);
@@ -81,10 +81,6 @@ const AttachmentItem = ({
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
-  const attachmentTitlePath = attachmentFieldPath(submissionPath, attachmentId, 'title');
-  const titleValidationError = useValidationFieldError(attachmentTitlePath, pageKey);
-  const titleExternalError = useValidationExternalError(attachmentTitlePath);
-  const attachmentTitleErrorMessage = titleValidationError ?? titleExternalError;
   const filesPath = attachmentFieldPath(submissionPath, attachmentId, 'files');
   const filesExternalError = useValidationExternalError(filesPath);
   const filesValidationError = useValidationFieldError(filesPath, pageKey);
@@ -98,18 +94,6 @@ const AttachmentItem = ({
     uploadSelected,
     requiredFilesMessage,
   });
-  const handleTitleChange = (title: string) => {
-    changeAttachmentValue(
-      initialAttachment,
-      {
-        value: attachmentValue,
-        title,
-      },
-      submissionPath,
-      multipleAttachments,
-    );
-  };
-
   const handleDeleteFileItem = (fileId: string, file: FileItem) => {
     if (attachment?.type === 'other' && onDeleteAttachment) {
       return onDeleteAttachment(attachmentId);
@@ -149,18 +133,14 @@ const AttachmentItem = ({
           {showButton && (
             <VStack gap="space-16">
               {requireAttachmentTitle && (
-                <UnvalidatedFields>
-                  <TextField
-                    marginBottom="space-0"
-                    statePath={attachmentTitlePath}
-                    label={translate(TEXTS.statiske.attachment.attachmentTitle)}
-                    maxLength={50}
-                    value={attachment?.title ?? ''}
-                    error={attachmentTitleErrorMessage}
-                    onChange={handleTitleChange}
-                    readOnly={readOnly}
-                  />
-                </UnvalidatedFields>
+                <AttachmentTitleField
+                  initialAttachment={initialAttachment}
+                  title={attachment?.title}
+                  submissionPath={submissionPath}
+                  multipleAttachments={multipleAttachments}
+                  attachmentValue={attachmentValue}
+                  readOnly={readOnly}
+                />
               )}
               {!readOnly && (
                 <HStack gap="space-16">

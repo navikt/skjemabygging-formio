@@ -37,6 +37,28 @@ describe('Intro page', () => {
     });
   });
 
+  describe('Summary page', () => {
+    const selfDeclarationError = 'Du må bekrefte at du vil svare så riktig som du kan.';
+
+    it('blocks continuing until selfDeclaration is checked and links to the intro page', () => {
+      cy.visit('/fyllut/intropagepaper/oppsummering?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.url().should('include', '/intropagepaper/oppsummering');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: selfDeclarationError }).click();
+      });
+
+      cy.url().should('not.include', 'oppsummering');
+      cy.findByRole('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ }).should('have.focus');
+      cy.findByText(selfDeclarationError).should('exist');
+      cy.clickIntroPageConfirmation();
+      cy.findByText(selfDeclarationError).should('not.exist');
+    });
+  });
+
   describe('Submission type "digitalnologin"', () => {
     it('should display the deadline by which the user must complete the application', () => {
       cy.visit('/fyllut/intropagedigitalnologindeadline/legitimasjon?sub=digitalnologin');
