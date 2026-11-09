@@ -5,19 +5,20 @@ import type { ContentSource } from './contentSource';
 type ContentResource = 'form' | 'form translations' | 'global translations';
 
 const loadContent = async <T>(resource: ContentResource, source: ContentSource, load: () => Promise<T>): Promise<T> => {
+  const message = `Unable to load ${resource}`;
   try {
     return await load();
   } catch (error) {
     if (error instanceof ResponseError) {
       throw new ResponseError(
         error.errorCode === 'NOT_FOUND' ? 'NOT_FOUND' : 'SERVICE_UNAVAILABLE',
-        'Unable to load forms-api content',
+        message,
         error.correlationId,
       );
     }
     if (error instanceof TypeError || error instanceof DOMException) {
-      logger.warn('Unable to reach forms-api', { resource, source, errorName: error.name });
-      throw new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load forms-api content');
+      logger.warn(message, { resource, source, errorName: error.name });
+      throw new ResponseError('SERVICE_UNAVAILABLE', message);
     }
     throw error;
   }

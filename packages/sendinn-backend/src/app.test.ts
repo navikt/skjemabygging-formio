@@ -71,14 +71,14 @@ describe('sendinn-backend app', () => {
 
     it('returns a correlated standard error when content loading fails', async () => {
       getGlobalTranslationsMock.mockRejectedValue(
-        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load forms-api content'),
+        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load global translations'),
       );
 
       const response = await request(createApp()).get('/sendinn/api/global-translations/en').expect(503);
 
       expect(response.body).toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load global translations',
         correlationId: expect.any(String),
       });
       expect(response.header['x-correlation-id']).toBe(response.body.correlationId);

@@ -178,7 +178,7 @@ describe('createContentService', () => {
       now.mockReturnValue(cacheTtlMs);
       await expect(service.getGlobalTranslations('en')).rejects.toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load global translations',
         correlationId: 'upstream-correlation',
       });
       expect(JSON.stringify(warn.mock.calls)).not.toContain('Private upstream metadata');
@@ -206,7 +206,7 @@ describe('createContentService', () => {
 
     await expect(service.getForm({ formPath })).rejects.toMatchObject({
       errorCode: 'NOT_FOUND',
-      message: 'Unable to load forms-api content',
+      message: 'Unable to load form',
     });
   });
 
@@ -216,7 +216,7 @@ describe('createContentService', () => {
     const service = createContentService({ baseUrl, source: 'latest' });
 
     await expect(service.getForm({ formPath })).rejects.toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE' });
-    expect(warn).toHaveBeenCalledWith('Unable to reach forms-api', {
+    expect(warn).toHaveBeenCalledWith('Unable to load form', {
       resource: 'form',
       source: 'latest',
       errorName: 'TypeError',
