@@ -1,8 +1,9 @@
+import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NavUnitLookupFeedback } from '../../../components/nav-unit-select/NavUnitLookupFeedback';
 import { useNavUnits } from '../../../components/nav-unit-select/useNavUnits';
 import { NavUnitSelectDefinition } from '../../component-types';
-import { DefaultAnswer } from '../../shared';
+import { DefaultLabel } from '../../shared';
 import { FormComponentProps } from '../../types';
 
 const SummaryNavUnitSelect = (props: FormComponentProps<NavUnitSelectDefinition>) => {
@@ -13,16 +14,16 @@ const SummaryNavUnitSelect = (props: FormComponentProps<NavUnitSelectDefinition>
   const unavailable = !!error || (availableUnits !== undefined && !selectedUnit);
 
   return (
-    <>
-      <DefaultAnswer
-        {...props}
-        valueFormat={() =>
-          selectedUnit?.navn ??
-          props.translate(unavailable ? TEXTS.statiske.navUnit.fetchError : TEXTS.statiske.loading)
-        }
-      />
-      {unavailable && <NavUnitLookupFeedback retry={retry} />}
-    </>
+    <FormSummary.Answer>
+      <DefaultLabel {...props} />
+      <FormSummary.Value>
+        {unavailable ? (
+          <NavUnitLookupFeedback retry={retry} />
+        ) : (
+          (selectedUnit?.navn ?? props.translate(TEXTS.statiske.loading))
+        )}
+      </FormSummary.Value>
+    </FormSummary.Answer>
   );
 };
 

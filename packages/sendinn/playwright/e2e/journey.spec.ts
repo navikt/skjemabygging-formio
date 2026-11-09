@@ -275,6 +275,9 @@ test.describe('Generated paper journey', () => {
     await useRouteVariant('get-nav-units:error');
     await next(page);
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
+    await expect(
+      page.getByTestId('form-summary-panel').first().getByText('Vi kunne ikke laste enheter', { exact: false }),
+    ).toHaveCount(1);
     await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
     await useRouteVariant('get-nav-units:success');
     await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
