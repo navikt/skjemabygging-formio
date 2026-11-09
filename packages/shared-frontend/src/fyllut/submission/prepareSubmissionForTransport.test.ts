@@ -24,6 +24,20 @@ describe('prepareSubmissionForTransport', () => {
     });
   });
 
+  it('keeps empty grid rows as empty objects so they are not sent as null', () => {
+    expect(
+      prepareSubmissionForTransport({
+        data: {
+          grid: [{}, { date: '2026-01-01', phone: {} }, {}],
+        },
+      }),
+    ).toEqual({
+      data: {
+        grid: [{}, { date: '2026-01-01' }, {}],
+      },
+    });
+  });
+
   it('preserves attachments when form data is empty', () => {
     const attachments: SubmissionAttachment[] = [
       {
