@@ -3,6 +3,7 @@ import { getResolvedSubmissionPath } from '../../context/form-definition/formDef
 import { ValidationField } from '../../context/validation/validationTypes';
 import { ComponentDefinition } from '../component-types';
 import { InputComponentType } from '../inputComponentUtils';
+import { isLockedByPrefill } from '../prefillLock';
 import { validationFieldsRegistry } from './validationFieldsRegistry';
 import { ValidationFieldsBuilder, ValidationFieldsRegistry } from './validationFieldsTypes';
 
@@ -20,10 +21,11 @@ interface CollectPageValidationFieldsArgs {
  * Rebuilds the fields a page would validate, without rendering it.
  *
  * This walks the same tree `RenderInputForm` walks - unsupported types fall through to their
- * children, hidden components and calculated values contribute nothing, data grids expand into
- * indexed rows - and asks each component type for the fields its rendered counterpart registers. It is what lets the
- * summary page validate a page the user never opened, and what keeps a page's errors current when
- * a later page changed a condition that shows or hides one of its fields.
+ * children, hidden components, calculated values and fields locked by prefill contribute nothing,
+ * data grids expand into indexed rows - and asks each component type for the fields its rendered
+ * counterpart registers. It is what lets the summary page validate a page the user never opened,
+ * and what keeps a page's errors current when a later page changed a condition that shows or hides
+ * one of its fields.
  */
 const collectPageValidationFields = ({
   components,
@@ -50,6 +52,11 @@ const collectPageValidationFields = ({
       // Mirrors the render: a value the form calculates is not validated.
       if (component.calculateValue) {
         return component.components?.length ? collect(component.components) : [];
+      }
+
+      // Mirrors the render: the user cannot fix a field locked by prefill, so it is not validated.
+      if (isLockedByPrefill(component, submissionMethod)) {
+        return [];
       }
 
       const submissionPath = getResolvedSubmissionPath(component);
