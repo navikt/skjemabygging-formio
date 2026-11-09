@@ -16,6 +16,13 @@ describe('validateValue', () => {
     });
   });
 
+  it('uses contextual wording for a required violation', () => {
+    expect(validateValue(undefined, 'Declaration', { required: true, requiredMessage: 'confirmDeclaration' })).toEqual({
+      textKey: 'confirmDeclaration',
+      params: { field: 'Declaration' },
+    });
+  });
+
   it('passes required when value is present', () => {
     expect(validateValue('John', 'Name', { required: true })).toBeUndefined();
   });
