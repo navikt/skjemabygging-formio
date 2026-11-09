@@ -3,6 +3,7 @@ import { PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigi
 import { useMemo, useState } from 'react';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
+import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useAttachmentPendingOperations, useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import {
@@ -108,6 +109,7 @@ const SummaryPage = () => {
               {translate(TEXTS.statiske.summaryPage.validationTitle)}
             </Heading>
             {translate(TEXTS.statiske.summaryPage.validationMessage)}
+            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
           </Alert>
           <div className={styles.continueEditing}>
             <FormPrevButton

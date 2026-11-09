@@ -168,7 +168,11 @@ describe('Error summary', () => {
       cy.clickNextStep(); // <- submit formio form
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/errorsummaryfocus/oppsummering');
-      cy.findByText(new RegExp(TEXTS.statiske.summaryPage.validationMessage)).should('exist');
+      cy.findByText(new RegExp(TEXTS.statiske.summaryPage.validationMessage))
+        .should('exist')
+        .within(() => {
+          cy.findByTitle(TEXTS.statiske.summaryPage.validationIcon).should('exist');
+        });
       cy.findByRole('button', { name: 'Gå videre' }).should('not.exist');
     });
   });
