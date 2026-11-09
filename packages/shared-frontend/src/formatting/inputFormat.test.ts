@@ -1,4 +1,4 @@
-import { toInputFormat, toSubmissionFormat } from './inputFormat';
+import { toInputFormat, toSubmissionFormat, toSubmissionNumber } from './inputFormat';
 
 describe('inputFormat', () => {
   it('returns empty string for null/undefined', () => {
@@ -30,5 +30,23 @@ describe('inputFormat', () => {
   it('supports different input and submission formats for iban', () => {
     expect(toInputFormat('NO9386011117947', 'iban')).toBe('NO93 8601 1117 947');
     expect(toSubmissionFormat('NO93 8601 1117 947', 'iban')).toBe('NO9386011117947');
+  });
+
+  it('converts a valid whole number, ignoring spaces', () => {
+    expect(toSubmissionNumber('2023', true)).toBe(2023);
+    expect(toSubmissionNumber('1 234 567', true)).toBe(1234567);
+    expect(toSubmissionNumber('-12', true)).toBe(-12);
+  });
+
+  it('converts a valid decimal number with a decimal comma', () => {
+    expect(toSubmissionNumber('1 234,5', false)).toBe(1234.5);
+    expect(toSubmissionNumber('12.5', false)).toBe(12.5);
+  });
+
+  it('does not convert empty or invalid numbers', () => {
+    expect(toSubmissionNumber('', true)).toBeUndefined();
+    expect(toSubmissionNumber('20a', true)).toBeUndefined();
+    expect(toSubmissionNumber('12,5', true)).toBeUndefined();
+    expect(toSubmissionNumber('', false)).toBeUndefined();
   });
 });

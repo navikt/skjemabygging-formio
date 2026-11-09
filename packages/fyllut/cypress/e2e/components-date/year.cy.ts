@@ -135,6 +135,11 @@ describe('Year', () => {
 
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.testDownloadPdf();
+      cy.get('@downloadPdf')
+        .its('request.body.submission')
+        .then((submission) => {
+          expect(Object.values(JSON.parse(submission).data)).to.include.members([2023, 2024, 2025, 2026, 2010, 2020]);
+        });
     });
   });
 

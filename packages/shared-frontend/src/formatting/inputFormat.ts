@@ -1,3 +1,4 @@
+import { numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Formatter, formatters, submissionFormatters } from './formatters';
 
 /**
@@ -27,4 +28,15 @@ const toSubmissionFormat = (value: string, formatKey?: string): string => {
   return formatter ? formatter(trimmedValue) : trimmedValue;
 };
 
-export { toInputFormat, toSubmissionFormat };
+/**
+ * The number an entered value stands for, ignoring spaces and accepting a decimal comma, or
+ * undefined when it is not a valid whole or decimal number. Callers keep an invalid value as text,
+ * so validation can report it.
+ */
+const toSubmissionNumber = (value: string, isInteger: boolean): number | undefined => {
+  const normalizedValue = isInteger ? value.replace(/\s/g, '') : value.replace(/\s/g, '').replace(',', '.');
+  const isValid = isInteger ? numberUtils.isValidInteger(normalizedValue) : numberUtils.isValidDecimal(normalizedValue);
+  return isValid ? Number(normalizedValue) : undefined;
+};
+
+export { toInputFormat, toSubmissionFormat, toSubmissionNumber };
