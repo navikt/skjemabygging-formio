@@ -111,7 +111,7 @@ describe('coverPageDownloadDataMapper', () => {
       'nb-NO',
       { recipientId: '001', name: 'NAV Test', poBoxAddress: '1234', postalCode: '0101', postalName: 'Oslo' },
       undefined,
-      (text) => text,
+      (text) => (text === 'Vedlegg label' ? 'Attachment label' : text),
       'paper',
     );
 
@@ -144,7 +144,54 @@ describe('coverPageDownloadDataMapper', () => {
         postalCode: '0101',
         postalName: 'Oslo',
       },
+      attachments: ['Attachment label'],
+      attachmentsForArchiving: ['Vedlegg label'],
+    });
+  });
+
+  it('prints translated labels but archives original labels, leaving user titles untranslated', () => {
+    const form: Form = {
+      ...formWithAttachments,
+      components: [
+        formWithAttachments.components[1],
+        {
+          ...formWithAttachments.components[1],
+          key: 'other',
+          navId: 'other',
+          attachmentType: 'other',
+        },
+      ],
+    };
+    const submission: Submission = {
+      data: {
+        attachment1: { attachmentId: 'attachment1', navId: 'attachment1', type: 'default', value: 'leggerVedNaa' },
+        other: [{ attachmentId: 'other', navId: 'other', type: 'other', value: 'leggerVedNaa', title: 'My documents' }],
+      },
+    };
+    const translate = () => 'Translated attachment';
+
+    expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(form, submission, translate)).toEqual({
+      attachments: ['Translated attachment', 'My documents'],
+      attachmentsForArchiving: ['Vedlegg label', 'My documents'],
+    });
+  });
+
+  it('uses the label when no title exists and excludes stale titles for unselected attachments', () => {
+    const submission: Submission = {
+      data: {
+        attachment1: [
+          { attachmentId: 'first', navId: 'attachment1', type: 'other', value: 'leggerVedNaa' },
+          { attachmentId: 'second', navId: 'attachment1', type: 'other', value: 'ettersender', title: 'Not selected' },
+        ],
+      },
+      attachments: [
+        { attachmentId: 'obsolete', navId: 'attachment1', type: 'other', value: 'leggerVedNaa', title: 'Obsolete' },
+      ],
+    };
+
+    expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(formWithAttachments, submission)).toEqual({
       attachments: ['Vedlegg label'],
+      attachmentsForArchiving: ['Vedlegg label'],
     });
   });
 

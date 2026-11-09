@@ -12,14 +12,29 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
 
-const getAttachmentLabels = (
+const translateLabel = (
+  label: string,
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
+) => (translate ? translate(label) : label);
+
+const createAttachmentDocumentLists = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-): string[] => {
-  return attachmentUtils
-    .getAttachmentsForCoverPage(submission, form)
-    .map((component) => (translate ? translate(component.label) : component.label));
+): Pick<CoverPageDownloadType, 'attachments' | 'attachmentsForArchiving'> => {
+  const documents = attachmentUtils
+    .getSelectedAttachmentsForCoverPage(submission, form)
+    .flatMap(({ component, attachments }) =>
+      attachments.map((attachment) => ({
+        printed: attachment.title || translateLabel(component.label, translate),
+        forArchiving: attachment.title || component.label,
+      })),
+    );
+
+  return {
+    attachments: documents.map((document) => document.printed),
+    attachmentsForArchiving: documents.map((document) => document.forArchiving),
+  };
 };
 
 const getRecipient = (
@@ -95,11 +110,12 @@ const createDownloadDataFromSubmission = (
     },
     user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
-    attachments: getAttachmentLabels(form, submission, translate),
+    ...createAttachmentDocumentLists(form, submission, translate),
   };
 };
 
 const coverPageDownloadDataMapper = {
+  createAttachmentDocumentLists,
   createDownloadDataFromSubmission,
 };
 

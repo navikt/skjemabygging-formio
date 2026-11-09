@@ -22,7 +22,8 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
     .toSubmissionAttachments(normalizeAttachmentValue(component, submissionPath, context.value), component)
     .filter((attachment) => attachment.navId === attachmentNavId);
   const options = getAttachmentOptions(component, submissionMethod);
-  const implicitValue = getImplicitAttachmentValue(options, attachmentUtils.enableAttachmentUpload(submissionMethod));
+  const uploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
+  const implicitValue = getImplicitAttachmentValue(options, uploadEnabled);
   const baseAttachment = attachments[0] ?? {
     attachmentId: baseAttachmentId,
     navId: attachmentNavId,
@@ -33,17 +34,16 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
     value: implicitValue,
   };
 
-  const fileFields = !attachmentUtils.enableAttachmentUpload(submissionMethod)
-    ? []
-    : (attachments.length ? attachments : [baseAttachment]).flatMap((attachment) =>
-        toAttachmentFilesValidationFields({
-          submissionPath,
-          attachmentId: attachment.attachmentId,
-          label,
-          attachment,
-          uploadSelected: !!options.find((option) => option.value === attachment.value)?.upload,
-        }),
-      );
+  const fileFields = (attachments.length ? attachments : [baseAttachment]).flatMap((attachment) =>
+    toAttachmentFilesValidationFields({
+      submissionPath,
+      attachmentId: attachment.attachmentId,
+      label,
+      attachment,
+      uploadEnabled,
+      uploadSelected: uploadEnabled && !!options.find((option) => option.value === attachment.value)?.upload,
+    }),
+  );
 
   return [
     ...toAttachmentValueValidationFields({

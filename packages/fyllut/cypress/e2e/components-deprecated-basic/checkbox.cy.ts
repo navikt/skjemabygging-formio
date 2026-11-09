@@ -2,6 +2,7 @@
  * Tests that the checkbox component (react) renders and functions correctly
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Checkbox', () => {
@@ -28,6 +29,7 @@ describe('Checkbox', () => {
       cy.clickNextStep();
 
       cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
 
       cy.clickNextStep();
 
@@ -49,6 +51,7 @@ describe('Checkbox', () => {
       cy.clickNextStep();
 
       cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
 
       cy.clickNextStep();
 
