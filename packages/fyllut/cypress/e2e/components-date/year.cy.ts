@@ -27,6 +27,10 @@ describe('Year', () => {
         cy.contains(additionalDescription).shouldBeVisible();
       });
     });
+
+    it('should default to numeric inputmode', () => {
+      cy.findByLabelText('Årstall').should('have.attr', 'inputmode', 'numeric');
+    });
   });
 
   describe('Validation', () => {

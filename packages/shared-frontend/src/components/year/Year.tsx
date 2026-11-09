@@ -13,10 +13,11 @@ const toYearStateValue = (value: string) => {
   return toSubmissionNumber(year, true) ?? year;
 };
 
-const Year = ({ validation, required = true, ...props }: YearProps) => (
+const Year = ({ validation, required = true, inputMode = 'numeric', ...props }: YearProps) => (
   <InternalTextField
     {...props}
     required={required}
+    inputMode={inputMode}
     formatKey="year"
     toStateValue={toYearStateValue}
     validation={toYearValidation({ ...props, required, validation }).rules}

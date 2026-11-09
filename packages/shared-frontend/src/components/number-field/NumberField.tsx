@@ -19,6 +19,7 @@ const NumberField = ({
   calculatedValue = false,
   validation,
   required = true,
+  inputMode = numberType === 'integer' ? 'numeric' : 'decimal',
   ...props
 }: NumberFieldProps) => {
   const formatKey = numberType === 'integer' ? 'number' : 'decimal';
@@ -51,6 +52,7 @@ const NumberField = ({
     <InternalTextField
       {...props}
       required={required}
+      inputMode={inputMode}
       formatKey={formatKey}
       toDisplayValue={toDisplayValue}
       toStateValue={toStateValue}
