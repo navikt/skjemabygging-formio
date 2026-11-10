@@ -2,8 +2,8 @@ import { Page } from '@playwright/test';
 import { expect, test } from '../fixtures/test';
 import { selectDecoratorLanguage } from '../helpers/language';
 
-const next = (page: Page) => page.getByRole('button', { name: 'Neste steg', exact: true }).click();
-const previous = (page: Page) => page.getByRole('button', { name: 'Forrige steg', exact: true }).click();
+const nextStep = (page: Page) => page.getByRole('button', { name: /^(Neste steg|Next step)$/ }).click();
+const previousStep = (page: Page) => page.getByRole('button', { name: /^(Forrige steg|Previous step)$/ }).click();
 const unitSelect = (page: Page) =>
   page.getByRole('combobox', { name: 'Velg hvilken Nav-enhet som skal motta innsendingen', exact: true });
 const errorSummary = (page: Page) => page.getByTestId('error-summary');
@@ -19,36 +19,36 @@ test.describe('Generated paper journey', () => {
     await expect(page).toHaveURL(
       (url) => url.pathname === '/sendinn/sendinnjourney/sendinnUserType' && !url.searchParams.has('step'),
     );
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await errorSummary(page).getByRole('link').click();
     const identified = page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true });
     await expect(identified).toBeFocused();
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await errorSummary(page).getByRole('link').click();
     await expect(identified).toBeFocused();
     await page.keyboard.press('Space');
     await identity(page).fill('123');
     await expect(identity(page)).toBeFocused();
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await expect(identity(page)).toHaveValue('123');
     await errorSummary(page).getByRole('link').click();
     await expect(identity(page)).toBeFocused();
     await identity(page).fill('03876399856');
     await expect(errorSummary(page)).toBeHidden();
-    await next(page);
+    await nextStep(page);
     await expect(page).toHaveURL(
       (url) => url.pathname === '/sendinn/sendinnjourney/sendinnAttachments' && !url.searchParams.has('step'),
     );
     await expect(page.getByRole('heading', { level: 2, name: 'Ettersend dokumentasjon', exact: true })).toBeFocused();
     await expect(page.getByRole('checkbox')).toHaveCount(1);
     await expect(page.getByRole('checkbox')).not.toBeChecked();
-    await previous(page);
+    await previousStep(page);
     await expect(identity(page)).toHaveValue('038763 99856');
-    await next(page);
-    await next(page);
+    await nextStep(page);
+    await nextStep(page);
     await expect(page.getByRole('heading', { level: 2, name: 'Oppsummering', exact: true })).toBeFocused();
     await expect(page).toHaveURL(
       (url) => url.pathname === '/sendinn/sendinnjourney/oppsummering' && !url.searchParams.has('step'),
@@ -98,13 +98,13 @@ test.describe('Generated paper journey', () => {
     await choice.check();
     const title = page.getByRole('textbox');
     await expect(title).toBeVisible();
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await errorSummary(page).getByRole('link').click();
     await expect(title).toBeFocused();
     await expect(title).toHaveAttribute('maxlength', '50');
     await title.fill(' ');
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await expect(title).toHaveValue('');
     await title.fill('Additional evidence');
@@ -115,7 +115,7 @@ test.describe('Generated paper journey', () => {
     await title.fill('Additional evidence');
     await expect(page.getByRole('button', { name: /Legg til|Last opp/ })).toHaveCount(0);
     await expect(page.locator('input[type="file"]')).toHaveCount(0);
-    await next(page);
+    await nextStep(page);
     await expect(page.getByTestId('form-summary-panel')).toContainText('Additional evidence');
     await page.getByRole('link', { name: 'Endre svar', exact: true }).click();
     await expect(title).toHaveValue('Additional evidence');
@@ -125,20 +125,20 @@ test.describe('Generated paper journey', () => {
     await page.goto('/sendinn/sendinnjourney');
     await page.getByRole('radio', { name: 'Flere personer / Nav-enhet', exact: true }).check();
     await expect(unitSelect(page).getByRole('option')).toHaveText(['Velg enhet', 'Nav Alpha', 'Nav Beta']);
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await errorSummary(page).getByRole('link').click();
     await expect(unitSelect(page)).toBeFocused();
     await unitSelect(page).selectOption('0202');
     await expect(unitSelect(page)).toBeFocused();
-    await next(page);
-    await next(page);
+    await nextStep(page);
+    await nextStep(page);
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
     await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
     await page.getByRole('button', { name: 'Kontroller opplysningene', exact: true }).click();
     await expect(errorSummary(page)).toBeHidden();
-    await previous(page);
-    await previous(page);
+    await previousStep(page);
+    await previousStep(page);
     await expect(unitSelect(page)).toHaveValue('0202');
     await page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true }).check();
     await identity(page).fill('03876399856');
@@ -158,14 +158,14 @@ test.describe('Generated paper journey', () => {
     await expect(page.getByRole('radio')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
     await expect(unitSelect(page).getByRole('option')).toHaveCount(1);
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await useRouteVariant('get-nav-units:no-matching-types');
     await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
     await expect(unitSelect(page).getByRole('option')).toHaveText(['Velg enhet', 'Nav Gamma']);
     await unitSelect(page).selectOption('0303');
-    await next(page);
-    await next(page);
+    await nextStep(page);
+    await nextStep(page);
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Gamma');
   });
 
@@ -183,10 +183,10 @@ test.describe('Generated paper journey', () => {
     await expect(englishUnit).toHaveValue('0101');
     await expect(page.getByRole('radio', { name: 'Multiple people / Nav unit', exact: true })).toBeChecked();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await page.getByRole('button', { name: 'Next step', exact: true }).click();
+    await nextStep(page);
     await expect(page.getByRole('group', { name: /Evidence document \(en\)/ })).toBeVisible();
     await expect(page.getByRole('checkbox')).toHaveCount(1);
-    await page.getByRole('button', { name: 'Next step', exact: true }).click();
+    await nextStep(page);
     await expect(page.getByRole('heading', { level: 2, name: 'Summary', exact: true })).toBeFocused();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
     await expect(page).toHaveURL(
@@ -213,7 +213,7 @@ test.describe('Generated paper journey', () => {
     await useRouteVariant('get-nav-units:error');
     await page.goto('/sendinn/sendinnjourney?filter=N1');
     await page.getByRole('radio', { name: 'Person som ikke har fødselsnummer eller d-nummer', exact: true }).check();
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('link')).toHaveCount(4);
     await page.getByRole('textbox', { name: 'Fornavn', exact: true }).fill('Alex');
     await page.getByRole('textbox', { name: 'Etternavn', exact: true }).fill('Example');
@@ -231,7 +231,7 @@ test.describe('Generated paper journey', () => {
     const contact = page.getByRole('radiogroup', { name: 'Har du vært i kontakt med Nav om saken?', exact: true });
     await contact.getByRole('radio', { name: 'Ja', exact: true }).check();
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
-    await next(page);
+    await nextStep(page);
     await expect(errorSummary(page).getByRole('link')).toHaveCount(1);
     await expect(page.getByRole('textbox', { name: 'Fornavn', exact: true })).toHaveValue('Alex');
     await useRouteVariant('get-nav-units:success');
@@ -242,18 +242,18 @@ test.describe('Generated paper journey', () => {
     await contact.getByRole('radio', { name: 'Ja', exact: true }).check();
     await expect(unitSelect(page)).toHaveValue('');
     await unitSelect(page).selectOption('0101');
-    await next(page);
-    await next(page);
+    await nextStep(page);
+    await nextStep(page);
     const userTypeSummary = page.getByTestId('form-summary-panel').first();
     await expect(userTypeSummary).toContainText('Alex');
     await expect(userTypeSummary).toContainText('Example street 1');
     await expect(userTypeSummary).toContainText('Nav Alpha');
-    await previous(page);
-    await previous(page);
+    await previousStep(page);
+    await previousStep(page);
     await page.getByRole('radio', { name: 'Flere personer / Nav-enhet', exact: true }).check();
     await unitSelect(page).selectOption('0202');
-    await next(page);
-    await next(page);
+    await nextStep(page);
+    await nextStep(page);
     await expect(userTypeSummary).toContainText('Nav Beta');
     await expect(userTypeSummary).not.toContainText('Alex');
     await expect(userTypeSummary).not.toContainText('Example street');
@@ -267,13 +267,13 @@ test.describe('Generated paper journey', () => {
     await useRouteVariant('get-form:sendinn-forced-unit');
     await page.goto('/sendinn/sendinnjourney');
     await unitSelect(page).selectOption('0202');
-    await next(page);
+    await nextStep(page);
     await page
       .getByRole('group', { name: /Evidence document/ })
       .getByRole('checkbox')
       .check();
     await useRouteVariant('get-nav-units:error');
-    await next(page);
+    await nextStep(page);
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
     await expect(
       page.getByTestId('form-summary-panel').first().getByText('Vi kunne ikke laste enheter', { exact: false }),
@@ -282,17 +282,17 @@ test.describe('Generated paper journey', () => {
     await useRouteVariant('get-nav-units:success');
     await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
-    await previous(page);
+    await previousStep(page);
     await expect(page.getByRole('group', { name: /Evidence document/ }).getByRole('checkbox')).toBeChecked();
     await useRouteVariant('get-nav-units:no-matching-types');
-    await next(page);
+    await nextStep(page);
     await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
     await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
     await useRouteVariant('get-nav-units:success');
     await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
-    await previous(page);
-    await previous(page);
+    await previousStep(page);
+    await previousStep(page);
     await expect(unitSelect(page)).toHaveValue('0202');
   });
 
