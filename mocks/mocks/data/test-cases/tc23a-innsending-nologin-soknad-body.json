@@ -1,0 +1,22 @@
+{
+  "bruker": "08842748500",
+  "avsender": {
+    "idType": "FNR",
+    "id": "13097248022",
+    "navn": "Kari Sender"
+  },
+  "formNumber": "Party mapping 001",
+  "title": "Party mapping person sender test form",
+  "tema": "HJE",
+  "language": "nb",
+  "attachments": [
+    {
+      "attachmentCode": "K2",
+      "label": "Norsk pass",
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "description": null
+    }
+  ],
+  "otherUploadAvailable": false
+}

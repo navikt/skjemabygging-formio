@@ -12,6 +12,7 @@ const checkA11yWhenStable = () => {
 
 describe('Axe: Accessibility testing', () => {
   describe('Test on the intro page', () => {
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Test on the intro page > Static intro page
     it('Static intro page', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/cypressaxe');
@@ -31,42 +32,49 @@ describe('Axe: Accessibility testing', () => {
       cy.injectAxe();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Person
     it('Person', () => {
       cy.findByRole('heading', { name: 'Person' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Penger og konto
     it('Penger og konto', () => {
       cy.clickShowAllSteps();
-      cy.contains('Penger og konto').click();
+      cy.findByRole('link', { name: 'Penger og konto' }).click();
       cy.findByRole('heading', { name: 'Penger og konto' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Bedrift / organisasjon
     it('Bedrift / organisasjon', () => {
       cy.contains('Bedrift / organisasjon').click();
       cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Dato og tid
     it('Dato og tid', () => {
       cy.contains('Dato og tid').click();
       cy.findByRole('heading', { name: 'Dato og tid' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Standard felter
     it('Standard felter', () => {
       cy.contains('Standard felter').click();
       cy.findByRole('heading', { name: 'Standard felter' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Layout
     it('Layout', () => {
       cy.contains('Layout').click();
       cy.findByRole('heading', { name: 'Layout' }).should('exist');
       checkA11yWhenStable();
     });
 
+    // Playwright: packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Data
     it('Data', () => {
       cy.contains('Data').click();
       cy.findByRole('heading', { name: 'Data' }).should('exist');

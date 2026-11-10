@@ -14,6 +14,7 @@ the person submitting an application is an `applicant`.
 | ------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | arbeidsgiver        | employer                       |                                                                                                                                                                                                 |
 | avsender            | sender                         | The sender may be the applicant or someone acting on the applicant's behalf.                                                                                                                    |
+| berørt bruker       | concerned user                 |                                                                                                                                                                                                 |
 | bruker              | user                           | Use `applicant` when the person is applying for something.                                                                                                                                      |
 | digital innsending  | digital submission             |                                                                                                                                                                                                 |
 | egenerklæring       | self-declaration               |                                                                                                                                                                                                 |
@@ -55,7 +56,7 @@ the person submitting an application is an `applicant`.
 | `soknad`              | `application`                                                              |
 | `avsender`            | `sender`                                                                   |
 | `brukerId`            | `userId` or `applicantId`, depending on the role                           |
-| `innsendingsId`       | `applicationId`, except at the SendInn API boundary                        |
+| `innsendingsId`       | `submissionId`, except at the SendInn API boundary and in public URLs      |
 | `mellomlagring`       | `draft` or `draftSaving`, depending on the context                         |
 | `mottaksadresse`      | `recipientAddress`                                                         |
 | `preutfylling`        | `prefill`                                                                  |

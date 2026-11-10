@@ -1,22 +1,6 @@
-import { image, panel } from '../../../form-builder/components';
+import { image, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
-
-// A minimal 1x1 px transparent PNG used as test image data
-const TEST_IMAGE_URL =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
-const imageData = [
-  {
-    url: TEST_IMAGE_URL,
-    hash: '',
-    name: 'test-bilde.png',
-    size: 68,
-    type: 'image/png',
-    storage: 'base64',
-    originalName: 'test-bilde.png',
-  },
-];
 
 const imageForm = () => {
   const formNumber = 'image';
@@ -29,24 +13,11 @@ const imageForm = () => {
       panel({
         title: 'Visning',
         components: [
-          {
-            ...image({ label: 'Bilde' }),
-            image: imageData,
-            altText: 'Test bilde',
-            widthPercent: 100,
-          },
-          {
-            ...image({ label: 'Bilde med bredde' }),
-            image: imageData,
-            altText: 'Halvt bilde',
-            widthPercent: 50,
-          },
-          {
-            ...image({ label: 'Bilde med beskrivelse', description: '<p>Bildetekst</p>' }),
-            image: imageData,
-            altText: 'Bilde med tekst',
-            widthPercent: 100,
-          },
+          // Images keep the builder default validate.required: true, like the published forms do.
+          image({ label: 'Bilde', altText: 'Test bilde' }),
+          image({ label: 'Bilde med bredde', altText: 'Halvt bilde', widthPercent: 50 }),
+          image({ label: 'Bilde med beskrivelse', altText: 'Bilde med tekst', description: '<p>Bildetekst</p>' }),
+          textField({ label: 'Tekstfelt', validate: { required: false } }),
         ],
       }),
     ],

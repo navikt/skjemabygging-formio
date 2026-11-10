@@ -1,8 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
 import { dateUtils, submissionUtils as formComponentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AddressValidityDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryAddressValidity = (props: FormComponentProps) => {
+const SummaryAddressValidity = (props: FormComponentProps<AddressValidityDefinition>) => {
   const { submission, submissionPath, translate } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 

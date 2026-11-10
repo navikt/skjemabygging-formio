@@ -8,6 +8,7 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../logger';
 import {
+  appMetrics,
   coverPageService,
   formService,
   mergeFileService,
@@ -117,6 +118,7 @@ const staticPdf = {
         });
       }
 
+      appMetrics.paperSubmissionsCounter.inc({ source: isSubsequentSubmission ? 'ettersending' : 'statiskpdf' });
       res.json({ pdfBase64: pdf });
     } catch (error: any) {
       next(error);

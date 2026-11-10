@@ -21,6 +21,28 @@ For local server startup and runtime-config handling, use `start-dev-servers`.
 - Use regexes when labels vary slightly, for example optional `(valgfritt)` suffixes
 - Avoid class selectors unless there is no stable user-facing alternative
 
+## Verify roles and responses before asserting them
+
+Check the rendered DOM before you write a role query. A component's look does
+not tell you its role, and a wrong guess only shows up as a timeout:
+
+- Aksel `Button as="a"` renders with role `button`, not `link`
+- Aksel inline `Alert` has no `alert` role. Query the message text instead,
+  for example `cy.findByText(<error message>)`
+- When a query fails, read the "accessible roles" list in the Cypress error
+  before changing the selector
+
+Do not trust a request just because the test reached the next step. When you
+wait on an alias, assert the status code:
+
+```ts
+cy.wait('@deleteFile').its('response.statusCode').should('eq', 204);
+```
+
+The mocks server does not cover every route. An unmocked request can answer
+`404` while the UI still looks fine. If the test needs a specific reply, stub
+it with `request.reply(...)`.
+
 ## Route selection and preview-only logic
 
 - Prefer explicit route-path visits in `cy.visit(...)` so the test does not depend
@@ -44,6 +66,38 @@ For local server startup and runtime-config handling, use `start-dev-servers`.
 - Add custom intercepts only when the test needs them
 - Do not add aliases you never wait on or assert against
 - Prefer waiting on meaningful UI cues or known aliases over arbitrary sleeps
+
+### Holding a request to test pending states
+
+To test what the UI does while a request is in flight, return a promise from
+the intercept callback and resolve it later in the test. Cypress fails that
+callback once the promise has been pending longer than `defaultCommandTimeout`
+(4 seconds by default), so:
+
+- raise the timeout on the test, for example
+  `it('...', { defaultCommandTimeout: 30000 }, () => { ... })`
+- register the intercept with `times: 1` so later requests, such as a retry,
+  are not held as well
+
+```ts
+let release: () => void = () => {
+    throw new Error('Request has not been intercepted');
+};
+cy.intercept(
+    { method: 'DELETE', url: '**/attachments/*/*', times: 1 },
+    (request) =>
+        new Cypress.Promise<void>((resolve) => {
+            release = () => {
+                request.reply({ statusCode: 204 });
+                resolve();
+            };
+        }),
+).as('pendingDelete');
+
+// ...assert the pending state...
+cy.then(() => release());
+cy.wait('@pendingDelete').its('response.statusCode').should('eq', 204);
+```
 
 ### Fyllut-specific mock handling
 

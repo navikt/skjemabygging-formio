@@ -67,7 +67,7 @@ describe('TextArea', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcde');
-      cy.clickErrorMessageMinLength(label).should('have.length', 0);
+      cy.findAllByErrorMessageMinLength(label).should('have.length', 0);
     });
 
     it('should validate the max length', () => {
@@ -79,20 +79,7 @@ describe('TextArea', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcde');
-      cy.clickErrorMessageMaxLength(label).should('have.length', 0);
-    });
-
-    it('should support custom validation', () => {
-      const label = 'Tekstområde egendefinert';
-      const errorMessage = 'abc er eneste lovlige verdien';
-      cy.findByLabelText(label).type('ab');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelText(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('abc');
-      cy.findAllByText(errorMessage).should('have.length', 0);
+      cy.findAllByErrorMessageMaxLength(label).should('have.length', 0);
     });
   });
 
@@ -116,7 +103,6 @@ describe('TextArea', () => {
       cy.findByRole('textbox', { name: 'Tekstområde påkrevd' }).type('valid1');
       cy.findByRole('textbox', { name: 'Tekstområde ikke påkrevd (valgfritt)' }).type('valid2');
       cy.findByRole('textbox', { name: 'Tekstområde min og max' }).type('valid3');
-      cy.findByRole('textbox', { name: 'Tekstområde egendefinert' }).type('abc');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -135,8 +121,6 @@ describe('TextArea', () => {
         cy.get('dd').eq(1).should('contain.text', 'valid2');
         cy.get('dt').eq(2).should('contain.text', 'Tekstområde min og max');
         cy.get('dd').eq(2).should('contain.text', 'valid3');
-        cy.get('dt').eq(3).should('contain.text', 'Tekstområde egendefinert');
-        cy.get('dd').eq(3).should('contain.text', 'abc');
       });
       cy.clickDownloadInstructions();
 

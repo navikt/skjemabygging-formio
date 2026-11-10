@@ -26,26 +26,28 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 
 ## 📦 Kommandoer
 
-| **Kommando**              | **Beskrivelse**                                                             |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `pnpm install`            | Installerer alle avhengigheter                                              |
-| `pnpm start`              | Starter både Bygger og Fyllut, inkludert backend                            |
-| `pnpm start:bygger`       | Starter kun Bygger med backend                                              |
-| `pnpm start:fyllut`       | Starter kun Fyllut med backend                                              |
-| `pnpm build`              | Bygger React-appene (ikke nødvendig for lokal utvikling)                    |
-| `pnpm preview:bygger`     | Starter Bygger fra bygd kode (`dist`-mappen)                                |
-| `pnpm preview:fyllut`     | Starter Fyllut fra bygd kode (`dist`-mappen)                                |
-| `pnpm test`               | Kjører alle tester                                                          |
-| `pnpm test:coverage`      | Tester med rapportering av dekningsgrad                                     |
-| `pnpm cypress:bygger`     | Kjører Cypress-tester for Bygger                                            |
-| `pnpm cypress:fyllut`     | Kjører Cypress-tester for Fyllut                                            |
-| `pnpm start:fyllut:mocks` | Starter Fyllut med mocks på ledige porter og skriver Cypress runtime config |
-| `pnpm start:bygger:mocks` | Starter Bygger på ledige porter og skriver Cypress runtime config           |
-| `pnpm mocks:fyllut`       | Starter bare Mocks Server for Fyllut ved manuell feilsøking                 |
-| `pnpm check-types`        | Sjekker TypeScript-typer                                                    |
-| `pnpm clean`              | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker         |
-| `pnpm lint`               | Sjekker kodekvalitet                                                        |
-| `pnpm get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                         |
+| **Kommando**                   | **Beskrivelse**                                                             |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `pnpm install`                 | Installerer alle avhengigheter                                              |
+| `pnpm start`                   | Starter både Bygger og Fyllut, inkludert backend                            |
+| `pnpm start:bygger`            | Starter kun Bygger med backend                                              |
+| `pnpm start:fyllut`            | Starter kun Fyllut med backend                                              |
+| `pnpm build`                   | Bygger React-appene (ikke nødvendig for lokal utvikling)                    |
+| `pnpm preview:bygger`          | Starter Bygger fra bygd kode (`dist`-mappen)                                |
+| `pnpm preview:fyllut`          | Starter Fyllut fra bygd kode (`dist`-mappen)                                |
+| `pnpm test`                    | Kjører alle tester                                                          |
+| `pnpm test:coverage`           | Tester med rapportering av dekningsgrad                                     |
+| `pnpm cypress:bygger`          | Kjører Cypress-tester for Bygger                                            |
+| `pnpm cypress:fyllut`          | Kjører Cypress-tester for Fyllut                                            |
+| `pnpm playwright:fyllut`       | Kjører FyllUt-piloten i Playwright med egne servere og mocks                |
+| `pnpm playwright:fyllut:built` | Kjører samme pilot mot ferdig bygget kode                                   |
+| `pnpm start:fyllut:mocks`      | Starter Fyllut med mocks på ledige porter og skriver Cypress runtime config |
+| `pnpm start:bygger:mocks`      | Starter Bygger på ledige porter og skriver Cypress runtime config           |
+| `pnpm mocks:fyllut`            | Starter bare Mocks Server for Fyllut ved manuell feilsøking                 |
+| `pnpm check-types`             | Sjekker TypeScript-typer                                                    |
+| `pnpm clean`                   | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker         |
+| `pnpm lint`                    | Sjekker kodekvalitet                                                        |
+| `pnpm get-tokens`              | Henter tokens for lokal kjøring (`bygger` er standard, `fyllut`, `all`)     |
 
 ## 🔒 cplt-sandbox (for agenter og lokal kjøring)
 
@@ -107,12 +109,21 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
     FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true}
     BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
 
-### 🧪 Kjøre Fyllut lokalt med integrasjon mot innsending-api
+### 🧪 Kjøre Fyllut lokalt med integrasjon mot eksterne tjenester
 
-For å teste digital innsending lokalt er det enklest å bruke `pnpm get-tokens fyllut` for å hente nødvendige access
-tokens for kommunikasjon med eksterne tjenester i dev-gcp.
+Kjør `pnpm get-tokens fyllut` for å hente access tokens til tjenestene Fyllut kaller i dev:
 
-Man kan kjøre opp en lokal instans av `innsending-api`, men token er fremdeles nødvendig for generering av pdf. Se
+| Miljøvariabel                          | Brukes til                                                   |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `INNSENDING_API_M2M_ACCESS_TOKEN`      | Digital innsending uten innlogging og sammenslåing av pdf-er |
+| `INNSENDING_API_OBO_ACCESS_TOKEN`      | Digital innsending med innlogging                            |
+| `FAMILIE_PDF_M2M_ACCESS_TOKEN`         | Generering av søknads-pdf                                    |
+| `SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN` | Generering av førsteside                                     |
+
+Skriptet legger tokens i `.env`-fila til fyllut-backend. Tokens varer i omtrent én time. Start backend på nytt etter at
+du har hentet nye tokens. Med `MOCKS_ENABLED=true` bruker backend mock-serveren i stedet, og ignorerer disse tokens.
+
+Du kan kjøre en lokal instans av `innsending-api`, men pdf-generering trenger fortsatt token. Se
 [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan innsending-api kjøres opp lokalt.
 Legg til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut sin .env-fil slik:
 
@@ -222,13 +233,13 @@ starten av testen (da skippes de).
 Vi kommuniserer med fagsystemsonen (fss) for å generere førsteside, og det skjer ved kall
 via [skjemabygging-proxy](https://github.com/navikt/skjemabygging-proxy) som kjører i fss.
 
-For å få til dette lokalt trenger du å kjøre naisdevice. I tillegg trenger fyllut-backend og bygger-backend tilgang
-til sin client secret som miljøvariabel. Variablene kan f.eks legges til i en `.env`-fil i fyllut-backend og
-bygger-backend, med innhold `AZURE_APP_CLIENT_SECRET=<den-respektive-appen-sin-client-secret>`. Client secret til
-fyllut og bygger i dev-gcp finner du ved å gå inn i dev-gcp clusteret med kubectl (krever naisdevice og tilgang
-til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
+For å få til dette lokalt trenger du å kjøre naisdevice. Fyllut-backend bruker tokenet fra `pnpm get-tokens fyllut`
+(se [Kjøre Fyllut lokalt](#-kjøre-fyllut-lokalt-med-integrasjon-mot-eksterne-tjenester)).
 
-`kubectl exec <pod-name> -- env`
+Bygger-backend kaller ikke skjemabygging-proxy selv. Den videresender `/fyllut`-kall til Fyllut-instansen i
+`FYLLUT_BASE_URL` (som standard skjemadelingslenke i dev), og den instansen lager førstesiden. Lokal Bygger trenger
+derfor ikke eget token eller client secret for å lage førsteside. Setter du `FYLLUT_BASE_URL` til en lokal Fyllut,
+bruker den tokenet fra `pnpm get-tokens fyllut`.
 
 ## 👤 Brukeradministrasjon
 

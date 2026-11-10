@@ -7,10 +7,9 @@ metadata:
   labels:
     team: skjemadigitalisering
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "151M"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    haproxy.org/timeout-connect: "120s"
+    haproxy.org/timeout-client: "120s"
+    haproxy.org/timeout-server: "300s"
 spec:
   image: {{image}}
   port: 8080
@@ -64,8 +63,8 @@ spec:
       rules:
       {{#each accessPolicy.inbound.rules}}
         - application: {{this.application}}
-          namespace: {{this.namespace}}
-          cluster: {{this.cluster}}
+          {{#if this.namespace}}namespace: {{this.namespace}}{{/if}}
+          {{#if this.cluster}}cluster: {{this.cluster}}{{/if}}
       {{/each}}
     outbound:
       rules:
@@ -75,8 +74,8 @@ spec:
           namespace: nais-system
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
-          namespace: {{this.namespace}}
-          cluster: {{this.cluster}}
+          {{#if this.namespace}}namespace: {{this.namespace}}{{/if}}
+          {{#if this.cluster}}cluster: {{this.cluster}}{{/if}}
       {{/each}}
       external:
       {{#each accessPolicy.outbound.external}}
@@ -87,9 +86,11 @@ spec:
     - secret: nologin
   env:
     - name: ENABLED_FEATURES
-      value: {{enabled-features}}
+      value: "{{enabled-features}}"
     - name: FEATURE_ATTACHMENT_UPLOAD_FORMS
       value: "{{feature-attachment-upload-forms}}"
+    - name: FEATURE_NEW_RENDER_FORMS
+      value: "{{feature-new-render-forms}}"
     - name: DECORATOR_URL
       value: {{dekorator-url}}
     - name: FORMS_SOURCE

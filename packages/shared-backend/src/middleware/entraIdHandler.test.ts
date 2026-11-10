@@ -29,6 +29,7 @@ const createLogger = (): EntraIdHandlerLogger => ({
   debug: vi.fn(),
   info: vi.fn(),
   warn: vi.fn(),
+  error: vi.fn(),
 });
 
 describe('createEntraIdM2mHandler', () => {

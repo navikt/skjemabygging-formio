@@ -3,7 +3,6 @@ import {
   dateUtils,
   Form,
   FormComponentType,
-  Panel,
   PdfData,
   PdfFormData,
   Submission,
@@ -18,7 +17,6 @@ import PdfActivities from './components/activities/PdfActivities';
 import PdfAddressValidity from './components/address-validity/PdfAddressValidity';
 import PdfAddress from './components/address/PdfAddress';
 import PdfAlert from './components/alert/PdfAlert';
-import PdfAttachmentUpload from './components/attachment-uploads/PdfAttachmentUpload';
 import PdfAttachment from './components/attachment/PdfAttachment';
 import PdfCheckbox from './components/checkbox/PdfCheckbox';
 import PdfContainer from './components/container/PdfContainer';
@@ -43,7 +41,6 @@ import PdfNationalIdentityNumber from './components/national-identity-number/Pdf
 import PdfNumber from './components/number/PdfNumber';
 import PdfOrganizationNumber from './components/organization-number/PdfOrganizationNumber';
 import PdfPanel from './components/panel/PdfPanel';
-import PdfPassword from './components/password/PdfPassword';
 import PdfPhoneNumber from './components/phone-number/PdfPhoneNumber';
 import PdfRadio from './components/radio/PdfRadio';
 import PdfRow from './components/row/PdfRow';
@@ -61,7 +58,6 @@ import { PdfComponentRegistry, PdfRendererAppConfig } from './types';
 
 interface Props {
   activeComponents: Component[];
-  activeAttachmentUploadsPanel?: Panel;
   submission?: Submission;
   form: Form;
   currentLanguage: string;
@@ -72,7 +68,6 @@ interface Props {
 
 const renderPdfForm = ({
   activeComponents,
-  activeAttachmentUploadsPanel,
   submission,
   form,
   currentLanguage,
@@ -97,7 +92,6 @@ const renderPdfForm = ({
     navSelect: PdfNavSelect,
     selectboxes: PdfSelectBoxes,
     textarea: PdfTextArea,
-    formioTextArea: PdfTextArea,
     textfield: PdfTextField,
 
     /* Customized */
@@ -114,7 +108,6 @@ const renderPdfForm = ({
     identity: PdfIdentity,
     fnrfield: PdfNationalIdentityNumber,
     orgNr: PdfOrganizationNumber,
-    password: PdfPassword,
     phoneNumber: PdfPhoneNumber,
     sender: PdfSender,
     surname: PdfSurname,
@@ -139,11 +132,6 @@ const renderPdfForm = ({
     maalgruppe: PdfMaalgruppe,
   } satisfies Record<FormComponentType, PdfComponentRegistry[string]>;
 
-  const attachmentUploadsComponentRegistry = {
-    ...componentRegistry,
-    attachment: PdfAttachmentUpload,
-  };
-
   const languageCode: string =
     currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
 
@@ -164,19 +152,6 @@ const renderPdfForm = ({
           }),
         )
         .filter(Boolean) ?? []),
-      ...(activeAttachmentUploadsPanel
-        ? [
-            renderPdfComponent({
-              component: activeAttachmentUploadsPanel,
-              submissionPath: '',
-              componentRegistry: attachmentUploadsComponentRegistry,
-              submission,
-              translate,
-              currentLanguage,
-              submissionMethod,
-            }),
-          ]
-        : []),
       PdfSignature({ properties: form.properties, submission, translate, submissionMethod }),
     ].filter(Boolean) as PdfData[],
     skjemanummer: form.properties?.skjemanummer,

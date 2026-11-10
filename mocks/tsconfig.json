@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "module": "CommonJS",
+    "module": "NodeNext",
     "rootDir": "./",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,12 +11,5 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "mocks/**/*.ts"
-  ],
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  }
+  "include": ["mocks/**/*.ts"]
 }

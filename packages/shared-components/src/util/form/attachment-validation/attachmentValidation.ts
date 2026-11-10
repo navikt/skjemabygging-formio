@@ -1,6 +1,6 @@
 import { FileObject } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import FrontendLogger from '../../../api/frontend-logger/FrontendLogger';
+import { FrontendLogger } from '@navikt/skjemadigitalisering-shared-frontend';
 import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
 import { Attachment } from '../../attachment/attachmentsUtil';
 

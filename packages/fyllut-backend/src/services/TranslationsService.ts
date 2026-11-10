@@ -7,7 +7,6 @@ import {
   ResponseError,
   languageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import fetch from 'node-fetch';
 import { FyllutBackendConfig } from '../config/types';
 
 const toFyllutLang = (lang: string): Language => {

@@ -5,8 +5,6 @@ metadata:
   namespace: "skjemadigitalisering"
   labels:
     "team": "skjemadigitalisering"
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   image: {{image}}
   port: 8080
@@ -41,7 +39,7 @@ spec:
     - name: FYLLUT_BASE_URL
       value: {{fyllut-base-url}}
     - name: ENABLED_FEATURES
-      value: {{enabled-features}}
+      value: "{{enabled-features}}"
     - name: PUBLISH_REPO
       value: {{publish-repo}}
     - name: PUBLISH_REPO_OWNER
@@ -89,8 +87,8 @@ spec:
           namespace: fyllut-sendinn
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
-          namespace: {{this.namespace}}
-          cluster: {{this.cluster}}
+          {{#if this.namespace}}namespace: {{this.namespace}}{{/if}}
+          {{#if this.cluster}}cluster: {{this.cluster}}{{/if}}
       {{/each}}
       external:
         - host: api.github.com

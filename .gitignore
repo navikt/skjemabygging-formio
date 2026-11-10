@@ -23,6 +23,7 @@ packages/.deploy
 .env
 .env*.local
 .runtime/
+.pnpm-store
 environments
 package.json.backup
 pnpm-debug.log*

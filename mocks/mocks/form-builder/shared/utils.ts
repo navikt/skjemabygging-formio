@@ -80,6 +80,9 @@ const getMockTranslationsFromComponents = (components: any[], language: string) 
     if (component.content) {
       translations[component.content] = getTranslationValue(component.content, language);
     }
+    if (component.altText) {
+      translations[component.altText] = getTranslationValue(component.altText, language);
+    }
     if (component.additionalDescriptionLabel) {
       translations[component.additionalDescriptionLabel] = getTranslationValue(
         component.additionalDescriptionLabel,

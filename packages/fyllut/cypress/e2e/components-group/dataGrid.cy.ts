@@ -1,3 +1,7 @@
+// Aksel includes the fieldset description in the group's accessible name.
+const groupName = 'Repeterende data Beskrivelse av tabellen';
+const translatedGroupName = 'Repeterende data (en) Beskrivelse av tabellen (en)';
+
 describe('DataGrid', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -10,45 +14,122 @@ describe('DataGrid', () => {
     });
 
     it('should render label as legend', () => {
-      cy.get('.formio-component-datagrid1')
-        .find('fieldset > .aksel-fieldset__legend-formio-template')
-        .first()
-        .should('contain.text', 'Repeterende data');
+      cy.findByRole('group', { name: groupName }).find('> legend').should('contain.text', 'Repeterende data');
     });
 
     it('should render description', () => {
-      cy.get('.formio-component-datagrid1').find('.description').should('contain.text', 'Beskrivelse av tabellen');
+      cy.findByRole('group', { name: groupName })
+        .findByText('Beskrivelse av tabellen')
+        .should('be.visible')
+        .and('have.css', 'margin', '0px');
     });
 
-    it('should render rowTitle per row', () => {
-      cy.get('.formio-component-datagrid1')
-        .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
-        .should('contain.text', 'Rad');
+    it('should render rowTitle per row without numbering', () => {
+      cy.findByRole('group', { name: groupName }).findByRole('heading', { level: 3, name: 'Rad' }).should('be.visible');
+    });
+
+    it('should not show remove button on the only row', () => {
+      cy.get('[data-component-key="datagrid1"]').within(() => {
+        cy.findByRole('button', { name: 'Fjern rad' }).should('not.exist');
+      });
+    });
+
+    it('should keep focus while typing in the first row after removing the second row', () => {
+      cy.get('[data-component-key="datagrid1"]')
+        .findByRole('button', { name: /Legg til rad/i })
+        .click();
+      cy.findAllByRole('button', { name: 'Fjern rad' }).last().click();
+      cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 1);
+      cy.findByRole('textbox', { name: 'Navn' }).type('Test');
+      cy.findByRole('textbox', { name: 'Navn' }).should('have.value', 'Test').and('have.focus');
+      cy.get('[data-component-key="datagrid1"]').within(() => {
+        cy.findByRole('button', { name: 'Fjern rad' }).should('not.exist');
+      });
     });
 
     it('should show custom addAnother button text', () => {
-      cy.get('.formio-component-datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad/i })
         .should('exist');
     });
 
     it('should show default addAnother button text when not customized', () => {
-      cy.get('.formio-component-datagrid2')
+      cy.get('[data-component-key="datagrid2"]')
         .findByRole('button', { name: /Legg til/i })
         .should('exist');
     });
 
     it('should show custom removeAnother text after adding a row', () => {
-      cy.get('.formio-component-datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad/i })
         .click();
       cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 2);
-      cy.get('.formio-component-datagrid1').contains('button', 'Fjern rad').should('exist');
+      cy.findByRole('group', { name: groupName }).within(() => {
+        cy.findAllByRole('heading', { level: 3, name: 'Rad' }).should('have.length', 2);
+        cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
+      });
     });
 
     it('child textfield should be interactable', () => {
       cy.findAllByRole('textbox', { name: 'Navn' }).first().type('Test');
       cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
+    });
+
+    it('should use blue row cards with the remove action below the fields', () => {
+      cy.get('[data-component-key="datagrid1"]')
+        .findByRole('button', { name: /Legg til rad/i })
+        .click();
+      cy.findAllByRole('textbox', { name: 'Navn' })
+        .first()
+        .closest('[data-component-key]')
+        .should(($field) => {
+          const content = $field[0].parentElement!;
+          const row = content.parentElement!;
+          const fieldBox = $field[0].firstElementChild!;
+          const remove = row.lastElementChild!;
+          const rowStyle = getComputedStyle(row);
+
+          expect(rowStyle.backgroundColor).to.equal('rgb(238, 246, 252)');
+          expect(getComputedStyle(fieldBox).marginBottom).to.equal('0px');
+          expect(remove.textContent).to.equal('Fjern rad');
+          expect(remove.getBoundingClientRect().top).to.be.at.least(content.getBoundingClientRect().bottom);
+        });
+    });
+  });
+
+  describe('Max rows', () => {
+    const addPeriod = () => cy.findByRole('button', { name: 'Legg til periode' }).click();
+
+    beforeEach(() => {
+      cy.visit('/fyllut/datagrid/visning?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('should hide the add button when the max number of rows is reached', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 3);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
+      });
+    });
+
+    it('should move focus to the last row when the add button disappears', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).last().should('have.focus');
+      });
+    });
+
+    it('should show the add button again after removing a row', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('button', { name: 'Fjern periode' }).last().click();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 2);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('exist');
+      });
     });
   });
 
@@ -59,24 +140,25 @@ describe('DataGrid', () => {
     });
 
     it('should translate label', () => {
-      cy.get('.formio-component-datagrid1')
-        .find('fieldset > .aksel-fieldset__legend-formio-template')
-        .first()
+      cy.findByRole('group', { name: translatedGroupName })
+        .find('> legend')
         .should('contain.text', 'Repeterende data (en)');
     });
 
     it('should translate description', () => {
-      cy.get('.formio-component-datagrid1').find('.description').should('contain.text', 'Beskrivelse av tabellen (en)');
+      cy.findByRole('group', { name: translatedGroupName })
+        .findByText('Beskrivelse av tabellen (en)')
+        .should('be.visible');
     });
 
     it('should translate rowTitle', () => {
-      cy.get('.formio-component-datagrid1')
-        .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
-        .should('contain.text', 'Rad (en)');
+      cy.findByRole('group', { name: translatedGroupName })
+        .findByRole('heading', { level: 3, name: 'Rad (en)' })
+        .should('be.visible');
     });
 
     it('should translate addAnother button text', () => {
-      cy.get('.formio-component-datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad \(en\)/i })
         .should('exist');
     });

@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Email', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -72,12 +74,13 @@ describe('Email', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findAllByRole('group')
+      cy.findAllByRole('radiogroup')
         .should('exist')
         .should('have.length', 4)
         .each((radiogroup) => {
           cy.wrap(radiogroup).findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
         });
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

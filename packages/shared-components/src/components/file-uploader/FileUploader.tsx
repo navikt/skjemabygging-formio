@@ -1,10 +1,5 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
-import {
-  AttachmentSettingValues,
-  enableAttachmentDownload,
-  SubmissionAttachment,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { enableAttachmentDownload, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
@@ -26,7 +21,7 @@ const useStyles = makeStyles({
 
 interface Props {
   initialAttachment: SubmissionAttachment;
-  attachmentValue?: keyof AttachmentSettingValues;
+  attachmentValue?: SubmissionAttachment['value'];
   requireAttachmentTitle?: boolean;
   showDeleteAttachmentButton?: boolean;
   onDeleteAttachment?: (attachmentId: string) => Promise<void>;

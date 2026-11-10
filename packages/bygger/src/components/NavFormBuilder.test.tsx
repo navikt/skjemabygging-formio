@@ -27,6 +27,16 @@ const DEFAULT_FORM_BUILDER_OPTIONS = {
   formConfig: {},
 };
 
+const FORMIO_SELECT_UPDATE_DELAY_MS = 100;
+
+const getFormioFormCount = () => Object.keys((NavFormioJs.Formio as any).forms).length;
+
+const waitForFormioCleanup = async () => {
+  await waitFor(() => expect(getFormioFormCount()).toBe(0));
+  // Formio delays Select item updates and does not cancel them when a form is destroyed.
+  await new Promise((resolve) => setTimeout(resolve, FORMIO_SELECT_UPDATE_DELAY_MS * 2));
+};
+
 describe('NavFormBuilder', () => {
   beforeAll(() => {
     new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
@@ -37,10 +47,10 @@ describe('NavFormBuilder', () => {
   });
 
   afterEach(async () => {
+    cleanup();
+    await waitForFormioCleanup();
     fetchMock.resetMocks();
     vi.restoreAllMocks();
-    cleanup();
-    await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
   });
 
   describe('mounting', () => {
@@ -49,9 +59,9 @@ describe('NavFormBuilder', () => {
       const { unmount } = render(
         <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
       );
-      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length > 0);
+      await waitFor(() => expect(getFormioFormCount()).toBeGreaterThan(0));
       unmount();
-      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
+      await waitFor(() => expect(getFormioFormCount()).toBe(0));
     });
   });
 
@@ -105,25 +115,25 @@ describe('NavFormBuilder', () => {
 
       it('prompts user when removing a component which other components depends on', async () => {
         mockConfirm(true);
-        const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
+        const fieldset = await screen.findByRole('radiogroup', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
         const removeComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Slett');
         await userEvent.click(removeComponentButton);
 
-        expect(screen.queryByRole('group', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('radiogroup', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
       });
 
       it('does not remove component if user declines prompt', async () => {
         const confirmMock = mockConfirm(false);
-        const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
+        const fieldset = await screen.findByRole('radiogroup', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
         const removeComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Slett');
         await userEvent.click(removeComponentButton);
 
-        expect(await screen.findByRole('group', { name: /Your favorite time of the year/ })).toBeInTheDocument();
+        expect(await screen.findByRole('radiogroup', { name: /Your favorite time of the year/ })).toBeInTheDocument();
         expect(onChangeMock.mock.calls).toHaveLength(0);
 
         expect(confirmMock.mock.calls).toHaveLength(1);
@@ -138,14 +148,16 @@ describe('NavFormBuilder', () => {
         expect(panel).toBeInTheDocument();
 
         const builderComponent = getBuilderComponent(panel);
-        const fieldset = await within(builderComponent).findByRole('group', { name: /Your favorite time of the year/ });
+        const fieldset = await within(builderComponent).findByRole('radiogroup', {
+          name: /Your favorite time of the year/,
+        });
         expect(fieldset).toBeInTheDocument();
 
         const removeComponentButtons = await within(builderComponent).findAllByTitle('Slett');
         await userEvent.click(removeComponentButtons[0]);
 
         expect(screen.queryByText('Tilbakemelding')).not.toBeInTheDocument();
-        expect(screen.queryByRole('group', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('radiogroup', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
 
         expect(confirmMock.mock.calls).toHaveLength(1);
@@ -211,7 +223,7 @@ describe('NavFormBuilder', () => {
 
     describe('conditional alert message in edit component', () => {
       it('is visible when component is depended upon by other components', async () => {
-        const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
+        const fieldset = await screen.findByRole('radiogroup', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
         const editComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Rediger');

@@ -31,10 +31,6 @@ const yearForm = () => {
           year({ label: 'Årstall ikke påkrevd', validate: { required: false } }),
           year({ label: 'Årstall tidligst 2000', validate: { required: false, minYear: 2000 } }),
           year({ label: 'Årstall senest 2030', validate: { required: false, maxYear: 2030 } }),
-          year({
-            label: 'Årstall egendefinert',
-            validate: { required: false, custom: 'valid = input == 2000 ? true : "Kun 2000 er tillatt"' },
-          }),
         ],
       }),
     ],

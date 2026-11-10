@@ -1,0 +1,85 @@
+import { CustomLabels, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
+import Alert from '../alert/Alert';
+import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
+import OrganizationNumber from '../organization-number/OrganizationNumber';
+import ReadMore from '../read-more/ReadMore';
+import FormElementBox from '../shared/FormElementBox';
+import TextField from '../text-field/TextField';
+import { BaseFieldProps } from '../types';
+import { ORGANIZATION_NAME_LABEL, ORGANIZATION_NUMBER_LABEL } from './senderValidation';
+
+interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'> {
+  senderRole?: 'person' | 'organization';
+  customLabels?: CustomLabels;
+  descriptions?: Record<string, string>;
+}
+
+const Sender = ({
+  statePath,
+  required = false,
+  readOnly,
+  readMore,
+  fieldSize,
+  senderRole = 'person',
+  customLabels,
+  descriptions,
+}: SenderProps) => {
+  const submissionMethod = useFormDefinitionSubmissionMethod();
+  const effectiveReadOnly = readOnly;
+  const showApplicationInsight = submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
+
+  return (
+    <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
+      {senderRole === 'organization' ? (
+        <>
+          <OrganizationNumber
+            statePath={`${statePath}.organization.number`}
+            label={customLabels?.organizationNumber ?? ORGANIZATION_NUMBER_LABEL}
+            description={descriptions?.organizationNumber}
+            required={required}
+            readOnly={effectiveReadOnly}
+            rawFormat
+          />
+          <TextField
+            statePath={`${statePath}.organization.name`}
+            label={customLabels?.organizationName ?? ORGANIZATION_NAME_LABEL}
+            required={required}
+            readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
+          />
+        </>
+      ) : (
+        <>
+          <NationalIdentityNumber
+            statePath={`${statePath}.person.nationalIdentityNumber`}
+            label={customLabels?.nationalIdentityNumber ?? TEXTS.statiske.identity.identityNumber}
+            description={descriptions?.nationalIdentityNumber}
+            required={required}
+            readOnly={effectiveReadOnly}
+            rawFormat
+          />
+          <TextField
+            statePath={`${statePath}.person.firstName`}
+            label={customLabels?.firstName ?? TEXTS.statiske.identity.firstName}
+            required={required}
+            readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
+          />
+          <TextField
+            statePath={`${statePath}.person.surname`}
+            label={customLabels?.surname ?? TEXTS.statiske.identity.surname}
+            required={required}
+            readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
+          />
+        </>
+      )}
+      {showApplicationInsight && <Alert variant="info">{TEXTS.statiske.sender.applicationInsight}</Alert>}
+      {readMore && <ReadMore {...readMore} />}
+    </FormElementBox>
+  );
+};
+
+export default Sender;
+export type { SenderProps };

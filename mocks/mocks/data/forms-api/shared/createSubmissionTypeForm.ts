@@ -17,6 +17,7 @@ interface CreateSubmissionTypeFormOptions {
   includeAttachmentPanel?: boolean;
   includeAttachmentLink?: boolean;
   includeSelfDeclaration?: boolean;
+  includeYourInformation?: boolean;
   innsendingForklaring?: string;
   ettersendelsesfrist?: number;
   signatureMode?: SignatureMode;
@@ -104,11 +105,15 @@ const createAttachmentPanel = (includeAttachmentLink: boolean) =>
 const shouldAddDigitalIdentityPrefill = (submissionTypes: SubmissionType[]) =>
   submissionTypes.length === 1 && submissionTypes[0] === 'DIGITAL';
 
+// Nologin submissions require a user or sender, so nologin forms that are submitted must collect identity.
+const createYourInformation = () => yourInformation({ key: 'dineOpplysninger', components: [identity()] });
+
 const createSubmissionTypeForm = ({
   formNumber,
   includeAttachmentLink = false,
   includeAttachmentPanel = true,
   includeSelfDeclaration = true,
+  includeYourInformation = false,
   path,
   submissionTypes,
   title,
@@ -140,6 +145,7 @@ const createSubmissionTypeForm = ({
                 }),
               ]
             : []),
+          ...(includeYourInformation ? [createYourInformation()] : []),
           textField({ label: 'Tekstfelt', validate: { required: true } }),
         ],
       }),

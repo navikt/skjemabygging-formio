@@ -61,13 +61,6 @@ const numberForm = () => {
             label: 'Tall min og max',
             validate: { required: false, min: 0, max: 100 },
           }),
-          number({
-            label: 'Tall egendefinert',
-            validate: {
-              required: false,
-              custom: 'valid = input == 5 ? true : "Kun 5 er tillatt"',
-            },
-          }),
         ],
       }),
     ],

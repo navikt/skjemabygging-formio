@@ -1,4 +1,9 @@
-import { FormsApiTranslation, mockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  FormsApiTranslation,
+  mockedComponentObjectForTest,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
 import { getTextKeysFromForm } from './formTextsUtils';
 
@@ -39,6 +44,106 @@ const form = createFormsApiFormObject(
 );
 
 describe('utils', () => {
+  describe('translation keys for existing sender components', () => {
+    const savedPersonSenderWithOrganizationLabels: Component = {
+      key: 'senderPerson',
+      label: 'Person sender',
+      type: 'sender',
+      senderRole: 'person',
+      hideLabel: true,
+      customLabels: {
+        nationalIdentityNumber: 'Identity number',
+        firstName: 'First name',
+        surname: 'Last name',
+        organizationNumber: 'Organization number',
+        organizationName: 'Organization name',
+      },
+    };
+
+    it.each(['person', undefined] as const)(
+      'ignores unused organization labels in a saved person sender (senderRole=%s)',
+      (senderRole) => {
+        const form = createFormsApiFormObject([{ ...savedPersonSenderWithOrganizationLabels, senderRole }], 'title');
+
+        expect(getTextKeysFromForm(form)).toEqual(['title', 'Identity number', 'First name', 'Last name']);
+      },
+    );
+
+    it('keeps the same organization labels when an organization sender also uses them', () => {
+      const organizationSender: Component = {
+        key: 'senderOrganization',
+        label: 'Organization sender',
+        type: 'sender',
+        senderRole: 'organization',
+        hideLabel: true,
+        customLabels: {
+          organizationNumber: 'Organization number',
+          organizationName: 'Organization name',
+        },
+      };
+      const form = createFormsApiFormObject([savedPersonSenderWithOrganizationLabels, organizationSender], 'title');
+
+      expect(getTextKeysFromForm(form)).toEqual([
+        'title',
+        'Identity number',
+        'First name',
+        'Last name',
+        'Organization number',
+        'Organization name',
+      ]);
+    });
+  });
+
+  it('extracts supported intro-page sections but ignores retired and fixed-text sections', () => {
+    const introPage = {
+      enabled: true,
+      introduction: 'introduction',
+      importantInformation: { title: 'important-title', description: 'important-description' },
+      sections: {
+        ...Object.fromEntries(
+          ['scope', 'outOfScope', 'prerequisites', 'dataDisclosure', 'automaticProcessing', 'optional'].map((key) => [
+            key,
+            { title: `${key}-title`, description: `${key}-description`, bulletPoints: [`${key}-bullet`] },
+          ]),
+        ),
+        prerequisites: { title: 'prerequisites-title' },
+        dataTreatment: { description: 'retired-key' },
+        futureSection: { description: 'unknown-key' },
+        beAwareOf: { description: 'fixed-awareness-key' },
+        dataStorage: { description: 'fixed-storage-key' },
+      },
+      selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+    };
+    const actual = getTextKeysFromForm({ ...createFormsApiFormObject([], 'title'), introPage });
+
+    expect(actual).toEqual([
+      'introduction',
+      'important-title',
+      'important-description',
+      ...['scope', 'outOfScope'].flatMap((key) => [`${key}-title`, `${key}-description`, `${key}-bullet`]),
+      'prerequisites-title',
+      ...['dataDisclosure', 'automaticProcessing', 'optional'].flatMap((key) => [
+        `${key}-title`,
+        `${key}-description`,
+        `${key}-bullet`,
+      ]),
+      'title',
+    ]);
+  });
+
+  it('keeps a translation used when a supported section shares a retired reference', () => {
+    const introPage = {
+      enabled: true,
+      introduction: 'introduction',
+      sections: {
+        prerequisites: { description: 'shared-key' },
+        dataTreatment: { description: 'shared-key' },
+      },
+      selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+    };
+    expect(getTextKeysFromForm({ ...createFormsApiFormObject([], 'title'), introPage })).toContain('shared-key');
+  });
+
   describe('testGetAllTextsAndTypeForForm', () => {
     it('Test empty form', () => {
       const actual = getTextKeysFromForm(createFormsApiFormObject([], 'title'));

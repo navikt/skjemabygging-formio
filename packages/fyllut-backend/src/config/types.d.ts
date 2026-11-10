@@ -62,6 +62,7 @@ export type DefaultConfig = {
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
+  skjemabyggingProxyDevToken?: string;
   familiePdfGeneratorUrl: string;
   familiePdfGeneratorScope: string;
   familiePdfDevToken?: string;
@@ -92,6 +93,7 @@ export type FyllutBackendConfig = DefaultConfig & {
   fyllutPath: string;
   clientSecret: string;
   featureToggles: FeatureTogglesMap;
+  newRenderForms: string[];
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;

@@ -47,6 +47,12 @@ describe('submissionUtils', () => {
       expect(submissionUtils.getSubmissionValue('doesNotExist', submission)).toBeUndefined();
     });
 
+    it('returns undefined for null values and for paths through null', () => {
+      const submissionWithNull = { data: { nullField: null, nullParent: null } } as unknown as Submission;
+      expect(submissionUtils.getSubmissionValue('nullField', submissionWithNull)).toBeUndefined();
+      expect(submissionUtils.getSubmissionValue('nullParent.child', submissionWithNull)).toBeUndefined();
+    });
+
     it('returns undefined if submission or path is missing', () => {
       expect(submissionUtils.getSubmissionValue('field1')).toBeUndefined();
       expect(submissionUtils.getSubmissionValue('', submission)).toBeUndefined();
@@ -125,6 +131,29 @@ describe('submissionUtils', () => {
     it('returns parent path if not input/tree', () => {
       const component: Component = { key: 'child', input: false, tree: false } as Component;
       expect(submissionUtils.getComponentSubmissionPath(component, 'parent')).toBe('parent');
+    });
+  });
+
+  describe('getValidSubmissionId', () => {
+    const submissionId = 'b8e1f1b6-2c3d-4e5f-8a9b-0c1d2e3f4a5b';
+    const query = (value: string) => new URLSearchParams(value);
+
+    it('returns innsendingsId when it is a UUID', () => {
+      expect(submissionUtils.getValidSubmissionId(query(`innsendingsId=${submissionId}`))).toBe(submissionId);
+    });
+
+    it('returns undefined when innsendingsId is missing', () => {
+      expect(submissionUtils.getValidSubmissionId(query('lang=en'))).toBeUndefined();
+    });
+
+    it('returns undefined when innsendingsId is not a UUID', () => {
+      expect(submissionUtils.getValidSubmissionId(query('innsendingsId=not-a-uuid'))).toBeUndefined();
+    });
+
+    it('returns undefined when innsendingsId occurs more than once', () => {
+      expect(
+        submissionUtils.getValidSubmissionId(query(`innsendingsId=${submissionId}&innsendingsId=${submissionId}`)),
+      ).toBeUndefined();
     });
   });
 });

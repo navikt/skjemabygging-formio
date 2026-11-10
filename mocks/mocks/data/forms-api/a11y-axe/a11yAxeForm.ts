@@ -317,10 +317,6 @@ const a11yAxeForm = () =>
               { label: 'Jeg har levert denne dokumentasjonen tidligere', value: 'levertTidligere' },
             ],
           }),
-          image({
-            key: 'image',
-            label: 'Bilde',
-          }),
         ],
       }),
       panel({
@@ -330,6 +326,11 @@ const a11yAxeForm = () =>
           htmlElement({
             key: 'html',
             content: 'HTML element',
+          }),
+          image({
+            key: 'image',
+            label: 'Bilde',
+            altText: 'Bilde',
           }),
           alert({
             content: 'Info',

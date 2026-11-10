@@ -1,0 +1,1 @@
+export { SendinnApp } from './SendinnApp';

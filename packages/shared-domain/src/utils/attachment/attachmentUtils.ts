@@ -7,11 +7,20 @@ import {
   ComponentValue,
   NavFormType,
   Submission,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
   SubmissionMethod,
 } from '../../models';
 import { TEXTS } from '../../texts';
 import { navFormUtils } from '../form';
+import {
+  collectAttachmentsFromData,
+  getAdditionalDocumentation,
+  getAttachmentValue,
+  resolveAttachmentsAtPath,
+  resolveSubmissionAttachments,
+  toSubmissionAttachments,
+} from './attachmentResolution';
 
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
@@ -25,13 +34,13 @@ const isKnownAttachmentSettingKey = (key: string): key is (typeof attachmentSett
 
 const getEnabledAttachmentKeys = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
-): (typeof attachmentSettingKeys)[number][] => {
+): string[] => {
   if (!attachmentValues) {
     return [];
   }
 
   if (Array.isArray(attachmentValues)) {
-    return attachmentValues.map((option) => option.value).filter((value) => isKnownAttachmentSettingKey(value));
+    return attachmentValues.map((option) => option.value);
   }
 
   return attachmentSettingKeys.filter((key) => attachmentValues[key]?.enabled);
@@ -61,8 +70,10 @@ const resolveAttachmentLabelKey = (
   return key;
 };
 
-const getAttachmentLabel = (key: keyof AttachmentSettingValues, submissionMethod?: SubmissionMethod) =>
-  TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)];
+const getAttachmentLabel = (key: string, submissionMethod?: SubmissionMethod, values?: ComponentValue[]) =>
+  isKnownAttachmentSettingKey(key)
+    ? TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)]
+    : (values?.find((option) => option.value === key)?.label ?? key);
 
 const isSingleUploadOnlyOption = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
@@ -123,19 +134,21 @@ const mapToAttachmentSummary = ({
   submissionMethod,
 }: {
   translate: TFunction;
-  value: SubmissionAttachmentValue;
+  value: SubmissionAttachmentValue | SubmissionAttachment | SubmissionAttachment[] | string;
   component: Component;
   form: NavFormType;
   submissionMethod?: SubmissionMethod;
 }): AttachmentValue => {
-  const additionalDocumentationLabel = component.attachmentValues?.[value.key]?.additionalDocumentation?.label;
-  const shouldShowDeadline =
-    !!component.attachmentValues?.[value.key]?.showDeadline && form.properties?.ettersendelsesfrist;
+  const answer = Array.isArray(value) ? value[0] : value;
+  const key = getAttachmentValue(answer) ?? '';
+  const additionalDocumentation = getAdditionalDocumentation(answer);
+  const additionalDocumentationLabel = component.attachmentValues?.[key]?.additionalDocumentation?.label;
+  const shouldShowDeadline = !!component.attachmentValues?.[key]?.showDeadline && form.properties?.ettersendelsesfrist;
 
   return {
-    description: translate(getAttachmentLabel(value.key, submissionMethod)),
+    description: translate(getAttachmentLabel(key, submissionMethod, component.values)),
     ...(additionalDocumentationLabel && { additionalDocumentationLabel: translate(additionalDocumentationLabel) }),
-    ...(value.additionalDocumentation && { additionalDocumentation: translate(value.additionalDocumentation) }),
+    ...(additionalDocumentation && { additionalDocumentation: translate(additionalDocumentation) }),
     ...(shouldShowDeadline && {
       deadlineWarning: translate(TEXTS.statiske.attachment.deadline, {
         deadline: form.properties?.ettersendelsesfrist,
@@ -144,33 +157,39 @@ const mapToAttachmentSummary = ({
   };
 };
 
-const getAttachmentsForCoverPage = (submission: Submission, form: NavFormType): Component[] => {
+const getSelectedAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>) => {
+  const selectedAttachments = resolveSubmissionAttachments(form, submission).filter(
+    (attachment) => attachment.value === 'leggerVedNaa',
+  );
+
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => {
-      const submissionData = { ...submission.data };
-      const submissionAttachment =
-        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
-        submissionData[component.key];
-
-      return (
-        submissionAttachment === 'leggerVedNaa' ||
-        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
-      );
+    .flatMap((component) => {
+      const attachmentId = navFormUtils.getNavId(component) ?? component.key;
+      const componentAttachments = selectedAttachments.filter((attachment) => attachment.navId === attachmentId);
+      return componentAttachments.length ? [{ component, attachments: componentAttachments }] : [];
     });
 };
 
+const getAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>): Component[] =>
+  getSelectedAttachmentsForCoverPage(submission, form).map(({ component }) => component);
+
 const attachmentUtils = {
+  collectAttachmentsFromData,
   enableAttachmentDownload,
   enableAttachmentUpload,
   getAttachmentsForCoverPage,
+  getSelectedAttachmentsForCoverPage,
   getImplicitValueKey,
   getAttachmentLabel,
   isSingleUploadOnlyOption,
   mapToAttachmentSummary,
   mapKeysToOptions,
   resolveAttachmentLabelKey,
+  resolveAttachmentsAtPath,
+  resolveSubmissionAttachments,
+  toSubmissionAttachments,
 };
 
 export { attachmentSettingKeys, attachmentUtils, enableAttachmentDownload, getAttachmentsForCoverPage };

@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Attachments page (paper submission)', () => {
   beforeEach(() => {
@@ -14,19 +14,21 @@ describe('Attachments page (paper submission)', () => {
     cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
     cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
       cy.findByLabelText('Ja').check(),
     );
     cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
     cy.clickNextStep();
 
-    cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+    cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByLabelText('Annet').check(),
+    );
     cy.clickNextStep();
     cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
   });
 
   it('shows legacy paper labels for attachment options', () => {
-    cy.findByRole('group', { name: /Vedlegg med masse greier/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Vedlegg med masse greier/ }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.levertTidligere }).should('exist');
@@ -48,6 +50,59 @@ describe('Attachments page', () => {
   const uploadFileInCurrentScope = (fileName: string = 'test.txt') => {
     cy.get('input[type=file]').last().selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
   };
+  const prepareRepeatedAttachmentSubmission = () => {
+    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc22');
+    cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+    cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+    cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+    cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByLabelText('Ja').check(),
+    );
+    cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+    cy.clickNextStep();
+    getMainAttachment().within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
+    });
+    getUploadOnlyAttachment().within(() => {
+      uploadFileInCurrentScope('test.txt');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
+    });
+    cy.findByRole('radiogroup', {
+      name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+    }).within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
+    });
+    getOtherAttachment().within(() => {
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+      uploadFileInCurrentScope('test.txt');
+      cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 2');
+    });
+  };
+  const submitWithoutDeletedAttachment = () => {
+    cy.clickNextStep();
+    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByText('Vedleggstittel 1').should('be.visible');
+    cy.findByText('Vedleggstittel 2').should('not.exist');
+    cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitApplication');
+    cy.clickSendNav();
+    cy.wait('@submitApplication').should(({ request, response }) => {
+      expect(response?.statusCode).to.equal(200);
+      const attachments = request.body.submission.data.annenDokumentasjon as SubmissionAttachment[];
+      expect(attachments).to.have.length(1);
+      expect(attachments[0]).to.include({
+        attachmentId: 'ez0ub3y',
+        title: 'Vedleggstittel 1',
+        value: 'leggerVedNaa',
+      });
+      expect(attachments[0].files).to.have.length(1);
+      expect(attachments[0].files?.[0]).to.include({ attachmentId: 'ez0ub3y', fileName: 'test.txt' });
+      expect(JSON.stringify(request.body.submission)).to.not.include('ez0ub3y-1');
+      expect(JSON.stringify(request.body.submission)).to.not.include('Vedleggstittel 2');
+    });
+    cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
+  };
 
   before(() => {
     cy.configMocksServer();
@@ -64,7 +119,10 @@ describe('Attachments page', () => {
     cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
     cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+    cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
+    cy.uploadFile('id-billy-bruker.jpg');
+    cy.wait('@uploadIdFile').its('response.statusCode').should('eq', 201);
+    cy.findByRole('button', { name: 'Slett filen' }).should('be.visible');
 
     cy.clickNextStep();
     cy.clickStart();
@@ -90,10 +148,10 @@ describe('Attachments page', () => {
     });
 
     it('validates required attachment with one option', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
@@ -107,7 +165,7 @@ describe('Attachments page', () => {
   });
 
   it('shows digital option labels for digital no login attachments', () => {
-    cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+    cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).should('exist');
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).should('exist');
 
@@ -137,7 +195,7 @@ describe('Attachments page', () => {
 
   describe('Other attachments', () => {
     it('requires a title to upload file', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -154,7 +212,7 @@ describe('Attachments page', () => {
     });
 
     it('lets you add several attachments', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -172,36 +230,64 @@ describe('Attachments page', () => {
       cy.findAllByText('test.txt').should('have.length', 2);
     });
 
-    it('disables repeated attachment deletion while an upload is in progress', () => {
-      cy.findByRole('group', {
-        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
-      }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
+    it('cleans up a late upload without restoring or submitting the cancelled attachment', () => {
+      prepareRepeatedAttachmentSubmission();
+      let releaseUpload: () => void;
+      const uploadedFile = { fileId: '' };
+      const heldResponse = new Cypress.Promise<void>((resolve) => {
+        releaseUpload = resolve;
       });
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/ez0ub3y-1', (req) => {
+        req.continue((res) => {
+          expect(res.statusCode).to.equal(201);
+          expect(res.body.attachmentId).to.equal('ez0ub3y-1');
+          uploadedFile.fileId = res.body.fileId;
+          return heldResponse;
+        });
+      }).as('uploadRepeatedAttachment');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/**').as('deleteAttachmentFile');
       getOtherAttachment().within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-        uploadFileInCurrentScope('test.txt');
-        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/ez0ub3y-1', (req) => {
-          req.continue((res) => {
-            res.setDelay(1500);
-          });
-        }).as('uploadRepeatedAttachment');
-        uploadFileInCurrentScope('test.txt');
-        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).should('be.disabled');
+        uploadFileInCurrentScope('small-file.txt');
       });
-      cy.wait('@uploadRepeatedAttachment');
+      cy.wrap(uploadedFile).its('fileId').should('be.a', 'string').and('not.be.empty');
+      getOtherAttachment().within(() => {
+        cy.findByText('small-file.txt').should('be.visible');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).should('be.enabled').click();
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).should('not.exist');
+        cy.findByText('small-file.txt').should('not.exist');
+      });
+      cy.get('@deleteAttachmentFile.all').should('have.length', 0);
+
+      // Release before cy.wait: the upload cannot finish while its response is held.
+      cy.then(() => {
+        releaseUpload();
+      });
+      cy.wait('@uploadRepeatedAttachment').its('response.statusCode').should('eq', 201);
+      cy.wait('@deleteAttachmentFile').should(({ request, response }) => {
+        expect(new URL(request.url).pathname).to.equal(
+          `/fyllut/api/send-inn/nologin-application/attachments/ez0ub3y-1/${uploadedFile.fileId}`,
+        );
+        expect(response?.statusCode).to.equal(204);
+      });
+      cy.get('@deleteAttachmentFile.all').should('have.length', 1);
+      getOtherAttachment().within(() => {
+        cy.findByText('Vedleggstittel 1').should('be.visible');
+        cy.findByText('Vedleggstittel 2').should('not.exist');
+        cy.findAllByText('test.txt').should('have.length', 1);
+        cy.findByText('small-file.txt').should('not.exist');
+        cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 1);
+      });
+      submitWithoutDeletedAttachment();
     });
 
     it('lets you add more attachments after visiting summary page', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       getUploadOnlyAttachment().within(() => {
         uploadFileInCurrentScope('test.txt');
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -234,34 +320,11 @@ describe('Attachments page', () => {
     });
 
     it('does not submit a deleted attachment without uploaded files', () => {
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc22');
-      cy.findByRole('link', { name: 'Dine opplysninger' }).click();
-      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
-      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
-        cy.findByLabelText('Ja').check(),
+      prepareRepeatedAttachmentSubmission();
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/**').as(
+        'deleteUnuploadedAttachment',
       );
-      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
-      cy.clickNextStep();
-      getMainAttachment().within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
-      });
-      getUploadOnlyAttachment().within(() => {
-        uploadFileInCurrentScope('test.txt');
-      });
-      cy.findByRole('group', {
-        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
-      }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
-      });
       getOtherAttachment().within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-        uploadFileInCurrentScope('test.txt');
-        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/*').as(
-          'deleteUnuploadedAttachment',
-        );
         cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
       });
       cy.findByText('Vedleggstittel 1').should('exist');
@@ -269,16 +332,11 @@ describe('Attachments page', () => {
       cy.findByText(TEXTS.statiske.attachment.attachmentTitle).should('not.exist');
       cy.get('@deleteUnuploadedAttachment.all').should('have.length', 0);
 
-      cy.clickNextStep();
-      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitApplication');
-      cy.clickSendNav();
-      cy.wait('@submitApplication').its('response.statusCode').should('equal', 200);
-      cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
+      submitWithoutDeletedAttachment();
     });
 
     it('lets you delete an uploaded attachment', () => {
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -299,13 +357,13 @@ describe('Attachments page', () => {
     });
 
     it('is still valid after deleting the first attachment', () => {
-      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       getUploadOnlyAttachment().within(() => {
         uploadFileInCurrentScope('test.txt');
       });
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
@@ -356,17 +414,47 @@ describe('Attachments page', () => {
     });
 
     it('should remove all attachments when delete all button is clicked', () => {
+      const uploadedFileIds: string[] = [];
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as('uploadMainAttachment');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8/*').as(
+        'deleteMainAttachmentFile',
+      );
       cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
-        'deleteAllFilesByAttachmentId',
+        'deleteAllMainAttachmentFiles',
       );
       getMainAttachment().within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
-        uploadFileInCurrentScope('test.txt');
-        uploadFileInCurrentScope('test.txt');
+        [1, 2].forEach((fileCount) => {
+          uploadFileInCurrentScope('test.txt');
+          cy.wait<unknown, UploadedFile>('@uploadMainAttachment')
+            .should(({ response }) => {
+              expect(response?.statusCode).to.equal(201);
+              expect(typeof response?.body.fileId).to.equal('string');
+              expect(response?.body.fileId).to.not.equal('');
+            })
+            .then(({ response }) => {
+              uploadedFileIds.push(response!.body.fileId);
+            });
+          cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', fileCount);
+        });
         cy.findAllByText('test.txt').should('have.length', 2);
         cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
       });
-      cy.wait('@deleteAllFilesByAttachmentId').its('response.statusCode').should('eq', 204);
+      cy.wait(['@deleteMainAttachmentFile', '@deleteMainAttachmentFile']).should((deletions) => {
+        expect(deletions.map(({ response }) => response?.statusCode)).to.eql([204, 204]);
+        expect(deletions.map(({ request }) => new URL(request.url).pathname)).to.eql(
+          uploadedFileIds.map((fileId) => `/fyllut/api/send-inn/nologin-application/attachments/eiajfi8/${fileId}`),
+        );
+        expect(new Set(uploadedFileIds).size).to.equal(2);
+      });
+      cy.get('@deleteMainAttachmentFile.all').should('have.length', 2);
+      cy.get('@deleteAllMainAttachmentFiles.all').should('have.length', 0);
+      getMainAttachment().within(() => {
+        cy.findByText('test.txt').should('not.exist');
+        cy.findByRole('button', { name: 'Slett filen' }).should('not.exist');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).should('not.exist');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('be.visible');
+      });
     });
 
     it('should remove all attachments on cancel', () => {

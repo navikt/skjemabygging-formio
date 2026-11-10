@@ -40,4 +40,4 @@ interface SenderProps {
   readOnly?: boolean;
 }
 
-export type { SenderProps, SubmissionSender };
+export type { SenderOrganization, SenderPerson, SenderProps, SubmissionSender };

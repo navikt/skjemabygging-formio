@@ -1,5 +1,5 @@
 import { GuidePanel as AkselGuidePanel, Heading } from '@navikt/ds-react';
-import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { introPageTexts, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
@@ -14,7 +14,7 @@ const GuidePanel = ({ description, translate, className }: Props) => {
   }
 
   // TODO: Add support for introPage.guidePanel.hiPersonalized when we have user data available
-  const heading: Tkey = 'introPage.guidePanel.hi';
+  const heading: Tkey = introPageTexts.guidePanel.hi;
 
   return (
     <AkselGuidePanel poster className={className}>

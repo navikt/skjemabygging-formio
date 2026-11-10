@@ -1,11 +1,12 @@
 import { FormSummary } from '@navikt/ds-react';
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DataGridDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import FormSummaryAnswersNested from '../../shared/FormSummaryAnswersNested';
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
-const SummaryDataGrid = (props: FormComponentProps) => {
+const SummaryDataGrid = (props: FormComponentProps<DataGridDefinition>) => {
   const { submission, submissionPath, component } = props;
   const { components, navId } = component;
   const dataGridValues = formComponentUtils.getSubmissionValue(submissionPath, submission);
