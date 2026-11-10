@@ -118,6 +118,9 @@ test.describe('Generated paper journey', () => {
     await nextStep(page);
     await expect(page.getByTestId('form-summary-panel')).toContainText('Additional evidence');
     await page.getByRole('link', { name: 'Endre svar', exact: true }).click();
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnAttachments' && url.searchParams.get('filter') === 'N6',
+    );
     await expect(title).toHaveValue('Additional evidence');
   });
 

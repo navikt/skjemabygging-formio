@@ -7,7 +7,6 @@ import FormStepper from './layout/FormStepper';
 
 interface Props {
   leadingSteps?: { key: string; label: string }[];
-  navigationKey?: string;
   form: Form;
   formTitle?: string;
   activeIndex: number;
@@ -54,19 +53,9 @@ const focusPageTitleAfterNavigation = () => {
   };
 };
 
-const FormFlowLayout = ({
-  form,
-  formTitle,
-  activeIndex,
-  pageTitle,
-  onStepClick,
-  children,
-  leadingSteps,
-  navigationKey,
-}: Props) => {
+const FormFlowLayout = ({ form, formTitle, activeIndex, pageTitle, onStepClick, children, leadingSteps }: Props) => {
   const { key, pathname, hash, state } = useLocation();
   const previousPathname = useRef<string | undefined>(undefined);
-  const currentNavigationKey = navigationKey ?? pathname;
   const locationState = typeof state === 'object' && state ? (state as Record<string, unknown>) : undefined;
   const trailingSteps = [{ key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title }];
   const [isStepperOpen, setIsStepperOpen] = useState(false);
@@ -78,9 +67,8 @@ const FormFlowLayout = ({
   };
 
   useEffect(() => {
-    const isNavigationBetweenSteps =
-      previousPathname.current !== undefined && previousPathname.current !== currentNavigationKey;
-    previousPathname.current = currentNavigationKey;
+    const isNavigationBetweenSteps = previousPathname.current !== undefined && previousPathname.current !== pathname;
+    previousPathname.current = pathname;
 
     if (!isNavigationBetweenSteps) {
       return;
@@ -93,7 +81,7 @@ const FormFlowLayout = ({
     }
 
     return focusPageTitleAfterNavigation();
-  }, [hash, key, locationState?.focusId, locationState?.redirect, currentNavigationKey]);
+  }, [hash, key, locationState?.focusId, locationState?.redirect, pathname]);
 
   return (
     <>

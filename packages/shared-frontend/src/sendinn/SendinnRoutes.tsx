@@ -26,7 +26,7 @@ const SendinnRoutes = ({ services, onLoadError }: Props) => {
     return (
       <Routes>
         <Route
-          path="/:formPath/:step?"
+          path="/:formPath/*"
           element={
             <SendinnFormEntry
               formPath={entry.formPath}

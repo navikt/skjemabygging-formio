@@ -13,7 +13,7 @@ import { SendinnRuntimeServices } from '../../context/runtime-services/RuntimeSe
 import { RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
-import { SendinnJourney } from '../journey/SendinnJourney';
+import { SendinnFormRouter } from '../journey/SendinnFormRouter';
 import { LoadSendinnForm } from '../SendinnServices';
 import { SendinnFormProvider, useSendinnForm } from './SendinnFormProvider';
 
@@ -29,7 +29,7 @@ const LoadedForm = () => {
   return (
     <FormDefinitionProvider form={form} submissionMethod="paper">
       <FormValidationProvider>
-        <SendinnJourney />
+        <SendinnFormRouter />
       </FormValidationProvider>
     </FormDefinitionProvider>
   );

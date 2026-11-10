@@ -7,7 +7,6 @@ import {
   SubmissionMethod,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { To } from 'react-router';
 import { ApplicationEnvironment, ApplicationLogger } from '../context/application/ApplicationContext';
 import { ComponentDefinitionByType } from './component-types';
 
@@ -49,7 +48,6 @@ interface SummaryRendererAppConfig {
  * and receives the exact type.
  */
 interface FormComponentProps<T extends Component = Component> {
-  getPanelLink?: (panelKey: string) => To;
   component: T;
   submissionPath: string;
   componentRegistry: FormComponentRegistry;
