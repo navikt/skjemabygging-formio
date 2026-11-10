@@ -1,15 +1,15 @@
+import { createNationalIdentityNumber } from '@navikt/skjemadigitalisering-shared-domain';
 import NationalIdentityNumber from './NationalIdentityNumber';
 
 const nationalIdentityNumberBuilder = (keyPostfix: string = '') => {
   const schema = NationalIdentityNumber.schema();
+  const definition = createNationalIdentityNumber();
   return {
     title: 'Fødselsnummer',
     schema: {
       ...schema,
-      key: `${schema.key}${keyPostfix}`,
-      validate: {
-        required: true,
-      },
+      ...definition,
+      key: `${definition.key}${keyPostfix}`,
     },
   };
 };
