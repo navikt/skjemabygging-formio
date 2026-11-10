@@ -32,7 +32,8 @@ Sendinn er under utvikling og skal etter hvert erstatte appene
 [forms-api](https://github.com/navikt/forms-api) lagrer skjemadefinisjoner og
 oversettelser. Tjenesten ligger utenfor monorepoet, i namespace `fyllut-sendinn`.
 Bygger og form-spec-api bruker normalt forms-api i samme cluster.
-Bygger i preprod og preprod-alt har også en separat kobling til produksjonens forms-api.
+Bygger i preprod og preprod-alt har også en separat kobling til produksjonens forms-api
+for å importere skjemadefinisjoner og oversettelser til testmiljøet.
 
 ```mermaid
 flowchart LR
