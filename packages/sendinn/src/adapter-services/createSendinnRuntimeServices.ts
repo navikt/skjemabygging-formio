@@ -1,5 +1,5 @@
 import { Enhet } from '@navikt/skjemadigitalisering-shared-domain';
-import { NavUnitRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { SendinnRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { SendinnHttp } from './sendinnHttp';
 
 const createSendinnRuntimeServices = ({
@@ -8,7 +8,8 @@ const createSendinnRuntimeServices = ({
 }: {
   baseUrl: string;
   http: SendinnHttp;
-}): NavUnitRuntimeServices => ({
+}): SendinnRuntimeServices => ({
+  host: 'sendinn',
   formData: {
     getNavUnits: () => http.get<Enhet[]>(`${baseUrl}/api/nav-units`),
   },

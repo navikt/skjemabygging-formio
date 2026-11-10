@@ -1,7 +1,7 @@
 import { Enhet, Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useNavUnitService } from '../../context/runtime-services/RuntimeServicesContext';
+import { useCommonRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { filterNavUnits, resolveNavUnits, sortNavUnits } from './navUnitUtils';
 
 interface UseNavUnitsOptions {
@@ -11,7 +11,7 @@ interface UseNavUnitsOptions {
 
 const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => {
   const { logger } = useApplication();
-  const formData = useNavUnitService();
+  const { formData } = useCommonRuntimeServices();
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
   const retry = useCallback(() => {

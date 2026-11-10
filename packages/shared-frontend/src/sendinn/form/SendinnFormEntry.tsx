@@ -8,7 +8,8 @@ import { useLocation } from 'react-router';
 import { useAppConfig } from '../../app/config/AppConfigProvider';
 import { ApplicationProvider } from '../../context/application/ApplicationContext';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
-import { NavUnitRuntimeServices, RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
+import { SendinnRuntimeServices } from '../../context/runtime-services/RuntimeServices';
+import { RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
 import { SendinnJourney } from '../journey/SendinnJourney';
@@ -18,7 +19,7 @@ import { SendinnFormProvider, useSendinnForm } from './SendinnFormProvider';
 interface Props {
   formPath: string;
   loadForm: LoadSendinnForm;
-  runtimeServices: NavUnitRuntimeServices;
+  runtimeServices: SendinnRuntimeServices;
   onLoadError: (error: unknown) => void;
 }
 

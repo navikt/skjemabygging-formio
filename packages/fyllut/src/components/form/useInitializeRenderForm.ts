@@ -1,5 +1,5 @@
 import { getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { ApplicationLogger, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { ApplicationLogger, FyllutRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { NavigateFunction } from 'react-router';
 import { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
@@ -11,7 +11,7 @@ interface Props {
   search: string;
   submissionMethod?: SubmissionMethod;
   bootstrapService: RenderFormBootstrapService;
-  applications: RuntimeServices['applications'];
+  applications: FyllutRuntimeServices['applications'];
   navigate: NavigateFunction;
   loadKey: string;
   logger?: ApplicationLogger;

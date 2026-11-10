@@ -4,14 +4,14 @@ import {
   SendinnFormResult,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { NavUnitRuntimeServices } from '../context/runtime-services/RuntimeServicesContext';
+import { SendinnRuntimeServices } from '../context/runtime-services/RuntimeServices';
 
 type LoadSendinnForm = (request: SendinnFormRequest) => Promise<SendinnFormResult>;
 
 interface SendinnServices {
   loadForm: LoadSendinnForm;
   loadGlobalTranslations: (language: TranslationLang) => Promise<FormsApiTranslationMap>;
-  runtime: NavUnitRuntimeServices;
+  runtime: SendinnRuntimeServices;
 }
 
 export type { LoadSendinnForm, SendinnServices };

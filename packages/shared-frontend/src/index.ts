@@ -68,17 +68,18 @@ export type {
   ApplicationService,
   AttachmentApplication,
   AttachmentService,
+  CommonRuntimeServices,
   CreateDraftResult,
   Draft,
   DraftRequest,
   FormCodeList,
   FormDataService,
-  RuntimeServices,
+  FyllutRuntimeServices,
+  SendinnRuntimeServices,
   SessionService,
   SubmissionApplication,
   SubmissionService,
 } from './context/runtime-services/RuntimeServices';
-export type { NavUnitRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
 export type { FieldStateStore } from './context/state/StateContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type {

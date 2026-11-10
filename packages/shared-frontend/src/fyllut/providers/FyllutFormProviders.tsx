@@ -2,14 +2,14 @@ import { Provider as AkselProvider } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { getAkselLocale } from '../../app/language/akselLocale';
 import { LanguageConfig, LanguageProvider } from '../../context/language/LanguageContext';
-import { RuntimeServices, RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
+import { FyllutRuntimeServices, RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
 import { IntegrationContextValue, IntegrationProvider } from '../context/integration/IntegrationContext';
 
 interface Props {
   children: ReactNode;
   integration: IntegrationContextValue;
   language: LanguageConfig;
-  services: RuntimeServices;
+  services: FyllutRuntimeServices;
 }
 
 const FyllutFormProviders = ({ children, integration, language, services }: Props) => (
