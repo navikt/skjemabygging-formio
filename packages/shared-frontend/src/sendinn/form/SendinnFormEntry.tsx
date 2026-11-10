@@ -6,6 +6,7 @@ import {
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
 import { useAppConfig } from '../../app/config/AppConfigProvider';
+import { NavUnitsProvider } from '../../components/nav-unit-select/NavUnitsProvider';
 import { ApplicationProvider } from '../../context/application/ApplicationContext';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { SendinnRuntimeServices } from '../../context/runtime-services/RuntimeServices';
@@ -52,17 +53,19 @@ const SendinnFormEntry = ({ formPath, loadForm, runtimeServices, onLoadError }: 
   return (
     <ApplicationProvider logger={logger} environment={config.isProdGcp ? 'production' : 'development'}>
       <RuntimeServicesProvider services={runtimeServices}>
-        <SubmissionStateProvider key={`${formPath}:${filterKey}`}>
-          <SendinnFormProvider
-            key={JSON.stringify(request)}
-            request={request}
-            loadForm={loadForm}
-            onLoadError={onLoadError}
-            loginUrl={loginUrl}
-          >
-            <LoadedForm />
-          </SendinnFormProvider>
-        </SubmissionStateProvider>
+        <NavUnitsProvider>
+          <SubmissionStateProvider key={`${formPath}:${filterKey}`}>
+            <SendinnFormProvider
+              key={JSON.stringify(request)}
+              request={request}
+              loadForm={loadForm}
+              onLoadError={onLoadError}
+              loginUrl={loginUrl}
+            >
+              <LoadedForm />
+            </SendinnFormProvider>
+          </SubmissionStateProvider>
+        </NavUnitsProvider>
       </RuntimeServicesProvider>
     </ApplicationProvider>
   );

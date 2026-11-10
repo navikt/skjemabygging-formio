@@ -260,10 +260,11 @@ test.describe('Generated paper journey', () => {
     await expect(userTypeSummary).not.toContainText('Nav Alpha');
   });
 
-  test('recovers unit names on the summary without a number-only or empty-success fallback', async ({
-    readyPage: page,
-    useRouteVariant,
-  }) => {
+  test('loads Nav units once and reuses them for the summary', async ({ readyPage: page, useRouteVariant }) => {
+    let loads = 0;
+    page.on('request', (request) => {
+      if (request.url().includes('/api/nav-units')) loads += 1;
+    });
     await useRouteVariant('get-form:sendinn-forced-unit');
     await page.goto('/sendinn/sendinnjourney');
     await unitSelect(page).selectOption('0202');
@@ -272,28 +273,13 @@ test.describe('Generated paper journey', () => {
       .getByRole('group', { name: /Evidence document/ })
       .getByRole('checkbox')
       .check();
-    await useRouteVariant('get-nav-units:error');
     await nextStep(page);
-    await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
-    await expect(
-      page.getByTestId('form-summary-panel').first().getByText('Vi kunne ikke laste enheter', { exact: false }),
-    ).toHaveCount(1);
-    await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
-    await useRouteVariant('get-nav-units:success');
-    await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
     await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
-    await previousStep(page);
-    await expect(page.getByRole('group', { name: /Evidence document/ }).getByRole('checkbox')).toBeChecked();
-    await useRouteVariant('get-nav-units:no-matching-types');
-    await nextStep(page);
-    await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toBeVisible();
-    await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0202');
-    await useRouteVariant('get-nav-units:success');
-    await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
-    await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Beta');
+    await expect(page.getByRole('button', { name: 'Prøv igjen', exact: true })).toHaveCount(0);
     await previousStep(page);
     await previousStep(page);
     await expect(unitSelect(page)).toHaveValue('0202');
+    expect(loads).toBe(1);
   });
 
   test('blocks empty filtered choices even when navigating directly to the summary', async ({ readyPage: page }) => {

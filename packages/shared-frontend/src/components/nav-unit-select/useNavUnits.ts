@@ -1,8 +1,8 @@
-import { Enhet, Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useApplication } from '../../context/application/ApplicationContext';
-import { useCommonRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { filterNavUnits, resolveNavUnits, sortNavUnits } from './navUnitUtils';
+import { Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo } from 'react';
+import { useOptionalNavUnitsContext } from './NavUnitsProvider';
+import { filterNavUnits, resolveNavUnits } from './navUnitUtils';
+import { useNavUnitsLoader } from './useNavUnitsLoader';
 
 interface UseNavUnitsOptions {
   enabled?: boolean;
@@ -10,47 +10,14 @@ interface UseNavUnitsOptions {
 }
 
 const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => {
-  const { logger } = useApplication();
-  const { formData } = useCommonRuntimeServices();
-  const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
-  const retry = useCallback(() => {
-    setResult(undefined);
-    setAttempt((previous) => previous + 1);
-  }, []);
-
+  const shared = useOptionalNavUnitsContext();
+  const own = useNavUnitsLoader(enabled && !shared);
+  const request = shared?.request;
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+    if (enabled) request?.();
+  }, [enabled, request]);
 
-    let cancelled = false;
-
-    void formData
-      .getNavUnits()
-      .then((units) => {
-        if (!cancelled) {
-          setResult({ source: formData, units: sortNavUnits(units) });
-        }
-      })
-      .catch((fetchError) => {
-        if (cancelled) {
-          return;
-        }
-
-        const resolvedError = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
-        logger?.error?.('Failed to load Nav units');
-        setResult({ source: formData, error: resolvedError });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt, enabled, formData, logger]);
-
-  const currentResult = enabled && result?.source === formData ? result : undefined;
-  const allUnits = currentResult?.units;
-  const error = currentResult?.error;
+  const { allUnits, error, retry } = shared && enabled ? shared : own;
   const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
   const availableUnits = useMemo(
     () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
