@@ -21,9 +21,14 @@ const form = {
     const type = requestUtil.getStringQuery(req, 'type', true);
     const lang = requestUtil.getStringQuery(req, 'lang', true);
     const select = requestUtil.getStringQuery(req, 'select', true);
+    const revision = requestUtil.getStringQuery(req, 'revision', true);
     const form = select
-      ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof FormWithLanguages> })
-      : await formService.getForm({ formPath });
+      ? await formService.getForm({
+          formPath,
+          revision: revision,
+          select: select.split(',') as Array<keyof FormWithLanguages>,
+        })
+      : await formService.getForm({ formPath, revision: revision });
 
     const language = lang ?? 'nb-NO';
 

@@ -31,6 +31,7 @@ type InitializationResult =
 
 interface InitializeRenderFormProps {
   formPath: string;
+  revision?: string;
   routePath?: string;
   search: string;
   submissionMethod?: SubmissionMethod;
@@ -47,6 +48,7 @@ const buildSearchWithSubmissionMethod = (search: string, submissionMethod: strin
 
 const initializeRenderForm = async ({
   formPath,
+  revision,
   routePath,
   search,
   submissionMethod,
@@ -54,7 +56,7 @@ const initializeRenderForm = async ({
   applications,
   loadKey,
 }: InitializeRenderFormProps): Promise<InitializationResult> => {
-  const bootstrap = await bootstrapService.load(formPath);
+  const bootstrap = await bootstrapService.load(formPath, revision);
   if (!bootstrap) {
     return { type: 'notFound' };
   }

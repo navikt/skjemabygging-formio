@@ -7,6 +7,7 @@ import { InitializationResult, InitializedForm, initializeRenderForm } from './i
 
 interface Props {
   formPath?: string;
+  revision?: string;
   routePath?: string;
   search: string;
   submissionMethod?: SubmissionMethod;
@@ -19,6 +20,7 @@ interface Props {
 
 const useInitializeRenderForm = ({
   formPath,
+  revision,
   routePath,
   search,
   submissionMethod,
@@ -43,6 +45,7 @@ const useInitializeRenderForm = ({
         key: loadKey,
         promise: initializeRenderForm({
           formPath,
+          revision,
           routePath,
           search,
           submissionMethod,
@@ -91,7 +94,18 @@ const useInitializeRenderForm = ({
     return () => {
       active = false;
     };
-  }, [applications, bootstrapService, formPath, loadKey, logger, navigate, routePath, search, submissionMethod]);
+  }, [
+    applications,
+    bootstrapService,
+    formPath,
+    revision,
+    loadKey,
+    logger,
+    navigate,
+    routePath,
+    search,
+    submissionMethod,
+  ]);
 
   const hasInitializationError = failedLoadKey === loadKey;
   const isLoading = initializedForm?.loadKey !== loadKey && notFoundLoadKey !== loadKey && !hasInitializationError;

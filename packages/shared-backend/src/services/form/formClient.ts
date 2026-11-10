@@ -4,12 +4,12 @@ import { logger } from '../../shared/logger/logger';
 
 const formsUrl = 'v1/forms';
 
-const withSelect = (url: string, select?: string) => {
-  if (!select) {
+const withSearchParams = (url: string, select?: string, revision?: string) => {
+  if (!select && !revision) {
     return url;
   }
 
-  return `${url}?${new URLSearchParams({ select }).toString()}`;
+  return `${url}?${select ? new URLSearchParams({ select }).toString() : ''}${revision ? '&' + new URLSearchParams({ revision }).toString() : ''}`;
 };
 
 interface GetFormsProps {
@@ -18,7 +18,7 @@ interface GetFormsProps {
 }
 const getForms = async <T = Form>(props: GetFormsProps): Promise<T[]> => {
   const { baseUrl, select } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}`, select);
+  const targetUrl = withSearchParams(`${baseUrl}/${formsUrl}`, select);
   logger.info('Getting forms', { select, targetUrl });
 
   return await http.get<T[]>(targetUrl);
@@ -27,11 +27,13 @@ const getForms = async <T = Form>(props: GetFormsProps): Promise<T[]> => {
 interface GetFormProps {
   baseUrl: string;
   formPath: string;
+  revision?: string;
   select?: string;
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
-  const { baseUrl, formPath, select } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${formPath}`, select);
+  const { baseUrl, formPath, revision, select } = props;
+  const targetUrl = withSearchParams(`${baseUrl}/${formsUrl}/${formPath}`, select, revision);
+
   logger.info('Getting form', { formPath, select, targetUrl });
 
   return await http.get<T>(targetUrl);

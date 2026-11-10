@@ -23,9 +23,10 @@ type FormService = {
   getForm: {
     <S extends FormWithLanguagesSelectType[]>(props: {
       formPath: string;
+      revision?: string;
       select: S;
     }): Promise<Pick<FormWithLanguages, S[number]>>;
-    (props: { formPath: string; select?: undefined }): Promise<Form>;
+    (props: { formPath: string; revision?: string; select?: undefined }): Promise<Form>;
   };
 };
 
@@ -56,13 +57,26 @@ const createFormService = ({
 
   const includeUnpublishedLanguages = !!(formsApiStaging || mocksEnabled);
 
-  const fetchForm = async ({ formPath, select }: { formPath: string; select?: FormSelectType[] }) => {
+  const fetchForm = async ({
+    formPath,
+    revision,
+    select,
+  }: {
+    formPath: string;
+    revision?: string;
+    select?: FormSelectType[];
+  }) => {
     if (formsApiStaging || mocksEnabled) {
       if (!select) {
-        return client.getForm<Form>({ baseUrl, formPath });
+        return client.getForm<Form>({ baseUrl, formPath, revision });
       }
 
-      return client.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
+      return client.getForm<Pick<Form, (typeof select)[number]>>({
+        baseUrl,
+        formPath,
+        revision,
+        select: select.join(','),
+      });
     }
 
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
@@ -78,14 +92,23 @@ const createFormService = ({
     return mappedForm as Pick<Form, (typeof select)[number]>;
   };
 
-  const getForm = (async ({ formPath, select }: { formPath: string; select?: FormWithLanguagesSelectType[] }) => {
+  const getForm = (async ({
+    formPath,
+    revision,
+    select,
+  }: {
+    formPath: string;
+    revision?: string;
+    select?: FormWithLanguagesSelectType[];
+  }) => {
     if (!select?.includes('languages')) {
-      return fetchForm({ formPath, select: select as FormSelectType[] | undefined });
+      return fetchForm({ formPath, revision: revision, select: select as FormSelectType[] | undefined });
     }
 
     const formSelect = select.filter((field): field is FormSelectType => field !== 'languages');
     const form = await fetchForm({
       formPath,
+      revision: revision,
       select:
         formSelect.length > 0
           ? Array.from(new Set([...formSelect, 'publishedLanguages' as const, 'status' as const]))

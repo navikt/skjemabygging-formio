@@ -14,7 +14,7 @@ interface RenderFormBootstrap {
 }
 
 interface RenderFormBootstrapService {
-  load: (formPath: string) => Promise<RenderFormBootstrap | undefined>;
+  load: (formPath: string, revision?: string) => Promise<RenderFormBootstrap | undefined>;
   getPrefillData: (properties: string[]) => Promise<SubmissionData>;
 }
 
@@ -26,13 +26,15 @@ interface Props {
 const formSelect = 'title,skjemanummer,path,revision,introPage,components,properties,languages,firstPanelSlug';
 
 const createRenderFormBootstrapService = ({ http, backendBaseUrl }: Props): RenderFormBootstrapService => ({
-  load: async (formPath) => {
+  load: async (formPath, revision) => {
     if (!validatorUtils.isValidFormPath(formPath)) {
       return undefined;
     }
 
     const form = await http
-      .get<FormWithLanguages>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`)
+      .get<FormWithLanguages>(
+        `${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}${revision ? `&revision=${revision}` : ''}`,
+      )
       .then((form) => {
         if (!form) {
           throw new Error('Form response is missing.');

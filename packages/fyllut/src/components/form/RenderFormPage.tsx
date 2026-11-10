@@ -24,6 +24,7 @@ const RenderFormPage = () => {
   const submissionMethod = resolveSubmissionMethod(search, initialSubmissionMethod);
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
+  const revision = new URLSearchParams(search).get('revision') ?? undefined;
   const isActiveTasksRoute = routePath === 'paabegynt';
   const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
   const services = useMemo<RuntimeServices>(
@@ -36,6 +37,7 @@ const RenderFormPage = () => {
   );
   const { initializedForm, isLoading, hasInitializationError } = useInitializeRenderForm({
     formPath,
+    revision,
     routePath,
     search,
     submissionMethod,
