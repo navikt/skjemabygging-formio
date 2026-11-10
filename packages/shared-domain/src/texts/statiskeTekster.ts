@@ -366,6 +366,7 @@ export const statiske = {
     choose: 'Velg hvilken Nav-enhet som skal motta innsendingen',
     selectDefault: 'Velg enhet',
     fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
+    retry: 'Prøv igjen',
   },
   pdf: {
     placeAndDate: 'Sted og dato',
@@ -398,6 +399,7 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
+    reviewAnswers: 'Kontroller opplysningene',
     noMatchingDocuments: 'Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.',
     userType: {
       multiplePeople: 'Flere personer / Nav-enhet',

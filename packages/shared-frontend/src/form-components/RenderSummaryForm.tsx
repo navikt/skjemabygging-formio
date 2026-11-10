@@ -7,6 +7,7 @@ import {
   TranslateFunction,
   attachmentUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { To } from 'react-router';
 import RenderComponent from './RenderComponent';
 import SummaryAccordion from './components/accordion/SummaryAccordion';
 import SummaryAccountNumber from './components/account-number/SummaryAccountNumber';
@@ -34,6 +35,7 @@ import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
 import SummaryNationalIdentityNumber from './components/national-identity-number/SummaryNationalIdentityNumber';
+import SummaryNavUnitSelect from './components/nav-unit-select/SummaryNavUnitSelect';
 import SummaryNumber from './components/number/SummaryNumber';
 import SummaryOrganizationNumber from './components/organization-number/SummaryOrganizationNumber';
 import SummaryPanel from './components/panel/SummaryPanel';
@@ -57,6 +59,7 @@ import {
 } from './types';
 
 interface CommonProps {
+  getPanelLink?: (panelKey: string) => To;
   activeComponents: Component[];
   activeAttachmentUploadsPanel?: Panel;
   submission?: Submission;
@@ -84,6 +87,7 @@ const RenderSummaryForm = ({
   rendererConfig,
   appConfig,
   handleDownloadFile,
+  getPanelLink,
 }: Props) => {
   if (!submission) {
     return null;
@@ -104,6 +108,7 @@ const RenderSummaryForm = ({
     radiopanel: SummaryRadio,
     select: SummarySelect,
     navSelect: SummaryNavSelect,
+    navUnitSelect: SummaryNavUnitSelect,
     selectboxes: SummarySelectBoxes,
     textarea: SummaryTextArea,
     textfield: SummaryTextField,
@@ -160,6 +165,7 @@ const RenderSummaryForm = ({
           component={component}
           submissionPath=""
           componentRegistry={componentRegistry}
+          getPanelLink={getPanelLink}
           submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}

@@ -259,6 +259,7 @@ const Attachment = ({
               multipleAttachments={multiple}
               attachmentValue={value}
               readOnly={readOnly}
+              withoutUpload
             />
           ))}
       </VStack>
