@@ -29,7 +29,7 @@ const SendinnJourney = () => {
   const { currentPanel, currentIndex, components, isFirst, isLast, goToNext } = useFormPageController(step);
   const { hideErrorSummary, schedulePageValidation, validatePages } = useValidationActions();
   const summary = step === SUMMARY_KEY;
-  const hasDocuments = useMemo(
+  const hasAttachments = useMemo(
     () => flattenComponents(form.components).some((component) => component.type === 'attachment'),
     [form],
   );
@@ -79,7 +79,7 @@ const SendinnJourney = () => {
         navigationKey={summary ? SUMMARY_KEY : currentPanel?.key}
         onStepClick={(key) => goToStep(key)}
       >
-        {!hasDocuments ? (
+        {!hasAttachments ? (
           <Alert variant="info">{translate(TEXTS.statiske.sendinn.noMatchingDocuments)}</Alert>
         ) : summary ? (
           <>
