@@ -206,24 +206,49 @@ describe('uploadSingleFile', () => {
     expect(forwardedContext).toBe('upload-context');
   });
 
-  it.each([new Error('Request aborted'), new multer.MulterError('LIMIT_FILE_SIZE')])(
-    'forwards cleanup failures instead of treating %s as a normal client outcome',
-    (uploadError) => {
-      const cleanupError = Object.assign(new Error('Cannot remove temporary file'), { code: 'EACCES' });
-      const error = Object.assign(uploadError, { storageErrors: [cleanupError] });
-      const info = vi.spyOn(logger, 'info');
-      const next = vi.fn();
-      upload.mockImplementation((_req, _res, callback) => callback(error));
+  it('returns the size-limit error and logs a cleanup failure without file paths', () => {
+    const cleanupError = Object.assign(new Error('Cannot remove /tmp/upload'), { code: 'EACCES' });
+    const error = Object.assign(new multer.MulterError('LIMIT_FILE_SIZE'), { storageErrors: [cleanupError] });
+    const logError = vi.spyOn(logger, 'error').mockImplementation(() => logger);
+    const next = vi.fn();
+    upload.mockImplementation((_req, _res, callback) => callback(error));
+    const req = createRequest({
+      originalUrl: '/digital/submission-1/attachments/attachment-1?access=hidden',
+      params: { innsendingsId: 'submission-1', attachmentId: 'attachment-1' },
+    });
 
-      uploadSingleFile('filinnhold')(createRequest({ aborted: true, complete: false }), mockResponse(), next);
+    uploadSingleFile('filinnhold', { maxFileSizeBytes: 5 })(req, mockResponse(), next);
 
-      expect(next).toHaveBeenCalledOnce();
-      const forwardedError = next.mock.calls[0][0];
-      expect(forwardedError).toBeInstanceOf(AggregateError);
-      expect(forwardedError.message).toBe('Failed to remove temporary upload files (EACCES).');
-      expect(forwardedError.errors).toEqual([cleanupError]);
-      expect(forwardedError.cause).toBe(error);
-      expect(info).not.toHaveBeenCalled();
-    },
-  );
+    expect(next).toHaveBeenCalledOnce();
+    expect(next.mock.calls[0][0]).toBeInstanceOf(ResponseError);
+    expect(next.mock.calls[0][0]).toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      userMessage: TEXTS.statiske.uploadFile.fileTooLargeError,
+    });
+    expect(logError).toHaveBeenCalledExactlyOnceWith('Failed to remove temporary upload files', {
+      route: '/digital/submission-1/attachments/attachment-1',
+      fieldName: 'filinnhold',
+      innsendingsId: 'submission-1',
+      attachmentId: 'attachment-1',
+      errorCodes: ['EACCES'],
+    });
+  });
+
+  it('forwards cleanup failures for other upload errors as server errors', () => {
+    const cleanupError = Object.assign(new Error('Cannot remove temporary file'), { code: 'EACCES' });
+    const error = Object.assign(new Error('Request aborted'), { storageErrors: [cleanupError] });
+    const info = vi.spyOn(logger, 'info');
+    const next = vi.fn();
+    upload.mockImplementation((_req, _res, callback) => callback(error));
+
+    uploadSingleFile('filinnhold')(createRequest({ aborted: true, complete: false }), mockResponse(), next);
+
+    expect(next).toHaveBeenCalledOnce();
+    const forwardedError = next.mock.calls[0][0];
+    expect(forwardedError).toBeInstanceOf(AggregateError);
+    expect(forwardedError.message).toBe('Failed to remove temporary upload files (EACCES).');
+    expect(forwardedError.errors).toEqual([cleanupError]);
+    expect(forwardedError.cause).toBe(error);
+    expect(info).not.toHaveBeenCalled();
+  });
 });

@@ -13,6 +13,9 @@ interface UploadSingleFileOptions {
   maxFileSizeBytes?: number;
 }
 
+const getStorageErrors = (error: unknown): Array<{ code?: string }> =>
+  error instanceof Error && 'storageErrors' in error && Array.isArray(error.storageErrors) ? error.storageErrors : [];
+
 const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = {}) => {
   const maxFileSizeBytes = options.maxFileSizeBytes ?? MAX_UPLOAD_FILE_SIZE_BYTES;
   const upload = multer({
@@ -30,22 +33,15 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
     // Express restores route parameters before application-level error handling.
     res.locals.requestLogMeta = logMeta;
     const handleUpload: NextFunction = (error) => {
-      if (
-        error instanceof Error &&
-        'storageErrors' in error &&
-        Array.isArray(error.storageErrors) &&
-        error.storageErrors.length > 0
-      ) {
-        // The error handler logs only the stack, so include the error codes (not file paths) in its first line.
-        const codes = [...new Set(error.storageErrors.map((storageError) => storageError?.code ?? 'UNKNOWN'))];
-        return next(
-          new AggregateError(error.storageErrors, `Failed to remove temporary upload files (${codes.join(', ')}).`, {
-            cause: error,
-          }),
-        );
-      }
+      const storageErrors = getStorageErrors(error);
+      // Log error codes only: storage errors carry temporary file paths.
+      const errorCodes = [...new Set(storageErrors.map((storageError) => storageError?.code ?? 'UNKNOWN'))];
 
       if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        // The user still needs the size error; the cleanup failure is logged separately for us to fix.
+        if (storageErrors.length > 0) {
+          logger.error('Failed to remove temporary upload files', { ...logMeta, errorCodes });
+        }
         return next(
           new ResponseError(
             'BAD_REQUEST',
@@ -53,6 +49,15 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
             undefined,
             TEXTS.statiske.uploadFile.fileTooLargeError,
           ),
+        );
+      }
+
+      if (storageErrors.length > 0) {
+        // The error handler logs only the stack, so its first line carries the error codes.
+        return next(
+          new AggregateError(storageErrors, `Failed to remove temporary upload files (${errorCodes.join(', ')}).`, {
+            cause: error,
+          }),
         );
       }
 
