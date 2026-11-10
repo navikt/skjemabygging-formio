@@ -131,6 +131,14 @@ const Attachment = ({
       })),
     );
   };
+  const handleTitleChange = (item: SubmissionAttachment, title: string) => {
+    if (value) removeError(item.attachmentId, statePath);
+    update((current) =>
+      current.some((entry) => entry.attachmentId === item.attachmentId)
+        ? current.map((entry) => (entry.attachmentId === item.attachmentId ? { ...entry, value, title } : entry))
+        : [...current, { ...item, value, title, files: item.files ?? [] }],
+    );
+  };
   const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
   const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
   const titleWithoutUploadFields = titleWithoutUploadRequired
@@ -253,13 +261,11 @@ const Attachment = ({
           documents.map((item) => (
             <AttachmentTitleField
               key={item.attachmentId}
-              initialAttachment={item}
+              attachmentId={item.attachmentId}
               title={item.title}
               submissionPath={statePath}
-              multipleAttachments={multiple}
-              attachmentValue={value}
               readOnly={readOnly}
-              withoutUpload
+              onChange={(title) => handleTitleChange(item, title)}
             />
           ))}
       </VStack>
