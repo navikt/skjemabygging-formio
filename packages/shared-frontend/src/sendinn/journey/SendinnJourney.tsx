@@ -34,6 +34,7 @@ const SendinnJourney = () => {
     [form],
   );
   const pageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
+  const formTitle = translate(TEXTS.statiske.sendinn.journey.formTitle, { title: translate(form.title) });
   const getPanelLink = useCallback(
     (panelKey: string) => {
       const params = new URLSearchParams(search);
@@ -49,8 +50,8 @@ const SendinnJourney = () => {
 
   useFieldFocus({ preferInputFocus: true });
   useEffect(() => {
-    document.title = translate(TEXTS.statiske.sendinn.journey.form);
-  }, [translate]);
+    document.title = formTitle;
+  }, [formTitle]);
   useEffect(() => {
     if (!step && currentPanel) navigate(getPanelLink(currentPanel.key), { replace: true });
   }, [step, currentPanel, navigate, getPanelLink]);
@@ -70,7 +71,8 @@ const SendinnJourney = () => {
   return (
     <div data-journey="form">
       <FormFlowLayout
-        form={{ ...form, title: TEXTS.statiske.sendinn.journey.form }}
+        form={form}
+        formTitle={formTitle}
         pageTitle={summary ? TEXTS.statiske.summaryPage.title : (currentPanel?.title ?? form.title)}
         activeIndex={summary ? panels.length : currentIndex}
         leadingSteps={[]}

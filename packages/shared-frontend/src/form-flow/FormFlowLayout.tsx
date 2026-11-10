@@ -9,6 +9,7 @@ interface Props {
   leadingSteps?: { key: string; label: string }[];
   navigationKey?: string;
   form: Form;
+  formTitle?: string;
   activeIndex: number;
   pageTitle: string;
   onStepClick: (key: string) => void;
@@ -55,6 +56,7 @@ const focusPageTitleAfterNavigation = () => {
 
 const FormFlowLayout = ({
   form,
+  formTitle,
   activeIndex,
   pageTitle,
   onStepClick,
@@ -95,7 +97,7 @@ const FormFlowLayout = ({
 
   return (
     <>
-      <FormHeader form={form} pageTitle={pageTitle} />
+      <FormHeader form={form} pageTitle={pageTitle} formTitle={formTitle} />
       <FormStepper
         activeIndex={activeIndex}
         leadingSteps={leadingSteps ?? [{ key: INTRO_KEY, label: TEXTS.grensesnitt.introPage.title }]}

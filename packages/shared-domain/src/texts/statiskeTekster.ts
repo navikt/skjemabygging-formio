@@ -408,6 +408,7 @@ export const statiske = {
     journey: {
       standalone: 'Send dokumenter til Nav',
       form: 'Send inn dokumentasjon til skjema',
+      formTitle: 'Ettersend dokumentasjon til {{title}}',
       formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
       task: 'Send inn etterspurt dokumentasjon',
       taskLink: 'Send inn etterspurt dokumentasjon fra varsel',
