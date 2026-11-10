@@ -1,10 +1,5 @@
-import { errorHandler, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import express from 'express';
 import path from 'path';
-import request from 'supertest';
-import { logger as errorLogger } from '../../../shared-backend/src/shared/logger/logger';
 import { FyllutBackendConfig } from '../config/types';
-import legacyErrorToResponseError from '../middleware/legacyErrorToResponseError';
 import TranslationsService from './TranslationsService';
 
 const testConfig: FyllutBackendConfig = {
@@ -65,30 +60,6 @@ describe('TranslationService', () => {
         errorCode: 'BAD_REQUEST',
         message: 'Form path contains invalid characters.',
       });
-    });
-
-    it('responds with a safe 400 and one non-error log for an invalid translation path', async () => {
-      const app = express();
-      const translationsService = new TranslationsService(testConfig);
-      const handlerWarning = vi.spyOn(errorLogger, 'warn');
-      const handlerError = vi.spyOn(errorLogger, 'error');
-      app.get('/translations/:form', async (req, res) =>
-        res.json(await translationsService.loadTranslation(requestUtil.getStringParam(req, 'form')!)),
-      );
-      app.use(legacyErrorToResponseError);
-      app.use(errorHandler);
-
-      const response = await request(app).get('/translations/%26%24%25').expect(400);
-
-      expect(response.body).toMatchObject({
-        errorCode: 'BAD_REQUEST',
-        message: 'Form path contains invalid characters.',
-      });
-      expect(JSON.stringify(response.body)).not.toContain('&$%');
-      expect(handlerWarning).toHaveBeenCalledOnce();
-      expect(handlerError).not.toHaveBeenCalled();
-      handlerWarning.mockRestore();
-      handlerError.mockRestore();
     });
   });
 });

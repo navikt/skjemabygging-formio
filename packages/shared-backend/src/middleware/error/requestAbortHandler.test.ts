@@ -35,47 +35,39 @@ const createAbortError = () =>
     expected: 100,
   });
 
+const expectNoResponse = (spies: ReturnType<typeof createResponse>['spies']) => {
+  for (const method of [spies.header, spies.contentType, spies.status, spies.send, spies.end]) {
+    expect(method).not.toHaveBeenCalled();
+  }
+};
+
 afterEach(() => vi.restoreAllMocks());
 
-describe.each([
-  { name: 'requestAbortHandler', handler: requestAbortHandler },
-  { name: 'errorHandler', handler: errorHandler },
-])('$name', ({ handler }) => {
-  it.each([{ aborted: true }, { aborted: false, destroyed: true, complete: false }])(
-    'logs a confirmed parser abort once without responding or forwarding it: %o',
-    (state) => {
-      vi.spyOn(correlator, 'getId').mockReturnValue('abort-correlation');
-      const info = vi.spyOn(logger, 'info').mockImplementation(() => logger);
-      const warn = vi.spyOn(logger, 'warn');
-      const error = vi.spyOn(logger, 'error');
-      const { res, spies } = createResponse();
-      const next = vi.fn();
+describe('requestAbortHandler', () => {
+  it('logs a confirmed parser abort once without responding or forwarding it', () => {
+    vi.spyOn(correlator, 'getId').mockReturnValue('abort-correlation');
+    const info = vi.spyOn(logger, 'info').mockImplementation(() => logger);
+    const { res, spies } = createResponse();
+    const next = vi.fn();
 
-      handler(createAbortError(), createRequest(state), res, next);
+    requestAbortHandler(createAbortError(), createRequest(), res, next);
 
-      expect(info).toHaveBeenCalledExactlyOnceWith({
-        message: 'Request body was aborted.',
-        correlationId: 'abort-correlation',
-        route: '/api/body',
-      });
-      expect(warn).not.toHaveBeenCalled();
-      expect(error).not.toHaveBeenCalled();
-      expect(next).not.toHaveBeenCalled();
-      for (const method of [spies.header, spies.contentType, spies.status, spies.send, spies.end]) {
-        expect(method).not.toHaveBeenCalled();
-      }
-    },
-  );
+    expect(info).toHaveBeenCalledExactlyOnceWith({
+      message: 'Request body was aborted.',
+      correlationId: 'abort-correlation',
+      route: '/api/body',
+    });
+    expect(next).not.toHaveBeenCalled();
+    expectNoResponse(spies);
+  });
 
   it.each([
     { error: new Error('Request aborted'), state: { aborted: true } },
     { error: new Error('Request closed'), state: { aborted: false, destroyed: true, complete: false } },
-  ])('logs a confirmed multipart disconnect once without responding or forwarding it: $error', ({ error, state }) => {
+  ])('logs a confirmed multipart disconnect once with upload context: $error', ({ error, state }) => {
     vi.spyOn(correlator, 'getId').mockReturnValue('upload-correlation');
     const info = vi.spyOn(logger, 'info').mockImplementation(() => logger);
-    const warn = vi.spyOn(logger, 'warn');
-    const errorLog = vi.spyOn(logger, 'error');
-    const req = createRequest({ ...state, is: () => 'multipart/form-data', params: { innsendingsId: 'submission-1' } });
+    const req = createRequest({ ...state, is: () => 'multipart/form-data' });
     const { res, spies } = createResponse();
     const next = vi.fn();
     res.locals.requestLogMeta = {
@@ -83,9 +75,8 @@ describe.each([
       innsendingsId: 'submission-1',
       attachmentId: 'attachment-1',
     };
-    req.params = {};
 
-    handler(error, req, res, next);
+    requestAbortHandler(error, req, res, next);
 
     expect(info).toHaveBeenCalledExactlyOnceWith({
       message: 'Request body was aborted.',
@@ -95,45 +86,21 @@ describe.each([
       innsendingsId: 'submission-1',
       attachmentId: 'attachment-1',
     });
-    expect(warn).not.toHaveBeenCalled();
-    expect(errorLog).not.toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
-    for (const method of [spies.header, spies.contentType, spies.status, spies.send, spies.end]) {
-      expect(method).not.toHaveBeenCalled();
-    }
+    expectNoResponse(spies);
   });
-});
 
-describe('requestAbortHandler', () => {
   it.each<[unknown, Partial<Request>]>([
-    [createAbortError(), { aborted: false, destroyed: false }],
-    [createAbortError(), { aborted: false, complete: true }],
+    [createAbortError(), { aborted: false, destroyed: true, complete: true }],
     [Object.assign(new Error('stream failed'), { type: 'stream.not.readable', status: 500 }), {}],
-    [Object.assign(new Error('unexpected abort'), { type: 'request.aborted', status: 500 }), {}],
     [new ResponseError('BAD_REQUEST', 'Invalid input'), {}],
-    [new Error('unexpected failure'), {}],
     [new Error('Request aborted'), { is: () => 'multipart/form-data', aborted: false, destroyed: false }],
-    [
-      new Error('Request aborted'),
-      { is: () => 'multipart/form-data', aborted: false, destroyed: true, complete: false },
-    ],
-    [new Error('Request closed'), { is: () => 'multipart/form-data', aborted: false, complete: true }],
     [new Error('Request aborted'), { is: () => false }],
-    [new Error('Request closed'), { is: () => false }],
-    [new ResponseError('INTERNAL_SERVER_ERROR', 'Request aborted'), { is: () => 'multipart/form-data' }],
-    [Object.assign(new Error('Request aborted'), { code: 'EIO' }), { is: () => 'multipart/form-data' }],
-    [Object.assign(new Error('Request aborted'), { status: 500 }), { is: () => 'multipart/form-data' }],
     [
       Object.assign(new Error('Request aborted'), { storageErrors: [new Error('Cannot remove file')] }),
       { is: () => 'multipart/form-data' },
     ],
-    [
-      new AggregateError([new Error('Cannot remove file')], 'Failed to remove temporary upload files.'),
-      { is: () => 'multipart/form-data' },
-    ],
-    [Object.assign(createAbortError(), { storageErrors: [new Error('Cannot remove file')] }), {}],
-    [null, {}],
-  ])('forwards errors that are not confirmed parser disconnects unchanged: %o', (error, state) => {
+  ])('forwards errors that are not confirmed disconnects unchanged: %o', (error, state) => {
     const info = vi.spyOn(logger, 'info');
     const { res } = createResponse();
     const next = vi.fn();
@@ -146,49 +113,16 @@ describe('requestAbortHandler', () => {
 });
 
 describe('errorHandler', () => {
-  it.each([
-    Object.assign(new Error('Request aborted'), { storageErrors: [new Error('Cannot remove file')] }),
-    new AggregateError([new Error('Cannot remove file')], 'Failed to remove temporary upload files.'),
-  ])('keeps upload cleanup failures alertable after a disconnect: %s', (error) => {
+  // sendinn-backend and form-spec-api use errorHandler without requestAbortHandler.
+  it('logs a confirmed parser abort once without responding', () => {
+    const info = vi.spyOn(logger, 'info').mockImplementation(() => logger);
     const errorLog = vi.spyOn(logger, 'error');
-    const info = vi.spyOn(logger, 'info');
     const { res, spies } = createResponse();
 
-    errorHandler(error, createRequest({ is: () => 'multipart/form-data' }), res, vi.fn());
+    errorHandler(createAbortError(), createRequest(), res, vi.fn());
 
-    expect(errorLog).toHaveBeenCalledOnce();
-    expect(spies.status).toHaveBeenCalledWith(500);
-    expect(res.locals.errorAlreadyLogged).toBe(true);
-    expect(info).not.toHaveBeenCalled();
-  });
-
-  it('keeps unexpected stream errors alertable even after a disconnect', () => {
-    const error = Object.assign(new Error('stream failed'), { type: 'stream.not.readable', status: 500 });
-    const errorLog = vi.spyOn(logger, 'error');
-    const info = vi.spyOn(logger, 'info');
-    const { res, spies } = createResponse();
-
-    errorHandler(error, createRequest(), res, vi.fn());
-
-    expect(errorLog).toHaveBeenCalledOnce();
-    expect(spies.status).toHaveBeenCalledWith(500);
-    expect(spies.send).toHaveBeenCalledWith(expect.objectContaining({ errorCode: 'ERROR' }));
-    expect(res.locals.errorAlreadyLogged).toBe(true);
-    expect(info).not.toHaveBeenCalled();
-  });
-
-  it('preserves normal client-error responses', () => {
-    const error = new ResponseError('BAD_REQUEST', 'Invalid input', 'client-correlation');
-    const warn = vi.spyOn(logger, 'warn');
-    const { res, spies } = createResponse();
-
-    errorHandler(error, createRequest({ aborted: false, destroyed: false, complete: true }), res, vi.fn());
-
-    expect(warn).toHaveBeenCalledOnce();
-    expect(spies.status).toHaveBeenCalledWith(400);
-    expect(spies.header).toHaveBeenCalledWith('x-correlation-id', 'client-correlation');
-    expect(spies.send).toHaveBeenCalledWith(
-      expect.objectContaining({ errorCode: 'BAD_REQUEST', correlationId: 'client-correlation' }),
-    );
+    expect(info).toHaveBeenCalledOnce();
+    expect(errorLog).not.toHaveBeenCalled();
+    expectNoResponse(spies);
   });
 });

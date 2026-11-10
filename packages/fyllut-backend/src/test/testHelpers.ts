@@ -29,7 +29,6 @@ interface MockedResponse extends Response {
 
 function mockResponse(): MockedResponse {
   return {
-    locals: {},
     json: vi.fn(),
     send: vi.fn(),
     contentType: vi.fn(),
