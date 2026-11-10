@@ -1,16 +1,15 @@
-import { FormsApiTranslationMap, ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
-import { ErrorInfo, useCallback, useMemo } from 'react';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorInfo, useCallback } from 'react';
 import { useAppConfig } from '../app/config/AppConfigProvider';
 import { ErrorBoundary } from '../app/error/ErrorBoundary';
 import { FormContainer } from '../app/layout/FormContainer';
 import { SendinnRoutes } from './SendinnRoutes';
+import { SendinnServices } from './SendinnServices';
 import { SendinnTranslationProvider } from './SendinnTranslationProvider';
-import { createSendinnFormService } from './form/createSendinnFormService';
 
 // Expects AppConfigProvider and a router with basename /sendinn.
-const SendinnApp = () => {
-  const { baseUrl, http, logger } = useAppConfig();
-  const { loadForm } = useMemo(() => createSendinnFormService({ baseUrl, http }), [baseUrl, http]);
+const SendinnApp = ({ services }: { services: SendinnServices }) => {
+  const { logger } = useAppConfig();
   const logFormLoadError = useCallback(
     (error: unknown) =>
       logger.error('Failed to load Sendinn form', {
@@ -20,10 +19,6 @@ const SendinnApp = () => {
     [logger],
   );
 
-  const loadGlobalTranslations = useCallback(
-    (language: TranslationLang) => http.get<FormsApiTranslationMap>(`${baseUrl}/api/global-translations/${language}`),
-    [baseUrl, http],
-  );
   const logLoadError = useCallback(
     (error: unknown) =>
       logger.error('Failed to load global translations', { message: error instanceof Error ? error.message : '' }),
@@ -36,10 +31,10 @@ const SendinnApp = () => {
   );
 
   return (
-    <SendinnTranslationProvider loadGlobalTranslations={loadGlobalTranslations} onLoadError={logLoadError}>
+    <SendinnTranslationProvider loadGlobalTranslations={services.loadGlobalTranslations} onLoadError={logLoadError}>
       <ErrorBoundary onError={logRenderError}>
         <FormContainer>
-          <SendinnRoutes loadForm={loadForm} onLoadError={logFormLoadError} />
+          <SendinnRoutes services={services} onLoadError={logFormLoadError} />
         </FormContainer>
       </ErrorBoundary>
     </SendinnTranslationProvider>

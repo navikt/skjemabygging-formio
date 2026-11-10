@@ -10,7 +10,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc && tsc --project playwright/tsconfig.json",
-    "clean": "rimraf dist coverage node_modules .runtime"
+    "clean": "rimraf dist coverage node_modules .runtime",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
     "@navikt/aksel-icons": "^8.20.0",

@@ -8,17 +8,17 @@ import { useLocation } from 'react-router';
 import { useAppConfig } from '../../app/config/AppConfigProvider';
 import { ApplicationProvider } from '../../context/application/ApplicationContext';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
-import { RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
+import { NavUnitRuntimeServices, RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
 import { SendinnJourney } from '../journey/SendinnJourney';
-import { LoadSendinnForm } from './createSendinnFormService';
-import { createSendinnRuntimeServices } from './createSendinnRuntimeServices';
+import { LoadSendinnForm } from '../SendinnServices';
 import { SendinnFormProvider, useSendinnForm } from './SendinnFormProvider';
 
 interface Props {
   formPath: string;
   loadForm: LoadSendinnForm;
+  runtimeServices: NavUnitRuntimeServices;
   onLoadError: (error: unknown) => void;
 }
 
@@ -33,10 +33,9 @@ const LoadedForm = () => {
   );
 };
 
-const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
+const SendinnFormEntry = ({ formPath, loadForm, runtimeServices, onLoadError }: Props) => {
   const { pathname, search } = useLocation();
-  const { baseUrl, http, config, logger } = useAppConfig();
-  const services = useMemo(() => createSendinnRuntimeServices({ baseUrl, http }), [baseUrl, http]);
+  const { config, logger } = useAppConfig();
   const params = new URLSearchParams(search);
   const language = sendinnLanguageUtils.getSelectedLanguage(params);
   const filterKey = JSON.stringify(normalizeAttachmentCodeFilter(params.getAll('filter')));
@@ -51,7 +50,7 @@ const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
 
   return (
     <ApplicationProvider logger={logger} environment={config.isProdGcp ? 'production' : 'development'}>
-      <RuntimeServicesProvider services={services}>
+      <RuntimeServicesProvider services={runtimeServices}>
         <SubmissionStateProvider key={`${formPath}:${filterKey}`}>
           <SendinnFormProvider
             key={JSON.stringify(request)}
