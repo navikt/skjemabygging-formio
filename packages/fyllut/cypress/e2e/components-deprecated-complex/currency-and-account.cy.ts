@@ -84,5 +84,22 @@ describe('Components', () => {
       cy.contains('dt', 'IBAN').next('dd').should('contain.text', 'NL04 RABO 8424 5984 90');
       cy.contains('dd', '450').should('exist');
     });
+
+    it('stacks row fields without horizontal page scrolling at narrow widths', () => {
+      cy.viewport(320, 800);
+
+      cy.findByRole('combobox', { name: 'Velg valuta' }).then(($currency) => {
+        const currencyBounds = $currency[0].getBoundingClientRect();
+
+        cy.findByRole('textbox', { name: 'Beløp' }).then(($amount) => {
+          const amountBounds = $amount[0].getBoundingClientRect();
+          cy.wrap(amountBounds.top).should('be.greaterThan', currencyBounds.bottom);
+        });
+      });
+
+      cy.document().then((document) => {
+        cy.wrap(document.documentElement.scrollWidth).should('be.at.most', document.documentElement.clientWidth);
+      });
+    });
   });
 });

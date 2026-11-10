@@ -70,7 +70,7 @@ const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
 
 const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
   const filteredActual = filterKeys(deepCopy(actualBody), excludeKeys);
-  const filteredExpected = filterKeys(expectedBody, excludeKeys);
+  const filteredExpected = filterKeys(deepCopy(expectedBody), excludeKeys);
 
   if (JSON.stringify(filteredActual) === JSON.stringify(filteredExpected)) {
     return [];
@@ -79,21 +79,25 @@ const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
   return findMismatches(filteredActual, filteredExpected) || [];
 };
 
-export const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
-  return async (req, res) => {
-    const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
-    if (mismatches.length) {
-      console.error(
-        `Unexpected request body (${JSON.stringify(req.body)}) - mismatches: ${JSON.stringify(mismatches)}`,
-      );
-      res.status(400);
-      res.contentType('application/json; charset=UTF-8');
-      res.send({
-        message: 'Bad Request: Verification of request body failed',
-        mismatches: mismatches,
-      });
-      return;
+const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
+  return async (req, res, next) => {
+    try {
+      const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
+      if (mismatches.length) {
+        console.error(`Unexpected request body - mismatch paths: ${mismatches.map(({ path }) => path).join(', ')}`);
+        res.status(400);
+        res.contentType('application/json; charset=UTF-8');
+        res.send({
+          message: 'Bad Request: Verification of request body failed',
+          mismatches: mismatches,
+        });
+        return;
+      }
+      await onSuccess(req, res);
+    } catch (error) {
+      next(error);
     }
-    onSuccess(req, res);
   };
 };
+
+export { compareBodyMiddleware };

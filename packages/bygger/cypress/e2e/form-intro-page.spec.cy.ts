@@ -16,6 +16,9 @@ function checkAllOptionalFields() {
   });
 }
 
+const fieldErrorMessage =
+  'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.';
+
 const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 
 function typeAndBlur(index: number, text: string) {
@@ -62,17 +65,51 @@ const initialSavedTranslations = [
   })),
 ];
 
-const setupSavedIntroPage = () => {
+const setupSavedIntroPage = ({ includeRetiredSections = false, enabled = true } = {}) => {
   const state = {
     savedForms: [] as Array<{ introPage: typeof savedIntroPage }>,
     translationPosts: [] as Array<{ key: string; nb: string; tag: string }>,
     translationPuts: [] as Array<{ id: number; key: string; nb: string }>,
-    translations: structuredClone(initialSavedTranslations),
+    translations: [
+      ...structuredClone(initialSavedTranslations),
+      ...(includeRetiredSections
+        ? [
+            {
+              id: 301,
+              revision: 1,
+              key: 'retired-key',
+              tag: 'introPage',
+              nb: 'Retired text',
+              nn: 'Retired Nynorsk',
+              en: 'Retired English',
+            },
+          ]
+        : []),
+    ],
   };
 
   cy.fixture('getForm.json').then((form) => {
     cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/forms/cypresssettings', { body: { ...form, introPage: savedIntroPage } }).as('getForm');
+    cy.intercept('GET', '/api/forms/cypresssettings', {
+      body: {
+        ...form,
+        introPage: {
+          ...savedIntroPage,
+          enabled,
+          sections: {
+            ...savedIntroPage.sections,
+            ...(includeRetiredSections
+              ? {
+                  dataTreatment: { description: 'retired-key' },
+                  unknownSection: { title: 'unknown-key' },
+                  beAwareOf: { description: 'fixed-awareness-key' },
+                  dataStorage: { description: 'fixed-storage-key' },
+                }
+              : {}),
+          },
+        },
+      },
+    }).as('getForm');
     cy.intercept('GET', '/api/forms/cypresssettings/translations', (req) => req.reply(state.translations)).as(
       'getFormTranslations',
     );
@@ -314,6 +351,215 @@ describe('FormSettingsPage', () => {
   });
 
   describe('Saved intro-page translations', () => {
+    [true, false].forEach((enabled) => {
+      it(`removes unsupported sections only on manual save (enabled: ${enabled})`, () => {
+        const state = setupSavedIntroPage({ includeRetiredSections: true, enabled });
+        const originalTranslations = structuredClone(state.translations);
+        cy.findByRole('heading', { name: 'Standard introside' }).should('be.visible');
+        cy.then(() => expect(state.savedForms).to.be.empty);
+
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        cy.wait('@saveForm').then(({ request, response }) => {
+          expect(response?.statusCode).to.equal(200);
+          expect(request.body.introPage).to.deep.equal({ ...savedIntroPage, enabled });
+        });
+        cy.then(() => {
+          expect(state.translationPosts).to.be.empty;
+          expect(state.translationPuts).to.be.empty;
+          expect(state.translations).to.deep.equal(originalTranslations);
+        });
+      });
+    });
+
+    [true, false].forEach((hasCompleteTranslations) => {
+      it(`ignores retired references but requires translations of supported content (${hasCompleteTranslations})`, () => {
+        const state = setupSavedIntroPage();
+        cy.fixture('getForm.json').then((form) => {
+          const formWithRetiredSection = {
+            ...form,
+            title: 'Intro form',
+            components: [],
+            publishedLanguages: ['nb', 'nn', 'en'],
+            properties: {
+              ...form.properties,
+              signatures: undefined,
+              downloadPdfButtonText: undefined,
+              descriptionOfSignatures: undefined,
+            },
+            introPage: {
+              ...savedIntroPage,
+              sections: { ...savedIntroPage.sections, dataTreatment: { description: 'retired-key' } },
+            },
+          };
+          cy.intercept('GET', '/api/forms/cypresssettings', { body: formWithRetiredSection });
+          cy.intercept('GET', '/api/forms/cypresssettings/translations', {
+            body: [
+              ...initialSavedTranslations.map((translation) => ({
+                ...translation,
+                nn: hasCompleteTranslations ? 'Translated' : '',
+                en: hasCompleteTranslations ? 'Translated' : '',
+              })),
+              { id: 300, key: 'Intro form', nb: 'Intro form', nn: 'Translated', en: 'Translated' },
+              { id: 301, key: 'retired-key', tag: 'introPage', nb: '' },
+            ],
+          });
+          cy.intercept('POST', '/api/form-publications/cypresssettings*', {
+            statusCode: 201,
+            body: { changed: true, form: formWithRetiredSection },
+          }).as('publishForm');
+          cy.reload();
+        });
+        cy.findByRole('button', { name: 'Publiser' }).click();
+        cy.findByRole('dialog', { name: 'Publiseringsinnstillinger' }).within(() => {
+          ['Norsk nynorsk (NN)', 'Engelsk (EN)'].forEach((name) => {
+            cy.findByRole('checkbox', { name })
+              .should(hasCompleteTranslations ? 'be.enabled' : 'be.disabled')
+              .and(hasCompleteTranslations ? 'be.checked' : 'not.be.checked');
+          });
+          if (hasCompleteTranslations) {
+            cy.findByRole('button', { name: 'Publiser' }).click();
+          }
+        });
+        if (hasCompleteTranslations) {
+          cy.findByRole('button', { name: 'Ja, publiser skjemaet' }).click();
+          cy.wait('@publishForm').then(({ request, response }) => {
+            expect(response?.statusCode).to.equal(201);
+            expect(new URL(request.url).searchParams.get('languageCodes')?.split(',')).to.have.members([
+              'nb',
+              'nn',
+              'en',
+            ]);
+          });
+          cy.findByText('Satt i gang publisering, dette kan ta noen minutter.').should('be.visible');
+        }
+        cy.then(() => {
+          expect(state.savedForms).to.be.empty;
+          expect(state.translationPosts).to.be.empty;
+          expect(state.translationPuts).to.be.empty;
+        });
+      });
+    });
+
+    [true, false].forEach((enabled) => {
+      it(`keeps cleared text references and applies required validation only when enabled (${enabled})`, () => {
+        const state = setupSavedIntroPage({ enabled });
+        cy.contains('Velkomstmelding')
+          .parent()
+          .within(() => {
+            cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+            cy.get('.rsw-editor [contenteditable="true"]').blur();
+          });
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        if (enabled) {
+          cy.findByText('Velkomstmelding må fylles ut').should('be.visible');
+          cy.findByText(fieldErrorMessage).should('be.visible');
+          cy.then(() => {
+            expect(state.translationPosts).to.be.empty;
+            expect(state.savedForms).to.be.empty;
+          });
+          cy.findByRole('checkbox', { name: 'Bruk standard introside' }).uncheck();
+          cy.findByRole('button', { name: 'Lagre' }).click();
+        }
+        cy.wait(['@saveTranslation', '@saveForm']).spread((translation, form) => {
+          expect(translation.response?.statusCode).to.equal(201);
+          expect(form.response?.statusCode).to.equal(200);
+          expect(translation.request.body).to.include({ nb: '', tag: 'introPage' });
+          expect(translation.request.body.key).to.match(uuidRegex).and.not.equal(savedIntroPageKeys.introduction);
+          expect(form.request.body.introPage.introduction).to.equal(translation.request.body.key);
+          expect(form.request.body.introPage.enabled).to.equal(false);
+        });
+        cy.findByText('Velkomstmelding må fylles ut').should('not.exist');
+        cy.findByText(fieldErrorMessage).should('not.exist');
+        cy.then(() => {
+          expect(state.translationPuts).to.be.empty;
+          expect(state.translations.find(({ id }) => id === 101)).to.deep.equal(initialSavedTranslations[0]);
+        });
+      });
+    });
+
+    it('shows a field error and saves after recovery when an enabled intro page has empty text', () => {
+      const state = setupSavedIntroPage();
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+        });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByText('Velkomstmelding må fylles ut').should('be.visible');
+      cy.findByText(fieldErrorMessage).should('be.visible');
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.savedForms).to.be.empty;
+      });
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type('Ny velkomst');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+        });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait(['@saveTranslation', '@saveForm']).spread((translation, form) => {
+        expect(translation.request.body).to.include({ nb: '<p>Ny velkomst</p>', tag: 'introPage' });
+        expect(form.request.body.introPage.introduction).to.equal(translation.request.body.key);
+      });
+      cy.findByText('Velkomstmelding må fylles ut').should('not.exist');
+      cy.findByText(fieldErrorMessage).should('not.exist');
+    });
+
+    it('shows a field error and saves after recovery when an optional important information title is emptied', () => {
+      const state = setupSavedIntroPage();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).check();
+      cy.findByTestId('importantInformation').within(() => {
+        cy.findByRole('button', { name: 'Legg til overskrift' }).click();
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('Midlertidig');
+        cy.findByRole('textbox', { name: 'Overskrift' }).clear();
+        cy.get('.rsw-editor [contenteditable="true"]').type('Viktig tekst');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+      });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByTestId('importantInformation').findByText('Overskrift må fylles ut').should('be.visible');
+      cy.findByText(fieldErrorMessage).should('be.visible');
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.savedForms).to.be.empty;
+      });
+
+      cy.findByTestId('importantInformation').within(() => {
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('Viktig');
+      });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait(['@saveTranslation', '@saveTranslation', '@saveForm']).then(() => {
+        const [savedForm] = state.savedForms;
+        const keyFor = (nb: string) => state.translationPosts.find((translation) => translation.nb === nb)?.key;
+        expect(state.translationPosts.map(({ nb }) => nb)).to.have.members(['Viktig', 'Viktig tekst']);
+        expect(savedForm.introPage).to.have.deep.property('importantInformation', {
+          title: keyFor('Viktig'),
+          description: keyFor('Viktig tekst'),
+        });
+      });
+      cy.findByText(fieldErrorMessage).should('not.exist');
+    });
+
+    it('allows saving after removing an empty unsaved text reference', () => {
+      const state = setupSavedIntroPage();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).check();
+      cy.findByTestId('importantInformation').within(() => {
+        cy.get('.rsw-editor [contenteditable="true"]').type('Temporary text');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+        cy.get('.rsw-editor [contenteditable="true"]').type('{selectall}{backspace}');
+        cy.get('.rsw-editor [contenteditable="true"]').blur();
+      });
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).uncheck();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@saveForm').its('response.statusCode').should('eq', 200);
+      cy.then(() => {
+        expect(state.translationPosts).to.be.empty;
+        expect(state.translationPuts).to.be.empty;
+      });
+    });
+
     it('does not save translations when editors are unchanged or edits are reverted', () => {
       const state = setupSavedIntroPage();
 
@@ -868,9 +1114,7 @@ describe('FormSettingsPage', () => {
         block: 'center',
       });
       cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${submitData.title}`);
-      cy.contains(
-        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
-      );
+      cy.contains(fieldErrorMessage);
       cy.contains('Velkomstmelding må fylles ut').then(assertInViewport);
       cy.contains('Egenerklæring må fylles ut').then(assertBelowViewport);
 
@@ -892,9 +1136,7 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.contains(
-        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
-      ).should('not.exist');
+      cy.contains(fieldErrorMessage).should('not.exist');
     });
   });
 });

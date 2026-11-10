@@ -31,7 +31,7 @@ const staticPdfService = createStaticPdfService({
   baseUrl: config.formsApi.url,
 });
 
-const reportService = new ReportService(formsService, formPublicationsService);
+const reportService = new ReportService({ formsService, formPublicationsService, recipientService, staticPdfService });
 
 const prodFormsApiUrl = config.prodFormsApi?.url;
 const copyService = prodFormsApiUrl

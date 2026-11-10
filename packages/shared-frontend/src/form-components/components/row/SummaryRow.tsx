@@ -1,9 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { submissionUtils as formComponentUtils, getCurrencyValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { RowDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
 
-const SummaryRow = (props: FormComponentProps) => {
+const SummaryRow = (props: FormComponentProps<RowDefinition>) => {
   const { component, submissionPath, submission, translate } = props;
   const { label } = component;
   const { components, navId, isAmountWithCurrencySelector } = component;

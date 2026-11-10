@@ -27,8 +27,9 @@ export default defineConfig({
     viewportWidth: 1280,
     viewportHeight: 1000,
     testIsolation: false,
+    keystrokeDelay: 10,
     setupNodeEvents(on, config) {
-      config.env.BASE_URL = config.baseUrl;
+      config.expose.BASE_URL = config.baseUrl;
       on('before:browser:launch', (browser, launchOptions) => {
         if (browser.family === 'chromium') {
           launchOptions.args.push('--no-sandbox');
@@ -38,7 +39,7 @@ export default defineConfig({
       });
       return config;
     },
-    env: {
+    expose: {
       SKJEMABYGGING_PROXY_URL: `${mockBaseUrl}/skjemabygging-proxy`,
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockBaseUrl}/azure-openid/oauth2/v2.0/token`,
       FORMIO_PROJECT_URL: `${mockBaseUrl}/formio-api`,

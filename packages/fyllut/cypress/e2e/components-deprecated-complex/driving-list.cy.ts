@@ -37,7 +37,7 @@ describe('DrivingList', () => {
 
       // Should fill out form
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist');
-      cy.findByRole('group', { name: 'Skal du registrere parkering?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Skal du registrere parkering?' }).should('exist');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
@@ -82,7 +82,7 @@ describe('DrivingList', () => {
       startFromIntroPage();
 
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
-      cy.findByRole('group', { name: PARKING_LABEL })
+      cy.findByRole('radiogroup', { name: PARKING_LABEL })
         .should('exist')
         .within(() => {
           cy.findAllByRole('radio').should('have.length', 2);
@@ -147,7 +147,7 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
       cy.wait('@createMellomlagring');
 
-      cy.findByRole('group', { name: ACTIVITIES_LABEL })
+      cy.findByRole('radiogroup', { name: ACTIVITIES_LABEL })
         .should('exist')
         .within(() => {
           cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('exist').check();
@@ -271,7 +271,7 @@ describe('DrivingList', () => {
             .click();
         });
 
-      cy.findByRole('group', { name: ACTIVITIES_LABEL })
+      cy.findByRole('radiogroup', { name: ACTIVITIES_LABEL })
         .should('exist')
         .should('have.focus')
         .within(() => {
@@ -321,12 +321,8 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
-
-      cy.get('.aksel-alert').should('exist');
-
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
-      cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.contains(TEXTS.grensesnitt.navigation.summaryPageError).should('exist');
+      cy.clickSendNav();
+      cy.get('[data-cy=error-summary]').should('exist');
     });
   });
 });

@@ -19,6 +19,7 @@ type AddAction = {
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type SaveStartedAction = { type: 'SAVE_STARTED' };
 type SaveFinishedAction = { type: 'SAVE_FINISHED'; payload: { errors: TranslationError[] } };
+type ClearChangesAction = { type: 'CLEAR_CHANGES' };
 
 const createDefaultGlobalTranslation = (tag: TranslationTag = 'skjematekster'): FormsApiTranslation => ({
   key: '',
@@ -49,6 +50,7 @@ const generateMap = <Translation extends FormsApiTranslation>(values: Translatio
 export { createDefaultGlobalTranslation, generateMap, getErrors, getResetChanges };
 export type {
   AddAction,
+  ClearChangesAction,
   InitializeAction,
   SaveFinishedAction,
   SaveStartedAction,

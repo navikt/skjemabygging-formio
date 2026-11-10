@@ -64,19 +64,6 @@ describe('OrganizationNumber', () => {
       cy.focused().type('889640782');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
-
-    it('should support custom validation', () => {
-      const label = 'Organisasjonsnummer egendefinert';
-      const errorMessage = 'Kun 889640782 er tillatt';
-      cy.findByLabelText(`${label} (valgfritt)`).type('974652277');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelOptional(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('889640782');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
   });
 
   describe('Form', () => {
@@ -98,7 +85,6 @@ describe('OrganizationNumber', () => {
       cy.findByRole('textbox', { name: 'Organisasjonsnummer påkrevd' }).type('889640782');
       cy.findByRole('textbox', { name: 'Organisasjonsnummer ikke påkrevd (valgfritt)' }).type('974652277');
       cy.findByRole('textbox', { name: 'Organisasjonsnummer ugyldig format (valgfritt)' }).type('889640782');
-      cy.findByRole('textbox', { name: 'Organisasjonsnummer egendefinert (valgfritt)' }).type('889640782');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -115,8 +101,6 @@ describe('OrganizationNumber', () => {
         cy.get('dd').eq(1).should('contain.text', '974 652 277');
         cy.get('dt').eq(2).should('contain.text', 'Organisasjonsnummer ugyldig format');
         cy.get('dd').eq(2).should('contain.text', '889 640 782');
-        cy.get('dt').eq(3).should('contain.text', 'Organisasjonsnummer egendefinert');
-        cy.get('dd').eq(3).should('contain.text', '889 640 782');
       });
       cy.clickDownloadInstructions();
 

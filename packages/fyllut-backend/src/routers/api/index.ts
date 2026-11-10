@@ -1,7 +1,7 @@
+import { rateLimiter } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import { config as appConfig } from '../../config/config';
 import envQualifier from '../../middleware/envQualifier';
-import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
 import idportenAuthHandler from '../../security/idportenAuthHandler';
 import activeTasks from './active-tasks';
@@ -63,7 +63,7 @@ apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
 
-const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
+const rateLimitHandler = rateLimiter(60000, appConfig.isTest || appConfig.mocksEnabled ? 1000 : 40);
 apiRouter.use(
   '/send-inn/nologin-application',
   rateLimitHandler,

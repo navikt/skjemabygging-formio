@@ -39,12 +39,6 @@ const checkboxForm = () => {
               required: false,
             },
           }),
-          checkbox({
-            label: 'Avkryssingsboks egendefinert',
-            validate: {
-              custom: 'valid = input === true ? true : "Du må godta vilkårene"',
-            },
-          }),
         ],
       }),
     ],

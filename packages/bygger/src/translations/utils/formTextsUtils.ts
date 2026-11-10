@@ -6,13 +6,13 @@ import {
   AttachmentSettingValue,
   AttachmentSettingValues,
   Component,
-  CustomLabels,
   externalStorageTexts,
   Form,
   FormPropertiesType,
   IntroPage,
   navFormUtils,
   signatureUtils,
+  supportedIntroPageSectionKeys,
   TEXTS,
   Tkey,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -25,11 +25,10 @@ const extractTextsFromIntroPage = (introPage?: IntroPage): string[] => {
   return [
     ...[introduction],
     ...Object.values(importantInformation ?? {}),
-    ...Object.values(sections ?? {}).flatMap(({ title, description, bulletPoints }) => [
-      title,
-      description,
-      ...(bulletPoints ?? []),
-    ]),
+    ...supportedIntroPageSectionKeys.flatMap((key) => {
+      const section = sections?.[key];
+      return section ? [section.title, section.description, ...(section.bulletPoints ?? [])] : [];
+    }),
   ].filter((value): value is string => value !== undefined);
 };
 
@@ -101,6 +100,7 @@ const getTranslatablePropertiesFromForm = (form: Form) =>
         title,
         label,
         customLabels,
+        senderRole,
         hideLabel,
         html,
         type,
@@ -120,7 +120,7 @@ const getTranslatablePropertiesFromForm = (form: Form) =>
       }) => ({
         title,
         label: getLabel(label, type, !!hideLabel),
-        customLabels: getCustomLabels(customLabels),
+        customLabels: getTranslatableCustomLabels({ customLabels, type, senderRole }),
         html,
         values: getLabelsAndDescriptions(values),
         content: getContent(content),
@@ -152,14 +152,22 @@ const getAccordionTexts = (accordionValues?: AccordionSettingValues): undefined 
   });
 };
 
-const getCustomLabels = (customLabels?: CustomLabels): undefined | string[] => {
+const getTranslatableCustomLabels = ({
+  customLabels,
+  type,
+  senderRole,
+}: Pick<Component, 'customLabels' | 'type' | 'senderRole'>): undefined | string[] => {
   if (!customLabels) {
     return undefined;
   }
 
-  return Object.entries(customLabels).map(([_key, customLabel]) => {
-    return customLabel;
-  });
+  if (type === 'sender') {
+    return senderRole === 'organization'
+      ? [customLabels.organizationNumber, customLabels.organizationName]
+      : [customLabels.nationalIdentityNumber, customLabels.firstName, customLabels.surname];
+  }
+
+  return Object.values(customLabels);
 };
 
 const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefined | string[] => {

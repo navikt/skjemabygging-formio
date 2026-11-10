@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createRemoteJWKSet, errors, jwtVerify } from 'jose';
 import { config } from '../config/config';
 import { logger } from '../logger';
 import { appMetrics } from '../services';
@@ -17,6 +17,11 @@ const verifyToken = async (token: string): Promise<IdportenTokenPayload> => {
   return verified.payload as IdportenTokenPayload;
 };
 
+const isInvalidIdportenJwt = (err: unknown): boolean =>
+  err instanceof errors.JOSEError &&
+  err.constructor !== errors.JOSEError &&
+  !(err instanceof errors.JWKSTimeout || err instanceof errors.JWKSInvalid || err instanceof errors.JWKInvalid);
+
 const idportenAuthHandler = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.header('Authorization');
 
@@ -25,7 +30,10 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
     req.getIdportenJwt = () => mockIdportenJwt;
     req.getIdportenPid = () => mockIdportenPid!;
   } else if (authHeader) {
-    const token = authHeader.split(' ')[1];
+    const token = /^Bearer (\S+)$/i.exec(authHeader)?.[1];
+    if (!token) {
+      return res.sendStatus(401);
+    }
 
     logger.debug('Verifying jwt...');
     let tokenContent: IdportenTokenPayload;
@@ -33,8 +41,11 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
     try {
       tokenContent = await verifyToken(token);
     } catch (err) {
-      logger.warn('Failed to verify jwt signature', err);
-      return res.sendStatus(401);
+      if (isInvalidIdportenJwt(err)) {
+        logger.warn('Failed to verify ID-porten JWT');
+        return res.sendStatus(401);
+      }
+      return next(err);
     } finally {
       stopTimer();
     }

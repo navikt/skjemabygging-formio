@@ -6,16 +6,18 @@
   "private": true,
   "devDependencies": {
     "@mocks-server/main": "^4.1.0",
+    "@types/node": "^24.19.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   },
   "scripts": {
+    "check-types": "tsc --noEmit",
     "mocks:fyllut": "pnpm exec ts-node mocks/server.ts",
     "mocks:fyllut:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
   },
   "dependencies": {
-    "@types/multer": "^2.1.0",
-    "multer": "^2.1.1",
-    "uuid": "^13.0.0"
+    "@types/multer": "^2.3.0",
+    "multer": "^2.5.0",
+    "uuid": "^14.0.3"
   }
 }

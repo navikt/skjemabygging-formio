@@ -1,0 +1,82 @@
+import { Accordion, Box, Button, Heading, HStack } from '@navikt/ds-react';
+import { dateUtils, DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import DatePicker from '../../../components/date/DatePicker';
+import RadioGroup from '../../../components/radio-group/RadioGroup';
+import { useLanguage } from '../../../context/language/LanguageContext';
+import DrivingListPeriod from './DrivingListPeriod';
+import {
+  allPaperFieldsForPeriodsAreSet,
+  normalizeSubmissionDate,
+  showAddPeriodButton,
+  showRemovePeriodButton,
+} from './drivingListUtils';
+
+interface PaperDrivingListProps {
+  addPeriod: () => void;
+  onParkingChange: (nextValue: string) => void;
+  removePeriod: () => void;
+  statePath: string;
+  value: DrivingListSubmission;
+}
+
+const PaperDrivingList = ({ addPeriod, onParkingChange, removePeriod, statePath, value }: PaperDrivingListProps) => {
+  const { translate } = useLanguage();
+  const showPeriods = allPaperFieldsForPeriodsAreSet(normalizeSubmissionDate(value.selectedDate), value.parking);
+
+  return (
+    <>
+      <DatePicker
+        statePath={`${statePath}.selectedDate`}
+        label={translate(TEXTS.statiske.drivingList.datePicker)}
+        description={translate(TEXTS.statiske.drivingList.datePickerDescription)}
+        required
+        toDate={dateUtils.toSubmissionDate()}
+      />
+      <RadioGroup
+        statePath={`${statePath}.parking`}
+        legend={translate(TEXTS.statiske.drivingList.parking)}
+        values={[
+          { value: 'true', label: TEXTS.common.yes },
+          { value: 'false', label: TEXTS.common.no },
+        ]}
+        value={value.parking === undefined ? '' : String(value.parking)}
+        onChange={onParkingChange}
+        required
+      />
+      {showPeriods && (
+        <>
+          <Heading size="xsmall" level="3" spacing>
+            {translate(TEXTS.statiske.drivingList.accordionHeader)}
+          </Heading>
+          <Accordion>
+            {value.periods?.map((period) => (
+              <DrivingListPeriod
+                key={period.id}
+                statePath={statePath}
+                periodFrom={period.periodFrom}
+                periodTo={period.periodTo}
+                hasParking={value.parking ?? false}
+              />
+            ))}
+          </Accordion>
+          <Box marginBlock="space-16">
+            <HStack gap="space-16">
+              {showAddPeriodButton(value.periods) && (
+                <Button type="button" size="small" variant="secondary" onClick={addPeriod}>
+                  {translate(TEXTS.statiske.drivingList.addPeriod)}
+                </Button>
+              )}
+              {showRemovePeriodButton(value.periods) && (
+                <Button type="button" size="small" variant="secondary" onClick={removePeriod}>
+                  {translate(TEXTS.statiske.drivingList.removePeriod)}
+                </Button>
+              )}
+            </HStack>
+          </Box>
+        </>
+      )}
+    </>
+  );
+};
+
+export default PaperDrivingList;

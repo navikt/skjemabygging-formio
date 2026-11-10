@@ -3,6 +3,7 @@ import {
   AttachmentSettingValue,
   AttachmentSettingValues,
   Form,
+  FormWithLanguages,
   I18nTranslationReplacements,
   LimitedFormAttachment,
   TEXTS,
@@ -21,7 +22,7 @@ const form = {
     const lang = requestUtil.getStringQuery(req, 'lang', true);
     const select = requestUtil.getStringQuery(req, 'select', true);
     const form = select
-      ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof Form> })
+      ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof FormWithLanguages> })
       : await formService.getForm({ formPath });
 
     const language = lang ?? 'nb-NO';

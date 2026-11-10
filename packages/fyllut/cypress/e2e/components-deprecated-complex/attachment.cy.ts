@@ -18,11 +18,12 @@ describe('Attachment', () => {
     attachment: 'Ny vedleggskomponent',
     attachmentWithOneOption: 'Vedlegg med ett valg',
     oldAttachment: 'Gammel radio komponent',
+    legacyValuesAttachment: 'Legacy values array',
     textarea: 'Ledetekst tilleggsinformasjon',
   };
 
   it('lists attachment values in pre-defined order', () => {
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('exist')
       .within(() => {
         cy.get('input').should('have.length', 3);
@@ -35,7 +36,7 @@ describe('Attachment', () => {
   it('check different attachment settings', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('exist')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist').check();
@@ -44,17 +45,22 @@ describe('Attachment', () => {
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
     cy.findByRole('textbox', { name: TITLE.textarea }).type('Dette er en test');
+    cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
 
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment })
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment })
       .should('exist')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('exist').check();
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('be.checked');
       });
+
+    cy.findByRole('radiogroup', { name: new RegExp(`^${TITLE.legacyValuesAttachment}`) }).within(() => {
+      cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check();
+    });
 
     cy.clickNextStep();
 
@@ -63,20 +69,22 @@ describe('Attachment', () => {
     cy.contains('dt', TITLE.attachmentWithOneOption).should('exist');
     cy.contains('dt', TITLE.oldAttachment).should('exist');
     cy.contains('dd', TEXTS.statiske.attachment.levertTidligere).should('exist');
+    cy.contains('dt', TITLE.legacyValuesAttachment).should('exist');
+    cy.contains('dd', 'Jeg ettersender dokumentasjonen senere').should('exist');
 
     cy.go('back');
-    cy.findByRole('group', { name: attachmentGroupName }).should('exist');
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).should('exist');
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('be.checked');
     });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.nei).should('be.checked');
     });
@@ -98,7 +106,7 @@ describe('Attachment', () => {
           .click();
       });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment })
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment })
       .should('have.focus')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
@@ -113,7 +121,7 @@ describe('Attachment', () => {
           .click();
       });
 
-    cy.findByRole('group', { name: attachmentGroupName })
+    cy.findByRole('radiogroup', { name: attachmentGroupName })
       .should('have.focus')
       .within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
@@ -123,6 +131,7 @@ describe('Attachment', () => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
+    cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
     cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickNextStep();
 
@@ -130,11 +139,11 @@ describe('Attachment', () => {
   });
 
   it('validates attachment with one option after being checked and unchecked', () => {
-    cy.findByRole('group', { name: attachmentGroupName }).within(() => {
+    cy.findByRole('radiogroup', { name: attachmentGroupName }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check();
     });
 
-    cy.findByRole('group', { name: TITLE.oldAttachment }).within(() => {
+    cy.findByRole('radiogroup', { name: TITLE.oldAttachment }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).check();
     });
 

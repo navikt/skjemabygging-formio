@@ -39,7 +39,9 @@ export interface FormPropertiesType {
   prefill?: PrefillKey[];
   uxSignalsId?: string;
   uxSignalsSubmissionTypes?: SubmissionType[];
+  skyraSlug?: string;
   hideUserTypes?: boolean;
+  grantUserDigitalAccess?: boolean;
   mellomlagringDurationDays?: string;
 }
 

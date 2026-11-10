@@ -37,13 +37,35 @@ describe('Intro page', () => {
     });
   });
 
+  describe('Summary page', () => {
+    const selfDeclarationError = 'Du må bekrefte at du vil svare så riktig som du kan.';
+
+    it('blocks continuing until selfDeclaration is checked and links to the intro page', () => {
+      cy.visit('/fyllut/intropagepaper/oppsummering?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.url().should('include', '/intropagepaper/oppsummering');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: selfDeclarationError }).click();
+      });
+
+      cy.url().should('not.include', 'oppsummering');
+      cy.findByRole('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ }).should('have.focus');
+      cy.findByText(selfDeclarationError).should('exist');
+      cy.clickIntroPageConfirmation();
+      cy.findByText(selfDeclarationError).should('not.exist');
+    });
+  });
+
   describe('Submission type "digitalnologin"', () => {
     it('should display the deadline by which the user must complete the application', () => {
       cy.visit('/fyllut/intropagedigitalnologindeadline/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -61,6 +83,7 @@ describe('Intro page', () => {
       cy.visit(`/fyllut/${onlypapernocoverpageFormPath}`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+      cy.contains('Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil.').should('exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
     });

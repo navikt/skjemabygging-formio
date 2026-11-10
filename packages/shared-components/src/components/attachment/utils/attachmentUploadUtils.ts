@@ -1,4 +1,4 @@
-import { AttachmentSettingValues, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 
 const PDF_FILE_EXTENSION = '.pdf';
 const PDF_MIME_TYPE = 'application/pdf';
@@ -24,7 +24,7 @@ const removeAttachmentById = (attachments: SubmissionAttachment[], attachmentId:
 
 const getDefaultOtherAttachment = (
   componentId: string,
-  value?: keyof AttachmentSettingValues,
+  value?: SubmissionAttachment['value'],
 ): SubmissionAttachment => ({
   attachmentId: componentId,
   navId: componentId,

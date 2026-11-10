@@ -118,19 +118,6 @@ describe('Number', () => {
       cy.focused().type('2');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
-
-    it('should support custom validation', () => {
-      const label = 'Tall egendefinert';
-      const errorMessage = 'Kun 5 er tillatt';
-      cy.findByLabelText(`${label} (valgfritt)`).type('3');
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 2);
-      cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelOptional(label).should('have.focus');
-      cy.focused().clear();
-      cy.focused().type('5');
-      cy.findAllByText(errorMessage).should('have.length', 0);
-    });
   });
 
   describe('Form', () => {
@@ -158,7 +145,6 @@ describe('Number', () => {
       cy.findByRole('textbox', { name: 'Tall påkrevd' }).type('42');
       cy.findByRole('textbox', { name: 'Tall ikke påkrevd (valgfritt)' }).type('7');
       cy.findByRole('textbox', { name: 'Tall min og max (valgfritt)' }).type('50');
-      cy.findByRole('textbox', { name: 'Tall egendefinert (valgfritt)' }).type('5');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -185,8 +171,6 @@ describe('Number', () => {
         cy.get('dd').eq(1).should('contain.text', '7');
         cy.get('dt').eq(2).should('contain.text', 'Tall min og max');
         cy.get('dd').eq(2).should('contain.text', '50');
-        cy.get('dt').eq(3).should('contain.text', 'Tall egendefinert');
-        cy.get('dd').eq(3).should('contain.text', '5');
       });
       cy.clickDownloadInstructions();
 

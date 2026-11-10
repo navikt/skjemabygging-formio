@@ -1,9 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { dateUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DatePickerDefinition } from '../../component-types';
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
-const SummaryDatePicker = (props: FormComponentProps) => {
+const SummaryDatePicker = (props: FormComponentProps<DatePickerDefinition>) => {
   const { submission, submissionPath } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 

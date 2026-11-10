@@ -1,4 +1,18 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { expect } from 'chai';
+
+const assertPageHeader = (pageTitle: string) => {
+  cy.findByRole('heading', { name: pageTitle, level: 2 })
+    .should('be.visible')
+    .then(($pageTitle) => {
+      const pageTitleFontSize = $pageTitle.css('font-size');
+      cy.findByRole('heading', { name: 'Uinnlogget søknad', level: 1 })
+        .should('be.visible')
+        .should(($heading) => {
+          expect(parseFloat($heading.css('font-size'))).to.be.lessThan(parseFloat(pageTitleFontSize));
+        });
+    });
+};
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -19,42 +33,48 @@ describe('Digital submission without user login', () => {
       cy.visit('/fyllut/nologinsubmission');
       cy.defaultWaits();
       cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+      assertPageHeader(TEXTS.grensesnitt.introPage.noLogin);
       cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
-      cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+      assertPageHeader(TEXTS.statiske.uploadId.title);
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
+      assertPageHeader(TEXTS.grensesnitt.introPage.title);
 
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+      assertPageHeader('Veiledning');
 
       cy.clickNextStep();
-      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
+      assertPageHeader('Dine opplysninger');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
+      assertPageHeader('Utdanning');
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Annet').check(),
+      );
       cy.clickNextStep();
+      assertPageHeader(TEXTS.statiske.attachment.title);
     });
 
     it('should submit application successfully', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc02');
 
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
-      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Bekreftelse på utdanning' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
 
@@ -71,16 +91,23 @@ describe('Digital submission without user login', () => {
       cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
 
       cy.clickNextStep();
+      assertPageHeader(TEXTS.statiske.summaryPage.title);
 
       cy.clickSendNav();
       cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      assertPageHeader(TEXTS.statiske.receipt.title);
+      cy.findByRole('button', { name: TEXTS.statiske.receipt.printFriendlyVersion }).should('be.visible');
+      cy.findByRole('link', { name: TEXTS.statiske.error.goToMyPage }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
+      cy.window().then((window) => {
+        expect(window.history.state.usr).not.to.have.property('pdfBase64');
+      });
     });
 
     it('prevents further editing when navigating back after submission', () => {
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
@@ -112,6 +139,9 @@ describe('Digital submission without user login', () => {
         });
       cy.get('.aksel-alert--success').should('not.exist');
       cy.get('.aksel-alert--warning').should('exist').and('be.visible');
+      cy.findByRole('link', { name: 'nav.no/ettersende' })
+        .should('have.attr', 'href', 'https://www.nav.no/ettersende')
+        .should('have.attr', 'target', '_blank');
 
       cy.go('back');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
@@ -125,7 +155,7 @@ describe('Digital submission without user login', () => {
       cy.visit('/fyllut/nologin001/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -140,13 +170,13 @@ describe('Digital submission without user login', () => {
     it('should use "your information" to identify user ssn', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickNextStep();
@@ -166,13 +196,13 @@ describe('Digital submission without user login', () => {
     it('should support user without ssn', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Nei').check(),
       );
       cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
 
-      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
         cy.findByLabelText('Vegadresse').check(),
       );
 
@@ -182,7 +212,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: /^Gyldig fra/ }).type('18.02.2026');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickNextStep();
@@ -207,7 +237,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
     cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+    cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
     cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -221,7 +251,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('button', { name: 'Slett filen' }).should('not.exist');
 
     cy.clickNextStep();
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+    cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
       cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('exist');
     });
   });
@@ -232,24 +262,26 @@ describe('Digital submission without user login', () => {
     cy.visit('/fyllut/nologinsubmission/utdanning?sub=digitalnologin'); // <-- Directly visiting a later step in the form
     cy.defaultWaits();
     cy.url().should('include', '/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
+    cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
   });
 
   describe('Nologin service unavailable', () => {
     beforeEach(() => {
       cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
     });
 
     it('shows service unavailable error when upload fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('upload-file:service-unavailable');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadId');
       cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@uploadId');
       cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
       cy.clickNextStep();
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).shouldBeVisible();
+      cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).shouldBeVisible();
     });
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
@@ -264,21 +296,21 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickNextStep();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
-      cy.findByRole('group', {
+      cy.findByRole('radiogroup', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
@@ -295,7 +327,7 @@ describe('Digital submission without user login', () => {
     beforeEach(() => {
       cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
 
@@ -309,10 +341,10 @@ describe('Digital submission without user login', () => {
 
     describe('Summary page', () => {
       it('shows titles, value and deadline for attachments with no uploads', () => {
-        cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
-        cy.findByRole('group', {
+        cy.findByRole('radiogroup', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
@@ -334,11 +366,11 @@ describe('Digital submission without user login', () => {
       });
 
       it('shows file names and titles for attachments with uploads', () => {
-        cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
         cy.uploadFile('id-billy-bruker.jpg');
-        cy.findByRole('group', {
+        cy.findByRole('radiogroup', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
@@ -386,10 +418,10 @@ describe('Digital submission without user login', () => {
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
-        cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
-        cy.findByRole('group', {
+        cy.findByRole('radiogroup', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
@@ -401,10 +433,10 @@ describe('Digital submission without user login', () => {
       });
 
       it('validates that files are uploaded for attachment', () => {
-        cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
-        cy.findByRole('group', {
+        cy.findByRole('radiogroup', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
@@ -427,10 +459,10 @@ describe('Digital submission without user login', () => {
       });
 
       it('validates that files are uploaded for other attachment', () => {
-        cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
-        cy.findByRole('group', {
+        cy.findByRole('radiogroup', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
@@ -438,8 +470,9 @@ describe('Digital submission without user login', () => {
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]').should('exist');
         cy.get('[data-cy=error-summary]').within(() => {
-          cy.findAllByRole('link').should('have.length', 1);
+          cy.findAllByRole('link').should('have.length', 2);
           cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
@@ -453,7 +486,10 @@ describe('Digital submission without user login', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
-        cy.get('[data-cy=error-summary]').should('not.exist');
+        cy.get('[data-cy=error-summary]').within(() => {
+          cy.findAllByRole('link').should('have.length', 1);
+          cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+        });
         cy.findByRole('button', { name: 'Velg fil' }).click();
         cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
@@ -476,7 +512,7 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc01');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc01');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -492,22 +528,24 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Annet').check(),
+      );
       cy.clickNextStep();
       // standard fill end
 
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check(),
       );
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
-      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Bekreftelse på utdanning' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
@@ -535,7 +573,7 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc05');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -551,21 +589,23 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Annet').check(),
+      );
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check(),
       );
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
-      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Bekreftelse på utdanning' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
@@ -577,7 +617,7 @@ describe('Digital submission without user login', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Utdanning' }).click();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Grunnskole').check(),
       );
       cy.clickNextStep();
@@ -607,7 +647,7 @@ describe('Digital submission without user login', () => {
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());

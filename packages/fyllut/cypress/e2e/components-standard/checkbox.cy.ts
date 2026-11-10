@@ -44,17 +44,8 @@ describe('Checkbox', () => {
     it('should not be required', () => {
       const label = 'Avkryssingsboks ikke påkrevd';
       cy.clickNextStep();
-      cy.findByLabelOptional(label).should('exist');
+      cy.findByRole('checkbox', { name: `${label} (valgfritt)` }).should('exist');
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
-    });
-
-    it('should support custom validation', () => {
-      const label = 'Avkryssingsboks egendefinert';
-      const errorMessage = 'Du må godta vilkårene';
-      cy.clickNextStep();
-      cy.findAllByText(errorMessage).should('have.length', 1);
-      cy.findByRole('checkbox', { name: label }).check();
-      cy.findAllByText(errorMessage).should('have.length', 0);
     });
   });
 
@@ -75,7 +66,6 @@ describe('Checkbox', () => {
 
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('checkbox', { name: 'Avkryssingsboks påkrevd' }).check();
-      cy.findByRole('checkbox', { name: 'Avkryssingsboks egendefinert' }).check();
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -88,8 +78,6 @@ describe('Checkbox', () => {
       cy.withinSummaryGroup('Validering', () => {
         cy.get('dt').eq(0).should('contain.text', 'Avkryssingsboks påkrevd');
         cy.get('dd').eq(0).should('contain.text', 'Ja');
-        cy.get('dt').eq(1).should('contain.text', 'Avkryssingsboks egendefinert');
-        cy.get('dd').eq(1).should('contain.text', 'Ja');
       });
       cy.clickDownloadInstructions();
 
@@ -104,11 +92,13 @@ describe('Checkbox', () => {
     });
 
     it('should have english label and descriptions', () => {
-      cy.withinComponent('Avkryssingsboks med beskrivelse (en)', () => {
-        cy.contains('Dette er en beskrivelse (en)').should('exist');
-        cy.findByRole('button', { name: 'mer (en)' }).click();
-        cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
-      });
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks med beskrivelse (en)' })
+        .closest('[data-form-component]')
+        .within(() => {
+          cy.contains('Dette er en beskrivelse (en)').should('exist');
+          cy.findByRole('button', { name: 'mer (en)' }).click();
+          cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
+        });
     });
   });
 });

@@ -17,19 +17,19 @@
       "description": null
     },
     {
-      "attachmentCode": "V3",
-      "label": "Vedlegg med ett valg",
-      "title": "Vedlegg med ett valg",
-      "uploadStatus": "LastetOpp",
-      "fileIds": ["<IGNORED>"],
-      "description": null
-    },
-    {
       "attachmentCode": "r7",
       "label": "Informasjon om din næringsinntekt fra Norge eller utlandet",
       "title": "En vedleggstittel",
       "uploadStatus": "SendSenere",
       "fileIds": [],
+      "description": null
+    },
+    {
+      "attachmentCode": "V3",
+      "label": "Vedlegg med ett valg",
+      "title": "Vedlegg med ett valg",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
       "description": null
     },
     {

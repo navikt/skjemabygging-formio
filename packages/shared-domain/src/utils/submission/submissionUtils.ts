@@ -1,4 +1,5 @@
 import { Component, Submission, SubmissionData } from '../../models';
+import { validatorUtils } from '../form/validatorUtils';
 
 /**
  * Recursively searches for a value in a submission object based on the provided submissionPath.
@@ -11,7 +12,8 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
     const key = keys.shift();
 
     if (key) {
-      if (submissionData[key] !== undefined) {
+      // Stored drafts and external requests may contain null; treat it as no answer instead of descending into it.
+      if (submissionData[key] !== undefined && submissionData[key] !== null) {
         if (keys.length > 0) {
           return findValue(keys, submissionData[key] as SubmissionData);
         }
@@ -26,8 +28,9 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
         return submissionData[key] as SubmissionData;
       } else {
         const arrayKey = keyToArray(key);
-        if (arrayKey && submissionData[arrayKey.key][arrayKey.index]) {
-          return findValue(keys, submissionData[arrayKey.key][arrayKey.index] as SubmissionData);
+        const arrayValue = arrayKey ? submissionData[arrayKey.key] : undefined;
+        if (arrayKey && Array.isArray(arrayValue) && arrayValue[arrayKey.index]) {
+          return findValue(keys, arrayValue[arrayKey.index] as SubmissionData);
         }
       }
     } else {
@@ -125,6 +128,17 @@ const flattenComponentsWithPath = (
     ];
   }, []);
 
+/**
+ * Returns innsendingsId from the URL when it occurs exactly once and is a UUID, otherwise undefined.
+ */
+const getValidSubmissionId = (searchParams: URLSearchParams): string | undefined => {
+  const values = searchParams.getAll('innsendingsId');
+  if (values.length !== 1 || !validatorUtils.isValidUuid(values[0])) {
+    return undefined;
+  }
+  return values[0];
+};
+
 const submissionUtils = {
   getSubmissionValue,
   getPdfSubmissionValue,
@@ -132,6 +146,7 @@ const submissionUtils = {
   noChildValuesForDataGrid,
   getComponentSubmissionPath,
   flattenComponentsWithPath,
+  getValidSubmissionId,
 };
 
 export { submissionUtils };

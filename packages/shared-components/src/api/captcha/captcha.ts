@@ -1,20 +1,9 @@
-import baseHttp from '../util/http/http';
-import { solvePow } from './powWorker';
+import type { CaptchaChallenge, SolvedCaptchaChallenge } from '@navikt/skjemadigitalisering-shared-domain';
+import { http as baseHttp, solvePow } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface CaptchaResponse {
   success: boolean;
   access_token?: string;
-}
-
-interface CaptchaChallenge {
-  nonce: string;
-  difficulty: number;
-  expiresAt: number;
-  signature: string;
-}
-
-interface SolvedCaptchaChallenge extends CaptchaChallenge {
-  solution: string;
 }
 
 interface CaptchaValue {

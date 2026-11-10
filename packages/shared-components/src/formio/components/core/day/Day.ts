@@ -108,7 +108,7 @@ class Day extends FormioDay {
     this._months = [
       {
         value: '',
-        label: this.component.fields?.month?.placeholder ?? this.hideInputLabels ? this.t('Måned') : '',
+        label: (this.component.fields?.month?.placeholder ?? this.hideInputLabels) ? this.t('Måned') : '',
       },
       { value: 1, label: this.t('Januar') },
       { value: 2, label: this.t('Februar') },

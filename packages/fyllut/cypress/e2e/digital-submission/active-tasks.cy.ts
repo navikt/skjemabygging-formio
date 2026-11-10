@@ -5,6 +5,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const itLetsYouStartANewMellomlagring = () => {
+  cy.findByRole('link', { name: TEXTS.statiske.paabegynt.startNewTask }).click();
   cy.wait('@createMellomlagring');
   cy.url().should('include', 'innsendingsId');
 };
@@ -35,6 +36,16 @@ describe('Active tasks', () => {
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
     });
+
+    it('redirects to /fyllut/:skjemapath:/paabegynt when digital is selected on the intro page', () => {
+      cy.visit('/fyllut/activetasksmellomlagring');
+      cy.defaultWaits();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).click();
+      cy.wait('@createMellomlagring').its('request.url').should('not.include', 'forceMellomlagring');
+      cy.wait('@getActiveTasks');
+      cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
+      cy.url().should('include', '/activetasksmellomlagring/paabegynt');
+    });
   });
 
   describe('When user has mellomlagring and ettersending in progress for the form', () => {
@@ -56,6 +67,14 @@ describe('Active tasks', () => {
     });
 
     it('lets you start a new mellomlagring', itLetsYouStartANewMellomlagring);
+  });
+
+  it('does not create a draft when visiting the active-tasks route directly', () => {
+    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createDraft')).as('createMellomlagring');
+    cy.mocksUseRouteVariant('get-active-tasks:success-mellomlagring');
+    cy.visit('/fyllut/activetasksmellomlagring/paabegynt?sub=digital');
+    cy.wait('@getActiveTasks');
+    cy.get('@createDraft').should('not.have.been.called');
   });
 
   describe('When user has a mellomlagring in progress for the form', () => {

@@ -1,9 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { formatUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { PhoneNumberDefinition } from '../../component-types';
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
-const SummaryPhoneNumber = (props: FormComponentProps) => {
+const SummaryPhoneNumber = (props: FormComponentProps<PhoneNumberDefinition>) => {
   const { component, submission, submissionPath } = props;
   const { showAreaCode } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

@@ -101,7 +101,9 @@ describe('Activities', () => {
       cy.visit(`/fyllut/testingactivities?sub=paper`);
       cy.defaultWaits();
       startFromIntroPage();
-      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
+        'not.exist',
+      );
     });
   });
 
@@ -114,7 +116,7 @@ describe('Activities', () => {
       startFromIntroPage();
       cy.wait('@getActivities');
 
-      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
+      cy.findByRole('radiogroup', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
         .within(() => {
           cy.findAllByRole('radio').should('have.length', 2);
@@ -146,7 +148,7 @@ describe('Activities', () => {
 
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();
@@ -162,7 +164,7 @@ describe('Activities', () => {
     });
 
     describe('saved application', () => {
-      describe('with prefilled maalgruppe MOTDAGPEN and default activity chosen', () => {
+      describe('with saved prefilled maalgruppe MOTDAGPEN and default activity chosen', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-activities:success-multiple');
           cy.mocksUseRouteVariant('get-soknad:success-activities-prefilled-maalgruppe');
@@ -177,19 +179,19 @@ describe('Activities', () => {
           cy.wait('@getPrefillData');
 
           // Verify that activity from saved application is checked
-          cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
+          cy.findByRole('radiogroup', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
             .should('exist')
             .within(() => {
               cy.findByLabelText(defaultActivity.text).should('be.checked');
             });
         });
 
-        it('should keep prefilled maalgruppe from saved application, not overwrite with new value from prefill endpoint', () => {
+        it('should replace prefilled maalgruppe from saved application with latest value from prefill endpoint', () => {
           cy.clickSaveAndContinue();
 
           // Attachments page
           cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-          cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
             cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
           });
           cy.clickSaveAndContinue();
@@ -203,7 +205,7 @@ describe('Activities', () => {
             {
               calculated: { maalgruppetype: 'ANNET' },
               prefilled: {
-                maalgruppetype: 'MOTDAGPEN',
+                maalgruppetype: 'ARBSOKERE',
                 gyldighetsperiode: {
                   fom: '2024-01-01',
                   tom: '2024-05-13',
@@ -225,7 +227,7 @@ describe('Activities', () => {
           ) as SendInnAktivitet;
 
           // Select the activity from backend
-          cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
+          cy.findByRole('radiogroup', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
             .should('exist')
             .within(() => {
               cy.findByRole('radio', { name: /Avklaring/ })
@@ -236,7 +238,7 @@ describe('Activities', () => {
 
           // Attachments page
           cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-          cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
             cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
           });
           cy.clickSaveAndContinue();
@@ -250,7 +252,7 @@ describe('Activities', () => {
             {
               calculated: { maalgruppetype: 'ANNET' },
               prefilled: {
-                maalgruppetype: 'MOTDAGPEN',
+                maalgruppetype: 'ARBSOKERE',
                 gyldighetsperiode: {
                   fom: '2024-01-01',
                   tom: '2024-05-13',
@@ -333,7 +335,7 @@ describe('Activities', () => {
 
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();
@@ -374,7 +376,7 @@ describe('Activities', () => {
 
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();

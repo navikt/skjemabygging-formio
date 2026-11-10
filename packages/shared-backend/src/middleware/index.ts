@@ -3,13 +3,21 @@ import { createEntraIdM2mHandler, createEntraIdOboHandler } from './entraIdHandl
 import errorHandler from './error/errorHandler';
 import paramValidation from './error/paramValidation';
 import { requestAbortHandler } from './error/requestAbortHandler';
+import { rateLimiter } from './rateLimiter';
+import { createIdportenAuth, createTokenxHandler, getIdportenUser, getTokenxToken } from './texas';
 
 export type { CreateEntraIdHandlerOptions, EntraIdHandlerLogger } from './entraIdHandler';
+export type { CreateIdportenAuthOptions, CreateTokenxHandlerOptions, IdportenAuth, IdportenUser } from './texas';
 export {
   correlator,
   createEntraIdM2mHandler,
   createEntraIdOboHandler,
+  createIdportenAuth,
+  createTokenxHandler,
   errorHandler,
+  getIdportenUser,
+  getTokenxToken,
   paramValidation,
+  rateLimiter,
   requestAbortHandler,
 };

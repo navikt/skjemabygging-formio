@@ -1,24 +1,41 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const image = (props: BaseComponentType) => {
-  // Not worth overriding any defaults for now, since this component is not in use at the moment.
+// A minimal 1x1 px transparent PNG
+const TEST_IMAGE_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+
+interface ImageType extends BaseComponentType {
+  altText?: string;
+  widthPercent?: number;
+  url?: string;
+}
+
+const image = (props: ImageType) => {
+  const { altText, widthPercent, url, ...rest } = props ?? {};
+
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent(rest),
+    image: [
+      {
+        url: url ?? TEST_IMAGE_URL,
+        hash: '',
+        name: 'test-bilde.png',
+        size: 68,
+        type: 'image/png',
+        storage: 'base64',
+        originalName: 'test-bilde.png',
+      },
+    ],
+    altText: altText ?? 'Bilde',
+    widthPercent: widthPercent ?? 100,
   };
 };
 
 const staticDefaultValues = {
-  hash: '',
-  name: 'logo-f2808e10-5924-48d4-a16c-b2b531a59ee9.jpg',
-  size: 51653,
   type: 'image',
-  storage: 'base64',
-  originalName: 'logo.jpg',
   input: false,
-  altText: 'Logo',
   tableView: false,
-  widthPercent: 50,
   placeholder: '',
   prefix: '',
   customClass: '',

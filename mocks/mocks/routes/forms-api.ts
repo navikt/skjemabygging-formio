@@ -1,4 +1,23 @@
 import globalTranslations from '../data/forms-api/global-translations.json';
+import publishedGlobalTranslations from '../data/forms-api/published-global-translations';
+import { findTestdata } from './formio-api';
+
+const toFormsApiTranslations = (formPath: string) => {
+  const translationData = findTestdata(formPath)?.translations?.data;
+  if (!translationData) {
+    return [];
+  }
+
+  const language = translationData.language.startsWith('nn')
+    ? 'nn'
+    : translationData.language.startsWith('nb') || translationData.language === 'no'
+      ? 'nb'
+      : 'en';
+  return Object.entries(translationData.i18n).map(([key, value]) => ({
+    key,
+    [language]: value,
+  }));
+};
 
 export default [
   {
@@ -15,6 +34,24 @@ export default [
             res.contentType('application/json; charset=UTF-8');
             // To update the mock data, just copy from prod https://forms-api.intern.nav.no/v1/global-translations
             res.send(globalTranslations);
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-published-global-translations',
+    url: '/forms-api/v1/published-global-translations/:languageCode',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware: (req: any, res: any) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send(publishedGlobalTranslations[req.params.languageCode] ?? {});
           },
         },
       },
@@ -64,7 +101,7 @@ export default [
           middleware: (req: any, res: any) => {
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
-            res.send([]);
+            res.send(toFormsApiTranslations(req.params.formPath));
           },
         },
       },

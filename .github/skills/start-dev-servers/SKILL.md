@@ -47,7 +47,7 @@ bash (async): pnpm start:fyllut:mocks -- --no-runtime-config
 # 3. Run Cypress — use FYLLUT_FRONTEND_URL as baseUrl (strip the /fyllut suffix):
 cd packages/fyllut && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run \
   --config "baseUrl=http://127.0.0.1:3045" \
-  --env "MOCKS_ADMIN_PORT=3043" \
+  --expose "MOCKS_ADMIN_PORT=3043" \
   --browser electron \
   --spec cypress/e2e/path/to/spec.cy.ts
 
@@ -76,6 +76,36 @@ cd packages/bygger && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run
 **Use this skill (dev-server flow) for all Cypress runs.** It starts real servers with the current source code and is the standard approach. No build step is required.
 
 Do NOT reach for `pnpm preview:fyllut` / `pnpm mocks:fyllut:no-cli` as an alternative — that flow requires a manual build first, the servers are not port-conflict safe, and they are harder to manage as background processes.
+
+## Recovering node_modules after a failed install
+
+Some `@navikt` packages come from GitHub Packages (`npm.pkg.github.com`). In
+an environment without GitHub Packages credentials, such as an agent sandbox,
+any install that needs to download a package fails with HTTP 401. pnpm then
+leaves `node_modules` empty.
+
+pnpm starts an install on its own when `node_modules` does not match the
+lockfile, also from `pnpm <script>` and from the pre-commit hook
+(`pnpm lint:staged`). This happens after switching to a branch with a
+different `pnpm-lock.yaml`.
+
+To restore `node_modules` without network access, install from the local
+store:
+
+```bash
+pnpm install --offline --frozen-lockfile --store-dir "$HOME/Library/pnpm/store"
+```
+
+- `$HOME/Library/pnpm/store` is the default store on macOS. On Linux it is
+  `$HOME/.local/share/pnpm/store`.
+- Pass `--store-dir` explicitly. A sandbox can point pnpm at an empty store,
+  for example `.pnpm-store/` in the repository.
+- If the offline install reports a missing package, the store does not have
+  it. Ask the user to run `pnpm install`.
+
+Run this after switching branches and before the next `pnpm` command or
+commit. Do not retry the online install, because it wipes `node_modules`
+again.
 
 ## Notes
 

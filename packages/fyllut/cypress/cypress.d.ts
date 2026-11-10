@@ -79,6 +79,16 @@ declare global {
       configMocksServer(): Chainable<JQuery<HTMLElement>>;
 
       /**
+       * Uses a route variant instead of the one in the current mocks collection
+       */
+      mocksUseRouteVariant(routeVariantId: string): Chainable<Cypress.Response<unknown>>;
+
+      /**
+       * Removes all route variants set with mocksUseRouteVariant
+       */
+      mocksRestoreRouteVariants(): Chainable<Cypress.Response<unknown>>;
+
+      /**
        * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
        */
       skipIfNoIncludeDistTests(): Chainable<void>;
@@ -86,9 +96,13 @@ declare global {
       /**
        * Components
        */
-      withinComponent(label: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
+      withinComponent(label: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
       withinSummaryGroup(heading: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
+
+      assertCombobox(optionLabel: string | RegExp): Chainable<JQuery<HTMLElement>>;
+
+      selectCombobox(label: string | RegExp, value: string | RegExp): Chainable<JQuery<HTMLElement>>;
 
       findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 

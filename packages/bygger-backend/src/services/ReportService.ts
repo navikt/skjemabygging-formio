@@ -1,220 +1,61 @@
-import { Form, navFormUtils, ReportDefinition, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { stringify } from 'csv-stringify';
-import { Writable } from 'stream';
-import config from '../config';
-import { FormPublicationsService } from './formPublications/types';
-import { FormsService } from './forms/types';
+import { ReportDefinition } from '@navikt/skjemadigitalisering-shared-domain';
+import { Writable } from 'node:stream';
+import { writeCsvReport } from './reports/csvPipeline';
+import { allFormsSummaryReport } from './reports/definitions/allFormsSummaryReport';
+import { attachmentsReport } from './reports/definitions/attachmentsReport';
+import { publishedLanguagesReport } from './reports/definitions/publishedLanguagesReport';
+import { unpublishedFormsReport } from './reports/definitions/unpublishedFormsReport';
+import { ReportDependencies } from './reports/types';
 
-const ReportMap: Record<string, ReportDefinition> = {
+const ReportRegistry: Record<string, ReportDefinition> = {
   FORMS_PUBLISHED_LANGUAGES: {
     id: 'forms-published-languages',
     title: 'Publiserte språk per skjema',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   ALL_FORMS_SUMMARY: {
     id: 'all-forms-summary',
     title: 'Alle skjema med nøkkelinformasjon',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   UNPUBLISHED_FORMS: {
     id: 'unpublished-forms',
     title: 'Avpubliserte skjema',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   ALL_FORMS_AND_ATTACHMENTS: {
     id: 'all-forms-and-attachments',
     title: 'Alle skjema med vedlegg',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
 };
 
-const notTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
-
 class ReportService {
-  private readonly formsService: FormsService;
-  private readonly formPublicationsService: FormPublicationsService;
-
-  constructor(formsService: FormsService, formPublicationsService: FormPublicationsService) {
-    this.formsService = formsService;
-    this.formPublicationsService = formPublicationsService;
-  }
+  constructor(private readonly dependencies: ReportDependencies) {}
 
   async generate(reportId: string, writableStream: Writable) {
     switch (reportId) {
-      case ReportMap.FORMS_PUBLISHED_LANGUAGES.id:
-        return this.generateFormsPublishedLanguage(writableStream);
-      case ReportMap.ALL_FORMS_SUMMARY.id:
-        return this.generateAllFormsSummary(writableStream);
-      case ReportMap.UNPUBLISHED_FORMS.id:
-        return this.generateUnpublishedForms(writableStream);
-      case ReportMap.ALL_FORMS_AND_ATTACHMENTS.id:
-        return this.generateAllFormsAndAttachments(writableStream);
+      case ReportRegistry.FORMS_PUBLISHED_LANGUAGES.id:
+        return writeCsvReport(reportId, publishedLanguagesReport(this.dependencies), writableStream);
+      case ReportRegistry.ALL_FORMS_SUMMARY.id:
+        return writeCsvReport(reportId, allFormsSummaryReport(this.dependencies), writableStream);
+      case ReportRegistry.UNPUBLISHED_FORMS.id:
+        return writeCsvReport(reportId, unpublishedFormsReport(this.dependencies), writableStream);
+      case ReportRegistry.ALL_FORMS_AND_ATTACHMENTS.id:
+        return writeCsvReport(reportId, attachmentsReport(this.dependencies), writableStream);
       default:
         throw new Error(`Report not implemented: ${reportId}`);
     }
   }
 
-  getReportDefinition = (reportId: string) => Object.values(ReportMap).find((report) => report.id === reportId);
+  getReportDefinition = (reportId: string) => Object.values(ReportRegistry).find((report) => report.id === reportId);
 
   getAllReports(): ReportDefinition[] {
-    return Object.keys(ReportMap).map((key) => ({ ...ReportMap[key] }));
-  }
-
-  private async generateAllFormsAndAttachments(writableStream: Writable) {
-    const columns = ['skjemanummer', 'skjematittel', 'vedleggstittel', 'vedleggskode', 'label'];
-    const allFormsCompact = (
-      await this.formsService.getAll<Pick<Form, 'path' | 'title' | 'skjemanummer' | 'properties'>>(
-        'path,title,skjemanummer,properties',
-      )
-    ).filter(notTestForm);
-    const stringifier = stringify({ header: true, columns, delimiter: ';' });
-    stringifier.pipe(writableStream);
-    for (const formCompact of allFormsCompact) {
-      const form = await this.formsService.get(formCompact.path);
-      const attachments = navFormUtils.getAttachmentProperties(form);
-
-      const { title, skjemanummer } = formCompact;
-
-      attachments.forEach((attachment) => {
-        stringifier.write([skjemanummer, title, attachment.vedleggstittel, attachment.vedleggskode, attachment?.label]);
-      });
-    }
-    stringifier.end();
-  }
-
-  private async generateFormsPublishedLanguage(writableStream: Writable) {
-    const columns = ['skjemanummer', 'skjematittel', 'språk'];
-    const publishedForms = await this.formPublicationsService.getAll();
-
-    const stringifier = stringify({ header: true, columns, delimiter: ';' });
-    stringifier.pipe(writableStream);
-    const publicForms: Form[] = publishedForms.filter(notTestForm);
-    for (const form of publicForms) {
-      const { title, path, skjemanummer } = form;
-      const translationPublication = await this.formPublicationsService.getTranslations(path, ['nb', 'nn', 'en']);
-      const publishedLanguages = Object.keys(translationPublication.translations);
-      stringifier.write([skjemanummer, title, publishedLanguages.join(',') || '']);
-    }
-    stringifier.end();
-  }
-
-  private async generateAllFormsSummary(writableStream: Writable) {
-    const columns = [
-      'skjemanummer',
-      'skjematittel',
-      'tema',
-      'sist publisert',
-      'publisert av',
-      'upubliserte endringer',
-      'sist endret',
-      'endret av',
-      'submissionTypes',
-      'subsequentSubmissionTypes',
-      'signaturfelt',
-      'path',
-      'har vedlegg',
-      'antall vedlegg',
-      'vedleggsnavn',
-      'innsendingsurl',
-      'innsendingsurl (papir)',
-      'ettersendingsurl',
-      'ettersendingsurl (papir)',
-    ];
-    type CompactForm = Pick<
-      Form,
-      'title' | 'path' | 'properties' | 'status' | 'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy'
-    >;
-    const allFormsCompact = (
-      await this.formsService.getAll<CompactForm>(
-        'title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy',
-      )
-    ).filter(notTestForm);
-    const stringifier = stringify({ header: true, columns, delimiter: ';' });
-    stringifier.pipe(writableStream);
-    for (const formCompact of allFormsCompact) {
-      const form = await this.formsService.get(formCompact.path);
-      const hasAttachment = navFormUtils.hasAttachment(form);
-      const attachments = navFormUtils.getAttachmentProperties(form);
-      const numberOfAttachments = attachments.length;
-      const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
-
-      const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
-      const { submissionTypes, tema, signatures, subsequentSubmissionTypes } = properties;
-
-      const baseInnsendingUrl =
-        config.naisClusterName === 'prod-gcp'
-          ? `https://www.nav.no/fyllut/${form.path}`
-          : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
-      const baseEttersendingUrl =
-        config.naisClusterName === 'prod-gcp'
-          ? `https://www.nav.no/fyllut-ettersending/${form.path}`
-          : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
-
-      const paperInnsendingUrl = submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
-        ? `${baseInnsendingUrl}`
-        : submissionTypesUtils.isPaperSubmission(submissionTypes)
-          ? `${baseInnsendingUrl}?sub=paper`
-          : undefined;
-
-      const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
-      const paperEttersendingUrl =
-        submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachment
-          ? `${baseEttersendingUrl}?sub=paper`
-          : undefined;
-
-      const isPublished = ['published', 'pending'].includes(status!);
-
-      let unpublishedChanges = '';
-      if (status === 'pending') {
-        unpublishedChanges = 'ja';
-      } else if (status === 'published') {
-        unpublishedChanges = 'nei';
-      }
-      const numberOfSignatures = signatures?.length || 1;
-      stringifier.write([
-        properties.skjemanummer,
-        title,
-        tema,
-        isPublished ? publishedAt : undefined,
-        isPublished ? publishedBy : undefined,
-        unpublishedChanges,
-        changedAt,
-        changedBy,
-        submissionTypes,
-        subsequentSubmissionTypes,
-        numberOfSignatures,
-        path,
-        hasAttachment ? 'ja' : 'nei',
-        numberOfAttachments,
-        attachmentNames,
-        baseInnsendingUrl || '',
-        paperInnsendingUrl || '',
-        ettersendingUrl || '',
-        paperEttersendingUrl || '',
-      ]);
-    }
-    stringifier.end();
-  }
-
-  private async generateUnpublishedForms(writableStream: Writable) {
-    const columns = ['skjemanummer', 'skjematittel', 'avpublisert', 'avpublisert av'];
-    const allFormsCompact = await this.formsService.getAll<
-      Pick<Form, 'skjemanummer' | 'title' | 'status' | 'publishedAt' | 'publishedBy' | 'properties'>
-    >('skjemanummer,title,status,publishedAt,publishedBy,properties');
-    const unpublishedForms = allFormsCompact.filter(
-      (form) => !form.properties.isTestForm && form.status === 'unpublished',
-    );
-    const stringifier = stringify({ header: true, columns, delimiter: ';' });
-    stringifier.pipe(writableStream);
-    for (const form of unpublishedForms) {
-      const { title, skjemanummer, publishedAt, publishedBy } = form;
-      stringifier.write([skjemanummer, title, publishedAt, publishedBy]);
-    }
-    stringifier.end();
+    return Object.values(ReportRegistry).map((report) => ({ ...report }));
   }
 }
 

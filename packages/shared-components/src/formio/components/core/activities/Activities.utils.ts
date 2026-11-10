@@ -32,16 +32,14 @@ export const mapVedtak = (activities: SendInnAktivitet[], locale: string) => {
 
     const vedtak = vedtaksinformasjon
       .filter((x) => !!x.betalingsplan.length)
-      .map(
-        (vedtak): SubmissionActivity => ({
-          aktivitetId: activity.aktivitetId,
-          maalgruppe: activity.maalgruppe,
-          periode: vedtak.periode,
-          text: mapVedtakText(activity, vedtak, locale),
-          vedtaksId: vedtak.vedtakId,
-          tema: activity.saksinformasjon.sakstype,
-        }),
-      );
+      .map((vedtak): SubmissionActivity => ({
+        aktivitetId: activity.aktivitetId,
+        maalgruppe: activity.maalgruppe,
+        periode: vedtak.periode,
+        text: mapVedtakText(activity, vedtak, locale),
+        vedtaksId: vedtak.vedtakId,
+        tema: activity.saksinformasjon.sakstype,
+      }));
 
     return [...acc, ...vedtak];
   }, []);

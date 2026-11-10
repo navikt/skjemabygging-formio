@@ -1,9 +1,9 @@
 import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, it, vi } from 'vitest';
 import { createApp } from './app';
 import { config } from './config/config';
+import { fetchedUrls } from './test/testHelpers';
 
 vi.mock('./dekorator', () => ({
   getDecorator: () => {},
@@ -11,31 +11,36 @@ vi.mock('./dekorator', () => ({
 }));
 
 const { formsApiUrl } = config;
+const defaultNewRenderForms = [...config.newRenderForms];
+
+let expectedFormUrls: string[] = [];
 
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
-  nock(formsApiUrl)
-    .get(`/v1/forms/${formPath}`)
-    .query(true)
-    .reply(200, {
+  expectedFormUrls.push(`${formsApiUrl}/v1/forms/${formPath}`);
+  vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+    Response.json({
       path: formPath,
       title: `Title for ${formPath}`,
       properties: {
         submissionTypes,
       },
-    } as Partial<Form>);
+    } as Partial<Form>),
+  );
 };
 
 const authenticatedGet = (path: string) => request(createApp()).get(path).set('Authorization', 'Bearer test-token');
 
 describe('Fyllut backend :: query param sub', () => {
   afterEach(() => {
-    if (!nock.isDone()) {
-      nock.cleanAll();
-      throw new Error('Pending nock interceptors not used');
-    }
+    config.newRenderForms = [...defaultNewRenderForms];
 
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    const requestedUrls = vi.isMockFunction(fetch) ? fetchedUrls(vi.mocked(fetch)) : [];
+    const expectedUrls = expectedFormUrls;
+    expectedFormUrls = [];
+    vi.restoreAllMocks();
+    if (JSON.stringify(requestedUrls) !== JSON.stringify(expectedUrls)) {
+      throw new Error(`Expected fetch to ${expectedUrls.join(', ')}, got ${requestedUrls.join(', ')}`);
+    }
   });
 
   describe('when submissionTypes resolves a missing sub param', () => {
@@ -109,6 +114,21 @@ describe('Fyllut backend :: query param sub', () => {
       const res = await request(createApp()).get('/fyllut/testform103/oppsummering?lang=en').expect(302);
 
       expect(res.get('location')).toBe('/fyllut/testform103?lang=en');
+    });
+
+    it('redirects multi-submission forms from any nested route when sub is missing', async () => {
+      mockForm('testform103nested', ['PAPER', 'DIGITAL']);
+
+      const res = await request(createApp()).get('/fyllut/testform103nested/unknown?lang=en').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/testform103nested?lang=en');
+    });
+
+    it('renders nested routes without sub for allowlisted new-render forms', async () => {
+      config.newRenderForms = ['testform103newrender'];
+      mockForm('testform103newrender', ['PAPER', 'DIGITAL']);
+
+      await request(createApp()).get('/fyllut/testform103newrender/oppsummering?lang=en').expect(200);
     });
 
     it('renders the intro page for multi-submission forms when sub is missing', async () => {

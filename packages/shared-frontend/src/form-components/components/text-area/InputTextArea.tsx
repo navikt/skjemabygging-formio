@@ -1,0 +1,30 @@
+import TextArea from '../../../components/text-area/TextArea';
+import { TextAreaDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveFieldSize,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentUtils';
+
+const InputTextArea = ({ component, submissionPath }: InputComponentProps<TextAreaDefinition>) => {
+  const validation = useResolvedValidation(component);
+  return (
+    <TextArea
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      maxLength={component.validate?.maxLength}
+      autoComplete={component.autocomplete}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
+  );
+};
+
+export default InputTextArea;

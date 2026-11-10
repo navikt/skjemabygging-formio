@@ -50,12 +50,6 @@ const textAreaForm = () => {
               maxLength: 10,
             },
           }),
-          textArea({
-            label: 'Tekstområde egendefinert',
-            validate: {
-              custom: 'valid = input === "abc" ? true : "abc er eneste lovlige verdien"',
-            },
-          }),
         ],
       }),
     ],
