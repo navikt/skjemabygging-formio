@@ -1,6 +1,7 @@
 import { TextField } from '@navikt/ds-react';
 import { Form, FormSettingsDiff, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
+import { RevisionViewer } from '../RevisionViewer';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import TemaKodeFields from './TemaKodeFields';
 import TestSkjemaFields from './TestSkjemaFields';
@@ -28,6 +29,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
   return (
     <>
       {testSkjemaFields()}
+      <RevisionViewer formPath={form.path} />
       <TextField
         className="mb"
         label="Skjemanummer"
