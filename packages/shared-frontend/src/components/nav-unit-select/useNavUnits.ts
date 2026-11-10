@@ -17,7 +17,7 @@ const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => 
     if (enabled) request?.();
   }, [enabled, request]);
 
-  const { allUnits, error, retry } = shared && enabled ? shared : own;
+  const { allUnits, error, loading, retry } = shared && enabled ? shared : own;
   const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
   const availableUnits = useMemo(
     () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
@@ -30,7 +30,8 @@ const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => 
     availableUnits,
     error,
     retry,
-    loading: enabled && allUnits === undefined && error === undefined,
+    // A shared lookup that has not been requested yet still counts as loading.
+    loading: enabled && (loading || (allUnits === undefined && error === undefined)),
   };
 };
 

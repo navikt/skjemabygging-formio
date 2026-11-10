@@ -7,6 +7,7 @@ import { sortNavUnits } from './navUnitUtils';
 interface NavUnitsState {
   allUnits?: Enhet[];
   error?: Error;
+  loading: boolean;
   retry: () => void;
 }
 
@@ -14,11 +15,9 @@ const useNavUnitsLoader = (enabled: boolean): NavUnitsState => {
   const { logger } = useApplication();
   const { formData } = useCommonRuntimeServices();
   const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
-  const retry = useCallback(() => {
-    setResult(undefined);
-    setAttempt((previous) => previous + 1);
-  }, []);
+  const [result, setResult] = useState<{ source: typeof formData; attempt: number; units?: Enhet[]; error?: Error }>();
+  // Keeps the previous error until the new attempt settles, so the retry button stays in place while it loads.
+  const retry = useCallback(() => setAttempt((previous) => previous + 1), []);
 
   useEffect(() => {
     if (!enabled) {
@@ -31,7 +30,7 @@ const useNavUnitsLoader = (enabled: boolean): NavUnitsState => {
       .getNavUnits()
       .then((units) => {
         if (!cancelled) {
-          setResult({ source: formData, units: sortNavUnits(units) });
+          setResult({ source: formData, attempt, units: sortNavUnits(units) });
         }
       })
       .catch((fetchError) => {
@@ -41,7 +40,7 @@ const useNavUnitsLoader = (enabled: boolean): NavUnitsState => {
 
         const resolvedError = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
         logger?.error?.('Failed to load Nav units');
-        setResult({ source: formData, error: resolvedError });
+        setResult({ source: formData, attempt, error: resolvedError });
       });
 
     return () => {
@@ -50,7 +49,12 @@ const useNavUnitsLoader = (enabled: boolean): NavUnitsState => {
   }, [attempt, enabled, formData, logger]);
 
   const currentResult = enabled && result?.source === formData ? result : undefined;
-  return { allUnits: currentResult?.units, error: currentResult?.error, retry };
+  return {
+    allUnits: currentResult?.units,
+    error: currentResult?.error,
+    loading: enabled && currentResult?.attempt !== attempt,
+    retry,
+  };
 };
 
 export { useNavUnitsLoader };
