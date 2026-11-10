@@ -1,5 +1,6 @@
 import {
   Component,
+  FormComponentType,
   FormPropertiesType,
   PanelValidation,
   Submission,
@@ -8,7 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { To } from 'react-router';
 import { ApplicationEnvironment, ApplicationLogger } from '../context/application/ApplicationContext';
-import { ComponentDefinitionByType, TypedComponentType } from './component-types';
+import { ComponentDefinitionByType } from './component-types';
 
 type HandleAttachmentDownloadFile = (
   attachmentId: string,
@@ -22,7 +23,7 @@ type HandleAttachmentDownloadFile = (
  * `FormComponentType`. Unlike the input registry, this INCLUDES `panel`
  * (SummaryPanel).
  */
-type SummaryComponentType = TypedComponentType;
+type SummaryComponentType = FormComponentType;
 
 interface SummaryRendererConfig {
   submissionMethod?: SubmissionMethod;
