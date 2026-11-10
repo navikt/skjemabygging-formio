@@ -1,9 +1,9 @@
-import { createTemporaryFileStorage } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import { AsyncResource } from 'node:async_hooks';
 import { unlink } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { logger } from '../../../logger';
 
 // Allow files up to 150MB by default, can be overridden per route if needed
@@ -16,7 +16,7 @@ interface UploadSingleFileOptions {
 const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = {}) => {
   const maxFileSizeBytes = options.maxFileSizeBytes ?? MAX_UPLOAD_FILE_SIZE_BYTES;
   const upload = multer({
-    storage: createTemporaryFileStorage(),
+    dest: tmpdir(),
     limits: { fileSize: maxFileSizeBytes },
   }).single(fieldName);
 
@@ -36,8 +36,12 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
         Array.isArray(error.storageErrors) &&
         error.storageErrors.length > 0
       ) {
+        // The error handler logs only the stack, so include the error codes (not file paths) in its first line.
+        const codes = [...new Set(error.storageErrors.map((storageError) => storageError?.code ?? 'UNKNOWN'))];
         return next(
-          new AggregateError(error.storageErrors, 'Failed to remove temporary upload files.', { cause: error }),
+          new AggregateError(error.storageErrors, `Failed to remove temporary upload files (${codes.join(', ')}).`, {
+            cause: error,
+          }),
         );
       }
 

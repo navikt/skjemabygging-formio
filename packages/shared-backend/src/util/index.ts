@@ -1,8 +1,7 @@
 import fileUtil from './file/fileUtil';
-import { createTemporaryFileStorage } from './file/temporaryFileStorage';
 import { createSharedFrontendConfig } from './frontend-config/frontendConfigUtil';
 import { htmlServerUtils } from './html/htmlServerUtils';
 import requestUtil from './request/requestUtil';
 import urlUtil from './url/urlUtil';
 
-export { createSharedFrontendConfig, createTemporaryFileStorage, fileUtil, htmlServerUtils, requestUtil, urlUtil };
+export { createSharedFrontendConfig, fileUtil, htmlServerUtils, requestUtil, urlUtil };
