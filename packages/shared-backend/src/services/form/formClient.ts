@@ -3,6 +3,7 @@ import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 
 const formsUrl = 'v1/forms';
+const formPublicationsUrl = 'v1/form-publications';
 
 const withSelect = (url: string, select?: string) => {
   if (!select) {
@@ -28,18 +29,33 @@ interface GetFormProps {
   baseUrl: string;
   formPath: string;
   select?: string;
+  timeoutMs?: number;
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
-  const { baseUrl, formPath, select } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${formPath}`, select);
+  const { baseUrl, formPath, select, timeoutMs } = props;
+  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}`, select);
   logger.info('Getting form', { formPath, select, targetUrl });
 
-  return await http.get<T>(targetUrl);
+  return await http.get<T>(targetUrl, { timeoutMs });
+};
+
+interface GetPublishedFormProps {
+  baseUrl: string;
+  formPath: string;
+  timeoutMs?: number;
+}
+const getPublishedForm = async <T = Form>(props: GetPublishedFormProps): Promise<T> => {
+  const { baseUrl, formPath, timeoutMs } = props;
+  const targetUrl = `${baseUrl}/${formPublicationsUrl}/${encodeURIComponent(formPath)}`;
+  logger.info('Getting published form', { formPath, targetUrl });
+
+  return await http.get<T>(targetUrl, { timeoutMs });
 };
 
 const formClient = {
   getForms,
   getForm,
+  getPublishedForm,
 };
 
 export default formClient;
