@@ -398,6 +398,7 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
+    noMatchingDocuments: 'Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.',
     userType: {
       multiplePeople: 'Flere personer / Nav-enhet',
       hasNavContact: 'Har du vært i kontakt med Nav om saken?',
