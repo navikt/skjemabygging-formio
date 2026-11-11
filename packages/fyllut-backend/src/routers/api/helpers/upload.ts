@@ -1,7 +1,6 @@
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
-import { AsyncResource } from 'node:async_hooks';
 import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { logger } from '../../../logger';
@@ -55,8 +54,7 @@ const uploadSingleFile = (fieldName: string, options: UploadSingleFileOptions = 
 
       next();
     };
-    // Multer's stream events can run outside the request's correlation context.
-    upload(req, res, AsyncResource.bind(handleUpload));
+    upload(req, res, handleUpload);
   };
 };
 
