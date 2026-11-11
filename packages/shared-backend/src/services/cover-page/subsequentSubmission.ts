@@ -163,11 +163,11 @@ const createSubsequentSubmissionDownloadData = ({
   };
   const submission: Submission = { data: projectSubmission(activeForm.components, raw.data) };
   const fields = submissionUtils.flattenComponentsWithPath(activeForm.components);
-  const choice = fields.find(({ component }) => component.key === 'collectionType')?.component;
+  const choice = fields.find(({ component }) => component.key === 'userType')?.component;
   const hidden = form.properties.hideUserTypes === true;
   const forced = !hidden && form.properties.enhetMaVelgesVedPapirInnsending === true;
-  const branch = submission.data.collectionType;
-  if (forced && raw.data.collectionType !== undefined) return invalidAnswer();
+  const branch = submission.data.userType;
+  if (forced && raw.data.userType !== undefined) return invalidAnswer();
   if (!hidden && !forced && !choice?.values?.some(({ value }) => value === branch)) return invalidAnswer();
   fields.forEach(({ component, submissionPath }) => {
     const value: unknown = submissionUtils.getSubmissionValue(submissionPath, submission);
@@ -178,7 +178,7 @@ const createSubsequentSubmissionDownloadData = ({
     } else if (component.type === 'firstName' || component.type === 'surname') {
       requireText(value, component.validate?.required);
     } else if (component.type === 'navAddress') {
-      const information = submission.data.yourInformation;
+      const information = submission.data.dineOpplysninger;
       if (!isRecord(information)) return invalidAnswer();
       information[component.key] = validateAddress(value, component);
     } else if (component.type === 'radiopanel' && component.validate?.required) {

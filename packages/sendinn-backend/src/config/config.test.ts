@@ -1,3 +1,9 @@
+// Preload shared-backend while the file is collected, which has no timeout.
+// In tests, tsconfig paths resolve it to source, so the first dynamic import of
+// ./config would otherwise transform shared-backend and shared-domain inside the
+// first test's 5 s timeout. That exceeds the limit in the CPU-bound coverage job.
+// vi.resetModules() re-evaluates modules but keeps the transform cache.
+import '@navikt/skjemadigitalisering-shared-backend';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('dotenv', () => ({ default: { config: vi.fn() } }));
@@ -49,7 +55,7 @@ describe('Sendinn configuration', () => {
     vi.stubEnv('NAIS_CLUSTER_NAME', 'prod-gcp');
     vi.stubEnv('SENDINN_CONTENT_SOURCE', 'latest');
 
-    await expect(import('./config')).rejects.toThrow('SENDINN_CONTENT_SOURCE must be published in prod-gcp');
+    await expect(import('./config')).rejects.toThrow("SENDINN_CONTENT_SOURCE must be 'published' in prod-gcp");
   });
 
   it('accepts published content in the production cluster', async () => {

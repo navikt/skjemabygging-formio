@@ -1,6 +1,7 @@
-import { Enhet } from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhet, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import type { MockInstance } from 'vitest';
 import { createNavUnitService } from './navUnitService';
+import enheter from './testdata/enheter';
 
 describe('createNavUnitService', () => {
   const baseUrl = 'http://norg2.test';
@@ -60,6 +61,35 @@ describe('createNavUnitService', () => {
       errorCode: 'SERVICE_UNAVAILABLE',
       message: 'norg2 unavailable',
       correlationId: 'corr-1',
+    });
+  });
+
+  describe('getSupportedNavUnits', () => {
+    const createServiceWithUnits = (units: Enhet[]) =>
+      createNavUnitService({ baseUrl, consumerId, client: { getNavUnits: vi.fn().mockResolvedValue(units) } });
+
+    it('test data includes unsupported nav units', () => {
+      expect(enheter.some((enhet) => !supportedEnhetstyper.includes(enhet.type))).toBe(true);
+      expect(enheter.some((enhet) => enhet.enhetNr === '0000')).toBe(true);
+    });
+
+    it('filters nav units with unsupported type or enhetNr 0000', async () => {
+      const navUnits = await createServiceWithUnits(enheter).getSupportedNavUnits();
+
+      expect(navUnits.length).toBeGreaterThan(0);
+      navUnits.forEach((enhet) => {
+        expect(supportedEnhetstyper.includes(enhet.type)).toBe(true);
+        expect(enhet.enhetNr).not.toBe('0000');
+      });
+    });
+
+    it('only returns relevant data', async () => {
+      const navUnits = await createServiceWithUnits(enheter).getSupportedNavUnits();
+
+      expect(navUnits.length).toBeGreaterThan(0);
+      navUnits.forEach((enhet) => {
+        expect(Object.keys(enhet)).toEqual(['enhetId', 'navn', 'enhetNr', 'type']);
+      });
     });
   });
 });

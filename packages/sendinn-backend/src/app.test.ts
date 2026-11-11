@@ -2,11 +2,11 @@ import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import request from 'supertest';
 import { createApp } from './app';
 
-const { getDecoratorMock, getGlobalTranslationsMock, getFormMock, getNavUnitsMock } = vi.hoisted(() => ({
+const { getDecoratorMock, getGlobalTranslationsMock, getFormMock, getSupportedNavUnitsMock } = vi.hoisted(() => ({
   getDecoratorMock: vi.fn(),
   getGlobalTranslationsMock: vi.fn(),
   getFormMock: vi.fn(),
-  getNavUnitsMock: vi.fn(),
+  getSupportedNavUnitsMock: vi.fn(),
 }));
 
 vi.mock('./services', async () => {
@@ -17,7 +17,7 @@ vi.mock('./services', async () => {
     metricsRegister: new Registry(),
     contentService: { getGlobalTranslations: getGlobalTranslationsMock },
     sendinnFormService: { getForm: getFormMock },
-    navUnitService: { getNavUnits: getNavUnitsMock },
+    navUnitService: { getSupportedNavUnits: getSupportedNavUnitsMock },
   };
 });
 
@@ -39,7 +39,7 @@ describe('sendinn-backend app', () => {
       ['/sendinn/nav123456?lang=en', 'en'],
       ['/sendinn/nav123456?lang=nn-NO', 'nn'],
       ['/sendinn/nav123456?lang=pl', 'nb'],
-      ['/sendinn/nav123456/sendinnCollection', 'nb'],
+      ['/sendinn/nav123456/sendinnUserType', 'nb'],
       ['/sendinn/nav123456/sendinnAttachments?filter=N1&filter=N2', 'nb'],
       ['/sendinn/nav123456/oppsummering?lang=en&filter=N1', 'en'],
     ])('renders the decorator for %s in %s', async (url, language) => {
@@ -52,21 +52,21 @@ describe('sendinn-backend app', () => {
   describe('api', () => {
     it('serves Nav units through the composed shared service without accepting client lookup parameters', async () => {
       const units = [{ enhetNr: '0101', navn: 'Nav Test', type: 'LOKAL' }];
-      getNavUnitsMock.mockResolvedValue(units);
+      getSupportedNavUnitsMock.mockResolvedValue(units);
       const response = await request(createApp()).get('/sendinn/api/nav-units?unitTypes=HMS').expect(200);
       expect(response.body).toEqual(units);
       expect(response.headers['cache-control']).toBe('no-store');
-      expect(getNavUnitsMock).toHaveBeenCalledWith();
+      expect(getSupportedNavUnitsMock).toHaveBeenCalledWith();
     });
 
     it('preserves a correlated Nav unit dependency failure and recovers without an empty-success fallback', async () => {
-      getNavUnitsMock.mockRejectedValueOnce(
+      getSupportedNavUnitsMock.mockRejectedValueOnce(
         new ResponseError('SERVICE_UNAVAILABLE', 'Nav unit service unavailable', 'nav-unit-upstream'),
       );
       const response = await request(createApp()).get('/sendinn/api/nav-units').expect(503);
       expect(response.body).toMatchObject({ errorCode: 'SERVICE_UNAVAILABLE', correlationId: 'nav-unit-upstream' });
       expect(response.headers['x-correlation-id']).toBe('nav-unit-upstream');
-      getNavUnitsMock.mockResolvedValue([]);
+      getSupportedNavUnitsMock.mockResolvedValue([]);
       expect((await request(createApp()).get('/sendinn/api/nav-units').expect(200)).body).toEqual([]);
     });
 
@@ -98,14 +98,14 @@ describe('sendinn-backend app', () => {
 
     it('returns a correlated standard error when content loading fails', async () => {
       getGlobalTranslationsMock.mockRejectedValue(
-        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load forms-api content'),
+        new ResponseError('SERVICE_UNAVAILABLE', 'Unable to load global translations'),
       );
 
       const response = await request(createApp()).get('/sendinn/api/global-translations/en').expect(503);
 
       expect(response.body).toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load global translations',
         correlationId: expect.any(String),
       });
       expect(response.header['x-correlation-id']).toBe(response.body.correlationId);
@@ -178,11 +178,11 @@ describe('sendinn-backend app', () => {
       ['NOT_FOUND', 404],
       ['SERVICE_UNAVAILABLE', 503],
     ] as const)('returns the standard correlated %s error', async (errorCode, status) => {
-      getFormMock.mockRejectedValue(new ResponseError(errorCode, 'Unable to load forms-api content', 'upstream-id'));
+      getFormMock.mockRejectedValue(new ResponseError(errorCode, 'Unable to load form', 'upstream-id'));
       const response = await request(createApp()).get('/sendinn/api/forms/nav123456').expect(status);
       expect(response.body).toMatchObject({
         errorCode,
-        message: 'Unable to load forms-api content',
+        message: 'Unable to load form',
         correlationId: 'upstream-id',
       });
       expect(response.header['x-correlation-id']).toBe('upstream-id');

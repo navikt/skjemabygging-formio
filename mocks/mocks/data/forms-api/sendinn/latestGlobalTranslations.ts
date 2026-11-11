@@ -51,6 +51,12 @@ const sendinnTranslations = [
     en: 'Submit documentation for a form',
   },
   {
+    key: 'Ettersend dokumentasjon til {{title}}',
+    nb: 'Ettersend dokumentasjon til {{title}}',
+    nn: 'Ettersend dokumentasjon til {{title}}',
+    en: 'Submit additional documentation for {{title}}',
+  },
+  {
     key: 'Send inn etterspurt dokumentasjon til skjema',
     nb: 'Send inn etterspurt dokumentasjon til skjema',
     nn: 'Send inn etterspurd dokumentasjon til skjema',

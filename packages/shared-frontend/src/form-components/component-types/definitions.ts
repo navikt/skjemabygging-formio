@@ -202,9 +202,6 @@ type TypedComponentDefinition =
   | DrivingListDefinition
   | TargetGroupDefinition;
 
-/** The `type` literals that have a dedicated typed variant. */
-type TypedComponentType = TypedComponentDefinition['type'];
-
 export type {
   AccordionDefinition,
   AccountNumberDefinition,
@@ -249,6 +246,5 @@ export type {
   TextAreaDefinition,
   TextFieldDefinition,
   TypedComponentDefinition,
-  TypedComponentType,
   YearDefinition,
 };

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useValidationActions, useValidationPagesWithErrors } from '../../context/validation/ValidationContext';
-import { SUMMARY_KEY } from './constants';
+import { INTRO_KEY, SUMMARY_KEY } from './constants';
 
 interface FormNavigationState {
   focusId?: string;
@@ -61,9 +61,11 @@ const useFormNavigation = (from: StepKind) => {
   const goToError = useCallback(
     (pageKey: string, id: string) => {
       hideErrorSummary();
-      navigate({ pathname: `${prefix}${pageKey}`, search, hash: `#${id}` }, { state: buildState({ focusId: id }) });
+      // The intro page is the index route, not a page slug.
+      const pathname = pageKey === INTRO_KEY ? (from === 'intro' ? '.' : '..') : `${prefix}${pageKey}`;
+      navigate({ pathname, search, hash: `#${id}` }, { state: buildState({ focusId: id }) });
     },
-    [buildState, hideErrorSummary, navigate, prefix, search],
+    [buildState, from, hideErrorSummary, navigate, prefix, search],
   );
 
   return { goToIntro, goToPanel, goToSummary, goToError };

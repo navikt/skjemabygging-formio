@@ -27,8 +27,7 @@ const getOverrides = (Utils) => {
     return translate(template);
   };
 
-  const originalCheckCondition = Utils.checkCondition;
-  const { checkCustomConditional, checkCondition } = getCheckConditionUtils(Utils, evaluate, originalCheckCondition);
+  const { checkCustomConditional, checkCondition } = getCheckConditionUtils(Utils, evaluate);
 
   return {
     sanitize,

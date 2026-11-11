@@ -111,7 +111,7 @@ describe('coverPageDownloadDataMapper', () => {
       'nb-NO',
       { recipientId: '001', name: 'NAV Test', poBoxAddress: '1234', postalCode: '0101', postalName: 'Oslo' },
       undefined,
-      (text) => text,
+      (text) => (text === 'Vedlegg label' ? 'Attachment label' : text),
       'paper',
     );
 
@@ -144,7 +144,8 @@ describe('coverPageDownloadDataMapper', () => {
         postalCode: '0101',
         postalName: 'Oslo',
       },
-      attachments: ['Vedlegg label'],
+      attachments: ['Attachment label'],
+      attachmentsForArchiving: ['Vedlegg label'],
     });
   });
 
@@ -167,13 +168,12 @@ describe('coverPageDownloadDataMapper', () => {
         other: [{ attachmentId: 'other', navId: 'other', type: 'other', value: 'leggerVedNaa', title: 'My documents' }],
       },
     };
-    const translate = vi.fn(() => 'Translated attachment');
+    const translate = () => 'Translated attachment';
 
     expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(form, submission, translate)).toEqual({
       attachments: ['Translated attachment', 'My documents'],
-      archivedAttachments: ['Vedlegg label', 'My documents'],
+      attachmentsForArchiving: ['Vedlegg label', 'My documents'],
     });
-    expect(translate).toHaveBeenCalledExactlyOnceWith('Vedlegg label');
   });
 
   it('uses the label when no title exists and excludes stale titles for unselected attachments', () => {
@@ -191,7 +191,7 @@ describe('coverPageDownloadDataMapper', () => {
 
     expect(coverPageDownloadDataMapper.createAttachmentDocumentLists(formWithAttachments, submission)).toEqual({
       attachments: ['Vedlegg label'],
-      archivedAttachments: ['Vedlegg label'],
+      attachmentsForArchiving: ['Vedlegg label'],
     });
   });
 

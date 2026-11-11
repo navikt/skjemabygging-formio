@@ -251,14 +251,14 @@ describe('Sendinn cover page HTTP boundaries', () => {
       ...body(),
       submission: {
         data: {
-          collectionType: 'identified-person',
-          yourInformation: { identitet: { identitetsnummer: 'invalid' } },
+          userType: 'identified-person',
+          dineOpplysninger: { identitet: { identitetsnummer: 'invalid' } },
         },
       },
     };
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(400);
     expect(requests.some((entry) => entry.path === '/token')).toBe(false);
-    payload.submission.data.yourInformation.identitet.identitetsnummer = '10915596784';
+    payload.submission.data.dineOpplysninger.identitet.identitetsnummer = '10915596784';
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
     expect(generated[0].bruker).toEqual({ brukerId: '10915596784', brukerType: 'PERSON' });
     expect(generated[0]).not.toHaveProperty('ukjentBrukerPersoninfo');
@@ -274,12 +274,12 @@ describe('Sendinn cover page HTTP boundaries', () => {
         mode === 'forced'
           ? { navUnit: '0101' }
           : mode === 'multiple'
-            ? { collectionType: 'multiple-people', navUnit: '0101' }
+            ? { userType: 'multiple-people', navUnit: '0101' }
             : {
-                collectionType: 'unidentified-person',
+                userType: 'unidentified-person',
                 hasNavContact: 'ja',
                 navContactUnit: '0101',
-                yourInformation: {
+                dineOpplysninger: {
                   fornavn: 'Test',
                   etternavn: 'Person',
                   adresse: {

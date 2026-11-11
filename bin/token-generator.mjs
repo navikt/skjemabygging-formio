@@ -37,6 +37,7 @@ const COLOR_RESET = '\x1b[0m';
 
 const ICON_CHECK = '\u2705';
 const ICON_ERROR = '\u274C';
+const ICON_NEW_FILE = '\u{1F4C4}';
 
 function readLineFromStdin() {
   return new Promise((resolve) => {
@@ -66,6 +67,8 @@ for (const env of jsonConfig) {
   process.stdout.write(`Visit ${env.url}\n`);
   process.stdout.write(`${COLOR_ORANGE}Paste access_token:${COLOR_RESET} `);
   const accessToken = await readLineFromStdin();
+  // The pasted token is not echoed, so end the prompt line before writing status messages
+  process.stdout.write('\n');
   const expiresAt = getExp(accessToken);
   if (!expiresAt) {
     process.stdout.write(`${env.name} ${ICON_ERROR} invalid token\n\n`);
@@ -73,8 +76,8 @@ for (const env of jsonConfig) {
   }
 
   const envPath = path.join(root, env.filePath);
-  const envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, { encoding: 'utf-8', flag: 'r' }) : '';
-  const lines = envContent.split('\n');
+  const envFileExists = fs.existsSync(envPath);
+  const lines = envFileExists ? fs.readFileSync(envPath, { encoding: 'utf-8', flag: 'r' }).split('\n') : [];
   const tokenLine = `${env.name}=${accessToken}`;
   let tokenLineReplaced = false;
 
@@ -99,6 +102,9 @@ for (const env of jsonConfig) {
 
   const newEnvContent = lines.join('\n');
   fs.writeFileSync(envPath, newEnvContent, { mode: 0o600 });
+  if (!envFileExists) {
+    process.stdout.write(`${ICON_NEW_FILE} Created ${env.filePath}\n`);
+  }
   process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
   process.stdout.write('\n');
 }

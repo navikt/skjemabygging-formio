@@ -37,6 +37,7 @@ const FORM_COMPONENT_TYPES = [
   'firstName',
   'iban',
   'identity',
+  'navUnitSelect',
   'fnrfield',
   'orgNr',
   'phoneNumber',

@@ -13,8 +13,6 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-import { register } from '@mocks-server/cypress-commands';
 import 'cypress-axe';
 import './commands';
 import './components';
-register();

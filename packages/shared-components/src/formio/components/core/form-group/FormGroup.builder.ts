@@ -1,3 +1,4 @@
+import { createFormGroup } from '@navikt/skjemadigitalisering-shared-domain';
 import FormGroup from './FormGroup';
 
 const FormGroupBuilder = () => {
@@ -6,6 +7,7 @@ const FormGroupBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
+      ...createFormGroup(),
       validateOn: 'blur',
       validate: {
         required: false,

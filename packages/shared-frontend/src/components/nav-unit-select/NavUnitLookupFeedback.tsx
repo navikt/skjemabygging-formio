@@ -5,14 +5,15 @@ import Alert from '../alert/Alert';
 
 interface Props {
   retry: () => void;
+  loading?: boolean;
 }
 
-const NavUnitLookupFeedback = ({ retry }: Props) => {
+const NavUnitLookupFeedback = ({ retry, loading }: Props) => {
   const { translate } = useLanguage();
   return (
     <Alert variant="error">
       <p role="status">{translate(TEXTS.statiske.navUnit.fetchError)}</p>
-      <Button type="button" variant="secondary" onClick={retry}>
+      <Button type="button" variant="secondary" onClick={retry} loading={loading}>
         {translate(TEXTS.statiske.navUnit.retry)}
       </Button>
     </Alert>

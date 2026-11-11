@@ -8,7 +8,7 @@ import http from '../../app/http/http';
 import { getAkselLocale } from '../../app/language/akselLocale';
 import SkeletonList from '../../app/loading/SkeletonList';
 import { LanguageProvider } from '../../context/language/LanguageContext';
-import { LoadSendinnForm } from './createSendinnFormService';
+import { LoadSendinnForm } from '../SendinnServices';
 
 interface Props {
   request: SendinnFormRequest;

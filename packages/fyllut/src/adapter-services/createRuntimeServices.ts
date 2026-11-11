@@ -1,4 +1,4 @@
-import { IntegrationHttp, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FyllutRuntimeServices, IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 import createApplicationService from './createApplicationService';
 import createAttachmentService from './createAttachmentService';
 import createFormDataService from './createFormDataService';
@@ -11,7 +11,8 @@ interface Props {
   innsendingsId?: string;
 }
 
-const createRuntimeServices = ({ http, backendBaseUrl, innsendingsId }: Props): RuntimeServices => ({
+const createRuntimeServices = ({ http, backendBaseUrl, innsendingsId }: Props): FyllutRuntimeServices => ({
+  host: 'fyllut',
   applications: createApplicationService({ http, backendBaseUrl }),
   attachments: createAttachmentService({ http, backendBaseUrl }),
   formData: createFormDataService({ http, backendBaseUrl, innsendingsId }),

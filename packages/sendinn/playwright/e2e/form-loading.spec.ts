@@ -18,7 +18,11 @@ test.describe('Paper form loading', () => {
     await page.goto('/sendinn/nav123456?sub=digital&filter=%20N2,N1%20&filter=N2&lang=en');
     await requested;
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Submit documentation for a form', exact: true }),
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Submit additional documentation for Sendinn form loading (en)',
+        exact: true,
+      }),
     ).toHaveCount(0);
     releaseLoading();
     const response = await loaded;
@@ -39,7 +43,11 @@ test.describe('Paper form loading', () => {
       { key: 'sendinnAttachment2', components: [{ key: 'secondDocument' }] },
     ]);
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Submit documentation for a form', exact: true }),
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Submit additional documentation for Sendinn form loading (en)',
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(page.getByRole('textbox')).toHaveCount(0);
   });
@@ -66,7 +74,7 @@ test.describe('Paper form loading', () => {
     await useRouteVariant('get-form:success');
     await page.reload();
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Send inn dokumentasjon til skjema', exact: true }),
+      page.getByRole('heading', { level: 1, name: 'Ettersend dokumentasjon til Sendinn form loading', exact: true }),
     ).toBeVisible();
   });
 
@@ -84,7 +92,7 @@ test.describe('Paper form loading', () => {
   }) => {
     await page.goto('/sendinn/nav123456?filter=N2');
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Send inn dokumentasjon til skjema', exact: true }),
+      page.getByRole('heading', { level: 1, name: 'Ettersend dokumentasjon til Sendinn form loading', exact: true }),
     ).toBeVisible();
     const reloaded = page.waitForResponse((response) => {
       const url = new URL(response.url());
@@ -93,7 +101,11 @@ test.describe('Paper form loading', () => {
     await selectDecoratorLanguage(page, 'en');
     expect((await (await reloaded).json()).attachmentFilter).toEqual(['N2']);
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Submit documentation for a form', exact: true }),
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Submit additional documentation for Sendinn form loading (en)',
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page).toHaveURL(
@@ -104,7 +116,7 @@ test.describe('Paper form loading', () => {
   test('uses Bokmål for a language that is not published for the form', async ({ readyPage: page }) => {
     await page.goto('/sendinn/nav123456?lang=nn');
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Send inn dokumentasjon til skjema', exact: true }),
+      page.getByRole('heading', { level: 1, name: 'Ettersend dokumentasjon til Sendinn form loading', exact: true }),
     ).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'nb');
   });

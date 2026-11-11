@@ -1,18 +1,18 @@
-import { Component, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, FieldSize, FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
 import { FieldValidationProp } from '../components/types';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import { PatternRule } from '../validation/validators';
-import { ComponentDefinitionByType, TypedComponentType } from './component-types';
+import { ComponentDefinitionByType } from './component-types';
 
 /**
  * Component `type` literals handled by the input registry. This is every
- * `TypedComponentType` except `panel`, which is handled by page/navigation
+ * `FormComponentType` except `panel`, which is handled by page/navigation
  * rather than the input registry.
  */
-type InputComponentType = Exclude<TypedComponentType, 'panel'>;
+type InputComponentType = Exclude<FormComponentType, 'panel'>;
 
 /**
  * Props for an input adapter. Parameterized by the adapter's component

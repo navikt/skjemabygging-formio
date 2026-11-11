@@ -4,6 +4,7 @@ import {
   formsApiTranslationUtils,
   Submission,
   SubmissionAttachment,
+  SubmissionYourInformation,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { coverPageMapper } from './mapper';
 import { createSubsequentSubmissionDownloadData } from './subsequentSubmission';
@@ -68,10 +69,12 @@ const address = {
   landkode: 'NO',
   land: { value: 'NO', label: 'Norge' },
 };
-const unidentified = (): Submission => ({
+type PersonSubmission = Submission & { data: { dineOpplysninger: SubmissionYourInformation } };
+
+const unidentified = (): PersonSubmission => ({
   data: {
-    collectionType: 'unidentified-person',
-    yourInformation: { fornavn: 'Test', etternavn: 'Person', adresse: structuredClone(address) },
+    userType: 'unidentified-person',
+    dineOpplysninger: { fornavn: 'Test', etternavn: 'Person', adresse: structuredClone(address) },
     hasNavContact: 'nei',
     sendinnAttachment1: { first: attachment() },
   },
@@ -104,7 +107,7 @@ describe('trusted subsequent submission assembly', () => {
       collection: 'unidentified-person',
       user: { firstName: 'Test', surname: 'Person' },
       attachments: ['Translated first'],
-      archivedAttachments: ['First document'],
+      attachmentsForArchiving: ['First document'],
     });
     const body = coverPageMapper.createRequestBodyFromDownloadData(result, 'en');
     expect(body).toMatchObject({
@@ -120,15 +123,14 @@ describe('trusted subsequent submission assembly', () => {
   });
 
   it('resolves canonical identity and discards inactive name/address/contact answers', () => {
-    const submission: Submission = {
-      data: {
-        collectionType: 'identified-person',
-        yourInformation: { identitet: { identitetsnummer: '10915596784' }, fornavn: {}, adresse: 'invalid' },
-        hasNavContact: 'ja',
-        navContactUnit: '9999',
-        navUnit: '9999',
-      },
-    };
+    const submission = unidentified();
+    Object.assign(submission.data, {
+      userType: 'identified-person',
+      dineOpplysninger: { identitet: { identitetsnummer: '10915596784' }, fornavn: {}, adresse: 'invalid' },
+      hasNavContact: 'ja',
+      navContactUnit: '9999',
+      navUnit: '9999',
+    });
     const result = assemble(submission);
     expect(result).toMatchObject({ collection: 'identified-person', user: { nationalIdentityNumber: '10915596784' } });
     const body = coverPageMapper.createRequestBodyFromDownloadData(result);
@@ -139,26 +141,33 @@ describe('trusted subsequent submission assembly', () => {
 
   it('removes a hidden identity before resolving an unidentified person', () => {
     const submission = unidentified();
-    Object.assign(submission.data.yourInformation, { identitet: { identitetsnummer: 'invalid-hidden-identity' } });
+    Object.assign(submission.data.dineOpplysninger, { identitet: { identitetsnummer: 'invalid-hidden-identity' } });
     expect(assemble(submission).collection).toBe('unidentified-person');
   });
 
   it.each([
     [
       { hideUserTypes: true, enhetMaVelgesVedPapirInnsending: true },
-      { collectionType: 'identified-person', yourInformation: 'ignored', navUnit: 'ignored' },
+      { userType: 'identified-person', dineOpplysninger: 'ignored', navUnit: 'ignored' },
       'hidden',
       undefined,
     ],
-    [{ enhetMaVelgesVedPapirInnsending: true }, { navUnit: '0101', yourInformation: 'ignored' }, 'forced-unit', '0101'],
+    [
+      { enhetMaVelgesVedPapirInnsending: true },
+      { navUnit: '0101', dineOpplysninger: 'ignored' },
+      'forced-unit',
+      '0101',
+    ],
     [
       {},
-      { collectionType: 'multiple-people', navUnit: '0101', yourInformation: 'ignored', navContactUnit: 'ignored' },
+      { userType: 'multiple-people', navUnit: '0101', dineOpplysninger: 'ignored', navContactUnit: 'ignored' },
       'multiple-people',
       '0101',
     ],
   ] as const)('authorizes no-user only from the trusted configuration/branch %j', (properties, data, reason, unit) => {
-    const result = assemble({ data: { ...data } }, properties);
+    const submission: Submission = { data: {} };
+    Object.assign(submission.data, data);
+    const result = assemble(submission, properties);
     expect(result).toMatchObject({ collection: 'authorized-no-user', reason });
     expect(result).not.toHaveProperty('user');
     const body = coverPageMapper.createRequestBodyFromDownloadData(result);
@@ -171,44 +180,44 @@ describe('trusted subsequent submission assembly', () => {
 
   it.each(['identified-person', 'unidentified-person', 'multiple-people'])(
     'rejects a branch choice in forced mode: %s',
-    (collectionType) => {
+    (userType) => {
       expect(() =>
-        assemble({ data: { collectionType, navUnit: '0101' } }, { enhetMaVelgesVedPapirInnsending: true }),
+        assemble({ data: { userType, navUnit: '0101' } }, { enhetMaVelgesVedPapirInnsending: true }),
       ).toThrow();
     },
   );
 
   it.each<Submission['data']>([
     {},
-    { collectionType: 'organization' },
-    { collectionType: 'identified-person' },
-    { collectionType: 'identified-person', yourInformation: { identitet: { identitetsnummer: 'invalid' } } },
-    { collectionType: 'unidentified-person', yourInformation: {} },
-    { collectionType: 'multiple-people' },
+    { userType: 'organization' },
+    { userType: 'identified-person' },
+    { userType: 'identified-person', dineOpplysninger: { identitet: { identitetsnummer: 'invalid' } } },
+    { userType: 'unidentified-person', dineOpplysninger: {} },
+    { userType: 'multiple-people' },
   ])('does not turn invalid person/branch answers into no-user success: %j', (data) => {
     expect(() => assemble({ data })).toThrow();
   });
 
   it.each([
-    (submission: Submission) => {
-      Object.assign(submission.data.yourInformation, { fornavn: '' });
+    (submission: PersonSubmission) => {
+      Object.assign(submission.data.dineOpplysninger, { fornavn: '' });
     },
-    (submission: Submission) => {
-      Object.assign(submission.data.yourInformation, { etternavn: '<invalid>' });
+    (submission: PersonSubmission) => {
+      Object.assign(submission.data.dineOpplysninger, { etternavn: '<invalid>' });
     },
-    (submission: Submission) => {
-      Object.assign(submission.data.yourInformation, { adresse: {} });
+    (submission: PersonSubmission) => {
+      Object.assign(submission.data.dineOpplysninger, { adresse: {} });
     },
-    (submission: Submission) => {
-      Object.assign(submission.data.yourInformation, { adresse: { ...address, postnummer: 'abc' } });
+    (submission: PersonSubmission) => {
+      Object.assign(submission.data.dineOpplysninger, { adresse: { ...address, postnummer: 'abc' } });
     },
-    (submission: Submission) => {
-      Object.assign(submission.data.yourInformation, { adresse: { ...address, borDuINorge: 'other' } });
+    (submission: PersonSubmission) => {
+      Object.assign(submission.data.dineOpplysninger, { adresse: { ...address, borDuINorge: 'other' } });
     },
-    (submission: Submission) => {
+    (submission: PersonSubmission) => {
       submission.data.hasNavContact = 'ja';
     },
-    (submission: Submission) => {
+    (submission: PersonSubmission) => {
       submission.data.hasNavContact = 'unknown';
     },
   ])('rejects invalid active person/contact fields with a safe standard error', (mutate) => {
@@ -219,7 +228,7 @@ describe('trusted subsequent submission assembly', () => {
 
   it('uses the active address branch for foreign and post-office-box users', () => {
     const submission = unidentified();
-    Object.assign(submission.data.yourInformation, {
+    Object.assign(submission.data.dineOpplysninger, {
       adresse: {
         ...address,
         borDuINorge: 'nei',
@@ -234,7 +243,7 @@ describe('trusted subsequent submission assembly', () => {
     expect(assemble(submission).user).toMatchObject({
       address: { country: { value: 'SE' }, streetAddress: 'Foreign road' },
     });
-    Object.assign(submission.data.yourInformation, {
+    Object.assign(submission.data.dineOpplysninger, {
       adresse: {
         ...address,
         vegadresseEllerPostboksadresse: 'postboksadresse',
@@ -249,7 +258,7 @@ describe('trusted subsequent submission assembly', () => {
 
   it('ignores malformed inactive address fields without affecting the active concerned person', () => {
     const submission = unidentified();
-    Object.assign(submission.data.yourInformation, {
+    Object.assign(submission.data.dineOpplysninger, {
       adresse: {
         ...address,
         postboks: { ignored: true },
@@ -270,7 +279,7 @@ describe('trusted subsequent submission assembly', () => {
     };
     const result = assemble(submission, {}, ['N3', 'N2', 'N1']);
     expect(result.attachments).toEqual(['Translated first', '  User description  ', 'Custom other title']);
-    expect(result.archivedAttachments).toEqual(['First document', '  User description  ', 'Custom other title']);
+    expect(result.attachmentsForArchiving).toEqual(['First document', '  User description  ', 'Custom other title']);
     expect(assemble(unidentified(), {}, ['N1']).attachments).toEqual(['Translated first']);
   });
 
@@ -311,7 +320,7 @@ describe('trusted subsequent submission assembly', () => {
     expect(assemble(submission).attachments.at(-1)).toBe('a'.repeat(50));
     submission.data.sendinnAttachment3 = { other: [{ ...other, title: '   ' }] };
     expect(assemble(submission).attachments.at(-1)).toBe('   ');
-    expect(assemble(submission).archivedAttachments?.at(-1)).toBe('   ');
+    expect(assemble(submission).attachmentsForArchiving?.at(-1)).toBe('   ');
     submission.data.sendinnAttachment3 = { other: [other, other] };
     expect(() => assemble(submission)).toThrow();
     submission.data.sendinnAttachment3 = { other: [{ ...other, value: 'ettersender' }] };

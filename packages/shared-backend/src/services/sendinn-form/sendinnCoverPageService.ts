@@ -2,7 +2,7 @@ import {
   formsApiTranslationUtils,
   navFormUtils,
   NavUnitSelectComponent,
-  normalizeSendinnAttachmentFilter,
+  normalizeAttachmentCodeFilter,
   ResponseError,
   SendinnCoverPageRequest,
   SendinnCoverPageResult,
@@ -33,7 +33,7 @@ const createSendinnCoverPageService = ({
     const loaded = await formService.getForm({
       formPath: request.formPath,
       language: request.language,
-      attachmentFilter: normalizeSendinnAttachmentFilter(request.attachmentFilter),
+      attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });
     const translate = formsApiTranslationUtils.createTranslate(loaded.translations, loaded.language);
     const data = createSubsequentSubmissionDownloadData({
@@ -46,7 +46,7 @@ const createSendinnCoverPageService = ({
     if (data.recipient?.navUnit) {
       const units = await (async () => {
         try {
-          const result = await navUnitService.getNavUnits();
+          const result = await navUnitService.getSupportedNavUnits();
           if (
             !Array.isArray(result) ||
             !result.every((unit) => unit && typeof unit.enhetNr === 'string' && typeof unit.type === 'string')

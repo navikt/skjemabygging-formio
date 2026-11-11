@@ -1,5 +1,5 @@
 import {
-  normalizeSendinnAttachmentFilter,
+  normalizeAttachmentCodeFilter,
   ResponseError,
   SendinnCoverPageRequest,
   sendinnLanguageUtils,
@@ -35,7 +35,7 @@ const parseCoverPageRequest = (value: unknown): SendinnCoverPageRequest => {
   return {
     formPath: value.formPath,
     language,
-    attachmentFilter: normalizeSendinnAttachmentFilter(filter),
+    attachmentFilter: normalizeAttachmentCodeFilter(filter),
     submission: { data: value.submission.data, attachments: value.submission.attachments },
   };
 };

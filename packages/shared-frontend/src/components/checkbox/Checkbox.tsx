@@ -1,5 +1,4 @@
 import { Checkbox as AkselCheckbox, CheckboxGroup as AkselCheckboxGroup } from '@navikt/ds-react';
-import { useEffect } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
@@ -36,16 +35,6 @@ const Checkbox = ({
     validation: toFieldValidation({ statePath, label, required, validation }),
   });
   const current = checked ?? stateValue === true;
-
-  useEffect(() => {
-    if (checked !== undefined || typeof stateValue === 'boolean') {
-      return;
-    }
-
-    if (readOnly) {
-      setStateValue(false);
-    }
-  }, [checked, readOnly, setStateValue, stateValue]);
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>

@@ -57,7 +57,7 @@ describe('Error summary', () => {
           .within(() => {
             cy.findByRole('link', { name: 'Du må fylle ut: Har du norsk fødselsnummer eller d-nummer?' }).click();
           });
-        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('have.focus');
+        cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('have.focus');
       });
     });
   });
@@ -97,7 +97,7 @@ describe('Error summary', () => {
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Antall stjerner' }).click();
         });
-      cy.findByRole('group', { name: 'Antall stjerner' }).should('have.focus');
+      cy.findByRole('radiogroup', { name: 'Antall stjerner' }).should('have.focus');
     });
   });
 
@@ -150,12 +150,12 @@ describe('Error summary', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Førerkort' }).click();
         });
       cy.findByRole('heading', { name: 'Vedlegg' });
-      cy.findByRole('group', { name: 'Førerkort' }).should('have.focus');
+      cy.findByRole('radiogroup', { name: 'Førerkort' }).should('have.focus');
       cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
     });
 
     it('and it allows user to proceed to summary after correcting errors on current page', () => {
-      cy.findByRole('group', { name: 'Førerkort' })
+      cy.findByRole('radiogroup', { name: 'Førerkort' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Jeg legger det ved dette skjemaet').check();

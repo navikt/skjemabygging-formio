@@ -11,9 +11,11 @@ import {
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
+import { createSendinnServices } from './adapter-services/createSendinnServices';
 import { DecoratorLanguageSync } from './DecoratorLanguageSync';
 
 const baseUrl = '/sendinn';
+const services = createSendinnServices({ baseUrl, http });
 const root = createRoot(document.getElementById('root')!);
 
 const renderApp = (config: SharedFrontendConfig) =>
@@ -23,7 +25,7 @@ const renderApp = (config: SharedFrontendConfig) =>
         <BrowserRouter basename={baseUrl}>
           <DecoratorLanguageSync />
           <AppConfigProvider baseUrl={baseUrl} config={config}>
-            <SendinnApp />
+            <SendinnApp services={services} />
           </AppConfigProvider>
         </BrowserRouter>
       </Theme>

@@ -25,7 +25,7 @@ export { CAPTCHA_FAILURE_REASON, createCaptchaService } from './captcha';
 export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './captcha';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
-export { createContentService } from './content';
+export { createContentService, isContentSource } from './content';
 export type { ContentService, ContentSource } from './content';
 export { coverPageMapper, createCoverPageService, createSubsequentSubmissionDownloadData } from './cover-page';
 export type {
@@ -64,5 +64,5 @@ export { createSendinnCoverPageService } from './sendinn-form/sendinnCoverPageSe
 export type { SendinnCoverPageService } from './sendinn-form/sendinnCoverPageService';
 export { createStaticPdfService } from './static-pdf';
 export type { StaticPdfService } from './static-pdf';
-export { createPublishedTranslationService, createTranslationService } from './translation';
-export type { PublishedTranslationService, TranslationService } from './translation';
+export { createTranslationService } from './translation';
+export type { TranslationService } from './translation';

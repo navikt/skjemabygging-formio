@@ -272,6 +272,7 @@ export const statiske = {
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
   },
   address: {
+    address: 'Adresse',
     livesInNorway: 'Bor du i Norge?',
     yourContactAddress: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
@@ -400,13 +401,14 @@ export const statiske = {
   sendinn: {
     reviewAnswers: 'Kontroller opplysningene',
     noMatchingDocuments: 'Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.',
-    collection: {
+    userType: {
       multiplePeople: 'Flere personer / Nav-enhet',
       hasNavContact: 'Har du vært i kontakt med Nav om saken?',
     },
     journey: {
       standalone: 'Send dokumenter til Nav',
       form: 'Send inn dokumentasjon til skjema',
+      formTitle: 'Ettersend dokumentasjon til {{title}}',
       formWithTask: 'Send inn etterspurt dokumentasjon til skjema',
       task: 'Send inn etterspurt dokumentasjon',
       taskLink: 'Send inn etterspurt dokumentasjon fra varsel',

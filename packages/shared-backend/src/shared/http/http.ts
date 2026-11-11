@@ -21,6 +21,7 @@ interface HttpOptions {
   redirect?: RequestRedirect;
   responseType?: 'metadata' | 'stream';
   signal?: AbortSignal;
+  timeoutMs?: number;
 }
 
 type HttpMetadataResponse<T> = {
@@ -35,6 +36,9 @@ type HttpStreamResponse = {
   body: ReadableStream<Uint8Array>;
 };
 
+const requestSignal = (options?: HttpOptions) =>
+  options?.signal ?? (options?.timeoutMs === undefined ? undefined : AbortSignal.timeout(options.timeoutMs));
+
 function get(url: string, options: HttpOptions & { responseType: 'stream' }): Promise<HttpStreamResponse>;
 function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }): Promise<HttpMetadataResponse<T>>;
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
@@ -44,7 +48,7 @@ async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetad
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
     redirect: options?.redirect,
-    signal: options?.signal,
+    signal: requestSignal(options),
   });
 
   return handleResponse<T>(response, url, options);
@@ -63,7 +67,7 @@ async function post<T>(url: string, body?: object, options?: HttpOptions): Promi
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
-    signal: options?.signal,
+    signal: requestSignal(options),
   });
 
   return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
@@ -82,7 +86,7 @@ async function put<T>(url: string, body?: object, options?: HttpOptions): Promis
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
-    signal: options?.signal,
+    signal: requestSignal(options),
   });
 
   return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
@@ -101,7 +105,7 @@ async function httpDelete<T>(url: string, body?: object, options?: HttpOptions):
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
     redirect: options?.redirect,
-    signal: options?.signal,
+    signal: requestSignal(options),
   });
 
   return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
@@ -126,7 +130,7 @@ async function postMultipart<T>(
     headers: createHeaders(optionsWithoutContentType),
     body,
     redirect: options?.redirect,
-    signal: options?.signal,
+    signal: requestSignal(options),
   });
 
   return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
