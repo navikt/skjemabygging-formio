@@ -1,7 +1,7 @@
 import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { isChangedOnBlur, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
+import { isValueChange, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
@@ -64,7 +64,7 @@ const TextArea = ({
     const nextStateValue = toSubmissionFormat(event.target.value);
     if (controlledOnChange) {
       controlledOnChange(trimmedValue);
-    } else if (isChangedOnBlur(stateValue, nextStateValue)) {
+    } else if (isValueChange(stateValue, nextStateValue)) {
       setStateValue(nextStateValue);
     }
   };

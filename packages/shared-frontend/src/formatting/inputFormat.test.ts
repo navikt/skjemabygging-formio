@@ -1,4 +1,4 @@
-import { isChangedOnBlur, toInputFormat, toSubmissionFormat, toSubmissionNumber } from './inputFormat';
+import { isValueChange, toInputFormat, toSubmissionFormat, toSubmissionNumber } from './inputFormat';
 
 describe('inputFormat', () => {
   it('returns empty string for null/undefined', () => {
@@ -51,13 +51,13 @@ describe('inputFormat', () => {
   });
 
   it('keeps an unanswered field unanswered when it is left empty', () => {
-    expect(isChangedOnBlur(undefined, '')).toBe(false);
-    expect(isChangedOnBlur(null, '')).toBe(false);
-    expect(isChangedOnBlur('abc', 'abc')).toBe(false);
+    expect(isValueChange(undefined, '')).toBe(false);
+    expect(isValueChange(null, '')).toBe(false);
+    expect(isValueChange('abc', 'abc')).toBe(false);
   });
 
   it('stores a value that changed on blur, including a cleared answer', () => {
-    expect(isChangedOnBlur(undefined, 'abc')).toBe(true);
-    expect(isChangedOnBlur('abc', '')).toBe(true);
+    expect(isValueChange(undefined, 'abc')).toBe(true);
+    expect(isValueChange('abc', '')).toBe(true);
   });
 });
