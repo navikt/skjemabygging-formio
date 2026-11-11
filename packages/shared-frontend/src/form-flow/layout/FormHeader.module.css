@@ -23,7 +23,4 @@
 /* Aksel Heading has no font-weight prop — override the form title sub-heading */
 .formTitle {
   font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
