@@ -107,6 +107,12 @@ test.describe('Generated paper journey', () => {
     await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
     await expect(title).toHaveValue('');
+    await title.fill('Receipt!');
+    await nextStep(page);
+    await expect(errorSummary(page).getByRole('link')).toHaveText(
+      'Gi vedlegget et beskrivende navn inneholder ugyldige tegn',
+    );
+    await expect(title).toHaveValue('Receipt!');
     await title.fill('Additional evidence');
     await choice.uncheck();
     await expect(title).toBeHidden();

@@ -130,7 +130,7 @@ describe('attachment validation', () => {
       ...component,
       attachmentType: 'other',
     }).find((field) => field.statePath === 'documentation.doc.title');
-    expect(fields[1].rules).toEqual(digitalTitle?.rules);
+    expect(fields[1].rules).toEqual({ ...digitalTitle?.rules, coverPageValue: true });
   });
 
   it('rejects restored paper titles longer than the digital limit', () => {
