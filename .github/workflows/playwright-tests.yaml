@@ -31,7 +31,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+      - run: pnpm --dir packages/fyllut exec playwright install chromium
       - run: pnpm build:fyllut
       - name: Run the built pilot
         run: pnpm playwright:fyllut:built
@@ -61,7 +61,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir packages/sendinn exec playwright install --with-deps chromium
+      - run: pnpm --dir packages/sendinn exec playwright install chromium
       - run: pnpm build:sendinn
       - name: Run the built Sendinn suite
         run: pnpm playwright:sendinn:built
