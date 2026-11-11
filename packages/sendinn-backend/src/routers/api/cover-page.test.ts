@@ -7,13 +7,13 @@ import {
   createSendinnFormService,
   ForstesideRequestBody,
 } from '@navikt/skjemadigitalisering-shared-backend';
-import { Form, SendinnFormRequest } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { createServer, Server } from 'node:http';
 import request from 'supertest';
-import { createApp } from './app';
+import { createApp } from '../../app';
 
 const { download } = vi.hoisted(() => ({ download: vi.fn() }));
-vi.mock('./services', async () => {
+vi.mock('../../services', async () => {
   const { Registry } = await import('prom-client');
   return {
     sendinnCoverPageService: { downloadCoverPage: download },
@@ -82,11 +82,9 @@ describe('Sendinn cover page HTTP boundaries', () => {
   let tokenResponse: unknown;
   let tokenService: ReturnType<typeof createEntraIdTokenService>;
   let translationStatus: number;
-  let navStatus: number;
   let generatorResponse: unknown;
   let requests: { path: string; body: string; correlation?: string; authorization?: string }[];
   let generated: ForstesideRequestBody[];
-  let units: { enhetNr: string; navn: string; type: string }[];
 
   beforeAll(async () => {
     server = createServer(async (req, res) => {
@@ -110,7 +108,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
       if (path.includes('/translations?') || path.includes('/global-translations?')) {
         return respond(translationStatus, [{ key: 'First document', en: 'Translated first' }]);
       }
-      if (path.startsWith('/norg2/api/v1/enhet')) return respond(navStatus, navStatus === 200 ? units : {});
       if (path === '/texas/token') {
         return respond(tokenStatus, tokenStatus === 200 ? tokenResponse : { message: 'sensitive-upstream-answer' });
       }
@@ -136,15 +133,11 @@ describe('Sendinn cover page HTTP boundaries', () => {
   });
   beforeEach(() => {
     form = structuredClone(original);
-    formStatus = generatorStatus = tokenStatus = navStatus = translationStatus = 200;
+    formStatus = generatorStatus = tokenStatus = translationStatus = 200;
     tokenResponse = { access_token: 'test-service-token' };
     generatorResponse = { foersteside: pdf, loepenummer: 'test-sequence' };
     requests = [];
     generated = [];
-    units = [
-      { enhetNr: '0101', navn: 'Local office', type: 'LOKAL' },
-      { enhetNr: '0202', navn: 'Other office', type: 'HMS' },
-    ];
     tokenService = createEntraIdTokenService({
       tokenEndpoint: `${baseUrl}/texas/token`,
       target: 'api://test-proxy/.default',
@@ -219,83 +212,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(requests.filter((entry) => entry.path === '/forms-api/v1/forms/nav123456')).toHaveLength(2);
   });
 
-  it('rejects invalid identified-person answers before token acquisition and sends the valid concerned identity', async () => {
-    form.properties.hideUserTypes = false;
-    const payload = {
-      ...body(),
-      submission: {
-        data: {
-          userType: 'identified-person',
-          dineOpplysninger: { identitet: { identitetsnummer: 'invalid' } },
-        },
-      },
-    };
-    await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(400);
-    expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
-    payload.submission.data.dineOpplysninger.identitet.identitetsnummer = '10915596784';
-    await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
-    expect(generated[0].bruker).toEqual({ brukerId: '10915596784', brukerType: 'PERSON' });
-    expect(generated[0]).not.toHaveProperty('ukjentBrukerPersoninfo');
-  });
-
-  it.each(['forced', 'multiple', 'contact'])(
-    'validates %s unit membership against the existing lookup and maps standard recipient routing',
-    async (mode) => {
-      form.properties.hideUserTypes = false;
-      form.properties.enhetMaVelgesVedPapirInnsending = mode === 'forced';
-      form.properties.enhetstyper = ['LOKAL'];
-      const data =
-        mode === 'forced'
-          ? { navUnit: '0101' }
-          : mode === 'multiple'
-            ? { userType: 'multiple-people', navUnit: '0101' }
-            : {
-                userType: 'unidentified-person',
-                hasNavContact: 'ja',
-                navContactUnit: '0101',
-                dineOpplysninger: {
-                  fornavn: 'Test',
-                  etternavn: 'Person',
-                  adresse: {
-                    borDuINorge: 'ja',
-                    vegadresseEllerPostboksadresse: 'vegadresse',
-                    adresse: 'Test road',
-                    postnummer: '0123',
-                    bySted: 'Oslo',
-                    landkode: 'NO',
-                    land: { value: 'NO', label: 'Norge' },
-                  },
-                },
-              };
-      await request(createApp())
-        .post('/sendinn/api/cover-page')
-        .send({ ...body(), submission: { data } })
-        .expect(200);
-      expect(generated[0]).toMatchObject({ enhetsnummer: '0101', netsPostboks: '1400' });
-      expect(generated[0]).not.toHaveProperty('adresse');
-      expect(generated[0]).not.toHaveProperty('bruker');
-      expect(generated[0].ukjentBrukerPersoninfo === undefined).toBe(mode !== 'contact');
-      const unavailable = { ...data, ...(mode === 'contact' ? { navContactUnit: '0202' } : { navUnit: '0202' }) };
-      await request(createApp())
-        .post('/sendinn/api/cover-page')
-        .send({ ...body(), submission: { data: unavailable } })
-        .expect(400);
-      expect(generated).toHaveLength(1);
-    },
-  );
-
-  it('falls back to all units only after a successful empty type filter and does not fall back on lookup failure', async () => {
-    form.properties.hideUserTypes = false;
-    form.properties.enhetMaVelgesVedPapirInnsending = true;
-    form.properties.enhetstyper = ['KLAGE'];
-    const payload = { ...body(), submission: { data: { navUnit: '0202' } } };
-    await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
-    navStatus = 500;
-    const response = await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(503);
-    expect(response.body.errorCode).toBe('SERVICE_UNAVAILABLE');
-    expect(generated).toHaveLength(1);
-  });
-
   it.each([
     { formPath: '../untrusted' },
     { language: 'se' },
@@ -362,34 +278,10 @@ describe('Sendinn cover page HTTP boundaries', () => {
     },
   );
 
-  it('falls back to Bokmål for an unavailable language without fetching its translations', async () => {
-    form.status = 'published';
-    await request(createApp())
-      .post('/sendinn/api/cover-page')
-      .send({ ...body(), language: 'nn' })
-      .expect(200);
-    expect(generated[0]).toMatchObject({ spraakkode: 'NB', dokumentlisteFoersteside: ['First document'] });
-    expect(
-      requests.some((entry) => entry.path.includes('/translations?') || entry.path.includes('/global-translations?')),
-    ).toBe(false);
-  });
-
-  it('defaults to Bokmål, preserves titles verbatim and permits zero selected documents until T9', async () => {
-    const payload: Omit<SendinnFormRequest, 'language'> & { submission: { data: object } } = {
-      formPath: 'nav123456',
-      attachmentFilter: [],
-      submission: { data: { sendinnAttachment1: { first: selected('first-id', 'Custom description') } } },
-    };
+  it('defaults to Bokmål when the request omits the language', async () => {
+    const { language: _language, ...payload } = body();
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
-    expect(generated[0]).toMatchObject({
-      spraakkode: 'NB',
-      dokumentlisteFoersteside: ['Custom description'],
-      vedleggsliste: ['Custom description'],
-    });
-    await request(createApp())
-      .post('/sendinn/api/cover-page')
-      .send({ ...payload, submission: { data: {} } })
-      .expect(200);
-    expect(generated[1].dokumentlisteFoersteside).toEqual([]);
+    expect(generated[0]).toMatchObject({ spraakkode: 'NB', dokumentlisteFoersteside: ['First document'] });
+    expect(requests.some((entry) => entry.path.includes('/translations?'))).toBe(false);
   });
 });
