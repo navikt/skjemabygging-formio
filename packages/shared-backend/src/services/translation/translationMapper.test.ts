@@ -1,37 +1,34 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { convertI18nTranslationsToFormsApiTranslationMap, convertToFormsApiTranslationMap } from './translationMapper';
-
-const required = {
-  nb: TEXTS.validering.required,
-  nn: 'Du må fylle ut: {{field}}',
-  en: 'You must fill in: {{field}}',
-};
+import { addValidationDefaults } from './translationMapper';
 
 describe('translationMapper', () => {
-  describe('convertI18nTranslationsToFormsApiTranslationMap', () => {
-    it('stores validation translations under both their key and their Bokmål text', () => {
-      const translations = convertI18nTranslationsToFormsApiTranslationMap({
-        'nn-NO': { required: required.nn },
-        en: { required: required.en, Ja: 'Yes' },
+  describe('addValidationDefaults', () => {
+    it('adds the Bokmål text to a validation translation stored without one', () => {
+      const translations = addValidationDefaults({
+        required: { nn: 'Du må fylle ut: {{field}}', en: 'You must fill in: {{field}}' },
       });
 
-      expect(translations.required).toEqual(required);
-      expect(translations[TEXTS.validering.required]).toEqual(required);
-      expect(translations.Ja).toEqual({ en: 'Yes' });
+      expect(translations.required).toEqual({
+        nb: TEXTS.validering.required,
+        nn: 'Du må fylle ut: {{field}}',
+        en: 'You must fill in: {{field}}',
+      });
     });
-  });
 
-  describe('convertToFormsApiTranslationMap', () => {
-    it('stores validation translations under both their key and their Bokmål text', () => {
-      const translations = convertToFormsApiTranslationMap([
-        { key: 'required', nn: required.nn, en: required.en },
-        { key: 'Ja', nb: 'Ja', en: 'Yes' },
-      ]);
+    it('adds the Bokmål text for a validation key that is not stored', () => {
+      expect(addValidationDefaults({}).maxYear).toEqual({ nb: TEXTS.validering.maxYear });
+    });
 
-      expect(translations.required).toEqual(required);
-      expect(translations[TEXTS.validering.required]).toEqual(required);
-      expect(translations.Ja).toEqual({ nb: 'Ja', en: 'Yes' });
+    it('keeps a stored Bokmål text and leaves other translations unchanged', () => {
+      const translations = addValidationDefaults({
+        fileMissing: { nb: 'Last opp: {{field}}' },
+        Ja: { en: 'Yes' },
+      });
+
+      expect(translations.fileMissing).toEqual({ nb: 'Last opp: {{field}}' });
+      expect(translations.Ja).toEqual({ en: 'Yes' });
+      expect(translations[TEXTS.validering.required]).toBeUndefined();
     });
   });
 });

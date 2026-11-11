@@ -10,6 +10,7 @@ import {
 import { fileUtil } from '../../util';
 import translationClient from './translationClient';
 import {
+  addValidationDefaults,
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,
   getGlobalTranslationFilename,
@@ -148,7 +149,7 @@ const createTranslationService = ({
       {},
     );
 
-    return { ...introPageTranslations, ...translations[0], ...translations[1] };
+    return addValidationDefaults({ ...introPageTranslations, ...translations[0], ...translations[1] });
   };
 
   const createTranslate = async (props: CreateTranslationsProps) => {

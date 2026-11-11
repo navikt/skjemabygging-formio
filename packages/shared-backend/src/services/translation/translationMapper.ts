@@ -18,37 +18,15 @@ const getGlobalTranslationFilename = (lang: TranslationLang): string => {
   }
 };
 
-// Validation texts are stored under their key (e.g. "required"), but the new renderer looks them up by their
-// Bokmål text, so they are also stored under that text.
-const addTranslation = (
-  accumulator: FormsApiTranslationMap,
-  key: string,
-  translation: FormsApiTranslationMap[string],
-): FormsApiTranslationMap => {
-  const validationFallback = Object.hasOwn(TEXTS.validering, key)
-    ? TEXTS.validering[key as keyof typeof TEXTS.validering]
-    : undefined;
-  if (!validationFallback) {
-    accumulator[key] = translation;
-    return accumulator;
-  }
-
-  const validationTranslation = { ...translation, nb: translation.nb ?? validationFallback };
-  accumulator[key] = validationTranslation;
-  accumulator[validationFallback] = validationTranslation;
-  return accumulator;
-};
-
 const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
-  return translations.reduce(
-    (accumulator, currentItem: FormsApiTranslation) =>
-      addTranslation(accumulator, currentItem.key, {
-        nb: currentItem.nb,
-        nn: currentItem.nn,
-        en: currentItem.en,
-      }),
-    {} as FormsApiTranslationMap,
-  );
+  return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
+    accumulator[currentItem.key] = {
+      nb: currentItem.nb,
+      nn: currentItem.nn,
+      en: currentItem.en,
+    };
+    return accumulator;
+  }, {} as FormsApiTranslationMap);
 };
 
 const convertI18nTranslationsToFormsApiTranslationMap = (
@@ -67,13 +45,23 @@ const convertI18nTranslationsToFormsApiTranslationMap = (
       result[key][mappedLang] = value;
     }
   }
-  return Object.entries(result).reduce(
-    (accumulator, [key, translation]) => addTranslation(accumulator, key, translation),
-    {} as FormsApiTranslationMap,
-  );
+  return result;
 };
 
+// Validation texts are stored under their key (e.g. "maxYear"), usually without a Bokmål value, so the
+// Bokmål text from the code is used unless a Bokmål value is stored.
+const addValidationDefaults = (translations: FormsApiTranslationMap): FormsApiTranslationMap => ({
+  ...translations,
+  ...Object.fromEntries(
+    Object.entries(TEXTS.validering).map(([key, nb]) => [
+      key,
+      { ...translations[key], nb: translations[key]?.nb || nb },
+    ]),
+  ),
+});
+
 export {
+  addValidationDefaults,
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,
   getGlobalTranslationFilename,
