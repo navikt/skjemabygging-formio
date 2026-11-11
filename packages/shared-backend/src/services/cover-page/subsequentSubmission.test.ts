@@ -3,6 +3,7 @@ import {
   Form,
   formsApiTranslationUtils,
   Submission,
+  SubmissionAddress,
   SubmissionAttachment,
   SubmissionYourInformation,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -66,7 +67,6 @@ const address = {
   adresse: 'Test road 1',
   postnummer: '0123',
   bySted: 'Oslo',
-  landkode: 'NO',
   land: { value: 'NO', label: 'Norge' },
 };
 type PersonSubmission = Submission & { data: { dineOpplysninger: SubmissionYourInformation } };
@@ -74,7 +74,7 @@ type PersonSubmission = Submission & { data: { dineOpplysninger: SubmissionYourI
 const unidentified = (): PersonSubmission => ({
   data: {
     userType: 'unidentified-person',
-    dineOpplysninger: { fornavn: 'Test', etternavn: 'Person', adresse: structuredClone(address) },
+    dineOpplysninger: { fornavn: 'Test', etternavn: 'Person', adresse: structuredClone(address) as SubmissionAddress },
     hasNavContact: 'nei',
     sendinnAttachment1: { first: attachment() },
   },
@@ -235,7 +235,6 @@ describe('trusted subsequent submission assembly', () => {
         adresse: 'Foreign road',
         postnummer: '',
         bySted: '',
-        landkode: 'SE',
         land: { value: 'SE', label: 'Sverige' },
         postboks: 'stale',
       },

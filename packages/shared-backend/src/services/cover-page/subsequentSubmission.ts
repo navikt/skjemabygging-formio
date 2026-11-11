@@ -68,11 +68,13 @@ const validateAddress = (value: unknown, component: Component): SubmissionAddres
     return invalidAnswer();
   const country = livesInNorway === 'nei' ? value.land : { value: 'NO', label: 'Norge' };
   if (!isRecord(country)) return invalidAnswer();
+  const land = { value: requireText(country.value)!, label: requireText(country.label)! };
+  // The renderer stores only the selected country, so the country code is derived from it.
   const address: SubmissionAddress = {
     borDuINorge: livesInNorway,
     ...(addressChoice ? { vegadresseEllerPostboksadresse: addressChoice } : {}),
-    landkode: livesInNorway === 'ja' ? 'NO' : requireText(value.landkode)!,
-    land: { value: requireText(country.value)!, label: requireText(country.label)! },
+    landkode: land.value,
+    land,
   };
   const fields = toAddressValidationFields({
     statePath: component.key,
