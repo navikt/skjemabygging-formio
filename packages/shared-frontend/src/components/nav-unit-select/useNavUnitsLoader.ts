@@ -1,8 +1,7 @@
-import { Enhet } from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhet, navUnitUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useCommonRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { sortNavUnits } from './navUnitUtils';
 
 interface NavUnitsState {
   allUnits?: Enhet[];
@@ -30,7 +29,7 @@ const useNavUnitsLoader = (enabled: boolean): NavUnitsState => {
       .getNavUnits()
       .then((units) => {
         if (!cancelled) {
-          setResult({ source: formData, attempt, units: sortNavUnits(units) });
+          setResult({ source: formData, attempt, units: navUnitUtils.sortNavUnits(units) });
         }
       })
       .catch((fetchError) => {

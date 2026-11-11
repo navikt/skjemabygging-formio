@@ -2,6 +2,7 @@ import {
   formsApiTranslationUtils,
   navFormUtils,
   NavUnitSelectComponent,
+  navUnitUtils,
   normalizeAttachmentCodeFilter,
   ResponseError,
   SendinnCoverPageRequest,
@@ -69,8 +70,7 @@ const createSendinnCoverPageService = ({
             component.type === 'navUnitSelect' &&
             component.key === (data.collection === 'unidentified-person' ? 'navContactUnit' : 'navUnit'),
         );
-      const filtered = units.filter((unit) => !field?.unitTypes?.length || field.unitTypes.includes(unit.type));
-      const available = filtered.length ? filtered : units;
+      const available = navUnitUtils.resolveNavUnits(units, field?.unitTypes);
       if (!available.some((unit) => unit.enhetNr === data.recipient?.navUnit)) {
         throw new ResponseError('BAD_REQUEST', 'Selected Nav unit is unavailable');
       }
