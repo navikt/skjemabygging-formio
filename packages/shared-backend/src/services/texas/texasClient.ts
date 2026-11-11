@@ -27,6 +27,11 @@ interface ExchangeProps extends TexasRequestOptions {
   userToken: string;
 }
 
+interface TokenProps extends TexasRequestOptions {
+  identityProvider: TexasIdentityProvider;
+  target: string;
+}
+
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 100;
 
@@ -103,9 +108,25 @@ const exchange = async ({ identityProvider, target, userToken, ...options }: Exc
   return response.access_token;
 };
 
+// Texas caches machine-to-machine tokens until shortly before they expire.
+const token = async ({ identityProvider, target, ...options }: TokenProps): Promise<string> => {
+  const response = await postForm<TexasTokenResponse>(
+    options,
+    { identity_provider: identityProvider, target },
+    { unavailable: 'Unable to get token', invalidResponse: 'Unable to parse token response' },
+  );
+
+  if (!response.access_token) {
+    throw new ResponseError('INTERNAL_SERVER_ERROR', 'Token response is missing access token');
+  }
+
+  return response.access_token;
+};
+
 const texasClient = {
   introspect,
   exchange,
+  token,
 };
 
 export default texasClient;

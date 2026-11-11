@@ -1,7 +1,7 @@
 import {
-  createAzureTokenService,
   createContentService,
   createCoverPageService,
+  createEntraIdTokenService,
   createNavUnitService,
   createSendinnCoverPageService,
   createSendinnFormService,
@@ -80,7 +80,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
   let generatorStatus: number;
   let tokenStatus: number;
   let tokenResponse: unknown;
-  let tokenService: ReturnType<typeof createAzureTokenService>;
+  let tokenService: ReturnType<typeof createEntraIdTokenService>;
   let translationStatus: number;
   let navStatus: number;
   let generatorResponse: unknown;
@@ -111,8 +111,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
         return respond(translationStatus, [{ key: 'First document', en: 'Translated first' }]);
       }
       if (path.startsWith('/norg2/api/v1/enhet')) return respond(navStatus, navStatus === 200 ? units : {});
-      if (path === '/token') {
-        res.setHeader('x-correlation-id', 'token-upstream');
+      if (path === '/texas/token') {
         return respond(tokenStatus, tokenStatus === 200 ? tokenResponse : { message: 'sensitive-upstream-answer' });
       }
       if (path === '/proxy/foersteside') {
@@ -146,11 +145,9 @@ describe('Sendinn cover page HTTP boundaries', () => {
       { enhetNr: '0101', navn: 'Local office', type: 'LOKAL' },
       { enhetNr: '0202', navn: 'Other office', type: 'HMS' },
     ];
-    tokenService = createAzureTokenService({
-      tokenEndpoint: `${baseUrl}/token`,
-      clientId: 'test-client',
-      clientSecret: 'test-credential',
-      scope: 'openid api://test-proxy/.default',
+    tokenService = createEntraIdTokenService({
+      tokenEndpoint: `${baseUrl}/texas/token`,
+      target: 'api://test-proxy/.default',
     });
     const service = createSendinnCoverPageService({
       formService: createSendinnFormService({
@@ -189,48 +186,25 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(JSON.stringify(generated)).not.toContain('untrusted');
     const outbound = requests.find((entry) => entry.path === '/proxy/foersteside');
     expect(outbound).toMatchObject({ correlation: 'journey-correlation', authorization: 'Bearer test-service-token' });
-    const tokenBody = new URLSearchParams(requests.find((entry) => entry.path === '/token')?.body);
+    const tokenBody = new URLSearchParams(requests.find((entry) => entry.path === '/texas/token')?.body);
     expect(Object.fromEntries(tokenBody)).toEqual({
-      grant_type: 'client_credentials',
-      client_id: 'test-client',
-      client_secret: 'test-credential',
-      scope: 'openid api://test-proxy/.default',
+      identity_provider: 'entra_id',
+      target: 'api://test-proxy/.default',
     });
     expect(requests.some((entry) => entry.path.includes('select='))).toBe(false);
   });
 
-  it('rejects missing client credentials without calling Azure or the generator', async () => {
-    tokenService = createAzureTokenService({
-      tokenEndpoint: `${baseUrl}/token`,
-      clientId: '',
-      clientSecret: '',
-      scope: 'openid api://test-proxy/.default',
-    });
-
-    const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(503);
-
-    expect(response.body).toMatchObject({
-      errorCode: 'SERVICE_UNAVAILABLE',
-      message: 'Unable to authenticate cover page request',
-      correlationId: expect.any(String),
-    });
-    expect(requests.some((entry) => entry.path === '/token' || entry.path === '/proxy/foersteside')).toBe(false);
-    expect(generated).toEqual([]);
-  });
-
-  it('uses a pre-generated proxy token without client credentials or an Azure token request', async () => {
-    tokenService = createAzureTokenService({
-      tokenEndpoint: `${baseUrl}/token`,
-      clientId: '',
-      clientSecret: '',
-      scope: 'openid api://test-proxy/.default',
+  it('uses a pre-generated proxy token without a Texas token request', async () => {
+    tokenService = createEntraIdTokenService({
+      tokenEndpoint: `${baseUrl}/texas/token`,
+      target: 'api://test-proxy/.default',
       devToken: 'local-generator-token',
     });
 
     const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(200);
 
     expect(response.body).toEqual({ pdf });
-    expect(requests.some((entry) => entry.path === '/token')).toBe(false);
+    expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
     expect(requests.find((entry) => entry.path === '/proxy/foersteside')?.authorization).toBe(
       'Bearer local-generator-token',
     );
@@ -257,7 +231,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       },
     };
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(400);
-    expect(requests.some((entry) => entry.path === '/token')).toBe(false);
+    expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
     payload.submission.data.dineOpplysninger.identitet.identitetsnummer = '10915596784';
     await request(createApp()).post('/sendinn/api/cover-page').send(payload).expect(200);
     expect(generated[0].bruker).toEqual({ brukerId: '10915596784', brukerType: 'PERSON' });
@@ -362,7 +336,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       .send(payload)
       .expect(mode === 'empty-filter' ? 400 : 404);
     expect(generated).toEqual([]);
-    expect(requests.some((entry) => entry.path === '/token')).toBe(false);
+    expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
   });
 
   it.each(['generator', 'token', 'empty-response', 'nonpdf-response', 'malformed-token', 'translations'])(
@@ -378,7 +352,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       const localCorrelation = expect.any(String);
       expect(response.body).toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
-        correlationId: mode === 'generator' || mode === 'token' ? `${mode}-upstream` : localCorrelation,
+        correlationId: mode === 'generator' ? 'generator-upstream' : localCorrelation,
       });
       expect(response.headers['x-correlation-id']).toBe(response.body.correlationId);
       expect(JSON.stringify(response.body)).not.toMatch(

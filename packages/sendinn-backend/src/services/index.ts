@@ -1,9 +1,9 @@
 import { fetchDecoratorHtml } from '@navikt/nav-dekoratoren-moduler/ssr';
 import {
-  createAzureTokenService,
   createContentService,
   createCoverPageService,
   createDecorator,
+  createEntraIdTokenService,
   createIdportenAuth,
   createNavUnitService,
   createSendinnCoverPageService,
@@ -22,9 +22,10 @@ const contentService = createContentService({ baseUrl: config.formsApiUrl, sourc
 const sendinnFormService = createSendinnFormService({ contentService });
 const navUnitService = createNavUnitService({ baseUrl: config.norg2Url, consumerId: 'sendinn' });
 const coverPageService = createCoverPageService({ baseUrl: config.skjemabyggingProxyUrl });
-const generatorTokenService = createAzureTokenService({
-  ...config.azure,
-  scope: `openid api://${config.skjemabyggingProxyClientId}/.default`,
+const generatorTokenService = createEntraIdTokenService({
+  tokenEndpoint: config.texas.tokenEndpoint,
+  target: `api://${config.skjemabyggingProxyClientId}/.default`,
+  devToken: config.skjemabyggingProxyDevToken,
 });
 const sendinnCoverPageService = createSendinnCoverPageService({
   formService: sendinnFormService,

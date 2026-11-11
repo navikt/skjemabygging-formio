@@ -30,3 +30,27 @@ describe('texasClient', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('texasClient.token', () => {
+  const token = (fetchImpl: typeof fetch) =>
+    texasClient.token({
+      endpoint: 'http://texas/token',
+      fetchImpl,
+      identityProvider: 'entra_id',
+      target: 'api://test/.default',
+    });
+
+  it('requests a machine-to-machine token for the target', async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ access_token: 'texas-token' }));
+
+    await expect(token(fetchImpl)).resolves.toBe('texas-token');
+    const body = fetchImpl.mock.calls[0][1]?.body as URLSearchParams;
+    expect(Object.fromEntries(body)).toEqual({ identity_provider: 'entra_id', target: 'api://test/.default' });
+  });
+
+  it('rejects a response without an access token', async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({}));
+
+    await expect(token(fetchImpl)).rejects.toMatchObject({ errorCode: 'INTERNAL_SERVER_ERROR' });
+  });
+});
