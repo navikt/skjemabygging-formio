@@ -23,13 +23,11 @@ const createSendinnCoverPageService = ({
   coverPageService,
   navUnitService,
   getAccessToken,
-  allowTestIdentityNumbers = false,
 }: {
   formService: SendinnFormService;
   coverPageService: CoverPageService;
   navUnitService: NavUnitService;
   getAccessToken: () => Promise<string>;
-  allowTestIdentityNumbers?: boolean;
 }): SendinnCoverPageService => {
   const downloadCoverPage: SendinnCoverPageService['downloadCoverPage'] = async (request) => {
     const loaded = await formService.getForm({
@@ -44,7 +42,6 @@ const createSendinnCoverPageService = ({
       submission: request.submission,
       language: loaded.language,
       translate,
-      allowTestIdentityNumbers,
     });
     if (data.recipient?.navUnit) {
       const units = await (async () => {

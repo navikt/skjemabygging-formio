@@ -150,7 +150,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
       navUnitService: createNavUnitService({ baseUrl, consumerId: 'sendinn' }),
       coverPageService: createCoverPageService({ baseUrl: `${baseUrl}/proxy` }),
       getAccessToken: () => tokenService.getAccessToken(),
-      allowTestIdentityNumbers: true,
     });
     download.mockClear();
     download.mockImplementation(service.downloadCoverPage);

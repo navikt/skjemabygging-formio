@@ -87,7 +87,6 @@ const assemble = (submission: Submission, properties: Partial<Form['properties']
     ),
     submission,
     language: 'en',
-    allowTestIdentityNumbers: true,
     translate: formsApiTranslationUtils.createTranslate({ 'First document': { en: 'Translated first' } }, 'en'),
   });
 
@@ -191,83 +190,10 @@ describe('trusted subsequent submission assembly', () => {
     {},
     { userType: 'organization' },
     { userType: 'identified-person' },
-    { userType: 'identified-person', dineOpplysninger: { identitet: { identitetsnummer: 'invalid' } } },
     { userType: 'unidentified-person', dineOpplysninger: {} },
     { userType: 'multiple-people' },
   ])('does not turn invalid person/branch answers into no-user success: %j', (data) => {
     expect(() => assemble({ data })).toThrow();
-  });
-
-  it.each([
-    (submission: PersonSubmission) => {
-      Object.assign(submission.data.dineOpplysninger, { fornavn: '' });
-    },
-    (submission: PersonSubmission) => {
-      Object.assign(submission.data.dineOpplysninger, { etternavn: '<invalid>' });
-    },
-    (submission: PersonSubmission) => {
-      Object.assign(submission.data.dineOpplysninger, { adresse: {} });
-    },
-    (submission: PersonSubmission) => {
-      Object.assign(submission.data.dineOpplysninger, { adresse: { ...address, postnummer: 'abc' } });
-    },
-    (submission: PersonSubmission) => {
-      Object.assign(submission.data.dineOpplysninger, { adresse: { ...address, borDuINorge: 'other' } });
-    },
-    (submission: PersonSubmission) => {
-      submission.data.hasNavContact = 'ja';
-    },
-    (submission: PersonSubmission) => {
-      submission.data.hasNavContact = 'unknown';
-    },
-  ])('rejects invalid active person/contact fields with a safe standard error', (mutate) => {
-    const submission = unidentified();
-    mutate(submission);
-    expect(() => assemble(submission)).toThrow('Invalid cover page answers');
-  });
-
-  it('uses the active address branch for foreign and post-office-box users', () => {
-    const submission = unidentified();
-    Object.assign(submission.data.dineOpplysninger, {
-      adresse: {
-        ...address,
-        borDuINorge: 'nei',
-        adresse: 'Foreign road',
-        postnummer: '',
-        bySted: '',
-        land: { value: 'SE', label: 'Sverige' },
-        postboks: 'stale',
-      },
-    });
-    expect(assemble(submission).user).toMatchObject({
-      address: { country: { value: 'SE' }, streetAddress: 'Foreign road' },
-    });
-    Object.assign(submission.data.dineOpplysninger, {
-      adresse: {
-        ...address,
-        vegadresseEllerPostboksadresse: 'postboksadresse',
-        postboks: '123',
-        adresse: 'stale',
-      },
-    });
-    const body = coverPageMapper.createRequestBodyFromDownloadData(assemble(submission));
-    expect(body.ukjentBrukerPersoninfo).toContain('Postboks 123');
-    expect(body.ukjentBrukerPersoninfo).not.toContain('stale');
-  });
-
-  it('ignores malformed inactive address fields without affecting the active concerned person', () => {
-    const submission = unidentified();
-    Object.assign(submission.data.dineOpplysninger, {
-      adresse: {
-        ...address,
-        postboks: { ignored: true },
-        region: '<inactive>',
-        land: '<inactive>',
-        landkode: '<inactive>',
-      },
-    });
-    const body = coverPageMapper.createRequestBodyFromDownloadData(assemble(submission));
-    expect(body.ukjentBrukerPersoninfo).toBe('Test Person, Test road 1, 0123 Oslo, Norge');
   });
 
   it('keeps authored order, canonical IDs, translated labels and user descriptions verbatim in both lists', () => {
@@ -287,39 +213,9 @@ describe('trusted subsequent submission assembly', () => {
     expect(() => assemble({ data: {} }, { hideUserTypes: true }, ['unknown'])).toThrow('No attachments are available');
   });
 
-  it.each([
-    (submission: Submission) => {
-      submission.data.sendinnAttachment1 = { first: attachment('unknown') };
-    },
-    (submission: Submission) => {
-      submission.attachments = [attachment()];
-    },
-  ])('rejects selections outside the current filtered definitions', (mutate) => {
+  it('rejects top-level attachment answers', () => {
     const submission = unidentified();
-    mutate(submission);
+    submission.attachments = [attachment()];
     expect(() => assemble(submission, {}, ['N1'])).toThrow();
-  });
-
-  it.each(['', 'a'.repeat(51), '<invalid>'])('enforces shared other-document title rules for %s', (title) => {
-    const submission = unidentified();
-    submission.data.sendinnAttachment3 = { other: [{ ...attachment('other-id', title), type: 'other' }] };
-    expect(() => assemble(submission)).toThrow('Invalid cover page answers');
-  });
-
-  it('accepts 50 characters and rejects uploads, duplicate other documents and unsupported choices', () => {
-    const submission = unidentified();
-    const other = { ...attachment('other-id', 'a'.repeat(50)), type: 'other' as const };
-    submission.data.sendinnAttachment3 = { other: [other] };
-    expect(assemble(submission).attachments.at(-1)).toBe('a'.repeat(50));
-    submission.data.sendinnAttachment3 = { other: [{ ...other, title: '   ' }] };
-    expect(assemble(submission).attachments.at(-1)).toBe('   ');
-    expect(assemble(submission).attachmentsForArchiving?.at(-1)).toBe('   ');
-    submission.data.sendinnAttachment3 = { other: [other, other] };
-    expect(() => assemble(submission)).toThrow();
-    submission.data.sendinnAttachment3 = { other: [{ ...other, value: 'ettersender' }] };
-    expect(() => assemble(submission)).toThrow();
-    submission.data.sendinnAttachment3 = { other: [] };
-    submission.data.sendinnAttachment1 = { first: { ...attachment(), files: [{ fileId: 'not-paper' }] } };
-    expect(() => assemble(submission)).toThrow();
   });
 });

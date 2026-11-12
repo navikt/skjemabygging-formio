@@ -1,14 +1,11 @@
 import {
   Component,
   Form,
-  getNavId,
   navFormUtils,
   resolveParty,
   ResponseError,
   Submission,
-  SubmissionAddress,
   submissionUtils,
-  toAddressValidationFields,
   TranslateFunction,
   TranslationLang,
   validatorUtils,
@@ -59,80 +56,12 @@ const projectSubmission = (components: Component[], original: Record<string, unk
     }),
   );
 
-const validateAddress = (value: unknown, component: Component): SubmissionAddress => {
-  if (!isRecord(value)) return invalidAnswer();
-  const livesInNorway = requireText(value.borDuINorge);
-  if (livesInNorway !== 'ja' && livesInNorway !== 'nei') return invalidAnswer();
-  const addressChoice = livesInNorway === 'ja' ? requireText(value.vegadresseEllerPostboksadresse) : undefined;
-  if (livesInNorway === 'ja' && addressChoice !== 'vegadresse' && addressChoice !== 'postboksadresse')
-    return invalidAnswer();
-  const country = livesInNorway === 'nei' ? value.land : { value: 'NO', label: 'Norge' };
-  if (!isRecord(country)) return invalidAnswer();
-  const land = { value: requireText(country.value)!, label: requireText(country.label)! };
-  // The renderer stores only the selected country, so the country code is derived from it.
-  const address: SubmissionAddress = {
-    borDuINorge: livesInNorway,
-    ...(addressChoice ? { vegadresseEllerPostboksadresse: addressChoice } : {}),
-    landkode: land.value,
-    land,
-  };
-  const fields = toAddressValidationFields({
-    statePath: component.key,
-    addressType: component.addressType,
-    addressTypeWizard: component.addressTypeWizard,
-    required: component.validate?.required,
-    value: address,
-    submissionMethod: 'paper',
-  });
-  const projected: Record<string, string> = {};
-  fields.forEach(({ statePath, rules }) => {
-    const key = statePath.split('.').at(-1)!;
-    if (key === 'land') return;
-    const text = requireText(value[key], rules.required);
-    if (text && rules.postalCode && !validatorUtils.isPostalCode(text)) invalidAnswer();
-    if (text !== undefined) projected[key] = text;
-  });
-  return {
-    ...projected,
-    landkode: address.landkode,
-    land: address.land,
-  };
-};
-
 const validateAttachments = (form: Form, submission: Submission, raw: Submission) => {
   const available = submissionUtils
     .flattenComponentsWithPath(form.components)
     .filter(({ component }) => component.type === 'attachment');
   if (!available.length) throw new ResponseError('BAD_REQUEST', 'No attachments are available');
   if (raw.attachments !== undefined && (!Array.isArray(raw.attachments) || raw.attachments.length)) invalidAnswer();
-  available.forEach(({ component, submissionPath }) => {
-    const value: unknown = submissionUtils.getSubmissionValue(submissionPath, submission);
-    if (value === undefined) return;
-    const other = component.otherDocumentation || component.attachmentType === 'other';
-    const records = Array.isArray(value) ? value : [value];
-    if ((Array.isArray(value) && !other) || records.length > 1) invalidAnswer();
-    records.forEach((record) => {
-      if (!isRecord(record)) return invalidAnswer();
-      const navId = getNavId(component) ?? component.key;
-      if (
-        record.navId !== navId ||
-        typeof record.attachmentId !== 'string' ||
-        !(
-          record.attachmentId === navId ||
-          (other &&
-            record.attachmentId.startsWith(`${navId}-`) &&
-            /^\d+$/.test(record.attachmentId.slice(navId.length + 1)))
-        ) ||
-        record.type !== (other ? 'other' : (component.attachmentType ?? 'default')) ||
-        (record.files !== undefined && (!Array.isArray(record.files) || record.files.length > 0)) ||
-        (record.value !== undefined && record.value !== '' && record.value !== 'leggerVedNaa')
-      )
-        return invalidAnswer();
-      if (record.value !== 'leggerVedNaa') return;
-      const title = requireText(record.title, !!other);
-      if (title && validatorUtils.isValidMaxLength(title, 50)) invalidAnswer();
-    });
-  });
 };
 
 const createSubsequentSubmissionDownloadData = ({
@@ -140,13 +69,11 @@ const createSubsequentSubmissionDownloadData = ({
   submission: raw,
   language,
   translate,
-  allowTestIdentityNumbers = false,
 }: {
   form: Form;
   submission: Submission;
   language: TranslationLang;
   translate?: TranslateFunction;
-  allowTestIdentityNumbers?: boolean;
 }): SubsequentSubmissionCoverPageData => {
   if (!isRecord(raw) || !isRecord(raw.data)) return invalidAnswer();
   const activeForm = {
@@ -161,24 +88,6 @@ const createSubsequentSubmissionDownloadData = ({
   const branch = submission.data.userType;
   if (forced && raw.data.userType !== undefined) return invalidAnswer();
   if (!hidden && !forced && !choice?.values?.some(({ value }) => value === branch)) return invalidAnswer();
-  fields.forEach(({ component, submissionPath }) => {
-    const value: unknown = submissionUtils.getSubmissionValue(submissionPath, submission);
-    if (component.type === 'fnrfield') {
-      const identity = requireText(value);
-      if (!validatorUtils.isNationalIdentityNumber(identity!, { allowTestTypes: allowTestIdentityNumbers }))
-        invalidAnswer();
-    } else if (component.type === 'firstName' || component.type === 'surname') {
-      requireText(value, component.validate?.required);
-    } else if (component.type === 'navAddress') {
-      const information = submission.data.dineOpplysninger;
-      if (!isRecord(information)) return invalidAnswer();
-      information[component.key] = validateAddress(value, component);
-    } else if (component.type === 'radiopanel' && component.validate?.required) {
-      if (!component.values?.some((option) => option.value === value)) invalidAnswer();
-    } else if (component.type === 'navUnitSelect') {
-      requireText(value, component.validate?.required);
-    }
-  });
   let user: SubsequentSubmissionUser;
   if (hidden || forced || branch === 'multiple-people') {
     user = { collection: 'authorized-no-user', reason: hidden ? 'hidden' : forced ? 'forced-unit' : 'multiple-people' };

@@ -32,7 +32,6 @@ const sendinnCoverPageService = createSendinnCoverPageService({
   coverPageService,
   navUnitService,
   getAccessToken: generatorTokenService.getAccessToken,
-  allowTestIdentityNumbers: config.naisClusterName !== 'prod-gcp',
 });
 
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
