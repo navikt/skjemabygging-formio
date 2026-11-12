@@ -1,5 +1,6 @@
-import { numberUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
+import { toSubmissionNumber } from '../../formatting/inputFormat';
 import { evaluateCalculatedValue } from '../../utils/expressionEvaluation';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 import { isSameSubmissionValue } from '../state/stateHelpers';
@@ -32,21 +33,8 @@ const toEvaluationNumber = (component: ComponentDefinition, value: unknown) => {
     return value;
   }
 
-  const normalizedValue =
-    ('inputType' in component && component.inputType === 'numeric') || component.type === 'year'
-      ? value.replace(/\s/g, '')
-      : value.replace(/\s/g, '').replace(',', '.');
-
-  if (normalizedValue === '') {
-    return value;
-  }
-
-  const isValidNumber =
-    ('inputType' in component && component.inputType === 'numeric') || component.type === 'year'
-      ? numberUtils.isValidInteger(normalizedValue)
-      : numberUtils.isValidDecimal(normalizedValue);
-
-  return isValidNumber ? Number(normalizedValue) : value;
+  const isInteger = ('inputType' in component && component.inputType === 'numeric') || component.type === 'year';
+  return toSubmissionNumber(value, isInteger) ?? value;
 };
 
 const collectTargets = (

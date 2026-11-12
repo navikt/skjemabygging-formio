@@ -3,7 +3,7 @@ import externalStorageTexts from './externalStorage';
 import { TElement, Tkey } from './externalStorage/keys';
 import { grensesnitt } from './grensesnitt';
 import { statiske } from './statiskeTekster';
-import { validering } from './validering';
+import { ValidationTextKey, validering } from './validering';
 
 const TEXTS = {
   common,
@@ -15,4 +15,4 @@ const TEXTS = {
 export { introPageTexts } from './externalStorage/keys';
 export { externalStorageTexts, TEXTS };
 
-export type { TElement, Tkey };
+export type { TElement, Tkey, ValidationTextKey };

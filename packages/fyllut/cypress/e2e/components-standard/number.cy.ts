@@ -39,6 +39,10 @@ describe('Number', () => {
       const label = 'Tall';
       cy.findByLabelText(label).should('have.attr', 'inputmode', 'numeric');
     });
+
+    it('should default to decimal inputmode', () => {
+      cy.findByLabelText('Tall uten inputType (valgfritt)').should('have.attr', 'inputmode', 'decimal');
+    });
   });
 
   describe('Data', () => {

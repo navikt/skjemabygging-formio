@@ -175,6 +175,35 @@ describe('TextField', () => {
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.testDownloadPdf();
     });
+
+    it('should not store an optional field the user only focused', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('vis1');
+      cy.findByRole('textbox', { name: 'Tekstfelt med beskrivelse' }).type('vis2');
+      cy.findByRole('textbox', { name: 'Tekstfelt med egenskaper' }).type('vis3');
+      cy.clickNextStep();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt A' }).type('data1');
+      cy.findByRole('textbox', { name: 'Tekstfelt B' }).type('data2');
+      cy.clickNextStep();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt påkrevd' }).type('valid1');
+      cy.findByRole('textbox', { name: 'Tekstfelt ikke påkrevd (valgfritt)' }).focus();
+      cy.findByRole('textbox', { name: 'Tekstfelt kun siffer' }).type('123');
+      cy.findByRole('textbox', { name: 'Tekstfelt min og max lengde' }).type('valid3');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickDownloadInstructions();
+      cy.testDownloadPdf();
+      cy.get('@downloadPdf')
+        .its('request.body.submission')
+        .then((submission) => {
+          expect(Object.values(JSON.parse(submission).data)).not.to.include('');
+        });
+    });
   });
 
   describe('Translation', () => {

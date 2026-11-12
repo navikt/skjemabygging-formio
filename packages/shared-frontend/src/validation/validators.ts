@@ -1,6 +1,13 @@
-import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  dateUtils,
+  formatUtils,
+  numberUtils,
+  ValidationTextKey,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
 import { getMonthLocale } from '../components/date/dateFieldUtils';
+import { isValidEmailAddress } from '../components/email/emailAddressUtils';
 
 /**
  * An authored regular expression the value must match, with the message the author wrote for it.
@@ -26,15 +33,6 @@ interface NotEqualRule {
   comparison: 'strict' | 'string';
 }
 
-/**
- * Messages that replace the standard `minDate`/`maxDate` wording for the bounds in the same rule
- * set, for the few authored constraints that came with their own wording.
- */
-interface DateMessages {
-  fromDate?: string;
-  toDate?: string;
-}
-
 interface ValidationRules {
   required?: boolean;
   /** Replaces the standard required message, for a field whose own wording says what is missing. */
@@ -54,7 +52,6 @@ interface ValidationRules {
   date?: boolean;
   fromDate?: string;
   toDate?: string;
-  dateMessages?: DateMessages;
   month?: boolean;
   monthMinYear?: number;
   monthMaxYear?: number;
@@ -80,9 +77,16 @@ interface ValidationRules {
 }
 
 interface RuleViolation {
+  /** A validation text key such as `required` (see `TEXTS.validering`), or a message authored for the field. */
   textKey: string;
   params: Record<string, string | number>;
 }
+
+// Built-in messages go through this helper so that their keys are checked against TEXTS.validering.
+const ruleViolation = (textKey: ValidationTextKey, params: RuleViolation['params'] = {}): RuleViolation => ({
+  textKey,
+  params,
+});
 
 const getSelectValue = (value: unknown) =>
   typeof value === 'object' && value !== null && 'value' in value && typeof value.value === 'string'
@@ -94,6 +98,8 @@ const getSelectValue = (value: unknown) =>
 interface ValidationOptions {
   allowTestTypes?: boolean;
 }
+
+const isDigitsOnly = (value: string) => /^\d+$/.test(value);
 
 const isEqualToRuleValue = (value: unknown, rule: NotEqualRule): boolean => {
   const other: unknown = rule.value;
@@ -109,14 +115,14 @@ const toIbanViolation = (value: string, field: string): RuleViolation | undefine
   }
 
   if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) {
-    return { textKey: TEXTS.validering.wrongBBANLength, params: { field } };
+    return ruleViolation('wrongBBANLength', { field });
   }
 
   if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) {
-    return { textKey: TEXTS.validering.noIBANCountry, params: { field } };
+    return ruleViolation('noIBANCountry', { field });
   }
 
-  return { textKey: TEXTS.validering.invalidIBAN, params: { field } };
+  return ruleViolation('invalidIBAN', { field });
 };
 
 /**
@@ -135,22 +141,25 @@ const validateValue = (
       return undefined;
     }
 
-    if (!/^\d+$/.test(value.trim())) {
-      return {
-        textKey: TEXTS.validering.validParkingExpenses,
-        params: { dato: dateUtils.toLocaleDate(rules.drivingListParkingExpense.date) },
-      };
+    if (!isDigitsOnly(value.trim())) {
+      return ruleViolation('validParkingExpenses', {
+        dato: dateUtils.toLocaleDate(rules.drivingListParkingExpense.date),
+      });
     }
 
     if (rules.drivingListParkingExpense.enforceMaxHundred && Number(value) > 100) {
-      return { textKey: TEXTS.validering.parkingExpensesAboveHundred, params: {} };
+      return ruleViolation('parkingExpensesAboveHundred');
     }
   }
   if (rules.requiredFiles && (!Array.isArray(value) || value.length === 0)) {
-    return { textKey: rules.requiredFilesMessage ?? TEXTS.validering.fileMissing, params: { field } };
+    return rules.requiredFilesMessage === undefined
+      ? ruleViolation('fileMissing', { field })
+      : { textKey: rules.requiredFilesMessage, params: { field } };
   }
   if (rules.required && (value === false || validatorUtils.isEmpty(value))) {
-    return { textKey: rules.requiredMessage ?? TEXTS.validering.required, params: { field } };
+    return rules.requiredMessage === undefined
+      ? ruleViolation('required', { field })
+      : { textKey: rules.requiredMessage, params: { field } };
   }
   if (validatorUtils.isEmpty(value)) {
     return undefined;
@@ -158,48 +167,48 @@ const validateValue = (
   if (rules.onlyAvailableItems) {
     const selectValue = getSelectValue(value);
     if (!selectValue || !rules.onlyAvailableItems.includes(selectValue)) {
-      return { textKey: TEXTS.validering.required, params: { field } };
+      return ruleViolation('required', { field });
     }
   }
   if (rules.minLength !== undefined && typeof value === 'string' && value.length < rules.minLength) {
-    return { textKey: TEXTS.validering.minLength, params: { field, length: rules.minLength } };
+    return ruleViolation('minLength', { field, length: rules.minLength });
   }
   if (rules.maxLength !== undefined && typeof value === 'string' && value.length > rules.maxLength) {
-    return { textKey: TEXTS.validering.maxLength, params: { field, length: rules.maxLength } };
+    return ruleViolation('maxLength', { field, length: rules.maxLength });
   }
   if (rules.pattern && typeof value === 'string' && !new RegExp(`^(?:${rules.pattern.expression})$`).test(value)) {
-    return {
-      textKey: rules.pattern.message ?? TEXTS.validering.pattern,
-      params: { field, pattern: rules.pattern.expression },
-    };
+    const params = { field, pattern: rules.pattern.expression };
+    return rules.pattern.message === undefined
+      ? ruleViolation('pattern', params)
+      : { textKey: rules.pattern.message, params };
   }
-  if (rules.email && typeof value === 'string' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-    return { textKey: TEXTS.validering.invalid_email, params: { field } };
+  if (rules.email && typeof value === 'string' && !isValidEmailAddress(value.trim())) {
+    return ruleViolation('invalid_email', { field });
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
-    return { textKey: TEXTS.validering.containsInvalidCharacters, params: { field } };
+    return ruleViolation('containsInvalidCharacters', { field });
   }
-  if (rules.postalCode && typeof value === 'string' && (value.length !== 4 || !numberUtils.isValidInteger(value))) {
-    return { textKey: TEXTS.validering.invalidPostalCode, params: { field } };
+  if (rules.postalCode && typeof value === 'string' && (value.length !== 4 || !isDigitsOnly(value))) {
+    return ruleViolation('invalidPostalCode', { field });
   }
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
-    return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };
+    return ruleViolation('orgNrCustomError', { field });
   }
   if (rules.accountNumber && typeof value === 'string' && !validatorUtils.isAccountNumber(value)) {
-    return { textKey: TEXTS.validering.accountNumberCustomError, params: { field } };
+    return ruleViolation('accountNumberCustomError', { field });
   }
   if (rules.iban && typeof value === 'string') {
     return toIbanViolation(value, field);
   }
-  if (rules.digitsOnly && typeof value === 'string' && !numberUtils.isValidInteger(value)) {
-    return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+  if (rules.digitsOnly && typeof value === 'string' && !isDigitsOnly(value)) {
+    return ruleViolation('digitsOnly', { field });
   }
   if (
     rules.nationalIdentityNumber &&
     typeof value === 'string' &&
     !validatorUtils.isNationalIdentityNumber(value, { allowTestTypes: options.allowTestTypes })
   ) {
-    return { textKey: 'fodselsnummerDNummer', params: { field } };
+    return ruleViolation('fodselsnummerDNummer', { field });
   }
   if (rules.notEqual && isEqualToRuleValue(value, rules.notEqual)) {
     return { textKey: rules.notEqual.message, params: { field } };
@@ -208,74 +217,62 @@ const validateValue = (
     const { showAreaCode, countryCallingCode } = rules.phoneNumber;
 
     if (showAreaCode && countryCallingCode === '+47') {
-      if (!numberUtils.isValidInteger(value)) {
-        return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+      if (!isDigitsOnly(value)) {
+        return ruleViolation('digitsOnly', { field });
       }
       if (value.length !== 8) {
-        return { textKey: TEXTS.validering.phoneNumberLength, params: { field } };
+        return ruleViolation('phoneNumberLength', { field });
       }
     }
 
     if (!showAreaCode && (!/^[\d\-()+\s]+$/.test(value) || /[a-zA-Z]/.test(value))) {
-      return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+      return ruleViolation('digitsOnly', { field });
     }
   }
   if (rules.date && typeof value === 'string') {
     const normalizedDate = dateUtils.isValid(value, 'submission') ? value : dateUtils.toSubmissionDate(value);
     if (!dateUtils.isValid(normalizedDate, 'submission')) {
-      return { textKey: 'invalid_date', params: { field } };
+      return ruleViolation('invalid_date', { field });
     }
     if (rules.fromDate && dateUtils.isBeforeDate(normalizedDate, rules.fromDate)) {
-      return {
-        textKey: rules.dateMessages?.fromDate ?? 'minDate',
-        params: { field, minDate: dateUtils.toLocaleDate(rules.fromDate) },
-      };
+      return ruleViolation('minDate', { field, minDate: dateUtils.toLocaleDate(rules.fromDate) });
     }
     if (rules.toDate && dateUtils.isBeforeDate(rules.toDate, normalizedDate)) {
-      return {
-        textKey: rules.dateMessages?.toDate ?? 'maxDate',
-        params: { field, maxDate: dateUtils.toLocaleDate(rules.toDate) },
-      };
+      return ruleViolation('maxDate', { field, maxDate: dateUtils.toLocaleDate(rules.toDate) });
     }
   }
   if (rules.month && typeof value === 'string') {
     const locale = getMonthLocale(currentLanguage);
     const normalizedMonth = dateUtils.toSubmissionDateMonth(value, locale);
     if (!dateUtils.isValidMonthSubmission(normalizedMonth)) {
-      return { textKey: 'invalid_date', params: { field } };
+      return ruleViolation('invalid_date', { field });
     }
     if (
       rules.monthMinYear !== undefined &&
       dateUtils.isBeforeDate(normalizedMonth, dateUtils.startOfYear(String(rules.monthMinYear)).toISODate() ?? '')
     ) {
-      return {
-        textKey: 'minYear',
-        params: { field, minYear: rules.monthMinYear },
-      };
+      return ruleViolation('minYear', { field, minYear: rules.monthMinYear });
     }
     if (
       rules.monthMaxYear !== undefined &&
       dateUtils.isAfterDate(normalizedMonth, dateUtils.endOfYear(String(rules.monthMaxYear)).toISODate() ?? '')
     ) {
-      return {
-        textKey: 'maxYear',
-        params: { field, maxYear: rules.monthMaxYear },
-      };
+      return ruleViolation('maxYear', { field, maxYear: rules.monthMaxYear });
     }
   }
   if (rules.year && value !== undefined) {
     const normalizedYear = String(value).replace(/\s+/g, '');
     if (!numberUtils.isValidInteger(normalizedYear)) {
-      return { textKey: TEXTS.validering.integer, params: { field } };
+      return ruleViolation('integer', { field });
     }
     if (normalizedYear.length !== 4) {
-      return { textKey: TEXTS.validering.yearLength, params: { field } };
+      return ruleViolation('yearLength', { field });
     }
     if (!numberUtils.isBiggerOrEqualMin(normalizedYear, rules.minYear)) {
-      return { textKey: 'minYear', params: { field, minYear: rules.minYear ?? '' } };
+      return ruleViolation('minYear', { field, minYear: rules.minYear ?? '' });
     }
     if (!numberUtils.isSmallerOrEqualMax(normalizedYear, rules.maxYear)) {
-      return { textKey: 'maxYear', params: { field, maxYear: rules.maxYear ?? '' } };
+      return ruleViolation('maxYear', { field, maxYear: rules.maxYear ?? '' });
     }
   }
   if (rules.numberType && (typeof value === 'string' || typeof value === 'number')) {
@@ -289,20 +286,17 @@ const validateValue = (
         ? numberUtils.isValidDecimal(normalizedNumber)
         : numberUtils.isValidInteger(normalizedNumber);
     if (!valid) {
-      return {
-        textKey: rules.numberType === 'decimal' ? TEXTS.validering.decimal : TEXTS.validering.integer,
-        params: { field },
-      };
+      return ruleViolation(rules.numberType === 'decimal' ? 'decimal' : 'integer', { field });
     }
     if (!numberUtils.isBiggerOrEqualMin(normalizedNumber, rules.min)) {
-      return { textKey: TEXTS.validering.min, params: { field, min: rules.min ?? '' } };
+      return ruleViolation('min', { field, min: rules.min ?? '' });
     }
     if (!numberUtils.isSmallerOrEqualMax(normalizedNumber, rules.max)) {
-      return { textKey: TEXTS.validering.max, params: { field, max: rules.max ?? '' } };
+      return ruleViolation('max', { field, max: rules.max ?? '' });
     }
   }
   return undefined;
 };
 
 export { validateValue };
-export type { DateMessages, NotEqualRule, PatternRule, RuleViolation, ValidationOptions, ValidationRules };
+export type { NotEqualRule, PatternRule, RuleViolation, ValidationOptions, ValidationRules };

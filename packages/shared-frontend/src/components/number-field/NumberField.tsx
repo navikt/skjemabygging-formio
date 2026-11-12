@@ -1,5 +1,5 @@
 import { formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { toSubmissionFormat } from '../../formatting/inputFormat';
+import { toSubmissionFormat, toSubmissionNumber } from '../../formatting/inputFormat';
 import InternalTextField, { InternalTextFieldProps } from '../text-field/InternalTextField';
 import { FieldValidationProp } from '../types';
 import { NumberType, toNumberFieldValidation } from './numberFieldValidation';
@@ -19,20 +19,17 @@ const NumberField = ({
   calculatedValue = false,
   validation,
   required = true,
+  inputMode = numberType === 'integer' ? 'numeric' : 'decimal',
   ...props
 }: NumberFieldProps) => {
   const formatKey = numberType === 'integer' ? 'number' : 'decimal';
   const toStateValue = (value: string) => {
     const formatted = toSubmissionFormat(value, formatKey);
-    const normalized =
-      numberType === 'integer' ? formatted.replace(/\s/g, '') : formatted.replace(/\s/g, '').replace(',', '.');
-    if (normalized === '') {
+    if (formatted === '') {
       return undefined;
     }
 
-    const isValid =
-      numberType === 'integer' ? numberUtils.isValidInteger(normalized) : numberUtils.isValidDecimal(normalized);
-    return isValid ? Number(normalized) : formatted;
+    return toSubmissionNumber(formatted, numberType === 'integer') ?? formatted;
   };
   const toDisplayValue = (value: unknown) => {
     if (value === undefined || value === null || value === '') {
@@ -55,6 +52,7 @@ const NumberField = ({
     <InternalTextField
       {...props}
       required={required}
+      inputMode={inputMode}
       formatKey={formatKey}
       toDisplayValue={toDisplayValue}
       toStateValue={toStateValue}

@@ -9,6 +9,9 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
  * https://github.com/navikt/skjemautfylling-formio (forms/) only use the forms recognized here.
  * Anything else is ignored by the new renderer, so extend the mapper when production gets a new one.
  *
+ * Never turn a date picker script into rules: the old date picker did not run `validate.custom`, so
+ * that would add validation the form never had. Such a script is dropped or ignored.
+ *
  * This is deliberately the *only* place that knows legacy scripts exist. Generic validation
  * (`validators.ts`) sees plain value rules, and no form is recognized by its id or path.
  */
@@ -70,24 +73,6 @@ const organizationNumberNotEqualPattern = new RegExp(
   `^valid\\s*=\\s*instance\\s*\\.\\s*validateOrganizationNumber\\s*\\(\\s*input\\s*\\)\\s*&&\\s*\\(\\s*String\\s*\\(\\s*input\\s*\\)\\s*!==\\s*data\\.${submissionPathExpression}\\s*\\)\\s*\\?\\s*true\\s*:\\s*${singleQuotedString}$`,
 );
 
-/**
- * The hand-written period check: the end date must be after the start date, and the period may not
- * be longer than a fixed number of days.
- *
- * `valid = ((endday>startday) ? true : '<after message>')` inside `if (endday<=startday)`, and
- * `valid = ((diffInDays <= N) ? true : '<max days message>')` inside `if (diffInDays > N)`.
- */
-const datePeriodPattern = new RegExp(
-  [
-    `^var startday = new Date\\(\\s*row\\.([A-Za-z0-9_$]+)\\s*\\) ?;`,
-    ` ?var endday = new Date\\(\\s*row\\.([A-Za-z0-9_$]+)\\s*\\) ?;`,
-    ` ?var diffInTime = endday\\.getTime\\(\\) ?- ?startday\\.getTime\\(\\) ?;`,
-    ` ?var diffInDays = diffInTime ?/ ?\\( ?1000 ?\\* ?3600 ?\\* ?24 ?\\) ?;`,
-    ` ?if ?\\( ?endday ?<= ?startday ?\\) ?\\{ ?valid = \\( ?\\( ?endday ?> ?startday ?\\) ?\\? ?true ?: ?${singleQuotedString} ?\\) ?;? ?\\}`,
-    ` ?else ?\\{ ?if ?\\( ?diffInDays ?> ?(\\d+) ?\\) ?\\{ ?valid = \\( ?\\( ?diffInDays ?<= ?(\\d+) ?\\) ?\\? ?true ?: ?${singleQuotedString} ?\\) ?;? ?\\} ?\\}$`,
-  ].join(''),
-);
-
 /** Component types whose rendered input and headless rebuild both apply cross-field value rules. */
 const notEqualComponentTypes = ['textfield', 'orgNr'];
 
@@ -95,22 +80,13 @@ const notEqualComponentTypes = ['textfield', 'orgNr'];
  * The value rules a recognized script is replaced by, before any referenced value is looked up.
  * Resolving the referenced values is the job of `customValidationRules`.
  */
-type CustomValidationRuleSpec =
-  | {
-      type: 'notEqual';
-      /** Submission path of the value the entered value must differ from, relative to the root. */
-      referencePath: string;
-      comparison: 'strict' | 'string';
-      message: string;
-    }
-  | {
-      type: 'datePeriod';
-      /** Key of the sibling holding the start of the period. */
-      fromKey: string;
-      maxDays: number;
-      afterMessage: string;
-      maxDaysMessage: string;
-    };
+type CustomValidationRuleSpec = {
+  type: 'notEqual';
+  /** Submission path of the value the entered value must differ from, relative to the root. */
+  referencePath: string;
+  comparison: 'strict' | 'string';
+  message: string;
+};
 
 type RecognizedCustomValidation =
   /** No script, or an empty one. */
@@ -157,28 +133,6 @@ const toNotEqualRule = (
   return message ? { type: 'notEqual', referencePath, comparison, message } : undefined;
 };
 
-const toDatePeriodRule = (script: string, component: Component): CustomValidationRuleSpec | undefined => {
-  const match = datePeriodPattern.exec(script);
-  if (!match) {
-    return undefined;
-  }
-
-  const [, fromKey, toKey, afterMessage, maxDaysThreshold, maxDaysBound, maxDaysMessage] = match;
-
-  // The script compares the component against a sibling in the same row. Only accept it when the
-  // component already points at that sibling, so the period is resolved by the configuration the
-  // date picker uses anyway - never by re-deriving what the script meant.
-  if (toKey !== component.key || fromKey !== component.beforeDateInputKey || maxDaysThreshold !== maxDaysBound) {
-    return undefined;
-  }
-
-  if (!afterMessage || !maxDaysMessage) {
-    return undefined;
-  }
-
-  return { type: 'datePeriod', fromKey, maxDays: Number(maxDaysThreshold), afterMessage, maxDaysMessage };
-};
-
 /**
  * What the new renderer does with the `validate.custom` of a component. Pure: it reads the script
  * and the component's own configuration, nothing else.
@@ -209,13 +163,6 @@ const recognizeCustomValidation = (component: Component): RecognizedCustomValida
       (componentType === 'orgNr'
         ? toNotEqualRule(organizationNumberNotEqualPattern.exec(script), 'string')
         : undefined);
-    if (rule) {
-      return { kind: 'rules', rule };
-    }
-  }
-
-  if (componentType === 'navDatepicker') {
-    const rule = toDatePeriodRule(script, component);
     if (rule) {
       return { kind: 'rules', rule };
     }

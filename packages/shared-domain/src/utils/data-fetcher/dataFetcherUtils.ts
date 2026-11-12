@@ -17,7 +17,7 @@ import {
 const getNestedValue = <T>(pathElements: string[], obj): T => pathElements.reduce((acc, key) => acc?.[key], obj);
 
 const getSelectedItems = (items: DataFetcherElement[], userData): DataFetcherElement[] =>
-  items.filter((item) => userData[item.value]);
+  items.filter((item) => userData?.[item.value]);
 
 const getMatchingItems = (items: DataFetcherElement[], matcher: Record<string, any>) => {
   return items.filter((item) =>
@@ -60,7 +60,7 @@ const dataFetcher = (componentPath: string | undefined, submission: Submission):
       }
       return undefined;
     },
-    getAllSelected: () => getSelectedItems(apiResult.data || [], userData ?? {}),
+    getAllSelected: () => getSelectedItems(apiResult.data || [], userData),
     apiResult,
   };
 };
