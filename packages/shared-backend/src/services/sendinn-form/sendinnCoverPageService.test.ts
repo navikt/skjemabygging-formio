@@ -1,4 +1,9 @@
-import { FormWithLanguages, ResponseError, SendinnCoverPageRequest } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormWithLanguages,
+  HttpResponseError,
+  ResponseError,
+  SendinnCoverPageRequest,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createSendinnCoverPageService } from './sendinnCoverPageService';
 import { createSendinnFormService } from './sendinnFormService';
 
@@ -113,6 +118,22 @@ describe('createSendinnCoverPageService', () => {
     form.properties.enhetstyper = ['KLAGE'];
 
     await expect(service.downloadCoverPage(request({ navUnit: '0202' }))).resolves.toEqual({ pdf });
+  });
+
+  it('keeps a local cover page value error as BAD_REQUEST but hides upstream generator errors', async () => {
+    form.properties.hideUserTypes = true;
+    downloadCoverPage.mockRejectedValueOnce(new ResponseError('BAD_REQUEST', 'Invalid value for cover page'));
+    await expect(service.downloadCoverPage(request({}))).rejects.toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      message: 'Invalid value for cover page',
+    });
+
+    downloadCoverPage.mockRejectedValueOnce(new HttpResponseError('BAD_REQUEST', 'Upstream detail', 'generator-id'));
+    await expect(service.downloadCoverPage(request({}))).rejects.toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Unable to generate cover page',
+      correlationId: 'generator-id',
+    });
   });
 
   it('does not fall back to all units when the unit lookup fails', async () => {

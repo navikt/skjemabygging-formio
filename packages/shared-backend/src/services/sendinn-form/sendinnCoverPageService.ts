@@ -1,5 +1,6 @@
 import {
   formsApiTranslationUtils,
+  HttpResponseError,
   navFormUtils,
   NavUnitSelectComponent,
   navUnitUtils,
@@ -87,6 +88,14 @@ const createSendinnCoverPageService = ({
           translate,
         });
       } catch (error) {
+        // Values the generator would reject are caught locally and are caused by the answers, not by the generator.
+        if (
+          error instanceof ResponseError &&
+          !(error instanceof HttpResponseError) &&
+          error.errorCode === 'BAD_REQUEST'
+        ) {
+          throw error;
+        }
         throw new ResponseError(
           'SERVICE_UNAVAILABLE',
           'Unable to generate cover page',
