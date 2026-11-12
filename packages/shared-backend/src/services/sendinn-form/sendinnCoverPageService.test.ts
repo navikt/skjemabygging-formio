@@ -66,6 +66,7 @@ describe('createSendinnCoverPageService', () => {
   });
   const request = (data: Record<string, unknown>): SendinnCoverPageRequest => ({
     formPath: 'nav123456',
+    revision: 1,
     language: 'nb',
     attachmentFilter: [],
     submission: {

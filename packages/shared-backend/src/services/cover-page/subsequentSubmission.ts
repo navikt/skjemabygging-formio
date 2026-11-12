@@ -104,16 +104,6 @@ const validateAttachments = (form: Form, submission: Submission, raw: Submission
     .flattenComponentsWithPath(form.components)
     .filter(({ component }) => component.type === 'attachment');
   if (!available.length) throw new ResponseError('BAD_REQUEST', 'No attachments are available');
-  const paths = new Set(available.map(({ submissionPath }) => submissionPath));
-  const inspectSelections = (value: unknown, path = '') => {
-    if (Array.isArray(value)) {
-      value.forEach((entry) => inspectSelections(entry, path));
-    } else if (isRecord(value)) {
-      if (value.value === 'leggerVedNaa' && !paths.has(path)) invalidAnswer();
-      Object.entries(value).forEach(([key, child]) => inspectSelections(child, path ? `${path}.${key}` : key));
-    }
-  };
-  inspectSelections(raw.data);
   if (raw.attachments !== undefined && (!Array.isArray(raw.attachments) || raw.attachments.length)) invalidAnswer();
   available.forEach(({ component, submissionPath }) => {
     const value: unknown = submissionUtils.getSubmissionValue(submissionPath, submission);

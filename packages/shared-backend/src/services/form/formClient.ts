@@ -5,12 +5,11 @@ import { logger } from '../../shared/logger/logger';
 const formsUrl = 'v1/forms';
 const formPublicationsUrl = 'v1/form-publications';
 
-const withSelect = (url: string, select?: string) => {
-  if (!select) {
-    return url;
-  }
-
-  return `${url}?${new URLSearchParams({ select }).toString()}`;
+const withQuery = (url: string, query: Record<string, string | undefined>) => {
+  const params = new URLSearchParams(
+    Object.entries(query).filter((entry): entry is [string, string] => entry[1] !== undefined),
+  ).toString();
+  return params ? `${url}?${params}` : url;
 };
 
 interface GetFormsProps {
@@ -19,7 +18,7 @@ interface GetFormsProps {
 }
 const getForms = async <T = Form>(props: GetFormsProps): Promise<T[]> => {
   const { baseUrl, select } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}`, select);
+  const targetUrl = withQuery(`${baseUrl}/${formsUrl}`, { select });
   logger.info('Getting forms', { select, targetUrl });
 
   return await http.get<T[]>(targetUrl);
@@ -29,12 +28,16 @@ interface GetFormProps {
   baseUrl: string;
   formPath: string;
   select?: string;
+  revision?: number;
   timeoutMs?: number;
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
-  const { baseUrl, formPath, select, timeoutMs } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}`, select);
-  logger.info('Getting form', { formPath, select, targetUrl });
+  const { baseUrl, formPath, select, revision, timeoutMs } = props;
+  const targetUrl = withQuery(`${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}`, {
+    select,
+    revision: revision?.toString(),
+  });
+  logger.info('Getting form', { formPath, select, revision, targetUrl });
 
   return await http.get<T>(targetUrl, { timeoutMs });
 };

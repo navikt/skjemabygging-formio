@@ -33,6 +33,7 @@ const createSendinnCoverPageService = ({
   const downloadCoverPage: SendinnCoverPageService['downloadCoverPage'] = async (request) => {
     const loaded = await formService.getForm({
       formPath: request.formPath,
+      revision: request.revision,
       language: request.language,
       attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });

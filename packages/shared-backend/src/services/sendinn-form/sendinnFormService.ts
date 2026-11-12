@@ -7,7 +7,7 @@ import {
 import { ContentService } from '../content';
 
 interface SendinnFormService {
-  getForm: (request: SendinnFormRequest) => Promise<SendinnFormResult>;
+  getForm: (request: SendinnFormRequest & { revision?: number }) => Promise<SendinnFormResult>;
 }
 
 const createSendinnFormService = ({
@@ -15,8 +15,8 @@ const createSendinnFormService = ({
 }: {
   contentService: Pick<ContentService, 'getForm' | 'getTranslations'>;
 }): SendinnFormService => {
-  const getForm: SendinnFormService['getForm'] = async ({ formPath, language, attachmentFilter }) => {
-    const source = await contentService.getForm({ formPath });
+  const getForm: SendinnFormService['getForm'] = async ({ formPath, revision, language, attachmentFilter }) => {
+    const source = await contentService.getForm({ formPath, revision });
     if (source.path !== formPath) {
       throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid form identity');
     }

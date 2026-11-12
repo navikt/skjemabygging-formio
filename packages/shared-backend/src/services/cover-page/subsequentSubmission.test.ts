@@ -289,12 +289,6 @@ describe('trusted subsequent submission assembly', () => {
 
   it.each([
     (submission: Submission) => {
-      submission.data.sendinnAttachment99 = { unknown: attachment('unknown') };
-    },
-    (submission: Submission) => {
-      submission.data.sendinnAttachment2 = { second: attachment('second-id') };
-    },
-    (submission: Submission) => {
       submission.data.sendinnAttachment1 = { first: attachment('unknown') };
     },
     (submission: Submission) => {

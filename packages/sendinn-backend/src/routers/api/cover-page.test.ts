@@ -66,6 +66,7 @@ const selected = (navId = 'first-id', title?: string) => ({
 });
 const body = () => ({
   formPath: 'nav123456',
+  revision: 3,
   language: 'en',
   attachmentFilter: ['N2, N1', 'N2'],
   submission: { data: { sendinnAttachment1: { first: selected() } } },
@@ -104,7 +105,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
         res.end(JSON.stringify(value));
       };
       if (path === '/health') return respond(200, {});
-      if (path === '/forms-api/v1/forms/nav123456') return respond(formStatus, formStatus === 200 ? form : {});
+      if (path === '/forms-api/v1/forms/nav123456?revision=3') return respond(formStatus, formStatus === 200 ? form : {});
       if (path.includes('/translations?') || path.includes('/global-translations?')) {
         return respond(translationStatus, [{ key: 'First document', en: 'Translated first' }]);
       }
@@ -204,16 +205,19 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(generated).toHaveLength(1);
   });
 
-  it('reloads on every operation and rejects newly unavailable attachments without calling the generator', async () => {
+  it('reloads the pinned revision on every operation', async () => {
     await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(200);
-    form.components.shift();
-    await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(400);
-    expect(generated).toHaveLength(1);
-    expect(requests.filter((entry) => entry.path === '/forms-api/v1/forms/nav123456')).toHaveLength(2);
+    await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(200);
+    expect(generated).toHaveLength(2);
+    expect(requests.filter((entry) => entry.path === '/forms-api/v1/forms/nav123456?revision=3')).toHaveLength(2);
   });
 
   it.each([
     { formPath: '../untrusted' },
+    { revision: undefined },
+    { revision: '3' },
+    { revision: 0 },
+    { revision: 1.5 },
     { language: 'se' },
     { attachmentFilter: {} },
     { submission: [] },

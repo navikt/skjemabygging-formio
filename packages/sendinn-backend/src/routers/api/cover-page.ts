@@ -19,6 +19,9 @@ const parseCoverPageRequest = (value: unknown): SendinnCoverPageRequest => {
   if (!isRecord(value) || typeof value.formPath !== 'string' || !validatorUtils.isValidFormPath(value.formPath)) {
     throw new ResponseError('BAD_REQUEST', 'Invalid form path');
   }
+  if (typeof value.revision !== 'number' || !Number.isInteger(value.revision) || value.revision < 1) {
+    throw new ResponseError('BAD_REQUEST', 'Invalid form revision');
+  }
   const language = value.language ?? 'nb';
   if (typeof language !== 'string' || !sendinnLanguageUtils.isSupportedLanguage(language)) {
     throw new ResponseError('BAD_REQUEST', 'Unsupported language');
@@ -34,6 +37,7 @@ const parseCoverPageRequest = (value: unknown): SendinnCoverPageRequest => {
   if (!isSubmission(value.submission)) throw new ResponseError('BAD_REQUEST', 'Invalid submission');
   return {
     formPath: value.formPath,
+    revision: value.revision,
     language,
     attachmentFilter: normalizeAttachmentCodeFilter(filter),
     submission: { data: value.submission.data, attachments: value.submission.attachments },

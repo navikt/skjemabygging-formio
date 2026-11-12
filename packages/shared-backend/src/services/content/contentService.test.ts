@@ -200,6 +200,36 @@ describe('createContentService', () => {
     },
   );
 
+  it.each<ContentSource>(['published', 'latest'])(
+    'loads a pinned revision from %s content on every request',
+    async (source) => {
+      const formUrl = `${baseUrl}/v1/forms/${formPath}?revision=3`;
+      const fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+        if (String(url) !== formUrl) throw new Error(`Unexpected request: ${url}`);
+        return jsonResponse({ ...form, revision: 3 });
+      });
+      const service = createContentService({ baseUrl, source });
+
+      await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+      await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  it.each(['draft', 'pending', 'unpublished'] as const)(
+    'rejects a pinned %s revision as missing published content',
+    async (status) => {
+      vi.spyOn(global, 'fetch').mockImplementation(async () => jsonResponse({ ...form, status }));
+
+      await expect(
+        createContentService({ baseUrl, source: 'published' }).getForm({ formPath, revision: 3 }),
+      ).rejects.toMatchObject({ errorCode: 'NOT_FOUND', message: 'Unable to load form' });
+      await expect(
+        createContentService({ baseUrl, source: 'latest' }).getForm({ formPath, revision: 3 }),
+      ).resolves.toMatchObject({ status });
+    },
+  );
+
   it('preserves a missing form as NOT_FOUND without exposing the upstream body', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(jsonResponse({ message: 'Private upstream metadata' }, 404));
     const service = createContentService({ baseUrl, source: 'published' });

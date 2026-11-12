@@ -22,7 +22,7 @@ interface FormTranslationRequest {
 }
 
 type ContentService = {
-  getForm: (props: { formPath: string }) => Promise<FormWithLanguages>;
+  getForm: (props: { formPath: string; revision?: number }) => Promise<FormWithLanguages>;
   getFormTranslations: (props: FormTranslationRequest) => Promise<FormsApiTranslationMap>;
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
   getTranslations: (props: FormTranslationRequest) => Promise<FormsApiTranslationMap>;
@@ -52,14 +52,18 @@ const createContentService = ({ baseUrl, source }: CreateContentServiceProps): C
   const cache = source === 'published' ? createContentCache(PUBLISHED_CACHE_TTL_MS) : undefined;
   const cached = <T>(key: string, load: () => Promise<T>) => (cache ? cache.get(key, load) : load());
 
-  const fetchForm = async (formPath: string) => {
+  const fetchForm = async (formPath: string, revision?: number) => {
     const form = await loadContent('form', source, () =>
-      source === 'published'
+      source === 'published' && revision === undefined
         ? formClient.getPublishedForm<Form>({ ...transport, formPath })
-        : formClient.getForm<Form>({ ...transport, formPath }),
+        : formClient.getForm<Form>({ ...transport, formPath, revision }),
     );
     if (!form || typeof form.path !== 'string' || !Array.isArray(form.components) || !form.properties) {
       throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid forms-api form response');
+    }
+    // A pinned revision is read outside the publication endpoint, so published content must check its status.
+    if (source === 'published' && revision !== undefined && form.status !== 'published') {
+      throw new ResponseError('NOT_FOUND', 'Unable to load form');
     }
     return { ...form, languages: resolveFormLanguages(form, source === 'latest') };
   };
@@ -78,8 +82,9 @@ const createContentService = ({ baseUrl, source }: CreateContentServiceProps): C
       ),
     );
 
-  const getForm: ContentService['getForm'] = async ({ formPath }) => {
+  const getForm: ContentService['getForm'] = async ({ formPath, revision }) => {
     assertValidFormPath(formPath);
+    if (revision !== undefined) return fetchForm(formPath, revision);
     return cached(`form:${formPath}`, () => fetchForm(formPath));
   };
 
