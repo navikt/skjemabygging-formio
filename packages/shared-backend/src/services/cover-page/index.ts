@@ -4,4 +4,3 @@ export type { CoverPageService } from './coverPageService';
 export { coverPageMapper } from './mapper';
 export type { CoverPagePartyData } from './mapper';
 export { createSubsequentSubmissionDownloadData } from './subsequentSubmission';
-export type { SubsequentSubmissionCoverPageData, SubsequentSubmissionUser } from './subsequentSubmissionTypes';

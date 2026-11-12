@@ -1,8 +1,6 @@
 import {
   formsApiTranslationUtils,
   HttpResponseError,
-  navFormUtils,
-  NavUnitSelectComponent,
   navUnitUtils,
   normalizeAttachmentCodeFilter,
   ResponseError,
@@ -37,7 +35,7 @@ const createSendinnCoverPageService = ({
       attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });
     const translate = formsApiTranslationUtils.createTranslate(loaded.translations, loaded.language);
-    const data = createSubsequentSubmissionDownloadData({
+    const { data, unitTypes } = createSubsequentSubmissionDownloadData({
       form: loaded.form,
       submission: request.submission,
       language: loaded.language,
@@ -62,14 +60,7 @@ const createSendinnCoverPageService = ({
           );
         }
       })();
-      const field = navFormUtils
-        .flattenComponents(loaded.form.components)
-        .find(
-          (component): component is NavUnitSelectComponent =>
-            component.type === 'navUnitSelect' &&
-            component.key === (data.collection === 'unidentified-person' ? 'navContactUnit' : 'navUnit'),
-        );
-      const available = navUnitUtils.resolveNavUnits(units, field?.unitTypes);
+      const available = navUnitUtils.resolveNavUnits(units, unitTypes);
       if (!available.some((unit) => unit.enhetNr === data.recipient?.navUnit)) {
         throw new ResponseError('BAD_REQUEST', 'Selected Nav unit is unavailable');
       }

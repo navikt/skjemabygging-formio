@@ -12,8 +12,7 @@ import { sendinnCoverPageService } from '../../services';
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 
-const isSubmission = (value: unknown): value is Submission =>
-  isRecord(value) && isRecord(value.data) && (value.attachments === undefined || Array.isArray(value.attachments));
+const isSubmission = (value: unknown): value is Submission => isRecord(value) && isRecord(value.data);
 
 const parseCoverPageRequest = (value: unknown): SendinnCoverPageRequest => {
   if (!isRecord(value) || typeof value.formPath !== 'string' || !validatorUtils.isValidFormPath(value.formPath)) {
@@ -40,7 +39,7 @@ const parseCoverPageRequest = (value: unknown): SendinnCoverPageRequest => {
     revision: value.revision,
     language,
     attachmentFilter: normalizeAttachmentCodeFilter(filter),
-    submission: { data: value.submission.data, attachments: value.submission.attachments },
+    submission: { data: value.submission.data },
   };
 };
 

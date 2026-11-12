@@ -252,12 +252,12 @@ describe('coverPageRequestBodyMapper', () => {
     ).toThrowError('Invalid value for cover page');
   });
 
-  it.each([
-    { attachments: ['Vedlegg <1>'] },
-    { attachments: ['Vedlegg 1'], attachmentsForArchiving: ['Vedlegg <1>'] },
-  ])('rejects attachment titles the cover page generator does not accept: %j', (lists) => {
-    expect(() =>
-      coverPageRequestBodyMapper.createRequestBodyFromDownloadData({ ...defaultData, ...lists }),
-    ).toThrowError('Invalid value for cover page');
-  });
+  it.each([{ attachments: ['Vedlegg <1>'] }, { attachments: ['Vedlegg 1'], attachmentsForArchiving: ['Vedlegg <1>'] }])(
+    'rejects attachment titles the cover page generator does not accept: %j',
+    (lists) => {
+      expect(() =>
+        coverPageRequestBodyMapper.createRequestBodyFromDownloadData({ ...defaultData, ...lists }),
+      ).toThrowError('Invalid value for cover page');
+    },
+  );
 });

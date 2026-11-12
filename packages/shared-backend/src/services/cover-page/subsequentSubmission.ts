@@ -1,72 +1,75 @@
 import {
   Component,
+  CoverPageDownloadType,
+  Enhetstype,
   Form,
   navFormUtils,
+  NavUnitSelectComponent,
   resolveParty,
   ResponseError,
+  SendinnUserType,
   Submission,
+  SubmissionData,
   submissionUtils,
   TranslateFunction,
   TranslationLang,
-  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { coverPageMapper } from './mapper';
-import { SubsequentSubmissionCoverPageData, SubsequentSubmissionUser } from './subsequentSubmissionTypes';
+
+type UserTypeMode = 'hidden' | 'forced-unit' | SendinnUserType;
+
+interface SubsequentSubmissionDownloadData {
+  data: CoverPageDownloadType;
+  unitTypes?: Enhetstype[];
+}
 
 const invalidAnswer = (): never => {
   throw new ResponseError('BAD_REQUEST', 'Invalid cover page answers');
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
+const isRecord = (value: unknown): value is SubmissionData =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 
-const requireText = (value: unknown, required = true): string | undefined => {
-  if (value === undefined || value === null || value === '') {
-    if (required) invalidAnswer();
-    return undefined;
-  }
-  if (typeof value !== 'string' || !validatorUtils.isValidCoverPageValue(value)) {
-    return invalidAnswer();
-  }
-  return value;
-};
-
-// Project only active canonical inputs. Inactive identity and routing answers cannot affect resolveParty.
-const projectSubmission = (components: Component[], original: Record<string, unknown>): Submission['data'] =>
+// Keep only answers to active inputs, so hidden identity and routing answers cannot reach resolveParty.
+const projectSubmission = (components: Component[], original: SubmissionData): SubmissionData =>
   Object.fromEntries(
-    components.flatMap((component): [string, Submission['data'][string]][] => {
+    components.flatMap((component): [string, SubmissionData[string]][] => {
       if (component.components) {
         if (component.input || component.tree) {
           const nested = original[component.key];
-          if (nested !== undefined && !isRecord(nested)) invalidAnswer();
           return [[component.key, projectSubmission(component.components, isRecord(nested) ? nested : {})]];
         }
         return Object.entries(projectSubmission(component.components, original));
       }
       const value = original[component.key];
-      return component.input &&
-        value !== undefined &&
-        value !== null &&
-        (typeof value === 'string' ||
-          typeof value === 'number' ||
-          typeof value === 'boolean' ||
-          typeof value === 'object')
-        ? [[component.key, value]]
-        : [];
+      return component.input && value !== undefined && value !== null ? [[component.key, value]] : [];
     }),
   );
 
-const validateAttachments = (form: Form, submission: Submission, raw: Submission) => {
-  const available = submissionUtils
-    .flattenComponentsWithPath(form.components)
-    .filter(({ component }) => component.type === 'attachment');
-  if (!available.length) throw new ResponseError('BAD_REQUEST', 'No attachments are available');
-  if (raw.attachments !== undefined && (!Array.isArray(raw.attachments) || raw.attachments.length)) invalidAnswer();
+const resolveUserTypeMode = (form: Form, data: SubmissionData): UserTypeMode => {
+  if (form.properties.hideUserTypes === true) return 'hidden';
+  if (form.properties.enhetMaVelgesVedPapirInnsending === true) {
+    return data.userType === undefined ? 'forced-unit' : invalidAnswer();
+  }
+  const choice = navFormUtils.flattenComponents(form.components).find((component) => component.key === 'userType');
+  return choice?.values?.some(({ value }) => value === data.userType)
+    ? (data.userType as SendinnUserType)
+    : invalidAnswer();
+};
+
+const resolveUser = (mode: UserTypeMode, form: Form, submission: Submission): CoverPageDownloadType['user'] => {
+  if (mode !== 'identified-person' && mode !== 'unidentified-person') return undefined;
+  const party = resolveParty(form, submission);
+  const user = party && coverPageMapper.mapPartyToCoverPage(party).user;
+  // resolveParty falls back to other identity sources, so the result must match the chosen user type.
+  const matchesMode =
+    mode === 'identified-person' ? !!user?.nationalIdentityNumber : !!(user?.firstName && user.surname && user.address);
+  return matchesMode ? user : invalidAnswer();
 };
 
 const createSubsequentSubmissionDownloadData = ({
   form,
-  submission: raw,
+  submission: { data: rawData },
   language,
   translate,
 }: {
@@ -74,57 +77,35 @@ const createSubsequentSubmissionDownloadData = ({
   submission: Submission;
   language: TranslationLang;
   translate?: TranslateFunction;
-}): SubsequentSubmissionCoverPageData => {
-  if (!isRecord(raw) || !isRecord(raw.data)) return invalidAnswer();
+}): SubsequentSubmissionDownloadData => {
+  const mode = resolveUserTypeMode(form, rawData);
   const activeForm = {
     ...form,
-    components: navFormUtils.getAllActivePanelsFromForm(form, raw, { submissionMethod: 'paper' }),
+    components: navFormUtils.getAllActivePanelsFromForm(form, { data: rawData }, { submissionMethod: 'paper' }),
   };
-  const submission: Submission = { data: projectSubmission(activeForm.components, raw.data) };
+  const submission: Submission = { data: projectSubmission(activeForm.components, rawData) };
   const fields = submissionUtils.flattenComponentsWithPath(activeForm.components);
-  const choice = fields.find(({ component }) => component.key === 'userType')?.component;
-  const hidden = form.properties.hideUserTypes === true;
-  const forced = !hidden && form.properties.enhetMaVelgesVedPapirInnsending === true;
-  const branch = submission.data.userType;
-  if (forced && raw.data.userType !== undefined) return invalidAnswer();
-  if (!hidden && !forced && !choice?.values?.some(({ value }) => value === branch)) return invalidAnswer();
-  let user: SubsequentSubmissionUser;
-  if (hidden || forced || branch === 'multiple-people') {
-    user = { collection: 'authorized-no-user', reason: hidden ? 'hidden' : forced ? 'forced-unit' : 'multiple-people' };
-  } else {
-    const party = resolveParty(activeForm, submission);
-    if (!party) return invalidAnswer();
-    const mapped = coverPageMapper.mapPartyToCoverPage(party).user;
-    if (branch === 'identified-person' && mapped?.nationalIdentityNumber) {
-      user = { collection: 'identified-person', user: { nationalIdentityNumber: mapped.nationalIdentityNumber } };
-    } else if (
-      branch === 'unidentified-person' &&
-      mapped &&
-      'firstName' in mapped &&
-      mapped.firstName &&
-      mapped.surname &&
-      mapped.address
-    ) {
-      user = {
-        collection: 'unidentified-person',
-        user: { firstName: mapped.firstName, surname: mapped.surname, address: mapped.address },
-      };
-    } else return invalidAnswer();
+  if (!fields.some(({ component }) => component.type === 'attachment')) {
+    throw new ResponseError('BAD_REQUEST', 'No attachments are available');
   }
-  validateAttachments(activeForm, submission, raw);
+
   const unitField = fields.find(({ component }) => component.type === 'navUnitSelect');
-  const navUnit = unitField
-    ? requireText(submissionUtils.getSubmissionValue(unitField.submissionPath, submission))
-    : undefined;
+  const navUnit = unitField && submissionUtils.getSubmissionValue(unitField.submissionPath, submission);
+  if (unitField && (typeof navUnit !== 'string' || !navUnit)) invalidAnswer();
+
   return {
-    type: 'ETTERSENDELSE',
-    submissionType: 'PAPER',
-    languageCode: language,
-    form: { title: form.title, skjemanummer: form.properties.skjemanummer, properties: form.properties },
-    ...user,
-    ...(navUnit ? { recipient: { navUnit } } : {}),
-    ...coverPageMapper.createAttachmentDocumentLists(activeForm, submission, translate),
+    data: {
+      type: 'ETTERSENDELSE',
+      submissionType: 'PAPER',
+      languageCode: language,
+      form: { title: form.title, skjemanummer: form.properties.skjemanummer, properties: form.properties },
+      user: resolveUser(mode, activeForm, submission),
+      ...(navUnit ? { recipient: { navUnit } } : {}),
+      ...coverPageMapper.createAttachmentDocumentLists(activeForm, submission, translate),
+    },
+    unitTypes: (unitField?.component as NavUnitSelectComponent | undefined)?.unitTypes,
   };
 };
 
 export { createSubsequentSubmissionDownloadData };
+export type { SubsequentSubmissionDownloadData };

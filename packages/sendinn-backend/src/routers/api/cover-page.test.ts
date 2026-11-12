@@ -105,7 +105,8 @@ describe('Sendinn cover page HTTP boundaries', () => {
         res.end(JSON.stringify(value));
       };
       if (path === '/health') return respond(200, {});
-      if (path === '/forms-api/v1/forms/nav123456?revision=3') return respond(formStatus, formStatus === 200 ? form : {});
+      if (path === '/forms-api/v1/forms/nav123456?revision=3')
+        return respond(formStatus, formStatus === 200 ? form : {});
       if (path.includes('/translations?') || path.includes('/global-translations?')) {
         return respond(translationStatus, [{ key: 'First document', en: 'Translated first' }]);
       }
@@ -221,7 +222,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
     { attachmentFilter: {} },
     { submission: [] },
     { submission: { data: [] } },
-    { submission: { data: {}, attachments: {} } },
   ])('rejects malformed HTTP input before content loading: %j', async (change) => {
     const response = await request(createApp())
       .post('/sendinn/api/cover-page')

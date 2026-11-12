@@ -7,7 +7,6 @@ import {
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
-import { SubsequentSubmissionCoverPageData } from '../subsequentSubmissionTypes';
 
 type DownloadUserData = Pick<ForstesideRequestBody, 'bruker' | 'ukjentBrukerPersoninfo'>;
 
@@ -151,7 +150,7 @@ const getDownloadRecipientData = (recipient?: CoverPageDownloadType['recipient']
 };
 
 const createRequestBodyFromDownloadData = (
-  data: CoverPageDownloadType | SubsequentSubmissionCoverPageData,
+  data: CoverPageDownloadType,
   languageCode = 'NB',
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   formNumber?: string,

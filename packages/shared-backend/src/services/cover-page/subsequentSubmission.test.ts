@@ -79,7 +79,11 @@ const unidentified = (): PersonSubmission => ({
     sendinnAttachment1: { first: attachment() },
   },
 });
-const assemble = (submission: Submission, properties: Partial<Form['properties']> = {}, filter: string[] = []) =>
+const assembleWithUnitTypes = (
+  submission: Submission,
+  properties: Partial<Form['properties']> = {},
+  filter: string[] = [],
+) =>
   createSubsequentSubmissionDownloadData({
     form: convertToSendinnPaperForm(
       { ...source, properties: { ...source.properties, ...properties } },
@@ -89,6 +93,7 @@ const assemble = (submission: Submission, properties: Partial<Form['properties']
     language: 'en',
     translate: formsApiTranslationUtils.createTranslate({ 'First document': { en: 'Translated first' } }, 'en'),
   });
+const assemble = (...args: Parameters<typeof assembleWithUnitTypes>) => assembleWithUnitTypes(...args).data;
 
 describe('trusted subsequent submission assembly', () => {
   it('uses the concerned person, not a supplied actor or legacy flat identity, and omits the SKJEMA prefix from document lists', () => {
@@ -103,7 +108,6 @@ describe('trusted subsequent submission assembly', () => {
     const result = assemble(submission);
     expect(result).toMatchObject({
       type: 'ETTERSENDELSE',
-      collection: 'unidentified-person',
       user: { firstName: 'Test', surname: 'Person' },
       attachments: ['Translated first'],
       attachmentsForArchiving: ['First document'],
@@ -131,7 +135,7 @@ describe('trusted subsequent submission assembly', () => {
       navUnit: '9999',
     });
     const result = assemble(submission);
-    expect(result).toMatchObject({ collection: 'identified-person', user: { nationalIdentityNumber: '10915596784' } });
+    expect(result.user).toEqual({ nationalIdentityNumber: '10915596784' });
     const body = coverPageMapper.createRequestBodyFromDownloadData(result);
     expect(body.bruker).toEqual({ brukerId: '10915596784', brukerType: 'PERSON' });
     expect(body).not.toHaveProperty('ukjentBrukerPersoninfo');
@@ -141,40 +145,40 @@ describe('trusted subsequent submission assembly', () => {
   it('removes a hidden identity before resolving an unidentified person', () => {
     const submission = unidentified();
     Object.assign(submission.data.dineOpplysninger, { identitet: { identitetsnummer: 'invalid-hidden-identity' } });
-    expect(assemble(submission).collection).toBe('unidentified-person');
+    expect(assemble(submission).user).toMatchObject({ firstName: 'Test', surname: 'Person' });
   });
 
   it.each([
     [
       { hideUserTypes: true, enhetMaVelgesVedPapirInnsending: true },
       { userType: 'identified-person', dineOpplysninger: 'ignored', navUnit: 'ignored' },
-      'hidden',
       undefined,
     ],
-    [
-      { enhetMaVelgesVedPapirInnsending: true },
-      { navUnit: '0101', dineOpplysninger: 'ignored' },
-      'forced-unit',
-      '0101',
-    ],
+    [{ enhetMaVelgesVedPapirInnsending: true }, { navUnit: '0101', dineOpplysninger: 'ignored' }, '0101'],
     [
       {},
       { userType: 'multiple-people', navUnit: '0101', dineOpplysninger: 'ignored', navContactUnit: 'ignored' },
-      'multiple-people',
       '0101',
     ],
-  ] as const)('authorizes no-user only from the trusted configuration/branch %j', (properties, data, reason, unit) => {
+  ] as const)('authorizes no-user only from the trusted configuration/branch %j', (properties, data, unit) => {
     const submission: Submission = { data: {} };
     Object.assign(submission.data, data);
     const result = assemble(submission, properties);
-    expect(result).toMatchObject({ collection: 'authorized-no-user', reason });
-    expect(result).not.toHaveProperty('user');
+    expect(result.user).toBeUndefined();
     const body = coverPageMapper.createRequestBodyFromDownloadData(result);
     expect(body).not.toHaveProperty('bruker');
     expect(body).not.toHaveProperty('ukjentBrukerPersoninfo');
     expect(body.netsPostboks).toBe('1400');
     expect(body.enhetsnummer).toBe(unit);
     expect(body).not.toHaveProperty('adresse');
+  });
+
+  it('returns the unit types of the active Nav unit field', () => {
+    const submission = unidentified();
+    Object.assign(submission.data, { hasNavContact: 'ja', navContactUnit: '0101', navUnit: '9999' });
+    const result = assembleWithUnitTypes(submission, { enhetstyper: ['LOKAL'] });
+    expect(result.data.recipient).toEqual({ navUnit: '0101' });
+    expect(result.unitTypes).toEqual(['LOKAL']);
   });
 
   it.each(['identified-person', 'unidentified-person', 'multiple-people'])(
@@ -211,11 +215,5 @@ describe('trusted subsequent submission assembly', () => {
   it('allows zero selections in a nonempty available set until T9, but rejects an empty available set', () => {
     expect(assemble({ data: {} }, { hideUserTypes: true }).attachments).toEqual([]);
     expect(() => assemble({ data: {} }, { hideUserTypes: true }, ['unknown'])).toThrow('No attachments are available');
-  });
-
-  it('rejects top-level attachment answers', () => {
-    const submission = unidentified();
-    submission.attachments = [attachment()];
-    expect(() => assemble(submission, {}, ['N1'])).toThrow();
   });
 });

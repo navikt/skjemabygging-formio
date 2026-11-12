@@ -2,14 +2,13 @@ import { CoverPageDownloadType, ResponseError, TranslateFunction } from '@navikt
 import { logger } from '../../shared/logger/logger';
 import coverPageClient from './coverPageClient';
 import { coverPageMapper } from './mapper';
-import { SubsequentSubmissionCoverPageData } from './subsequentSubmissionTypes';
 
 type CoverPageClient = Pick<typeof coverPageClient, 'downloadCoverPage'>;
 
 interface DownloadCoverPageProps {
   languageCode?: string;
   accessToken?: string;
-  data: CoverPageDownloadType | SubsequentSubmissionCoverPageData;
+  data: CoverPageDownloadType;
   translate?: TranslateFunction;
   formNumber?: string;
 }
