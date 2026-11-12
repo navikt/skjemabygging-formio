@@ -241,6 +241,9 @@ Shared-backend exports `createSendinnCoverPageService` and
 `createSubsequentSubmissionDownloadData`. The latter returns
 `{ data: CoverPageDownloadType, unitTypes }`. `data.user` is absent when the
 form hides user types, forces a Nav unit, or the user chose multiple people.
+The last two require a selected Nav unit, because the unit is what permits a
+cover page without a user. Other unit fields, such as `navContactUnit`, are
+left to the form's own validation.
 `unitTypes` comes from the active Nav unit field and filters Norg2 units.
 Only active converted inputs reach party resolution and recipient mapping.
 The assembly does not repeat field rules the renderer already enforces

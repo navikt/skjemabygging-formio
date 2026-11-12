@@ -91,7 +91,10 @@ const createSubsequentSubmissionDownloadData = ({
 
   const unitField = fields.find(({ component }) => component.type === 'navUnitSelect');
   const navUnit = unitField && submissionUtils.getSubmissionValue(unitField.submissionPath, submission);
-  if (unitField && (typeof navUnit !== 'string' || !navUnit)) invalidAnswer();
+  // The selected unit is what permits a cover page without a user in these modes.
+  if ((mode === 'forced-unit' || mode === 'multiple-people') && (typeof navUnit !== 'string' || !navUnit)) {
+    invalidAnswer();
+  }
 
   return {
     data: {

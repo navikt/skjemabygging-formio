@@ -181,6 +181,20 @@ describe('trusted subsequent submission assembly', () => {
     expect(result.unitTypes).toEqual(['LOKAL']);
   });
 
+  it('leaves the Nav contact unit to the form validation', () => {
+    const submission = unidentified();
+    Object.assign(submission.data, { hasNavContact: 'ja' });
+    const result = assemble(submission);
+    expect(result.user).toMatchObject({ firstName: 'Test' });
+    expect(result).not.toHaveProperty('recipient');
+  });
+
+  it('requires a Nav unit in forced mode', () => {
+    expect(() => assemble({ data: {} }, { enhetMaVelgesVedPapirInnsending: true })).toThrow(
+      'Invalid cover page answers',
+    );
+  });
+
   it.each(['identified-person', 'unidentified-person', 'multiple-people'])(
     'rejects a branch choice in forced mode: %s',
     (userType) => {
@@ -196,6 +210,7 @@ describe('trusted subsequent submission assembly', () => {
     { userType: 'identified-person' },
     { userType: 'unidentified-person', dineOpplysninger: {} },
     { userType: 'multiple-people' },
+    { userType: 'multiple-people', navUnit: '' },
   ])('does not turn invalid person/branch answers into no-user success: %j', (data) => {
     expect(() => assemble({ data })).toThrow();
   });
