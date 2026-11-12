@@ -202,44 +202,55 @@ the trusted source with the same normalized filter.
 
 ### Sendinn paper cover page
 
-`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `language`
-(`nb`, `nn` or `en`, default `nb`), `attachmentFilter` (a string or string
-array, default empty) and `submission: { data: ... }`. Pass the canonical
-Submission answers and the filter retained by `SendinnFormProvider`.
+`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `revision`
+(a positive integer), `language` (`nb`, `nn` or `en`, default `nb`),
+`attachmentFilter` (a string or string array, default empty) and
+`submission: { data: ... }`. Pass the canonical Submission answers, the
+revision of the loaded form and the filter retained by `SendinnFormProvider`.
 Do not pass a form definition, labels or a Party. Query parameter `sub`
 does not select a submission mode.
 `SendinnCoverPageRequest` and `SendinnCoverPageResult` are exported from
 shared-domain for the T7 host adapter. Concerned-person answers are supplied
 postal metadata, not proof of the caller's identity or resource ownership.
 
-The service calls the same configured form loader as GET, rechecking current
-paper eligibility, language availability and normalized filter membership.
-It does not compare revisions or pin publication IDs. A changed definition
-can therefore reject an answer that was available when the page loaded.
+The service loads the pinned revision with
+`GET /v1/forms/{path}?revision=N`, bypassing the form cache. With the
+`published` content source it rejects a revision whose `status` is not
+`published` as 404. It then rechecks paper eligibility, language availability
+and normalized filter membership. Translations are not pinned: only
+`publicationId` pins them, and forms-api has no endpoint that fetches by it.
+Preprod cleanup can delete old revisions, which also gives 404.
 
 Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
 `Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
 this endpoint does not return form answers or download assembly data.
 Expected errors use the central `ErrorResponse` and `x-correlation-id`:
-invalid answers, unavailable selections and empty available attachment lists
-are 400; missing or paper-disabled forms are 404; content, Nav-unit, Azure
-token and generator failures are 503. Diagnostics never contain answers or
-raw upstream bodies. A nonempty available attachment list still permits
-zero selections until T9 adds the final minimum-selection rule.
+invalid request fields, an unknown or forbidden `userType`, a missing Nav
+unit or user identity, unavailable selections, empty available attachment
+lists and values the generator cannot encode are 400; missing or
+paper-disabled forms are 404; content, Nav-unit, token and generator
+failures are 503. Diagnostics never contain answers or raw upstream bodies.
+A nonempty available attachment list still permits zero selections until T9
+adds the final minimum-selection rule.
 
 Shared-backend exports `createSendinnCoverPageService` and
 `createSubsequentSubmissionDownloadData`. The latter returns
-`SubsequentSubmissionCoverPageData`: identified person, unidentified person,
-or an explicit `authorized-no-user` state with reason `hidden`, `forced-unit`
-or `multiple-people`. Existing `CoverPageDownloadType` still requires a user.
+`{ data: CoverPageDownloadType, unitTypes }`. `data.user` is absent when the
+form hides user types, forces a Nav unit, or the user chose multiple people.
+`unitTypes` comes from the active Nav unit field and filters Norg2 units.
 Only active converted inputs reach party resolution and recipient mapping.
+The assembly does not repeat field rules the renderer already enforces
+(address shape, identity number checksum, attachment record shape). The
+generator validates the identity number. `coverPageRequestBodyMapper` rejects
+characters the generator cannot encode, also for attachment titles.
 Selected Nav units use `enhetsnummer` with the mapper's existing
 `netsPostboks: "1400"` routing, not a fabricated postal address.
 
 Sendinn configures the existing cover-page service with
-`SKJEMABYGGING_PROXY_URL`. Its own Azure application obtains client-credentials
-tokens through `createAzureTokenService`, using injected Azure environment
-variables and the target `SKJEMABYGGING_PROXY_CLIENT_ID`. Local mock launchers
-provide mock credentials and the existing proxy/token routes. Preprod release
-also requires the proxy's inbound policy and Azure caller authorization to
-accept both Sendinn applications. Those permissions live outside this repo.
+`SKJEMABYGGING_PROXY_URL`. It gets client-credentials tokens from Texas
+through `createEntraIdTokenService`, with target
+`api://<SKJEMABYGGING_PROXY_CLIENT_ID>/.default`. Local development outside
+mocks can use `SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN`; mock runs never send it.
+Preprod release also requires the proxy's inbound policy and Entra ID caller
+authorization to accept both Sendinn applications. Those permissions live
+outside this repo.
