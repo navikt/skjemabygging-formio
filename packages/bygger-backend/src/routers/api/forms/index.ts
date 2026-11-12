@@ -12,6 +12,7 @@ formsRouter.param('formPath', paramValidation.formPath);
 
 formsRouter.get('/', forms.getAll);
 formsRouter.get('/:formPath', forms.get);
+formsRouter.get('/:formPath/revisions', forms.getRevisions);
 formsRouter.delete('/:formPath', formsApiAuthHandler, forms.deleteForm);
 formsRouter.post('/', formsApiAuthHandler, forms.post);
 formsRouter.put('/:formPath', formsApiAuthHandler, forms.put);

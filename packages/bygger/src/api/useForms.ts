@@ -18,6 +18,7 @@ const useForms = () => {
     deleteForm,
     getPublished,
     copyFromProd,
+    getRevisions,
   } = useFormsApiForms();
 
   const loadFormsList = async () => {
@@ -66,6 +67,7 @@ const useForms = () => {
     onUnpublish,
     onDelete,
     onCopyFromProd,
+    getRevisions,
   };
 };
 

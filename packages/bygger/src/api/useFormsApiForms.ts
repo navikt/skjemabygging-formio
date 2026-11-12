@@ -1,5 +1,5 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormRevision, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { overwriteForm } from '../import/api';
 import { isConflictError } from './httpErrorUtils';
@@ -197,6 +197,18 @@ const useFormsApiForms = () => {
     }
   };
 
+  const getRevisions = async (formPath: string): Promise<FormRevision[] | undefined> => {
+    const url = `/api/forms/${formPath}/revisions`;
+    try {
+      logger?.debug(`Fetching form revisions from ${url}`);
+      return await http.get<FormRevision[]>(url);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      logger?.error(`Failed to fetch form revisions from ${url}`, { message });
+      feedbackEmit.error(`Feil ved henting av revisjoner. ${message}`);
+    }
+  };
+
   return {
     getAll,
     get,
@@ -210,6 +222,7 @@ const useFormsApiForms = () => {
     deleteForm,
     getPublished,
     copyFromProd,
+    getRevisions,
   };
 };
 

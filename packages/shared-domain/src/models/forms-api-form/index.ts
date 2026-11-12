@@ -31,6 +31,12 @@ type Form = {
   firstPanelSlug?: string;
 };
 
+type FormRevision = {
+  revision: number;
+  createdAt: string;
+  publishedAt?: string;
+};
+
 /**
  * Computed by fyllut-backend when `languages` is included in `select`; it is never stored on the form.
  */
@@ -38,4 +44,4 @@ type FormWithLanguages = Form & {
   languages?: TranslationLang[];
 };
 
-export type { Form, FormStatus, FormWithLanguages };
+export type { Form, FormRevision, FormStatus, FormWithLanguages };

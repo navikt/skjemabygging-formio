@@ -25,6 +25,16 @@ const get: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getRevisions: RequestHandler = async (req, res, next) => {
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
+  try {
+    const form = await formsService.getRevisions(formPath);
+    res.json(form);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { skjemanummer, title, properties, components } = req.body as Form;
@@ -124,6 +134,7 @@ const deleteLockForm: RequestHandler = async (req, res, next) => {
 const forms = {
   getAll,
   get,
+  getRevisions,
   post,
   put,
   deleteForm,

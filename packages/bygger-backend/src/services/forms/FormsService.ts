@@ -1,4 +1,4 @@
-import { Form, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormRevision, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { logger } from '../../logging/logger';
 import { createHeaders } from '../utils/formsApiUtils';
@@ -79,6 +79,11 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     return response.data as Form;
   };
 
+  const getRevisions = async (formPath: string): Promise<FormRevision[]> => {
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}/revisions`, { headers: createHeaders() });
+    return response.data as FormRevision[];
+  };
+
   return {
     getAll,
     get,
@@ -89,6 +94,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     postLockForm,
     deleteLockForm,
     formsUrl,
+    getRevisions,
   };
 };
 
