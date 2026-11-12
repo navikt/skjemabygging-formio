@@ -84,8 +84,14 @@ const createContentService = ({ baseUrl, source }: CreateContentServiceProps): C
 
   const getForm: ContentService['getForm'] = async ({ formPath, revision }) => {
     assertValidFormPath(formPath);
-    if (revision !== undefined) return fetchForm(formPath, revision);
-    return cached(`form:${formPath}`, () => fetchForm(formPath));
+    const getCurrentForm = () => cached(`form:${formPath}`, () => fetchForm(formPath));
+    if (revision === undefined) return getCurrentForm();
+    if (source === 'published') {
+      // forms-api reports status per revision, so older revisions of an unpublished form can still say published.
+      const publishedForm = await getCurrentForm();
+      if (publishedForm.revision === revision) return publishedForm;
+    }
+    return fetchForm(formPath, revision);
   };
 
   const getFormTranslations: ContentService['getFormTranslations'] = async (props) => {

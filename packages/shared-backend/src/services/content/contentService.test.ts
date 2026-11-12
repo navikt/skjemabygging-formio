@@ -200,26 +200,66 @@ describe('createContentService', () => {
     },
   );
 
-  it.each<ContentSource>(['published', 'latest'])(
-    'loads a pinned revision from %s content on every request',
-    async (source) => {
-      const formUrl = `${baseUrl}/v1/forms/${formPath}?revision=3`;
-      const fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
-        if (String(url) !== formUrl) throw new Error(`Unexpected request: ${url}`);
-        return jsonResponse({ ...form, revision: 3 });
-      });
-      const service = createContentService({ baseUrl, source });
+  it('loads a pinned revision from latest content on every request', async () => {
+    const formUrl = `${baseUrl}/v1/forms/${formPath}?revision=3`;
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+      if (String(url) !== formUrl) throw new Error(`Unexpected request: ${url}`);
+      return jsonResponse({ ...form, status: 'draft', revision: 3 });
+    });
+    const service = createContentService({ baseUrl, source: 'latest' });
 
-      await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
-      await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
-    },
-  );
+    await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+    await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('uses the cached publication when it matches the pinned revision', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+      if (String(url) !== `${baseUrl}/v1/form-publications/${formPath}`) throw new Error(`Unexpected request: ${url}`);
+      return jsonResponse({ ...form, revision: 3 });
+    });
+    const service = createContentService({ baseUrl, source: 'published' });
+
+    await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+    await expect(service.getForm({ formPath, revision: 3 })).resolves.toMatchObject({ revision: 3 });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('loads an older published revision while the form is still published', async () => {
+    vi.spyOn(global, 'fetch').mockImplementation(async (url) =>
+      String(url).endsWith('?revision=2')
+        ? jsonResponse({ ...form, title: 'Older revision', revision: 2 })
+        : jsonResponse({ ...form, revision: 3 }),
+    );
+
+    await expect(
+      createContentService({ baseUrl, source: 'published' }).getForm({ formPath, revision: 2 }),
+    ).resolves.toMatchObject({ title: 'Older revision', revision: 2 });
+  });
+
+  it('rejects a pinned revision of an unpublished form even if that revision says published', async () => {
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(async (url) =>
+        String(url).includes('/form-publications/')
+          ? jsonResponse({ message: 'Form not published' }, 404)
+          : jsonResponse({ ...form, revision: 2 }),
+      );
+
+    await expect(
+      createContentService({ baseUrl, source: 'published' }).getForm({ formPath, revision: 2 }),
+    ).rejects.toMatchObject({ errorCode: 'NOT_FOUND', message: 'Unable to load form' });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
 
   it.each(['draft', 'pending', 'unpublished'] as const)(
     'rejects a pinned %s revision as missing published content',
     async (status) => {
-      vi.spyOn(global, 'fetch').mockImplementation(async () => jsonResponse({ ...form, status }));
+      vi.spyOn(global, 'fetch').mockImplementation(async (url) =>
+        String(url).includes('/form-publications/')
+          ? jsonResponse({ ...form, revision: 4 })
+          : jsonResponse({ ...form, status, revision: 3 }),
+      );
 
       await expect(
         createContentService({ baseUrl, source: 'published' }).getForm({ formPath, revision: 3 }),

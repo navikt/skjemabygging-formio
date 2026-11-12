@@ -213,11 +213,15 @@ does not select a submission mode.
 shared-domain for the T7 host adapter. Concerned-person answers are supplied
 postal metadata, not proof of the caller's identity or resource ownership.
 
-The service loads the pinned revision with
-`GET /v1/forms/{path}?revision=N`, bypassing the form cache. With the
-`published` content source it rejects a revision whose `status` is not
-`published` as 404. It then rechecks paper eligibility, language availability
-and normalized filter membership. Translations are not pinned: only
+With the `published` content source the service first reads the cached
+publication. An unpublished form gives 404. If the publication has the pinned
+revision, the service uses it. Otherwise it loads
+`GET /v1/forms/{path}?revision=N` and rejects a `status` other than
+`published` as 404. forms-api computes that status per revision, so the
+publication check is what stops older revisions of an unpublished form. With
+`latest` the service always loads the pinned revision, without cache. It then
+rechecks paper eligibility, language availability and normalized filter
+membership. Translations are not pinned: only
 `publicationId` pins them, and forms-api has no endpoint that fetches by it.
 Preprod cleanup can delete old revisions, which also gives 404.
 
