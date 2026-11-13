@@ -35,7 +35,14 @@ const createCoverPageService = ({
 
     logger.debug(`Download cover page for ${data.form.skjemanummer}`);
 
-    const response = await client.downloadCoverPage({ baseUrl, accessToken, body });
+    const response = await client.downloadCoverPage({ baseUrl, accessToken, body }).catch((error) => {
+      // Generator error messages come from the upstream response body and must not reach the client.
+      throw new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'Unable to generate cover page',
+        error instanceof ResponseError ? error.correlationId : undefined,
+      );
+    });
     if (!response || typeof response.foersteside !== 'string' || !response.foersteside.trim()) {
       throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid cover page response');
     }
