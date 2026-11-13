@@ -29,7 +29,7 @@ const createSendinnCoverPageService = ({
       attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });
     const translate = formsApiTranslationUtils.createTranslate(loaded.translations, loaded.language);
-    const { data } = createSubsequentSubmissionDownloadData({
+    const data = createSubsequentSubmissionDownloadData({
       form: loaded.form,
       submission: request.submission,
       language: loaded.language,

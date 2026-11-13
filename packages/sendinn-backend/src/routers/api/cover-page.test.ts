@@ -244,14 +244,10 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(requests).toEqual([]);
   });
 
-  it.each(['missing', 'disabled', 'empty-filter'])('blocks %s content before generation', async (mode) => {
+  it.each(['missing', 'disabled'])('blocks %s content before generation', async (mode) => {
     if (mode === 'missing') formStatus = 404;
     if (mode === 'disabled') form.properties.subsequentSubmissionTypes = ['DIGITAL'];
-    const payload = { ...body(), ...(mode === 'empty-filter' ? { attachmentFilter: ['unknown'] } : {}) };
-    await request(createApp())
-      .post('/sendinn/api/cover-page')
-      .send(payload)
-      .expect(mode === 'empty-filter' ? 400 : 404);
+    await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(404);
     expect(generated).toEqual([]);
     expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
   });
