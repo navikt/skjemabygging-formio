@@ -25,7 +25,9 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
   return (
     <Dialog>
       <Dialog.Trigger>
-        <Button>Se skjemarevisjoner</Button>
+        <Button variant={'tertiary'} size={'small'}>
+          Se skjemarevisjoner
+        </Button>
       </Dialog.Trigger>
       <Dialog.Popup position={'bottom'}>
         <Dialog.Header>

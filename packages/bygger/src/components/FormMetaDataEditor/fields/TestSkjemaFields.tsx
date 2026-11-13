@@ -1,10 +1,11 @@
-import { Button, Checkbox } from '@navikt/ds-react';
+import { Button, Checkbox, HStack, VStack } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../utils/utils';
 
 import { FilesIcon } from '@navikt/aksel-icons';
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import copy from '../../../utils/copy';
+import { RevisionViewer } from '../RevisionViewer';
 
 export interface TestSkjemaFieldsProps {
   onChange: UpdateFormFunction;
@@ -30,18 +31,18 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const { config } = useAppConfig();
 
   return (
-    <>
-      <div className={`mb ${styles.row}`}>
-        <Checkbox
-          id="teststatus"
-          checked={!!isTestForm}
-          onChange={(event) =>
-            onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
-          }
-          readOnly={isLockedForm}
-        >
-          Dette er et testskjema
-        </Checkbox>
+    <HStack justify={'space-between'} align={'start'} paddingBlock={'space-0 space-40'}>
+      <Checkbox
+        id="teststatus"
+        checked={!!isTestForm}
+        onChange={(event) =>
+          onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
+        }
+        readOnly={isLockedForm}
+      >
+        Dette er et testskjema
+      </Checkbox>
+      <VStack gap={'space-8'} paddingBlock={'space-12'}>
         <span className={styles.copyLink}>
           Skjemadelingslenke
           <Button
@@ -52,8 +53,9 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
             size="xsmall"
           />
         </span>
-      </div>
-    </>
+        <RevisionViewer formPath={form.path} />
+      </VStack>
+    </HStack>
   );
 };
 
