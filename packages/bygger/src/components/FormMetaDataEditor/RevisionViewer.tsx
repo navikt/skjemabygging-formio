@@ -1,4 +1,5 @@
 import { BodyShort, Button, Dialog, HGrid, Link } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormRevision } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
@@ -10,11 +11,10 @@ type RevisionViewerProps = {
 };
 
 export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
-  const revisions1 = { revision: 1, createdAt: Date(), publishedAt: Date() };
-
   const [revisions, setRevisions] = useState<FormRevision[] | undefined>(undefined);
 
   const { getRevisions } = useForms();
+  const { config } = useAppConfig();
 
   useEffect(() => {
     (async () => {
@@ -33,16 +33,24 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
           <Dialog.Description></Dialog.Description>
         </Dialog.Header>
         <Dialog.Body>
-          {revisions?.map((revision) => (
-            <HGrid columns={'1fr repeat(3, 3fr)'} key={'revision' + revision.revision}>
-              <BodyShort>{revision.revision}</BodyShort>
-              <Timestamp timestamp={revision.createdAt} />
-              {revision.publishedAt !== undefined ? <Timestamp timestamp={revision.publishedAt} /> : '-'}
-              <Link as={ReactRouterLink} to={{ pathname: formPath, search: `?revision=${revisions1.revision}` }}>
-                Gå til revisjon
-              </Link>
-            </HGrid>
-          ))}
+          <HGrid columns={'2fr repeat(3, 3fr)'}>
+            <BodyShort>Revisjon</BodyShort>
+            <BodyShort>Opprettet</BodyShort>
+            <BodyShort>Publisert</BodyShort>
+            <BodyShort>Fyllut-lenke</BodyShort>
+          </HGrid>
+          {revisions
+            ?.sort((a, b) => a.revision - b.revision)
+            .map((revision) => (
+              <HGrid columns={'2fr repeat(3, 3fr)'} key={'revision' + revision.revision}>
+                <BodyShort>{revision.revision}</BodyShort>
+                <Timestamp timestamp={revision.createdAt} />
+                {revision.publishedAt !== undefined ? <Timestamp timestamp={revision.publishedAt} /> : '-'}
+                <Link as={ReactRouterLink} to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}>
+                  Gå til revisjon
+                </Link>
+              </HGrid>
+            ))}
         </Dialog.Body>
         <Dialog.Footer>
           <Dialog.CloseTrigger>
