@@ -108,7 +108,7 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
+    user: partyData.user ?? coverPageOrganizationUser,
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
     ...createAttachmentDocumentLists(form, submission, translate),
   };
