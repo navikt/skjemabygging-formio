@@ -44,7 +44,10 @@ describe('coverPageDownloadDataMapper', () => {
         data: { attachment1: answer },
         attachments: [{ attachmentId: 'attachment1', navId: 'attachment1', type: 'default', value, files: [] }],
       };
-      const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, submission);
+      const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+        form: formWithAttachments,
+        submission,
+      });
       expect(actual.attachments).toEqual(included ? ['Vedlegg label'] : []);
     }
   });
@@ -58,11 +61,14 @@ describe('coverPageDownloadDataMapper', () => {
       files: [],
     };
     for (const answer of [canonical, [canonical]]) {
-      const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
-        data: { attachment1: answer },
-        attachments: [
-          { attachmentId: 'legacy', navId: 'attachment1', type: 'default', value: 'leggerVedNaa', files: [] },
-        ],
+      const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+        form: formWithAttachments,
+        submission: {
+          data: { attachment1: answer },
+          attachments: [
+            { attachmentId: 'legacy', navId: 'attachment1', type: 'default', value: 'leggerVedNaa', files: [] },
+          ],
+        },
       });
       expect(actual.attachments).toEqual([]);
     }
@@ -86,15 +92,15 @@ describe('coverPageDownloadDataMapper', () => {
           : { attachment1: { key: 'nei' } },
       attachments: kind === 'other' ? answers : [],
     };
-    expect(coverPageDownloadDataMapper.createDownloadDataFromSubmission(form, submission).attachments).toEqual([
+    expect(coverPageDownloadDataMapper.createDownloadDataFromSubmission({ form, submission }).attachments).toEqual([
       'Vedlegg label',
     ]);
   });
 
   it('creates download data from submission', () => {
-    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
-      formWithAttachments,
-      {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+      form: formWithAttachments,
+      submission: {
         data: {
           yourInformation: {
             fornavn: 'Test',
@@ -108,12 +114,11 @@ describe('coverPageDownloadDataMapper', () => {
           attachment1: 'leggerVedNaa',
         },
       } as Submission,
-      'nb-NO',
-      { recipientId: '001', name: 'NAV Test', poBoxAddress: '1234', postalCode: '0101', postalName: 'Oslo' },
-      undefined,
-      (text) => (text === 'Vedlegg label' ? 'Attachment label' : text),
-      'paper',
-    );
+      languageCode: 'nb-NO',
+      recipient: { recipientId: '001', name: 'NAV Test', poBoxAddress: '1234', postalCode: '0101', postalName: 'Oslo' },
+      translate: (text) => (text === 'Vedlegg label' ? 'Attachment label' : text),
+      submissionMethod: 'paper',
+    });
 
     expect(actual).toEqual({
       type: 'SKJEMA',
@@ -196,16 +201,17 @@ describe('coverPageDownloadDataMapper', () => {
   });
 
   it('sends no cover-page user when the submission has no party data', () => {
-    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
-      data: {},
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+      form: formWithAttachments,
+      submission: { data: {} },
     });
 
     expect(actual.user).toBeUndefined();
   });
 
   it('uses organization number fallback and nav unit recipient', () => {
-    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
-      {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+      form: {
         title: 'Testskjema',
         properties: {
           skjemanummer: 'NAV 12.34-56',
@@ -228,7 +234,7 @@ describe('coverPageDownloadDataMapper', () => {
           },
         ] as Component[],
       } as unknown as Form,
-      {
+      submission: {
         data: {
           organizationNumber: 889640782,
           fornavnSoker: '',
@@ -236,12 +242,10 @@ describe('coverPageDownloadDataMapper', () => {
           norskVegadresse: {},
         },
       } as Submission,
-      'nb-NO',
-      undefined,
-      '9999',
-      undefined,
-      'paper',
-    );
+      languageCode: 'nb-NO',
+      unitNumber: '9999',
+      submissionMethod: 'paper',
+    });
 
     expect(actual.user).toEqual({
       organizationNumber: '889640782',
@@ -252,8 +256,8 @@ describe('coverPageDownloadDataMapper', () => {
   });
 
   it('uses the flagged organization as user for a multiple-people party', () => {
-    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
-      {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+      form: {
         title: 'Testskjema',
         properties: {
           skjemanummer: 'NAV 12.34-56',
@@ -271,7 +275,7 @@ describe('coverPageDownloadDataMapper', () => {
           },
         ] as Component[],
       } as unknown as Form,
-      {
+      submission: {
         data: {
           sender: {
             organization: {
@@ -282,18 +286,17 @@ describe('coverPageDownloadDataMapper', () => {
           organizationNumber: '889 640 782',
         },
       } as Submission,
-      'nb-NO',
-      undefined,
-      '9999',
-    );
+      languageCode: 'nb-NO',
+      unitNumber: '9999',
+    });
 
     expect(actual.user).toEqual({ organizationNumber: '889640782' });
     expect(actual.recipient).toEqual({ navUnit: '9999' });
   });
 
   it('prefers your information over an organization-number cover-page user', () => {
-    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
-      {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission({
+      form: {
         ...formWithAttachments,
         components: [
           ...formWithAttachments.components,
@@ -305,7 +308,7 @@ describe('coverPageDownloadDataMapper', () => {
           },
         ],
       },
-      {
+      submission: {
         data: {
           yourInformation: {
             identitet: { identitetsnummer: '123 456 789 11' },
@@ -313,7 +316,7 @@ describe('coverPageDownloadDataMapper', () => {
           organizationNumber: '889 640 782',
         },
       } as Submission,
-    );
+    });
 
     expect(actual.user).toEqual({ nationalIdentityNumber: '123 456 789 11' });
   });

@@ -25,7 +25,7 @@ export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
 export { createContentService, isContentSource } from './content';
 export type { ContentService, ContentSource } from './content';
-export { coverPageMapper, createCoverPageService, createSubsequentSubmissionDownloadData } from './cover-page';
+export { coverPageMapper, createCoverPageService } from './cover-page';
 export type { CoverPagePartyData, CoverPageService, ForstesideRequestBody } from './cover-page';
 export { createEntraIdTokenService } from './entra-id-token/entraIdTokenService';
 export type { EntraIdTokenService } from './entra-id-token/entraIdTokenService';
