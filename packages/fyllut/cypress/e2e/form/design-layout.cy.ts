@@ -85,6 +85,34 @@ describe('Form design layout', () => {
     });
   });
 
+  it('keeps row fields without widthPercent at content width beside each other', () => {
+    cy.viewport(1024, 800);
+    cy.visit('/fyllut/row/visning?sub=paper');
+    cy.defaultWaits();
+    cy.wait('@getCurrencies');
+
+    for (const [rowKey, firstKey, secondKey] of [
+      ['avstand', 'storrelse', 'retning'],
+      ['valutaOgBelop', 'valuta', 'belop'],
+    ]) {
+      cy.get(`[data-component-key="${rowKey}"]`).should(($row) => {
+        const row = $row[0];
+        const first = row.querySelector(`[data-component-key="${firstKey}"]`)!;
+        const second = row.querySelector(`[data-component-key="${secondKey}"]`)!;
+        const firstBounds = first.getBoundingClientRect();
+        const secondBounds = second.getBoundingClientRect();
+
+        expect(firstBounds.width).to.be.lessThan(row.getBoundingClientRect().width / 2);
+        expect(secondBounds.top).to.be.closeTo(firstBounds.top, 1);
+        expect(secondBounds.left - firstBounds.right).to.be.closeTo(24, 1);
+      });
+    }
+
+    cy.findByRole('textbox', { name: /Størrelse/ }).should(($input) => {
+      expect($input[0].getBoundingClientRect().width).to.be.closeTo(140, 1);
+    });
+  });
+
   it('keeps mobile gutters and stacks row fields with one vertical gap without horizontal scrolling', () => {
     cy.viewport(320, 800);
     cy.visit('/fyllut/pengerogkonto/penger?sub=paper');

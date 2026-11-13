@@ -6,11 +6,15 @@
   row-gap: var(--ax-space-40);
 }
 
+/* Fields keep their content width and wrap when the row runs out of space, as in the legacy renderer. */
 .field {
-  --field-width: 100%;
-  flex: 1 1 100%;
+  flex: 0 1 auto;
   max-inline-size: 100%;
   min-inline-size: 0;
+}
+
+.widthPercentField {
+  flex: 1 1 100%;
 }
 
 .field > [data-form-component] > * {
@@ -18,9 +22,9 @@
 }
 
 @media (min-width: 480px) {
-  .field {
-    flex-basis: var(--field-width, 100%);
-    max-inline-size: var(--field-width, 100%);
+  .widthPercentField {
+    flex-basis: var(--field-width);
+    max-inline-size: var(--field-width);
   }
 }
 

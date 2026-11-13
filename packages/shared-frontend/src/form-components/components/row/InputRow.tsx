@@ -48,15 +48,19 @@ const InputRow = ({ component, componentRegistry }: InputRowProps) => {
         </div>
       )}
       <div className={styles.fields}>
-        {components.map((childComponent) => (
-          <div
-            key={childComponent.navId ?? childComponent.key}
-            className={styles.field}
-            style={getChildStyle(childComponent)}
-          >
-            <RenderInputForm components={[childComponent]} componentRegistry={componentRegistry} />
-          </div>
-        ))}
+        {components.map((childComponent) => {
+          const childStyle = getChildStyle(childComponent);
+
+          return (
+            <div
+              key={childComponent.navId ?? childComponent.key}
+              className={childStyle ? `${styles.field} ${styles.widthPercentField}` : styles.field}
+              style={childStyle}
+            >
+              <RenderInputForm components={[childComponent]} componentRegistry={componentRegistry} />
+            </div>
+          );
+        })}
       </div>
     </Box>
   );
