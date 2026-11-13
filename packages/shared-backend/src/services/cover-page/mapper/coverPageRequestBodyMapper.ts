@@ -138,6 +138,11 @@ const getDownloadRecipientData = (recipient?: CoverPageDownloadType['recipient']
   }
 
   if (recipient?.navUnit) {
+    // The cover page generator accepts only digits in enhetsnummer.
+    if (typeof recipient.navUnit !== 'string' || !/^\d+$/.test(recipient.navUnit)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid Nav unit for cover page');
+    }
+
     return {
       enhetsnummer: recipient.navUnit,
       netsPostboks: '1400',

@@ -224,6 +224,15 @@ describe('coverPageRequestBodyMapper', () => {
     expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Mål', 'Vedlegg 1']);
   });
 
+  it.each([' 1234', '12a4', 1234])('rejects a Nav unit the cover page generator does not accept: %j', (navUnit) => {
+    expect(() =>
+      coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+        ...defaultData,
+        recipient: { navUnit: navUnit as string },
+      }),
+    ).toThrowError('Invalid Nav unit for cover page');
+  });
+
   it('throws on invalid user values', () => {
     expect(() =>
       coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
