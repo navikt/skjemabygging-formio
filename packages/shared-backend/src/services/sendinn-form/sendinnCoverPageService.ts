@@ -1,15 +1,11 @@
 import {
   formsApiTranslationUtils,
-  HttpResponseError,
-  navUnitUtils,
   normalizeAttachmentCodeFilter,
-  ResponseError,
   SendinnCoverPageRequest,
   SendinnCoverPageResult,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { CoverPageService } from '../cover-page';
 import { createSubsequentSubmissionDownloadData } from '../cover-page/subsequentSubmission';
-import { NavUnitService } from '../nav-unit';
 import { SendinnFormService } from './sendinnFormService';
 
 interface SendinnCoverPageService {
@@ -19,12 +15,10 @@ interface SendinnCoverPageService {
 const createSendinnCoverPageService = ({
   formService,
   coverPageService,
-  navUnitService,
   getAccessToken,
 }: {
   formService: SendinnFormService;
   coverPageService: CoverPageService;
-  navUnitService: NavUnitService;
   getAccessToken: () => Promise<string>;
 }): SendinnCoverPageService => {
   const downloadCoverPage: SendinnCoverPageService['downloadCoverPage'] = async (request) => {
@@ -35,68 +29,18 @@ const createSendinnCoverPageService = ({
       attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });
     const translate = formsApiTranslationUtils.createTranslate(loaded.translations, loaded.language);
-    const { data, unitTypes } = createSubsequentSubmissionDownloadData({
+    const { data } = createSubsequentSubmissionDownloadData({
       form: loaded.form,
       submission: request.submission,
       language: loaded.language,
       translate,
     });
-    if (data.recipient?.navUnit) {
-      const units = await (async () => {
-        try {
-          const result = await navUnitService.getSupportedNavUnits();
-          if (
-            !Array.isArray(result) ||
-            !result.every((unit) => unit && typeof unit.enhetNr === 'string' && typeof unit.type === 'string')
-          ) {
-            throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid Nav unit response');
-          }
-          return result;
-        } catch (error) {
-          throw new ResponseError(
-            'SERVICE_UNAVAILABLE',
-            'Unable to load Nav units',
-            error instanceof ResponseError ? error.correlationId : undefined,
-          );
-        }
-      })();
-      const available = navUnitUtils.resolveNavUnits(units, unitTypes);
-      if (!available.some((unit) => unit.enhetNr === data.recipient?.navUnit)) {
-        throw new ResponseError('BAD_REQUEST', 'Selected Nav unit is unavailable');
-      }
-    }
-    const accessToken = await getAccessToken();
-    if (!accessToken) throw new ResponseError('SERVICE_UNAVAILABLE', 'Unable to authenticate cover page request');
-    const pdf = await (async () => {
-      try {
-        return await coverPageService.downloadCoverPage({
-          data,
-          accessToken,
-          languageCode: loaded.language,
-          translate,
-        });
-      } catch (error) {
-        // Values the generator would reject are caught locally and are caused by the answers, not by the generator.
-        if (
-          error instanceof ResponseError &&
-          !(error instanceof HttpResponseError) &&
-          error.errorCode === 'BAD_REQUEST'
-        ) {
-          throw error;
-        }
-        throw new ResponseError(
-          'SERVICE_UNAVAILABLE',
-          'Unable to generate cover page',
-          error instanceof ResponseError ? error.correlationId : undefined,
-        );
-      }
-    })();
-    if (
-      !/^[A-Za-z0-9+/]+={0,2}$/.test(pdf) ||
-      !Buffer.from(pdf, 'base64').subarray(0, 5).equals(Buffer.from('%PDF-'))
-    ) {
-      throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid cover page response');
-    }
+    const pdf = await coverPageService.downloadCoverPage({
+      data,
+      accessToken: await getAccessToken(),
+      languageCode: loaded.language,
+      translate,
+    });
     return { pdf };
   };
   return { downloadCoverPage };

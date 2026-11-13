@@ -2,7 +2,6 @@ import {
   createContentService,
   createCoverPageService,
   createEntraIdTokenService,
-  createNavUnitService,
   createSendinnCoverPageService,
   createSendinnFormService,
   ForstesideRequestBody,
@@ -148,7 +147,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
       formService: createSendinnFormService({
         contentService: createContentService({ baseUrl: `${baseUrl}/forms-api`, source: 'latest' }),
       }),
-      navUnitService: createNavUnitService({ baseUrl, consumerId: 'sendinn' }),
       coverPageService: createCoverPageService({ baseUrl: `${baseUrl}/proxy` }),
       getAccessToken: () => tokenService.getAccessToken(),
     });
@@ -258,13 +256,12 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
   });
 
-  it.each(['generator', 'token', 'empty-response', 'nonpdf-response', 'malformed-token', 'translations'])(
+  it.each(['generator', 'token', 'empty-response', 'malformed-token', 'translations'])(
     'returns a correlated standard %s failure without exposing upstream answers',
     async (mode) => {
       if (mode === 'generator') generatorStatus = 500;
       if (mode === 'token') tokenStatus = 500;
       if (mode === 'empty-response') generatorResponse = { foersteside: '' };
-      if (mode === 'nonpdf-response') generatorResponse = { foersteside: Buffer.from('not a PDF').toString('base64') };
       if (mode === 'malformed-token') tokenResponse = {};
       if (mode === 'translations') translationStatus = 404;
       const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(503);

@@ -30,7 +30,6 @@ const generatorTokenService = createEntraIdTokenService({
 const sendinnCoverPageService = createSendinnCoverPageService({
   formService: sendinnFormService,
   coverPageService,
-  navUnitService,
   getAccessToken: generatorTokenService.getAccessToken,
 });
 
