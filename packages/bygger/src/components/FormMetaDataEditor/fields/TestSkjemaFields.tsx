@@ -31,7 +31,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const { config } = useAppConfig();
 
   return (
-    <HStack justify={'space-between'} align={'start'} paddingBlock={'space-0 space-40'}>
+    <HStack justify={'space-between'} align={'start'} paddingBlock={'space-0 space-16'}>
       <Checkbox
         id="teststatus"
         checked={!!isTestForm}
