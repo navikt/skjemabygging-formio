@@ -52,9 +52,14 @@ describe('TranslationService', () => {
 
     it('fails when formPath is invalid', async () => {
       const translationsService = new TranslationsService(testConfig);
-      await expect(translationsService.getTranslationsForLanguage('&$%', 'nn')).rejects.toThrow(
-        'Invalid formPath: &$%',
-      );
+      await expect(translationsService.getTranslationsForLanguage('&$%', 'nn')).rejects.toMatchObject({
+        errorCode: 'BAD_REQUEST',
+        message: 'Form path contains invalid characters.',
+      });
+      await expect(translationsService.loadTranslation('&$%')).rejects.toMatchObject({
+        errorCode: 'BAD_REQUEST',
+        message: 'Form path contains invalid characters.',
+      });
     });
   });
 });

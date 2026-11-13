@@ -2,6 +2,7 @@ import { ErrorCode, ErrorResponse, getStatusFromErrorCode, TEXTS } from '@navikt
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import { logger } from '../../shared/logger/logger';
+import { handleAbortedRequest } from './requestAbortHandler';
 
 const createErrorResponse = (error: any): ErrorResponse => {
   return {
@@ -15,7 +16,11 @@ const createErrorResponse = (error: any): ErrorResponse => {
 const getHttpStatusFromErrorCode = (errorCode: ErrorCode): number =>
   errorCode === 'FILE_TOO_MANY_PAGES' ? 400 : getStatusFromErrorCode(errorCode);
 
-const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunction) => {
+const errorHandler = (error: any, req: Request, res: Response, _next: NextFunction) => {
+  if (handleAbortedRequest(error, req, res)) {
+    return;
+  }
+
   const errorResponse = createErrorResponse(error);
 
   if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
