@@ -17,6 +17,9 @@ const createApp = () => {
   app.get('/openapi.json', (_req, res) => {
     res.json(openApiDocument);
   });
+  app.get('/swagger-ui/index.html', (_req, res) => {
+    res.redirect(302, '/swagger-ui/');
+  });
   app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(openApiDocument));
   app.use('/api', apiRouter);
   app.use('/internal', internalRouter);
