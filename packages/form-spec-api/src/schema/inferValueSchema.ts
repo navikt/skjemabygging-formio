@@ -2,6 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { fallbackShape } from './componentShapes/fallback';
 import {
   addressShape,
+  addressValidityShape,
   countrySelectShape,
   identityShape,
   phoneNumberShape,
@@ -11,7 +12,6 @@ import { JsonSchema, SchemaGenerationContext } from './types';
 import { toOptionalInteger, toOptionalNumber } from './validation';
 
 const stringComponentTypes = new Set([
-  'currency',
   'date',
   'datepicker',
   'day',
@@ -51,6 +51,9 @@ const withCommonValidation = (component: Component, schema: JsonSchema): JsonSch
   };
 };
 
+const withOptionalEmptyValue = (component: Component, schema: JsonSchema): JsonSchema =>
+  component.validate?.required ? schema : { title: component.label, anyOf: [schema, { type: 'string', const: '' }] };
+
 const valuesToEnum = (component: Component) => {
   if (component.type === 'attachment') {
     const attachmentValues = component.attachmentValues;
@@ -78,6 +81,26 @@ const inferValueSchema = (component: Component, context: SchemaGenerationContext
 
   if (component.type === 'navAddress') {
     return addressShape(component);
+  }
+
+  if (component.type === 'addressValidity') {
+    return addressValidityShape(component);
+  }
+
+  if (component.type === 'year') {
+    return withOptionalEmptyValue(component, {
+      type: 'integer',
+      title: component.label,
+      minimum: Math.max(1000, toOptionalInteger(component.validate?.minYear) ?? 1000),
+      maximum: Math.min(9999, toOptionalInteger(component.validate?.maxYear) ?? 9999),
+    });
+  }
+
+  if (component.type === 'currency') {
+    return withOptionalEmptyValue(
+      component,
+      withCommonValidation(component, { type: 'number', title: component.label }),
+    );
   }
 
   if (component.type === 'identity') {

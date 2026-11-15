@@ -57,6 +57,66 @@ const createRequiredTextfield = (key: string, label: string): Component => ({
 });
 
 describe('generateSchema', () => {
+  it('keeps currency, year and address validity shapes inside containers and datagrid rows', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          key: 'page',
+          label: 'Page',
+          type: 'panel',
+          components: [
+            {
+              key: 'address',
+              label: 'Address',
+              type: 'container',
+              components: [
+                { key: 'validity', label: 'Validity', type: 'addressValidity', validate: { required: true } },
+              ],
+            },
+            {
+              key: 'income',
+              label: 'Income',
+              type: 'datagrid',
+              components: [
+                { key: 'amount', label: 'Amount', type: 'currency', validate: { required: true } },
+                {
+                  key: 'year',
+                  label: 'Year',
+                  type: 'year',
+                  validate: { required: true, minYear: 2015, maxYear: 2050 },
+                },
+              ],
+            },
+          ],
+        },
+      ]),
+    );
+
+    const formDataSchema = getFormDataSchema(schema);
+    expect(formDataSchema.properties.page).toBeUndefined();
+    const address = formDataSchema.properties.address as JsonSchemaObject;
+    expect(address.required).toEqual(['validity']);
+    expect(address.properties.validity).toMatchObject({
+      type: 'object',
+      properties: {
+        gyldigFraOgMed: { type: 'string', format: 'date' },
+      },
+      required: ['gyldigFraOgMed'],
+      additionalProperties: false,
+    });
+    const income = formDataSchema.properties.income;
+    expect(income.type).toBe('array');
+    expect(income.items).toEqual({
+      type: 'object',
+      properties: {
+        amount: { title: 'Amount', type: 'number' },
+        year: { title: 'Year', type: 'integer', minimum: 2015, maximum: 2050 },
+      },
+      required: ['amount', 'year'],
+      additionalProperties: false,
+    });
+  });
+
   it('keeps arbitrary legacy attachment choices valid in canonical and choice-only shapes', () => {
     const component: Component = {
       key: 'documentation',
