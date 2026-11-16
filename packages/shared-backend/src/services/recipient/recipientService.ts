@@ -1,4 +1,4 @@
-import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import { Recipient, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import recipientClient from './recipientClient';
 
 type RecipientClient = Pick<typeof recipientClient, 'getRecipient' | 'getRecipients'>;
@@ -32,7 +32,14 @@ const createRecipientService = ({
       return undefined;
     }
 
-    return await client.getRecipient({ baseUrl, recipientId });
+    return await client.getRecipient({ baseUrl, recipientId }).catch((error) => {
+      // The form's recipient is configuration, so a failed lookup is not the client's fault.
+      throw new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'Unable to load recipient',
+        error instanceof ResponseError ? error.correlationId : undefined,
+      );
+    });
   };
 
   return {
