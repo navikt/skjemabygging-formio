@@ -519,9 +519,14 @@ describe('FormMetadataEditor', () => {
           expect(idInput).toHaveValue('123');
           expect(screen.getByRole('group', { name: LABEL_INNSENDING })).toBeVisible();
           const checkBoxes = within(screen.getByRole('group', { name: LABEL_INNSENDING })).getAllByRole('checkbox');
-          expect(checkBoxes).toHaveLength(2);
+          expect(checkBoxes).toHaveLength(3);
           expect(checkBoxes[0]).toBeChecked();
           expect(checkBoxes[1]).toBeChecked();
+          expect(
+            within(screen.getByRole('group', { name: LABEL_INNSENDING })).getByRole('checkbox', {
+              name: 'Uinnlogget digital',
+            }),
+          ).not.toBeChecked();
         });
 
         it('also clears submissionTypes when id is cleared', async () => {

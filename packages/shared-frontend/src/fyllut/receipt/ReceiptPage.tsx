@@ -1,5 +1,11 @@
 import { VStack } from '@navikt/ds-react';
-import { dateUtils, Form, ReceiptSummary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  dateUtils,
+  Form,
+  ReceiptSummary,
+  submissionTypesUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useNavigationType } from 'react-router';
 import SkyraSurvey from '../../components/skyra-survey/SkyraSurvey';
@@ -22,7 +28,7 @@ interface Props {
 }
 
 const ReceiptPage = ({ form, receipt, pdf }: Props) => {
-  const { logEvent } = useIntegration();
+  const { logEvent, renderFeedback } = useIntegration();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
   const { status } = useFormActions();
@@ -69,6 +75,12 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
 
   const allRequiredDocumentsSubmitted =
     receipt.attachmentsToSendLater.length === 0 && receipt.attachmentsToBeSentByOthers.length === 0;
+  const { uxSignalsId, uxSignalsSubmissionTypes } = form.properties;
+  const showFeedback =
+    renderFeedback &&
+    uxSignalsId &&
+    submissionMethod &&
+    uxSignalsSubmissionTypes?.some((type) => submissionTypesUtils.asMethod(type) === submissionMethod);
 
   return (
     <>
@@ -110,6 +122,7 @@ const ReceiptPage = ({ form, receipt, pdf }: Props) => {
         )}
 
         <ReceiptActions />
+        {showFeedback && <div className={styles.hideOnPrint}>{renderFeedback(uxSignalsId)}</div>}
         <SkyraSurvey slug={form.properties.skyraSlug} />
       </VStack>
     </>
