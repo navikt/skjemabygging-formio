@@ -1,5 +1,6 @@
 import { FormsApiTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
-import countries from 'i18n-iso-countries';
+// The package's Node entry requires every locale dynamically, which breaks when the backends bundle it.
+import countries from 'i18n-iso-countries/index.js';
 import enLocale from 'i18n-iso-countries/langs/en.json';
 import nbLocale from 'i18n-iso-countries/langs/nb.json';
 import nnLocale from 'i18n-iso-countries/langs/nn.json';
