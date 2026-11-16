@@ -48,7 +48,12 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
                 <BodyShort>{revision.revision}</BodyShort>
                 <Timestamp timestamp={revision.createdAt} />
                 {revision.publishedAt !== undefined ? <Timestamp timestamp={revision.publishedAt} /> : '-'}
-                <Link as={ReactRouterLink} to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}>
+                <Link
+                  as={ReactRouterLink}
+                  to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Gå til revisjon
                 </Link>
               </HGrid>
