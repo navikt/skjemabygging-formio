@@ -228,30 +228,31 @@ Preprod cleanup can delete old revisions, which also gives 404.
 Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
 `Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
 this endpoint does not return form answers or download assembly data.
-Expected errors use the central `ErrorResponse` and `x-correlation-id`:
-invalid request fields, an unknown or forbidden `userType`, a missing Nav
-unit or user identity, unavailable selections, empty available attachment
-lists and values the generator cannot encode are 400; missing or
-paper-disabled forms are 404; content, Nav-unit, token and generator
-failures are 503. Diagnostics never contain answers or raw upstream bodies.
-A nonempty available attachment list still permits zero selections until T9
-adds the final minimum-selection rule.
+Expected errors use the central `ErrorResponse` and `x-correlation-id`.
+Invalid request fields, an unidentified person without an address, a Nav unit
+that is not digits and values the generator cannot encode are 400. Missing or
+paper-disabled forms are 404. Content, recipient, token and generator failures
+are 503. `coverPageService` and `recipientService.getRecipient` replace
+upstream errors with a generic message, so diagnostics never contain answers or
+raw upstream bodies.
 
-Shared-backend exports `createSendinnCoverPageService` and
-`createSubsequentSubmissionDownloadData`. The latter returns
-`{ data: CoverPageDownloadType, unitTypes }`. `data.user` is absent when the
-form hides user types, forces a Nav unit, or the user chose multiple people.
-The last two require a selected Nav unit, because the unit is what permits a
-cover page without a user. Other unit fields, such as `navContactUnit`, are
-left to the form's own validation.
-`unitTypes` comes from the active Nav unit field and filters Norg2 units.
-Only active converted inputs reach party resolution and recipient mapping.
-The assembly does not repeat field rules the renderer already enforces
-(address shape, identity number checksum, attachment record shape). The
-generator validates the identity number. `coverPageRequestBodyMapper` rejects
-characters the generator cannot encode, also for attachment titles.
-Selected Nav units use `enhetsnummer` with the mapper's existing
-`netsPostboks: "1400"` routing, not a fabricated postal address.
+The server has no Sendinn-only business rules. The form validation owns
+required fields, the renderer clears hidden answers and the frontend blocks an
+empty attachment list (T9). `createSendinnCoverPageService` uses the same
+`coverPageMapper.createDownloadDataFromSubmission` as Fyllut's paper flow, with
+`type: 'ETTERSENDELSE'`. Differences from Fyllut are deliberate:
+
+- The Nav unit is the answered `navUnitSelect` field (`navUnit` or
+  `navContactUnit`). Fyllut gets `enhetNummer` from the request body.
+- The cover page is returned alone as base64 JSON. Fyllut merges it with the
+  application PDF.
+
+The form's `mottaksadresseId` recipient, loaded from forms-api
+(`FORMS_API_URL`), wins over the Nav unit in both flows.
+A Nav unit uses `enhetsnummer` with `netsPostboks: "1400"`. No user is sent
+when party resolution finds nobody, for example when user types are hidden, a
+Nav unit is forced or the user chose multiple people. User information whose
+inputs were cleared on hide counts as no user.
 
 Sendinn configures the existing cover-page service with
 `SKJEMABYGGING_PROXY_URL`. It gets client-credentials tokens from Texas
