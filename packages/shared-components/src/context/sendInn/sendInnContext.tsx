@@ -4,7 +4,6 @@ import {
   MellomlagringError,
   NologinToken,
   ReceiptSummary,
-  ResponseError,
   Submission,
   tokenUtils,
   TranslationLang,
@@ -44,7 +43,7 @@ import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
-import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
+import { getSubmissionWithFyllutState, isNotFoundError, transformSubmissionBeforeSubmitting } from './utils/utils';
 
 interface SendInnContextType {
   updateMellomlagring: (submission?: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -542,7 +541,5 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 };
 
 const useSendInn = () => useContext(SendInnContext);
-
-const isNotFoundError = (error: unknown): boolean => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
 
 export { SendInnProvider, useSendInn };
