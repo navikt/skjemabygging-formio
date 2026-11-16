@@ -3,7 +3,7 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { inputId, inputName } from '../../utils/inputId';
+import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
 import FormElementBox from '../shared/FormElementBox';
@@ -74,7 +74,6 @@ const MonthPicker = ({
           {...inputProps}
           className={styles.picker}
           id={inputId(statePath)}
-          name={inputName(statePath)}
           label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
           description={description ? <TranslatedDescription translationKey={description} /> : undefined}
           error={error}

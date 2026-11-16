@@ -3,7 +3,7 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { type ChangeEvent, type ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { inputId, inputName } from '../../utils/inputId';
+import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
 import { toChoiceFieldValidation } from '../shared/fieldValidation';
@@ -103,7 +103,6 @@ const Select = ({
         <AkselSelect
           className={styles.choice}
           id={inputId(statePath)}
-          name={inputName(statePath)}
           label={
             <TranslatedLabel
               required={required}
@@ -130,7 +129,6 @@ const Select = ({
         <Combobox
           className={styles.choice}
           id={inputId(statePath)}
-          name={inputName(statePath)}
           label={
             <TranslatedLabel
               required={required}
