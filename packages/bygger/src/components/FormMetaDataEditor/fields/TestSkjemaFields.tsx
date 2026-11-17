@@ -4,6 +4,7 @@ import { UpdateFormFunction } from '../utils/utils';
 
 import { FilesIcon } from '@navikt/aksel-icons';
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useLocation } from 'react-router';
 import copy from '../../../utils/copy';
 import { RevisionViewer } from '../RevisionViewer';
 
@@ -30,6 +31,8 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const styles = useStyles();
   const { config } = useAppConfig();
 
+  const location = useLocation();
+
   return (
     <HStack justify={'space-between'} align={'start'} paddingBlock={'space-0 space-16'}>
       <Checkbox
@@ -53,7 +56,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
             size="xsmall"
           />
         </span>
-        <RevisionViewer formPath={form.path} />
+        {location.pathname !== '/forms/new' && <RevisionViewer formPath={form.path} />}
       </VStack>
     </HStack>
   );
