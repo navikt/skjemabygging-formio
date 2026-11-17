@@ -8,6 +8,7 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
+import { getCountryNameTranslations } from './countryNameTranslations';
 import translationClient from './translationClient';
 import {
   addValidationDefaults,
@@ -149,7 +150,12 @@ const createTranslationService = ({
       {},
     );
 
-    return addValidationDefaults({ ...introPageTranslations, ...translations[0], ...translations[1] });
+    return addValidationDefaults({
+      ...getCountryNameTranslations(),
+      ...introPageTranslations,
+      ...translations[0],
+      ...translations[1],
+    });
   };
 
   const createTranslate = async (props: CreateTranslationsProps) => {
