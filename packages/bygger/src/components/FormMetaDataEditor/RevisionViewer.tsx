@@ -47,7 +47,7 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
             </TableHeader>
             <TableBody>
               {revisions
-                ?.sort((a, b) => a.revision - b.revision)
+                ?.sort((a, b) => b.revision - a.revision)
                 .map((revision) => (
                   <TableRow key={'revision' + revision.revision}>
                     <TableHeaderCell scope={'row'}>{revision.revision}</TableHeaderCell>
