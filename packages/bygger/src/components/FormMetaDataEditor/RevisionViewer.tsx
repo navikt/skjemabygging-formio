@@ -1,4 +1,5 @@
-import { BodyShort, Button, Dialog, HGrid, Link } from '@navikt/ds-react';
+import { Button, Dialog, Link, Table } from '@navikt/ds-react';
+import { TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormRevision } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
@@ -35,29 +36,41 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
           <Dialog.Description></Dialog.Description>
         </Dialog.Header>
         <Dialog.Body>
-          <HGrid columns={'2fr repeat(3, 3fr)'}>
-            <BodyShort>Revisjon</BodyShort>
-            <BodyShort>Opprettet</BodyShort>
-            <BodyShort>Publisert</BodyShort>
-            <BodyShort>Fyllut-lenke</BodyShort>
-          </HGrid>
-          {revisions
-            ?.sort((a, b) => a.revision - b.revision)
-            .map((revision) => (
-              <HGrid columns={'2fr repeat(3, 3fr)'} key={'revision' + revision.revision}>
-                <BodyShort>{revision.revision}</BodyShort>
-                <Timestamp timestamp={revision.createdAt} />
-                {revision.publishedAt !== undefined ? <Timestamp timestamp={revision.publishedAt} /> : '-'}
-                <Link
-                  as={ReactRouterLink}
-                  to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Gå til revisjon
-                </Link>
-              </HGrid>
-            ))}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHeaderCell scope={'col'}>Revisjon</TableHeaderCell>
+                <TableHeaderCell scope={'col'}>Opprettet</TableHeaderCell>
+                <TableHeaderCell scope={'col'}>Publisert</TableHeaderCell>
+                <TableHeaderCell scope={'col'}>Fyllut-lenke</TableHeaderCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {revisions
+                ?.sort((a, b) => a.revision - b.revision)
+                .map((revision) => (
+                  <TableRow key={'revision' + revision.revision}>
+                    <TableHeaderCell scope={'row'}>{revision.revision}</TableHeaderCell>
+                    <TableDataCell>
+                      <Timestamp timestamp={revision.createdAt} />
+                    </TableDataCell>
+                    <TableDataCell>
+                      {revision.publishedAt !== undefined ? <Timestamp timestamp={revision.publishedAt} /> : '-'}
+                    </TableDataCell>
+                    <TableDataCell>
+                      <Link
+                        as={ReactRouterLink}
+                        to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Gå til revisjon
+                      </Link>
+                    </TableDataCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         </Dialog.Body>
         <Dialog.Footer>
           <Dialog.CloseTrigger>
