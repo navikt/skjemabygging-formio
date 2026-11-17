@@ -30,7 +30,7 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
           Se skjemarevisjoner
         </Button>
       </Dialog.Trigger>
-      <Dialog.Popup position={'bottom'}>
+      <Dialog.Popup style={{ zIndex: '20000' }}>
         <Dialog.Header>
           <Dialog.Title>Skjemarevisjoner for {formPath}</Dialog.Title>
           <Dialog.Description></Dialog.Description>
