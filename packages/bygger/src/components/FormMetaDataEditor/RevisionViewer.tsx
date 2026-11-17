@@ -36,7 +36,7 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
           <Dialog.Description></Dialog.Description>
         </Dialog.Header>
         <Dialog.Body>
-          <Table>
+          <Table stickyHeader>
             <TableHeader>
               <TableRow>
                 <TableHeaderCell scope={'col'}>Revisjon</TableHeaderCell>
