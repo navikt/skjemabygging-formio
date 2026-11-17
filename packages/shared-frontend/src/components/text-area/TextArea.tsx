@@ -2,7 +2,7 @@ import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { isValueChange, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
-import { inputId } from '../../utils/inputId';
+import { inputId, inputName } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
 import { toFieldValidation } from '../shared/fieldValidation';
@@ -80,6 +80,7 @@ const TextArea = ({
       <Textarea
         className={styles.text}
         id={inputId(statePath)}
+        name={inputName(statePath)}
         label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
         description={description ? <TranslatedDescription translationKey={description} /> : undefined}
         value={displayValue}
