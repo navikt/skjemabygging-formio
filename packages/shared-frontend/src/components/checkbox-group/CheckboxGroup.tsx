@@ -1,6 +1,6 @@
 import { CheckboxGroup as AkselCheckboxGroup, Checkbox } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { type ReactNode, type Ref } from 'react';
+import { Fragment, type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -19,6 +19,8 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   error?: ReactNode;
   inputRef?: Ref<HTMLFieldSetElement>;
   children?: ReactNode;
+  /** Content shown directly below the checkbox for the given option value. */
+  renderBelowOption?: (value: string) => ReactNode;
   translateValues?: boolean;
   validation?: ChoiceValidation;
 }
@@ -38,6 +40,7 @@ const CheckboxGroup = ({
   error: controlledError,
   inputRef,
   children,
+  renderBelowOption,
   translateValues = true,
   validation,
 }: CheckboxGroupProps) => {
@@ -67,9 +70,12 @@ const CheckboxGroup = ({
         ref={inputRef}
       >
         {values.map(({ value, label, description }) => (
-          <Checkbox key={value} value={value} description={description ? translate(description) : undefined}>
-            {translateValues ? translate(label) : label}
-          </Checkbox>
+          <Fragment key={value}>
+            <Checkbox value={value} description={description ? translate(description) : undefined}>
+              {translateValues ? translate(label) : label}
+            </Checkbox>
+            {renderBelowOption?.(value)}
+          </Fragment>
         ))}
         {children}
       </AkselCheckboxGroup>
