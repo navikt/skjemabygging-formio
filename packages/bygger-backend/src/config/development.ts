@@ -21,6 +21,7 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
 
 export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
+  skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
 };
 
 export const devFormsApi: FormsApiConfig = {

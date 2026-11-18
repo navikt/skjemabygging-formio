@@ -67,7 +67,7 @@ const config: ByggerBackendConfig = {
   },
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
-    skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
+    skjemadelingslenkeUrl: env('SKJEMADELINGSLENKE_URL', devFyllut.skjemadelingslenkeUrl),
   },
   formsApi: {
     url: env('FORMS_API_URL', devFormsApi.url),

@@ -2,6 +2,7 @@ app-name: skjemabygging
 ingresses:
 - "https://skjemabygging.nav.no"
 fyllut-base-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
+skjemadelingslenke-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
 enabled-features: translations,conditionalAlert,enhetsListe,autoComplete,diff,exstreamPdf
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt

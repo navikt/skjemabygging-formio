@@ -74,7 +74,7 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
                     <TableDataCell>
                       <Link
                         as={ReactRouterLink}
-                        to={`${config!.fyllutBaseUrl}/${formPath}?revision=${revision.revision}`}
+                        to={`${config!.skjemadelingslenkeUrl}/${formPath}?revision=${revision.revision}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

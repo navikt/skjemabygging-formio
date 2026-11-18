@@ -38,6 +38,8 @@ spec:
   env:
     - name: FYLLUT_BASE_URL
       value: {{fyllut-base-url}}
+    - name: SKJEMADELINGSLENKE_URL
+      value: {{skjemadelingslenke-url}}
     - name: ENABLED_FEATURES
       value: "{{enabled-features}}"
     - name: PUBLISH_REPO

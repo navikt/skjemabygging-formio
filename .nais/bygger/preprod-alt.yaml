@@ -3,6 +3,7 @@ ingresses:
 - "https://skjemabygging-preprod-alt.intern.dev.nav.no"
 - "https://skjemabygging-preprod-alt.ansatt.dev.nav.no"
 fyllut-base-url: http://skjemautfylling-preprod-alt/fyllut
+skjemadelingslenke-url: https://fyllut-preprod-alt.intern.dev.nav.no/fyllut
 enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
