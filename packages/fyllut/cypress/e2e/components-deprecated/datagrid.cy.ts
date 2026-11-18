@@ -135,16 +135,6 @@ describe('Datagrid', () => {
   });
 
   describe('Datagrid and fieldsets', () => {
-    it('fills two textboxes inside lone fieldset in datagrid', () => {
-      cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
-      cy.defaultWaits();
-
-      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
-      cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
-      cy.clickNextStep();
-      cy.url().should('include', '/kjaeledyr');
-    });
-
     it('validates components inside lone fieldset inside datagrid on click next step', () => {
       cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
       cy.defaultWaits();
@@ -161,16 +151,6 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
       cy.clickNextStep();
       cy.url().should('include', '/kjaeledyr');
-    });
-
-    it('fills two textboxes inside datagrid (no fieldset)', () => {
-      cy.visit('/fyllut/datagrid001/kjaeledyr?sub=paper');
-      cy.defaultWaits();
-
-      cy.findByRole('textbox', { name: 'Navn' }).type('Fido');
-      cy.findByRole('textbox', { name: 'Alder' }).type('11');
-      cy.clickNextStep();
-      cy.url().should('include', '/oppsummering');
     });
 
     it('validates components inside datagrid (no fieldset) on click next step', () => {
