@@ -19,7 +19,6 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   error?: ReactNode;
   inputRef?: Ref<HTMLFieldSetElement>;
   children?: ReactNode;
-  /** Content shown directly below the checkbox for the given option value. */
   renderBelowOption?: (value: string) => ReactNode;
   translateValues?: boolean;
   validation?: ChoiceValidation;
