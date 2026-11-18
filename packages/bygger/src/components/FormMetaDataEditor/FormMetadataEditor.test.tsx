@@ -1,5 +1,5 @@
 import { AppConfigProvider, http } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
+import { ByggerFrontendConfig, Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -72,12 +72,18 @@ const formMedProps = (props: Partial<FormPropertiesType>): Form => ({
   },
 });
 
+const defaultConfig = {} as ByggerFrontendConfig;
+
 describe('FormMetadataEditor', () => {
   let mockOnChange;
   let mockHttp;
 
   const renderWithProvider = (ui) =>
-    render(<AppConfigProvider http={mockHttp as unknown as typeof http}>{ui}</AppConfigProvider>);
+    render(
+      <AppConfigProvider config={defaultConfig} http={mockHttp as unknown as typeof http}>
+        {ui}
+      </AppConfigProvider>,
+    );
 
   beforeEach(() => {
     mockOnChange = vi.fn();
@@ -109,7 +115,7 @@ describe('FormMetadataEditor', () => {
         });
 
         rerender(
-          <AppConfigProvider http={mockHttp as unknown as typeof http}>
+          <AppConfigProvider config={defaultConfig} http={mockHttp as unknown as typeof http}>
             <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
           </AppConfigProvider>,
         );
@@ -138,7 +144,7 @@ describe('FormMetadataEditor', () => {
         expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
         rerender(
-          <AppConfigProvider http={mockHttp as unknown as typeof http}>
+          <AppConfigProvider config={defaultConfig} http={mockHttp as unknown as typeof http}>
             <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
           </AppConfigProvider>,
         );
@@ -166,7 +172,7 @@ describe('FormMetadataEditor', () => {
       expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
       rerender(
-        <AppConfigProvider http={mockHttp as unknown as typeof http}>
+        <AppConfigProvider config={defaultConfig} http={mockHttp as unknown as typeof http}>
           <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
         </AppConfigProvider>,
       );
@@ -491,7 +497,7 @@ describe('FormMetadataEditor', () => {
           const updatedForm = calls[calls.length - 1][0];
 
           rerender(
-            <AppConfigProvider http={mockHttp as unknown as typeof http}>
+            <AppConfigProvider config={defaultConfig} http={mockHttp as unknown as typeof http}>
               <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
             </AppConfigProvider>,
           );
