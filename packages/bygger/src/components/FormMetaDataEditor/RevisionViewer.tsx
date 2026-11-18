@@ -2,7 +2,7 @@ import { Button, Dialog, Link, Table } from '@navikt/ds-react';
 import { TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormRevision } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
 import useForms from '../../api/useForms';
 import Timestamp from '../../Forms/status/Timestamp';
@@ -13,15 +13,29 @@ type RevisionViewerProps = {
 
 export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
   const [revisions, setRevisions] = useState<FormRevision[] | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { logger } = useAppConfig();
 
   const { getRevisions } = useForms();
   const { config } = useAppConfig();
 
+  const loadRevisions = useCallback(async () => {
+    if (loading) {
+      try {
+        setRevisions(await getRevisions(formPath));
+      } catch (_e) {
+        logger?.error('Could not load revisions.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [formPath, getRevisions, loading, logger]);
+
   useEffect(() => {
     (async () => {
-      setRevisions(await getRevisions(formPath));
+      await loadRevisions();
     })();
-  }, [formPath]);
+  }, [loadRevisions]);
 
   return (
     <Dialog>
