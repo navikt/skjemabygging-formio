@@ -45,7 +45,7 @@ const config = {
   contentSource: readContentSource(),
   skjemabyggingProxyUrl: env('SKJEMABYGGING_PROXY_URL', 'https://skjemabygging-proxy.dev-fss-pub.nais.io'),
   skjemabyggingProxyClientId: env('SKJEMABYGGING_PROXY_CLIENT_ID', '95170319-b4d7-4190-8271-118ed19bafbf'),
-  // Mock runs must never send a locally collected token to the real proxy.
+  // Mock runs ignore a pre-generated token from .env and get the token from the Texas mock instead.
   skjemabyggingProxyDevToken:
     isDevelopment && process.env.MOCKS_ENABLED !== 'true'
       ? process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN

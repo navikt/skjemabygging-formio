@@ -15,7 +15,6 @@ const createSendinnServerConfig = (options) =>
       NORG2_URL: mockURL,
       SKJEMABYGGING_PROXY_URL: `${mockURL}/skjemabygging-proxy`,
       SKJEMABYGGING_PROXY_CLIENT_ID: 'mock-proxy',
-      SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN: '',
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockURL}/texas/introspect`,
       NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockURL}/texas/exchange`,
       NAIS_TOKEN_ENDPOINT: `${mockURL}/texas/token`,
