@@ -1,4 +1,11 @@
-import { Form, PdfData, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Form,
+  introPageTexts,
+  PdfData,
+  Submission,
+  TEXTS,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   submission: Submission;
@@ -11,7 +18,7 @@ const PdfIntroPage = ({ submission, form, translate }: Props): PdfData | null =>
     return null;
   }
 
-  const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
+  const inputLabel = introPageTexts.selfDeclaration.inputLabel;
 
   return {
     label: translate(TEXTS.grensesnitt.introPage.title),

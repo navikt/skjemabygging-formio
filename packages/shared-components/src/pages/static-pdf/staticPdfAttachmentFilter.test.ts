@@ -1,46 +1,21 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter } from './staticPdfAttachmentFilter';
+import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
 
-const createAttachment = (key: string, vedleggskode: string) =>
-  ({
-    key,
-    label: key,
-    type: 'attachment',
-    properties: { vedleggskode },
-  }) as Component;
+describe('getFilteredStaticPdfAttachments', () => {
+  it('flattens nested attachments and applies the shared code filter without including other components', () => {
+    const attachment: Component = {
+      key: 'document',
+      label: 'Document',
+      type: 'attachment',
+      properties: { vedleggskode: ' R4 ' },
+    };
+    const components: Component[] = [
+      { key: 'question', label: 'Question', type: 'textfield', properties: { vedleggskode: 'R4' } },
+      { key: 'panel', label: 'Panel', type: 'panel', components: [attachment] },
+      { key: 'uncoded', label: 'Uncoded document', type: 'attachment' },
+    ];
 
-describe('staticPdfAttachmentFilter', () => {
-  describe('normalizeStaticPdfAttachmentCodeFilter', () => {
-    it('returns an empty array when the filter is missing', () => {
-      expect(normalizeStaticPdfAttachmentCodeFilter(undefined)).toEqual([]);
-      expect(normalizeStaticPdfAttachmentCodeFilter(null)).toEqual([]);
-    });
-
-    it('returns an empty array when the filter is empty after trimming', () => {
-      expect(normalizeStaticPdfAttachmentCodeFilter('')).toEqual([]);
-      expect(normalizeStaticPdfAttachmentCodeFilter(' ,  , ')).toEqual([]);
-    });
-
-    it('trims whitespace and ignores empty values', () => {
-      expect(normalizeStaticPdfAttachmentCodeFilter(' R4 , , K2 ')).toEqual(['R4', 'K2']);
-    });
-  });
-
-  describe('filterStaticPdfAttachments', () => {
-    const attachments = [createAttachment('vedlegg1', 'R4'), createAttachment('vedlegg2', 'K2')];
-
-    it('returns all attachments when there is no active filter', () => {
-      expect(filterStaticPdfAttachments(attachments, [])).toEqual(attachments);
-    });
-
-    it('returns only attachments with matching vedleggskode values', () => {
-      expect(filterStaticPdfAttachments(attachments, ['R4'])).toEqual([attachments[0]]);
-      expect(filterStaticPdfAttachments(attachments, ['R4', 'K2'])).toEqual([attachments[0], attachments[1]]);
-    });
-
-    it('ignores unknown codes when a filter is present', () => {
-      expect(filterStaticPdfAttachments(attachments, ['R4', 'ZZ'])).toEqual([attachments[0]]);
-      expect(filterStaticPdfAttachments(attachments, ['ZZ'])).toEqual([]);
-    });
+    expect(getFilteredStaticPdfAttachments(components, ' , R4, ')).toEqual([attachment]);
+    expect(getFilteredStaticPdfAttachments(components, null)).toEqual([attachment, components[2]]);
   });
 });

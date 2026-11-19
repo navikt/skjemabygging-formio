@@ -1,5 +1,5 @@
-import { getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { ApplicationLogger, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FormWithLanguages, getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { ApplicationLogger, FyllutRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { NavigateFunction } from 'react-router';
 import { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
@@ -11,7 +11,7 @@ interface Props {
   search: string;
   submissionMethod?: SubmissionMethod;
   bootstrapService: RenderFormBootstrapService;
-  applications: RuntimeServices['applications'];
+  applications: FyllutRuntimeServices['applications'];
   navigate: NavigateFunction;
   loadKey: string;
   logger?: ApplicationLogger;
@@ -30,6 +30,7 @@ const useInitializeRenderForm = ({
 }: Props) => {
   const [initializedForm, setInitializedForm] = useState<InitializedForm>();
   const [notFoundLoadKey, setNotFoundLoadKey] = useState<string>();
+  const [notAllowed, setNotAllowed] = useState<{ loadKey: string; form: FormWithLanguages }>();
   const [failedLoadKey, setFailedLoadKey] = useState<string>();
   const loadRef = useRef<{ key: string; promise: Promise<InitializationResult> }>();
 
@@ -69,6 +70,9 @@ const useInitializeRenderForm = ({
           case 'notFound':
             setNotFoundLoadKey(loadKey);
             return;
+          case 'submissionMethodNotAllowed':
+            setNotAllowed({ loadKey, form: result.form });
+            return;
           case 'draftNotFound':
             navigate('/soknad-ikke-funnet', { replace: true });
             return;
@@ -94,10 +98,16 @@ const useInitializeRenderForm = ({
   }, [applications, bootstrapService, formPath, loadKey, logger, navigate, routePath, search, submissionMethod]);
 
   const hasInitializationError = failedLoadKey === loadKey;
-  const isLoading = initializedForm?.loadKey !== loadKey && notFoundLoadKey !== loadKey && !hasInitializationError;
+  const submissionMethodNotAllowedForm = notAllowed?.loadKey === loadKey ? notAllowed.form : undefined;
+  const isLoading =
+    initializedForm?.loadKey !== loadKey &&
+    notFoundLoadKey !== loadKey &&
+    !submissionMethodNotAllowedForm &&
+    !hasInitializationError;
 
   return {
     initializedForm: initializedForm?.loadKey === loadKey ? initializedForm : undefined,
+    submissionMethodNotAllowedForm,
     isLoading,
     hasInitializationError,
   };

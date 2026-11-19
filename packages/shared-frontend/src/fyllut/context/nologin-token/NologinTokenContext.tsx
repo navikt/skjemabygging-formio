@@ -20,6 +20,7 @@ const NologinTokenContext = createContext<NologinTokenContextType>({
   handleSessionExpired: () => {},
   tokenExpiration: undefined,
 });
+NologinTokenContext.displayName = 'NologinTokenContext';
 
 interface Props {
   children: ReactNode;

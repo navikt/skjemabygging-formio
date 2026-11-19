@@ -12,8 +12,8 @@ interface AttachmentUploadValidationInput {
   required?: boolean;
   attachment?: SubmissionAttachment;
   validation?: ChoiceValidation;
+  uploadEnabled?: boolean;
   uploadSelected?: boolean;
-  requireAttachmentTitle?: boolean;
   requiredFilesMessage?: string;
 }
 
@@ -22,6 +22,11 @@ const attachmentValueRules = (required = false): ValidationRules => ({ required 
 /** Choosing to attach the documentation now is only fulfilled once a file has been uploaded. */
 const requiresUploadedFiles = (attachment?: SubmissionAttachment) =>
   attachment?.value === 'leggerVedNaa' || (attachment?.type === 'personal-id' && !!attachment.value);
+
+const requiresAttachmentTitleWithoutUpload = (
+  attachment: Pick<SubmissionAttachment, 'type' | 'value'> | undefined,
+  uploadEnabled: boolean,
+) => !uploadEnabled && attachment?.type === 'other' && attachment.value === 'leggerVedNaa';
 
 const attachmentFilesRules: ValidationRules = { requiredFiles: true };
 
@@ -52,30 +57,30 @@ const toAttachmentFilesValidationFields = ({
   attachmentId,
   label,
   attachment,
-  uploadSelected = requiresUploadedFiles(attachment),
-  requireAttachmentTitle = false,
+  uploadEnabled = true,
+  uploadSelected = uploadEnabled && requiresUploadedFiles(attachment),
   requiredFilesMessage,
 }: AttachmentUploadValidationInput): ValidationField[] => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'files');
+  // Without upload the title is printed on the cover page, so it must pass the generator's character rule.
+  const titleOnCoverPage = requiresAttachmentTitleWithoutUpload(attachment, uploadEnabled);
 
   return [
     ...(uploadSelected
-      ? [
-          ...toValidationFields(
+      ? toValidationFields(
+          statePath,
+          attachment?.files ?? [],
+          toFieldValidation({
             statePath,
-            attachment?.files ?? [],
-            toFieldValidation({
-              statePath,
-              label,
-              validation: {
-                ...attachmentFilesRules,
-                ...(requiredFilesMessage ? { requiredFilesMessage } : {}),
-              },
-            }),
-          ),
-        ]
+            label,
+            validation: {
+              ...attachmentFilesRules,
+              ...(requiredFilesMessage ? { requiredFilesMessage } : {}),
+            },
+          }),
+        )
       : []),
-    ...(requireAttachmentTitle || (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
+    ...(titleOnCoverPage || (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
       ? toValidationFields(
           attachmentFieldPath(submissionPath, attachmentId, 'title'),
           attachment?.title,
@@ -83,7 +88,7 @@ const toAttachmentFilesValidationFields = ({
             statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
             label: TEXTS.statiske.attachment.attachmentTitle,
             required: true,
-            validation: { maxLength: 50 },
+            validation: { maxLength: 50, ...(titleOnCoverPage ? { coverPageValue: true } : {}) },
           }),
         )
       : []),
@@ -93,6 +98,7 @@ const toAttachmentFilesValidationFields = ({
 export {
   attachmentFilesRules,
   attachmentValueRules,
+  requiresAttachmentTitleWithoutUpload,
   requiresUploadedFiles,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,

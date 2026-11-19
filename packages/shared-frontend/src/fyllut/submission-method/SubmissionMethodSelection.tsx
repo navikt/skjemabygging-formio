@@ -25,12 +25,9 @@ const SubmissionMethodSelection = ({ form }: Props) => {
   const [state, setState] = useState<SelectionState>(SelectionState.DEFAULT);
   const submissionTypes = form.properties.submissionTypes;
 
+  // Choosing digital must not force a new draft, so an existing draft sends the user to the active tasks page.
   const searchWithSub = useCallback(
-    (submissionMethod: SubmissionMethod) =>
-      updateSearch(location.search, {
-        sub: submissionMethod,
-        forceMellomlagring: submissionMethod === 'digital' ? 'true' : undefined,
-      }),
+    (submissionMethod: SubmissionMethod) => updateSearch(location.search, { sub: submissionMethod }),
     [location.search],
   );
 

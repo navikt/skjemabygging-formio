@@ -79,6 +79,16 @@ declare global {
       configMocksServer(): Chainable<JQuery<HTMLElement>>;
 
       /**
+       * Uses a route variant instead of the one in the current mocks collection
+       */
+      mocksUseRouteVariant(routeVariantId: string): Chainable<Cypress.Response<unknown>>;
+
+      /**
+       * Removes all route variants set with mocksUseRouteVariant
+       */
+      mocksRestoreRouteVariants(): Chainable<Cypress.Response<unknown>>;
+
+      /**
        * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
        */
       skipIfNoIncludeDistTests(): Chainable<void>;

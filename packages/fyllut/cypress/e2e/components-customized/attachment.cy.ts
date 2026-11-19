@@ -20,7 +20,7 @@ describe('Attachment', () => {
     cy.url().then((url) => {
       if (url.includes('/legitimasjon')) {
         cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-        cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
           cy.findByLabelText('Norsk pass').check(),
         );
         cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
@@ -47,11 +47,11 @@ describe('Attachment', () => {
     });
 
     it('renders label and option group', () => {
-      cy.findByRole('group', { name: LABEL }).should('exist');
+      cy.findByRole('radiogroup', { name: LABEL }).should('exist');
     });
 
     it('renders enabled options for default type', () => {
-      cy.findByRole('group', { name: LABEL }).within(() => {
+      cy.findByRole('radiogroup', { name: LABEL }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist');
         cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist');
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('exist');
@@ -60,7 +60,7 @@ describe('Attachment', () => {
     });
 
     it('can select an option', () => {
-      cy.findByRole('group', { name: LABEL }).within(() => {
+      cy.findByRole('radiogroup', { name: LABEL }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('not.be.checked').check();
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('be.checked');
       });
@@ -113,16 +113,16 @@ describe('Attachment', () => {
       cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle })
         .should('have.value', 'a'.repeat(50))
         .clear();
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documents');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
       cy.findAllByErrorMessageRequired(TEXTS.statiske.attachment.attachmentTitle).should('have.length', 0);
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
-      cy.findByText('Supporting documents').should('be.visible');
+      cy.findByText('Dokumentasjon av utgifter').should('be.visible');
       cy.findByRole('link', { name: 'Annet' }).click();
       cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).should(
         'have.value',
-        'Supporting documents',
+        'Dokumentasjon av utgifter',
       );
     });
 
@@ -130,7 +130,7 @@ describe('Attachment', () => {
       cy.withinComponent(LABEL_OTHER, () => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
       });
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Previous description');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Tidligere beskrivelse');
       cy.withinComponent(LABEL_OTHER, () => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
       });
@@ -152,8 +152,8 @@ describe('Attachment', () => {
       cy.clickNextStep();
       cy.findAllByErrorMessageRequired(LABEL_REQUIRED).should('have.length', 2);
       cy.clickErrorMessageRequired(LABEL_REQUIRED);
-      cy.findByRole('group', { name: LABEL_REQUIRED }).should('have.focus');
-      cy.findByRole('group', { name: LABEL_REQUIRED }).within(() => {
+      cy.findByRole('radiogroup', { name: LABEL_REQUIRED }).should('have.focus');
+      cy.findByRole('radiogroup', { name: LABEL_REQUIRED }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
       });
       cy.findAllByErrorMessageRequired(LABEL_REQUIRED).should('have.length', 0);
@@ -172,7 +172,7 @@ describe('Attachment', () => {
     });
 
     it('translates label', () => {
-      cy.findByRole('group', { name: `${LABEL} (en)` }).should('exist');
+      cy.findByRole('radiogroup', { name: `${LABEL} (en)` }).should('exist');
     });
 
     it('translates description', () => {
@@ -193,7 +193,7 @@ describe('Attachment', () => {
     });
 
     it('does not render uploadNow selector and shows upload button immediately', () => {
-      cy.findByRole('group', { name: 'Vedlegg upload-only' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Vedlegg upload-only' }).should('not.exist');
       getUploadOnlyAttachment().within(() => {
         cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
       });
@@ -235,7 +235,7 @@ describe('Attachment', () => {
     });
 
     it('does not render uploadNow selector and shows upload button immediately', () => {
-      cy.findByRole('group', { name: 'Vedlegg upload-only' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Vedlegg upload-only' }).should('not.exist');
       getUploadOnlyAttachment().within(() => {
         cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
       });
@@ -253,7 +253,7 @@ describe('Attachment', () => {
     });
 
     it('does not render uploadNow selector for other attachment and can upload directly', () => {
-      cy.findByRole('group', { name: 'Annen dokumentasjon upload-only' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Annen dokumentasjon upload-only' }).should('not.exist');
       getUploadOnlyOtherAttachment().within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Direkte opplasting');
         cy.uploadFile('test.txt');

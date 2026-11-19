@@ -1,5 +1,6 @@
 import { Form, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
+import { normalizeLegacySelectValue } from '../../form-components/components/select/legacySelectValue';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 import {
   enrichComponentsWithBaseSubmissionPath,
@@ -45,7 +46,11 @@ const normalizeSubmissionData = (form: Form, submission: Submission | undefined)
       if ((component.input || component.type === 'attachment') && component.type !== 'container') {
         const value = submissionUtils.getSubmissionValue(submissionPath, submission);
         if (value !== undefined) {
-          normalizedSubmission = createUpdatedSubmission(normalizedSubmission, submissionPath, value);
+          normalizedSubmission = createUpdatedSubmission(
+            normalizedSubmission,
+            submissionPath,
+            normalizeLegacySelectValue(component, value),
+          );
         }
       }
 

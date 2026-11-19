@@ -79,7 +79,8 @@ describe('Submission method', () => {
         // edit data so that conditional attachment is triggered
         cy.clickEditAnswer('Dine opplysninger');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist');
-        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Brill{downArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Brill');
+        cy.findByRole('option', { name: 'Briller' }).click();
         cy.clickSaveAndContinue();
 
         cy.findByLabelText(/Bekreftelse fra optiker/).within(() => {

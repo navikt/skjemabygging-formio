@@ -9,25 +9,25 @@ import {
   SubmissionType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
-import nock from 'nock';
+import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 import config from '../config';
 import { logger } from '../logging/logger';
 import ReportService from './ReportService';
-import { formPublicationsService, formsService, recipientService, staticPdfService } from './index';
+import { ReportDependencies } from './reports/types';
 
-const { formsApi } = config;
+const PUBLISHED_LANGUAGE_CODES = ['nb', 'nn', 'en'];
 
 describe('ReportService', () => {
+  let dependencies: DeepMockProxy<ReportDependencies>;
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService({ formsService, formPublicationsService, recipientService, staticPdfService });
+    dependencies = mockDeep<ReportDependencies>();
+    reportService = new ReportService(dependencies);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    nock.abortPendingRequests();
-    nock.cleanAll();
   });
 
   it('returns list containing report metadata', () => {
@@ -58,47 +58,57 @@ describe('ReportService', () => {
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (
+    const unexpectedFormPath = (formPath: string): never => {
+      throw new Error(`Unexpected form path: ${formPath}`);
+    };
+
+    const mockDependencies = (
       publishedForms: Partial<Form>[],
       recipients: Recipient[] = [],
       formsWithUploadedPdfs: string[] = [],
     ) => {
-      nock(formsApi.url).get('/v1/recipients').reply(200, recipients);
-      nock(formsApi.url)
-        .get(/\/v1\/forms\?.*$/)
-        .times(1)
-        .reply(200, publishedForms);
-      nock(formsApi.url)
-        .get(/\/v1\/form-publications$/)
-        .times(1)
-        .reply(200, publishedForms);
-      for (const form of publishedForms) {
-        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
-        nock(formsApi.url)
-          .get(`/v1/forms/${form.path}/static-pdfs`)
-          .reply(
-            200,
-            formsWithUploadedPdfs.includes(form.path ?? '')
-              ? [{ id: 1, languageCode: 'nb', fileName: 'example.pdf' }]
-              : [],
-          );
-        nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
-        const publishedTranslations: PublishedTranslations = {
+      const findForm = (formPath: string) =>
+        (publishedForms.find((form) => form.path === formPath) as Form) ?? unexpectedFormPath(formPath);
+
+      dependencies.recipientService.getAll.mockResolvedValue(recipients);
+      dependencies.formsService.getAll.mockResolvedValue(publishedForms as Form[]);
+      dependencies.formsService.get.mockImplementation(async (formPath) => findForm(formPath));
+      dependencies.formPublicationsService.getAll.mockResolvedValue(publishedForms as Form[]);
+      dependencies.formPublicationsService.get.mockImplementation(async (formPath) => findForm(formPath));
+      dependencies.formPublicationsService.getTranslations.mockImplementation(async (formPath) => {
+        const form = findForm(formPath);
+        return {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
           publishedBy: 'TEST',
-          translations:
-            form.publishedLanguages?.reduce((acc, cur) => {
-              return {
-                ...acc,
-                [cur]: {},
-              };
-            }, {}) || {},
+          translations: Object.fromEntries((form.publishedLanguages ?? []).map((language) => [language, {}])),
         };
-        nock(formsApi.url)
-          .get(/\/v1\/form-publications\/(.+)\/translations\?.*/)
-          .times(1)
-          .reply(200, publishedTranslations);
-      }
+      });
+      dependencies.staticPdfService.getAll.mockImplementation(async ({ formPath }) =>
+        formsWithUploadedPdfs.includes(formPath)
+          ? [{ languageCode: 'nb', fileName: 'example.pdf', createdBy: 'TEST', createdAt: '2025-01-01' }]
+          : [],
+      );
+    };
+
+    const mockPublications = (
+      publications: Partial<Form>[],
+      snapshots: Record<string, Partial<Form>>,
+      translations: Record<string, PublishedTranslations> = {},
+    ) => {
+      dependencies.formPublicationsService.getAll.mockResolvedValue(publications as Form[]);
+      dependencies.formPublicationsService.get.mockImplementation(
+        async (formPath) => (snapshots[formPath] as Form) ?? unexpectedFormPath(formPath),
+      );
+      dependencies.formPublicationsService.getTranslations.mockImplementation(
+        async (formPath) => translations[formPath] ?? unexpectedFormPath(formPath),
+      );
+    };
+
+    const expectPublicationsFetched = (snapshotPaths: string[], translationPaths: string[] = []) => {
+      const { get, getTranslations } = dependencies.formPublicationsService;
+      expect(get.mock.calls.map(([formPath]) => formPath).sort()).toEqual([...snapshotPaths].sort());
+      expect(getTranslations.mock.calls.map(([formPath]) => formPath).sort()).toEqual([...translationPaths].sort());
+      getTranslations.mock.calls.forEach(([, languages]) => expect(languages).toEqual(PUBLISHED_LANGUAGE_CODES));
     };
 
     function parseReport(content: string) {
@@ -140,7 +150,7 @@ describe('ReportService', () => {
             subsequentSubmissionTypes: [],
           },
         };
-        setupNock([form]);
+        mockDependencies([form]);
 
         const writableStream = createWritableStream();
         await reportService.generate(reportId, writableStream);
@@ -170,7 +180,7 @@ describe('ReportService', () => {
             subsequentSubmissionTypes: [],
           },
         };
-        setupNock([form]);
+        mockDependencies([form]);
 
         await expect(reportService.generate(reportId, createWritableStream())).rejects.toThrow(RangeError);
       });
@@ -196,7 +206,7 @@ describe('ReportService', () => {
               ettersendelsesfrist: '14',
             },
           };
-          setupNock([form]);
+          mockDependencies([form]);
 
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
@@ -242,7 +252,7 @@ describe('ReportService', () => {
             components: [],
             properties: { skjemanummer: 'EXAMPLE', tema: 'TEST', submissionTypes, subsequentSubmissionTypes },
           };
-          setupNock([form]);
+          mockDependencies([form]);
 
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
@@ -275,7 +285,7 @@ describe('ReportService', () => {
             createForm('both', ['STATIC_PDF']),
             createForm('neither'),
           ];
-          setupNock(publishedForms, [], ['uploaded-only', 'both']);
+          mockDependencies(publishedForms, [], ['uploaded-only', 'both']);
 
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
@@ -323,7 +333,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
 
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
@@ -355,7 +365,7 @@ describe('ReportService', () => {
               subsequentSubmissionTypes: [],
             },
           }));
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
 
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
@@ -393,7 +403,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms, [
+          mockDependencies(publishedForms, [
             {
               recipientId: 'recipient',
               name: 'Example office',
@@ -427,7 +437,7 @@ describe('ReportService', () => {
           },
           components: [],
         }));
-        setupNock(forms);
+        mockDependencies(forms);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -449,7 +459,7 @@ describe('ReportService', () => {
           },
           components: [],
         }));
-        setupNock(forms);
+        mockDependencies(forms);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -518,7 +528,7 @@ describe('ReportService', () => {
           },
           components: [],
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -549,7 +559,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -573,7 +583,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -597,7 +607,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -629,7 +639,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             } as Form,
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -657,7 +667,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             } as Form,
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -683,7 +693,7 @@ describe('ReportService', () => {
               } as unknown as FormPropertiesType,
             } as Form,
           ];
-          setupNock(publishedForms);
+          mockDependencies(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -736,7 +746,7 @@ describe('ReportService', () => {
             } as unknown as FormPropertiesType,
           } as Form,
         ];
-        setupNock(publishedForms);
+        mockDependencies(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -789,34 +799,35 @@ describe('ReportService', () => {
           },
           components: [],
         };
-        const api = nock(formsApi.url)
-          .get('/v1/form-publications')
-          .reply(200, [compact])
-          .get('/v1/form-publications/legacy-publication')
-          .reply(200, {
-            ...compact,
-            title: 'Published title',
-            status: 'published',
-            properties: {
-              skjemanummer: 'EXAMPLE',
-              tema: 'TEST',
-              innsending: legacyType,
-              submissionTypes,
+        mockPublications(
+          [compact],
+          {
+            'legacy-publication': {
+              ...compact,
+              title: 'Published title',
+              status: 'published',
+              properties: {
+                skjemanummer: 'EXAMPLE',
+                tema: 'TEST',
+                innsending: legacyType,
+                submissionTypes,
+              } as unknown as FormPropertiesType,
             },
-          })
-          .get('/v1/form-publications/legacy-publication/translations')
-          .query({ languageCodes: 'nb,nn,en' })
-          .reply(200, {
-            publishedAt: '2025-01-01',
-            publishedBy: 'TEST',
-            translations: { nb: {} },
-          });
+          },
+          {
+            'legacy-publication': {
+              publishedAt: '2025-01-01',
+              publishedBy: 'TEST',
+              translations: { nb: {} },
+            },
+          },
+        );
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
 
         expect(writableStream.toString()).toBe(CSV_HEADER_LINE + `EXAMPLE;nb;Published title;;;${expectedCell};1\n`);
-        expect(api.isDone()).toBe(true);
+        expectPublicationsFetched(['legacy-publication'], ['legacy-publication']);
       });
 
       it.each([{ legacyType: 'UNSUPPORTED' }, { legacyType: null }, { legacyType: ['KUN_PAPIR'] }])(
@@ -835,23 +846,22 @@ describe('ReportService', () => {
             },
             components: [],
           };
-          const api = nock(formsApi.url)
-            .get('/v1/form-publications')
-            .reply(200, [form])
-            .get('/v1/form-publications/unsupported-publication')
-            .reply(200, form)
-            .get('/v1/form-publications/unsupported-publication/translations')
-            .query({ languageCodes: 'nb,nn,en' })
-            .reply(200, {
-              publishedAt: '2025-01-01',
-              publishedBy: 'TEST',
-              translations: { nb: {} },
-            });
+          mockPublications(
+            [form as unknown as Form],
+            { 'unsupported-publication': form as unknown as Form },
+            {
+              'unsupported-publication': {
+                publishedAt: '2025-01-01',
+                publishedBy: 'TEST',
+                translations: { nb: {} },
+              },
+            },
+          );
 
           await expect(reportService.generate('forms-published-languages', createWritableStream())).rejects.toThrow(
             'Unsupported legacy submission type in published form',
           );
-          expect(api.isDone()).toBe(true);
+          expectPublicationsFetched(['unsupported-publication'], ['unsupported-publication']);
           expect(logged).toHaveBeenCalledExactlyOnceWith('Report failed', {
             reportId: 'forms-published-languages',
             rowCount: 0,
@@ -869,7 +879,7 @@ describe('ReportService', () => {
           components: [],
           skjemanummer: 'TEST1',
           path: 'test1',
-          status: 'pending',
+          status: 'pending' as const,
           properties: {
             skjemanummer: 'TEST1',
             submissionTypes: ['STATIC_PDF'],
@@ -879,10 +889,10 @@ describe('ReportService', () => {
         const published = {
           ...draft,
           title: 'Published title',
-          status: 'published',
+          status: 'published' as const,
           properties: {
             ...draft.properties,
-            submissionTypes: ['DIGITAL', 'PAPER'],
+            submissionTypes: ['DIGITAL', 'PAPER'] as SubmissionType[],
           },
         };
         const translations: PublishedTranslations = {
@@ -893,14 +903,7 @@ describe('ReportService', () => {
             en: { 'Published title': 'English title' },
           },
         };
-        const api = nock(formsApi.url)
-          .get('/v1/form-publications')
-          .reply(200, [draft])
-          .get('/v1/form-publications/test1')
-          .reply(200, published)
-          .get('/v1/form-publications/test1/translations')
-          .query({ languageCodes: 'nb,nn,en' })
-          .reply(200, translations);
+        mockPublications([draft], { test1: published }, { test1: translations });
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -908,7 +911,7 @@ describe('ReportService', () => {
         expect(writableStream.toString()).toEqual(
           CSV_HEADER_LINE + 'TEST1;nb, en;Published title;;English title;"[""DIGITAL"", ""PAPER""]";1\n',
         );
-        expect(api.isDone()).toBe(true);
+        expectPublicationsFetched(['test1'], ['test1']);
       });
 
       it('excludes drafts, unpublished forms and test forms marked in either version', async () => {
@@ -939,27 +942,22 @@ describe('ReportService', () => {
           properties: { ...markedInSnapshot.properties, isTestForm: true },
         };
         const legitimate = createForm('allergitest');
-        const api = nock(formsApi.url)
-          .get('/v1/form-publications')
-          .reply(200, [published, pending, draft, unpublished, markedInList, markedInSnapshot, legitimate])
-          .get('/v1/form-publications/published')
-          .reply(200, published)
-          .get('/v1/form-publications/pending')
-          .reply(200, { ...pending, status: 'published' })
-          .get('/v1/form-publications/magnus-test')
-          .reply(200, snapshot)
-          .get('/v1/form-publications/allergitest')
-          .reply(200, legitimate);
-        for (const path of ['published', 'pending', 'allergitest']) {
-          api
-            .get(`/v1/form-publications/${path}/translations`)
-            .query({ languageCodes: 'nb,nn,en' })
-            .reply(200, {
-              publishedAt: '2025-01-01',
-              publishedBy: 'TEST',
-              translations: { nb: {} },
-            });
-        }
+        const reportedPaths = ['published', 'pending', 'allergitest'];
+        mockPublications(
+          [published, pending, draft, unpublished, markedInList, markedInSnapshot, legitimate],
+          {
+            published,
+            pending: { ...pending, status: 'published' },
+            'magnus-test': snapshot,
+            allergitest: legitimate,
+          },
+          Object.fromEntries(
+            reportedPaths.map((path) => [
+              path,
+              { publishedAt: '2025-01-01', publishedBy: 'TEST', translations: { nb: {} } },
+            ]),
+          ),
+        );
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -970,7 +968,7 @@ describe('ReportService', () => {
           ['pending', '2'],
           ['allergitest', '3'],
         ]);
-        expect(api.isDone()).toBe(true);
+        expectPublicationsFetched(['published', 'pending', 'magnus-test', 'allergitest'], reportedPaths);
       });
 
       it.each(['draft', 'unpublished', 'pending'] as const)(
@@ -989,16 +987,12 @@ describe('ReportService', () => {
             },
             components: [],
           };
-          const api = nock(formsApi.url)
-            .get('/v1/form-publications')
-            .reply(200, [form])
-            .get('/v1/form-publications/not-published')
-            .reply(200, { ...form, status });
+          mockPublications([form], { 'not-published': { ...form, status } });
           const writableStream = createWritableStream();
           await reportService.generate('forms-published-languages', writableStream);
 
           expect(writableStream.toString()).toBe(CSV_HEADER_LINE);
-          expect(api.isDone()).toBe(true);
+          expectPublicationsFetched(['not-published']);
         },
       );
 
@@ -1070,7 +1064,7 @@ describe('ReportService', () => {
             } as unknown as FormPropertiesType,
           } as Form,
         ];
-        setupNock(publishedForms);
+        mockDependencies(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
@@ -1128,7 +1122,7 @@ describe('ReportService', () => {
             },
           ],
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const summaryStream = createWritableStream();
         await reportService.generate('all-forms-summary', summaryStream);
         const summary = parseReport(summaryStream.toString());
@@ -1137,7 +1131,7 @@ describe('ReportService', () => {
         expect(summary.forms[0][summary.getHeaderIndex('antall vedlegg')]).toBe('2');
         expect(summary.forms[0][summary.getHeaderIndex('skjematittel')]).toBe('Form,unchanged');
 
-        setupNock([form]);
+        mockDependencies([form]);
         const attachmentsStream = createWritableStream();
         await reportService.generate('all-forms-and-attachments', attachmentsStream);
         const attachments = parseReport(attachmentsStream.toString());
@@ -1167,7 +1161,7 @@ describe('ReportService', () => {
           },
           components: [],
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -1281,7 +1275,7 @@ describe('ReportService', () => {
             },
           } as Form,
         ];
-        setupNock(publishedForms);
+        mockDependencies(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
@@ -1379,7 +1373,7 @@ describe('ReportService', () => {
             signatures: { signature1: 'Doctor', signature2: 'Applicant' },
           },
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -1409,7 +1403,7 @@ describe('ReportService', () => {
             subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
           },
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -1450,7 +1444,7 @@ describe('ReportService', () => {
             subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
           },
         };
-        setupNock([form]);
+        mockDependencies([form]);
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
         const report = parseReport(writableStream.toString());
@@ -1658,7 +1652,7 @@ describe('ReportService', () => {
                 ]
               : [],
           };
-          setupNock([form]);
+          mockDependencies([form]);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -1704,7 +1698,7 @@ describe('ReportService', () => {
               },
             ],
           };
-          setupNock([form]);
+          mockDependencies([form]);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -1752,7 +1746,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           } as Form,
         ];
-        setupNock(publishedForms);
+        mockDependencies(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -1825,7 +1819,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           } as Form,
         ];
-        setupNock(publishedForms);
+        mockDependencies(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-and-attachments', writableStream);
@@ -1853,7 +1847,7 @@ describe('ReportService', () => {
 
     describe('unpublished forms', () => {
       it('appends consecutive row numbers after filtering out published forms', async () => {
-        setupNock([
+        mockDependencies([
           {
             path: 'first',
             skjemanummer: 'FIRST',

@@ -1,4 +1,4 @@
-import { IntroPageSection, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPageSection, introPageTexts, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroAccordion from './IntroAccordion';
 import { InnerHtmlLong } from './SanitizedHtml';
 
@@ -17,11 +17,11 @@ const DataDisclosure = ({ properties, translate, className, defaultOpen }: Props
   return (
     <IntroAccordion
       title={translate(properties.title)}
-      description={translate('introPage.dataDisclosure.ingress')}
-      bulletPoints={['introPage.dataDisclosure.nationalPopulationRegister', ...(properties.bulletPoints ?? [])].map(
+      description={translate(introPageTexts.dataDisclosure.ingress)}
+      bulletPoints={[introPageTexts.dataDisclosure.nationalPopulationRegister, ...(properties.bulletPoints ?? [])].map(
         (bulletPoint) => translate(bulletPoint),
       )}
-      contentBottom={<InnerHtmlLong content={translate('introPage.dataTreatment.readMore')} />}
+      contentBottom={<InnerHtmlLong content={translate(introPageTexts.dataDisclosure.readMore)} />}
       className={className}
       defaultOpen={defaultOpen}
     />

@@ -22,7 +22,7 @@ type EditFormTranslationsContextValue = {
   shouldWarnAboutInactiveTranslation: (key?: string) => boolean;
   errors: TranslationError[];
   editState: string;
-  saveChanges: () => Promise<void>;
+  saveChanges: (activeKeys?: string[]) => Promise<boolean>;
   getTextFromCurrentChanges: (key?: string, lang?: TranslationLang) => string;
 };
 
@@ -30,7 +30,7 @@ const defaultValue: EditFormTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   editState: 'INIT',
-  saveChanges: () => Promise.resolve(),
+  saveChanges: () => Promise.resolve(true),
   addKeyBasedText: () => '',
   updateKeyBasedText: () => '',
   shouldWarnAboutInactiveTranslation: () => false,
@@ -92,13 +92,16 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     return key;
   };
 
-  const saveChanges = async () => {
-    const translations = getTranslationsForSaving(state);
+  const saveChanges = async (activeKeys?: string[]) => {
+    const translations = getTranslationsForSaving(state, activeKeys);
     const validationErrors = validateFormTranslations(translations);
 
     if (translations.length === 0) {
+      if (Object.keys(state.changes).length > 0) {
+        dispatch({ type: 'CLEAR_CHANGES' });
+      }
       feedbackEmit.success('Ingen endringer oppdaget. Oversettelser ble ikke lagret.');
-      return;
+      return true;
     }
 
     if (validationErrors.length > 0) {
@@ -107,7 +110,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
         const key = htmlUtils.isHtmlString(error.key) ? htmlUtils.extractTextContent(error.key) : error.key;
         feedbackEmit.error(`${stringUtils.truncate(key, 50)}: ${error.message}`);
       });
-      return;
+      return false;
     }
 
     dispatch({ type: 'SAVE_STARTED' });
@@ -133,6 +136,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
         `Feil under lagring av oversettelser: "${conflictAlertMessage ?? `${conflictAlertMessage}, `}${generalAlertMessage ?? ''}"`,
       );
     }
+    return true;
   };
 
   const getTextFromCurrentChanges = (key?: string, lang: TranslationLang = 'nb') => {

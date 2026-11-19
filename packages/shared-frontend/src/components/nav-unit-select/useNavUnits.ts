@@ -1,8 +1,7 @@
-import { Enhet, Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useApplication } from '../../context/application/ApplicationContext';
-import { useNavUnitService } from '../../context/runtime-services/RuntimeServicesContext';
-import { filterNavUnits, resolveNavUnits, sortNavUnits } from './navUnitUtils';
+import { Enhetstype, navUnitUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo } from 'react';
+import { useOptionalNavUnitsContext } from './NavUnitsProvider';
+import { useNavUnitsLoader } from './useNavUnitsLoader';
 
 interface UseNavUnitsOptions {
   enabled?: boolean;
@@ -10,50 +9,20 @@ interface UseNavUnitsOptions {
 }
 
 const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => {
-  const { logger } = useApplication();
-  const formData = useNavUnitService();
-  const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
-  const retry = useCallback(() => {
-    setResult(undefined);
-    setAttempt((previous) => previous + 1);
-  }, []);
-
+  const shared = useOptionalNavUnitsContext();
+  const own = useNavUnitsLoader(enabled && !shared);
+  const request = shared?.request;
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+    if (enabled) request?.();
+  }, [enabled, request]);
 
-    let cancelled = false;
-
-    void formData
-      .getNavUnits()
-      .then((units) => {
-        if (!cancelled) {
-          setResult({ source: formData, units: sortNavUnits(units) });
-        }
-      })
-      .catch((fetchError) => {
-        if (cancelled) {
-          return;
-        }
-
-        const resolvedError = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
-        logger?.error?.('Failed to load Nav units');
-        setResult({ source: formData, error: resolvedError });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt, enabled, formData, logger]);
-
-  const currentResult = enabled && result?.source === formData ? result : undefined;
-  const allUnits = currentResult?.units;
-  const error = currentResult?.error;
-  const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
+  const { allUnits, error, loading, retry } = shared && enabled ? shared : own;
+  const units = useMemo(
+    () => (allUnits ? navUnitUtils.filterNavUnits(allUnits, unitTypes) : undefined),
+    [allUnits, unitTypes],
+  );
   const availableUnits = useMemo(
-    () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
+    () => (allUnits ? navUnitUtils.resolveNavUnits(allUnits, unitTypes) : undefined),
     [allUnits, unitTypes],
   );
 
@@ -63,7 +32,8 @@ const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => 
     availableUnits,
     error,
     retry,
-    loading: enabled && allUnits === undefined && error === undefined,
+    // A shared lookup that has not been requested yet still counts as loading.
+    loading: enabled && (loading || (allUnits === undefined && error === undefined)),
   };
 };
 

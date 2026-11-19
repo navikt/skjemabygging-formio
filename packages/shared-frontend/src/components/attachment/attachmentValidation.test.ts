@@ -111,7 +111,17 @@ describe('attachment validation', () => {
   });
 
   it('requires a title but no uploaded files for other documentation on paper', () => {
-    const fields = collect([{ ...attachment, type: 'other' }], 'paper', { ...component, attachmentType: 'other' });
+    const answer: SubmissionAttachment = { ...attachment, type: 'other' };
+    const fields = collect([answer], 'paper', { ...component, attachmentType: 'other' });
+    expect(fields.slice(1)).toEqual(
+      toAttachmentFilesValidationFields({
+        submissionPath: 'documentation',
+        attachmentId: answer.attachmentId,
+        label: component.label ?? component.key,
+        attachment: answer,
+        uploadEnabled: false,
+      }),
+    );
     expect(fields.map((field) => field.statePath)).toEqual(['documentation.value', 'documentation.doc.title']);
     expect(fields[0].value).toBe('leggerVedNaa');
     expect(validateValue(fields[0].value, fields[0].field, fields[0].rules, 'nb')).toBeUndefined();
@@ -120,7 +130,7 @@ describe('attachment validation', () => {
       ...component,
       attachmentType: 'other',
     }).find((field) => field.statePath === 'documentation.doc.title');
-    expect(fields[1].rules).toEqual(digitalTitle?.rules);
+    expect(fields[1].rules).toEqual({ ...digitalTitle?.rules, coverPageValue: true });
   });
 
   it('rejects restored paper titles longer than the digital limit', () => {

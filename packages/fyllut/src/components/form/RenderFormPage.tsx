@@ -1,5 +1,4 @@
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FyllutRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
@@ -26,7 +25,7 @@ const RenderFormPage = () => {
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const isActiveTasksRoute = routePath === 'paabegynt';
   const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
-  const services = useMemo<RuntimeServices>(
+  const services = useMemo<FyllutRuntimeServices>(
     () => createRuntimeServices({ http: createIntegrationHttp(http), backendBaseUrl, innsendingsId }),
     [backendBaseUrl, http, innsendingsId],
   );
@@ -34,19 +33,20 @@ const RenderFormPage = () => {
     () => createRenderFormBootstrapService({ http: createIntegrationHttp(http), backendBaseUrl }),
     [backendBaseUrl, http],
   );
-  const { initializedForm, isLoading, hasInitializationError } = useInitializeRenderForm({
-    formPath,
-    routePath,
-    search,
-    submissionMethod,
-    bootstrapService,
-    applications: services.applications,
-    navigate,
-    loadKey,
-    logger,
-  });
+  const { initializedForm, submissionMethodNotAllowedForm, isLoading, hasInitializationError } =
+    useInitializeRenderForm({
+      formPath,
+      routePath,
+      search,
+      submissionMethod,
+      bootstrapService,
+      applications: services.applications,
+      navigate,
+      loadKey,
+      logger,
+    });
 
-  useFormDocumentMetadata(initializedForm?.form);
+  useFormDocumentMetadata(initializedForm?.form ?? submissionMethodNotAllowedForm);
 
   if (!formPath) {
     return <NotFoundPage />;
@@ -60,12 +60,12 @@ const RenderFormPage = () => {
     return <InternalServerErrorPage />;
   }
 
-  if (!initializedForm) {
-    return <NotFoundPage />;
+  if (submissionMethodNotAllowedForm && submissionMethod) {
+    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
-  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, initializedForm.form)) {
-    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
+  if (!initializedForm) {
+    return <NotFoundPage />;
   }
 
   return (

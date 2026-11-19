@@ -4,11 +4,16 @@ import {
   MellomlagringError,
   NologinToken,
   ReceiptSummary,
-  ResponseError,
   Submission,
   tokenUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formatDraftLogMessage,
+  getDraftFailureMetadata,
+  getSubmissionFailureLog,
+  shouldLogDraftFailure,
+} from '@navikt/skjemadigitalisering-shared-frontend';
 import {
   createContext,
   Dispatch,
@@ -38,7 +43,7 @@ import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
-import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
+import { getSubmissionWithFyllutState, isNotFoundError, transformSubmissionBeforeSubmitting } from './utils/utils';
 
 interface SendInnContextType {
   updateMellomlagring: (submission?: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -85,7 +90,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { setSubmission, form, submission } = useForm();
-  const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
   const { translate } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
@@ -198,7 +202,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           return;
         }
 
-        logger?.info(`${response?.innsendingsId}: Successfully created new mellomlagring`);
+        logger?.info(formatDraftLogMessage(response?.innsendingsId, 'Draft created'));
 
         setSubmission(getSubmissionWithFyllutState(response));
         dispatchFyllutMellomlagring({ type: 'init', response });
@@ -209,9 +213,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           setIsMellomlagringReady(true);
         }
         return response;
-      } catch (error: any) {
+      } catch (error) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
-        logger?.error('Failed to create mellomlagring', error);
+        if (shouldLogDraftFailure(error)) {
+          logger?.error('Draft persistence failed', getDraftFailureMetadata('create', error));
+        }
       }
     },
     [
@@ -246,16 +252,21 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         currentLanguage,
         innsendingsId,
       );
-      logger?.info(`${innsendingsId}: Mellomlagring was updated`);
+      logger?.info(formatDraftLogMessage(innsendingsId, 'Draft updated'));
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
-    } catch (error: any) {
+    } catch (error) {
       if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED_NOT_FOUND' });
         throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
-        logger?.error(`${innsendingsId}: Failed to update mellomlagring`, error as Error);
+        if (shouldLogDraftFailure(error)) {
+          logger?.error(
+            formatDraftLogMessage(innsendingsId, 'Draft persistence failed'),
+            getDraftFailureMetadata('update', error),
+          );
+        }
         throw error;
       }
     }
@@ -268,14 +279,19 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
     try {
       await deleteSoknad(appConfig, innsendingsId);
-      logger?.info(`${innsendingsId}: Mellomlagring was deleted`);
-    } catch (error: any) {
+      logger?.info(formatDraftLogMessage(innsendingsId, 'Draft deleted'));
+    } catch (error) {
       if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });
         throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED' });
-        logger?.error(`${innsendingsId}: Failed to delete mellomlagring`, error as Error);
+        if (shouldLogDraftFailure(error)) {
+          logger?.error(
+            formatDraftLogMessage(innsendingsId, 'Failed to delete draft'),
+            getDraftFailureMetadata('delete', error),
+          );
+        }
         throw error;
       }
     }
@@ -351,24 +367,25 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
         await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
-        logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
+        logger?.info(formatDraftLogMessage(innsendingsId, 'Draft submitted'));
         if (redirectLocation) {
           window.location.href = redirectLocation;
         }
-      } catch (submitError: any) {
+      } catch (submitError) {
         if (isNotFoundError(submitError)) {
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
         } else {
-          logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
           try {
             await updateSoknad(appConfig, form, submission, language, innsendingsId);
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
+            const failureLog = getSubmissionFailureLog(submitError);
+            if (failureLog)
+              logger?.error(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
           } catch (updateError) {
-            logger?.error(
-              `${innsendingsId}: Failed to update mellomlagring after a failed submit`,
-              updateError as Error,
-            );
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
+            const failureLog = getSubmissionFailureLog(submitError, { error: updateError });
+            if (failureLog)
+              logger?.error(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
           }
         }
       }
@@ -456,27 +473,32 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
             setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+            logger?.info(formatDraftLogMessage(innsendingsIdFromParams, 'Draft retrieved'));
           } else if (isMellomlagringAvailable) {
             const response = await startMellomlagring(submission!);
             if (response) {
               setIsMellomlagringReady(true);
-              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
+              logger?.info(formatDraftLogMessage(response.innsendingsId, 'Draft created'));
             }
           }
-        } catch (error: any) {
+        } catch (error) {
           retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
             logger?.info(
-              `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
-              error as Error,
+              formatDraftLogMessage(innsendingsIdFromParams, 'Draft not found during retrieval'),
+              getDraftFailureMetadata('retrieve', error),
             );
             const formPath = pathname.split('/')[1];
             const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
             navigate('/soknad-ikke-funnet', { state: { url } });
             return;
           }
-          logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
+          if (shouldLogDraftFailure(error)) {
+            logger?.error(
+              formatDraftLogMessage(innsendingsIdFromParams, 'Draft persistence failed'),
+              getDraftFailureMetadata('retrieve', error),
+            );
+          }
           dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
         }
       }
@@ -493,7 +515,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     pathname,
     retrieveMellomlagring,
     isMellomlagringReady,
-    soknadNotFoundUrl,
     startMellomlagring,
     submission,
   ]);
@@ -520,7 +541,5 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 };
 
 const useSendInn = () => useContext(SendInnContext);
-
-const isNotFoundError = (error: unknown): boolean => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
 
 export { SendInnProvider, useSendInn };

@@ -15,10 +15,10 @@ import {
 } from './types';
 
 if (process.env.NODE_ENV !== 'test') {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
 if (process.env.MOCKS_ENABLED === 'true') {
-  dotenv.config({ path: '.env.test' });
+  dotenv.config({ path: '.env.test', quiet: true });
 }
 
 const defaultEnabledFeatures = '';
@@ -108,6 +108,7 @@ const localDevelopmentConfig: DefaultConfig = {
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
+  skjemabyggingProxyDevToken: process.env.SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN,
   familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'https://familie-pdf.intern.dev.nav.no',
   familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE || 'dev-gcp.teamfamilie.familie-pdf',
   familiePdfDevToken: process.env.FAMILIE_PDF_M2M_ACCESS_TOKEN,

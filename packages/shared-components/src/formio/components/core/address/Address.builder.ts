@@ -1,3 +1,4 @@
+import { createAddress } from '@navikt/skjemadigitalisering-shared-domain';
 import address from './Address';
 
 const addressBuilder = () => {
@@ -6,9 +7,7 @@ const addressBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
-      validate: {
-        required: true,
-      },
+      ...createAddress(),
     },
   };
 };

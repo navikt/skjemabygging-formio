@@ -1,3 +1,9 @@
+// Preload shared-backend while the file is collected, which has no timeout.
+// In tests, tsconfig paths resolve it to source, so the first dynamic import of
+// ./config would otherwise transform shared-backend and shared-domain inside the
+// first test's 5 s timeout. That exceeds the limit in the CPU-bound coverage job.
+// vi.resetModules() re-evaluates modules but keeps the transform cache.
+import '@navikt/skjemadigitalisering-shared-backend';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('dotenv', () => ({ default: { config: vi.fn() } }));
@@ -49,7 +55,7 @@ describe('Sendinn configuration', () => {
     vi.stubEnv('NAIS_CLUSTER_NAME', 'prod-gcp');
     vi.stubEnv('SENDINN_CONTENT_SOURCE', 'latest');
 
-    await expect(import('./config')).rejects.toThrow('SENDINN_CONTENT_SOURCE must be published in prod-gcp');
+    await expect(import('./config')).rejects.toThrow("SENDINN_CONTENT_SOURCE must be 'published' in prod-gcp");
   });
 
   it('accepts published content in the production cluster', async () => {
@@ -58,26 +64,6 @@ describe('Sendinn configuration', () => {
 
     await expect(import('./config')).resolves.toMatchObject({ config: { contentSource: 'published' } });
   });
-
-  it.each(['development', 'test'])(
-    'supports browsing without credentials but defaults token acquisition to preprod Azure in %s',
-    async (nodeEnv) => {
-      vi.stubEnv('NODE_ENV', nodeEnv);
-      vi.stubEnv('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', undefined);
-      vi.stubEnv('AZURE_APP_CLIENT_ID', undefined);
-      vi.stubEnv('AZURE_APP_CLIENT_SECRET', undefined);
-      vi.stubEnv('SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN', undefined);
-
-      const { config } = await import('./config');
-
-      expect(config.azure).toEqual({
-        tokenEndpoint: 'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
-        clientId: '',
-        clientSecret: '',
-        devToken: undefined,
-      });
-    },
-  );
 
   it.each(['development', 'test', 'production'])(
     'gates pre-generated proxy tokens to development (%s)',
@@ -90,22 +76,15 @@ describe('Sendinn configuration', () => {
         SKJEMABYGGING_PROXY_URL: 'https://proxy.example.com',
         SKJEMABYGGING_PROXY_CLIENT_ID: 'test-proxy',
         SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN: 'local-generator-token',
-        AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: 'https://azure.example.com/token',
-        AZURE_APP_CLIENT_ID: 'test-client',
-        AZURE_APP_CLIENT_SECRET: 'test-credential',
         NAIS_TOKEN_INTROSPECTION_ENDPOINT: 'https://texas.example.com/introspect',
         NAIS_TOKEN_EXCHANGE_ENDPOINT: 'https://texas.example.com/exchange',
+        NAIS_TOKEN_ENDPOINT: 'https://texas.example.com/token',
         INNSENDING_API_AUDIENCE: 'test-audience',
       }).forEach(([name, value]) => vi.stubEnv(name, value));
 
       const { config } = await import('./config');
 
-      expect(config.azure).toEqual({
-        tokenEndpoint: 'https://azure.example.com/token',
-        clientId: 'test-client',
-        clientSecret: 'test-credential',
-        devToken: nodeEnv === 'development' ? 'local-generator-token' : undefined,
-      });
+      expect(config.skjemabyggingProxyDevToken).toBe(nodeEnv === 'development' ? 'local-generator-token' : undefined);
     },
   );
 
@@ -116,6 +95,6 @@ describe('Sendinn configuration', () => {
 
     const { config } = await import('./config');
 
-    expect(config.azure.devToken).toBeUndefined();
+    expect(config.skjemabyggingProxyDevToken).toBeUndefined();
   });
 });

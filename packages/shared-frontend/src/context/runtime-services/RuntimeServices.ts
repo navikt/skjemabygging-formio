@@ -97,7 +97,12 @@ interface SubmissionService {
   }) => Promise<Blob>;
 }
 
-interface RuntimeServices {
+interface CommonRuntimeServices {
+  formData: Pick<FormDataService, 'getNavUnits'>;
+}
+
+interface FyllutRuntimeServices extends CommonRuntimeServices {
+  host: 'fyllut';
   applications: ApplicationService;
   attachments: AttachmentService;
   formData: FormDataService;
@@ -105,17 +110,23 @@ interface RuntimeServices {
   submissions: SubmissionService;
 }
 
+interface SendinnRuntimeServices extends CommonRuntimeServices {
+  host: 'sendinn';
+}
+
 export type {
   ActiveTask,
   ApplicationService,
   AttachmentApplication,
   AttachmentService,
+  CommonRuntimeServices,
   CreateDraftResult,
   Draft,
   DraftRequest,
   FormCodeList,
   FormDataService,
-  RuntimeServices,
+  FyllutRuntimeServices,
+  SendinnRuntimeServices,
   SessionService,
   SubmissionApplication,
   SubmissionService,

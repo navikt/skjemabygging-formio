@@ -34,6 +34,7 @@ interface AttachmentUploadStore {
 }
 
 const AttachmentUploadContext = createContext<AttachmentUploadStore | undefined>(undefined);
+AttachmentUploadContext.displayName = 'AttachmentUploadContext';
 
 const AttachmentUploadProvider = ({ children, host }: { children: React.ReactNode; host: AttachmentHost }) => {
   const value = useAttachmentOperations(host);

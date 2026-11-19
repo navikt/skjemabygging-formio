@@ -1,6 +1,6 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  normalizeSendinnAttachmentFilter,
+  normalizeAttachmentCodeFilter,
   ResponseError,
   sendinnLanguageUtils,
   validatorUtils,
@@ -29,7 +29,7 @@ const getForm = async (req: Request, res: Response) => {
   const result = await sendinnFormService.getForm({
     formPath,
     language,
-    attachmentFilter: normalizeSendinnAttachmentFilter(filter as string | string[] | undefined),
+    attachmentFilter: normalizeAttachmentCodeFilter(filter as string | string[] | undefined),
   });
   res.setHeader('Cache-Control', 'no-store');
   res.json(result);

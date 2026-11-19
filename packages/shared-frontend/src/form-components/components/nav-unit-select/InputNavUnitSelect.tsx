@@ -11,7 +11,7 @@ import {
 } from '../../inputComponentUtils';
 
 const InputNavUnitSelect = ({ component, submissionPath }: InputComponentProps<NavUnitSelectDefinition>) => {
-  const { availableUnits, error, retry } = useNavUnits({ unitTypes: component.unitTypes });
+  const { availableUnits, error, loading, retry } = useNavUnits({ unitTypes: component.unitTypes });
   return (
     <>
       <NavUnitSelect
@@ -24,7 +24,7 @@ const InputNavUnitSelect = ({ component, submissionPath }: InputComponentProps<N
         readMore={resolveReadMore(component)}
         fieldSize={resolveFieldSize(component)}
       />
-      {error && <NavUnitLookupFeedback retry={retry} />}
+      {error && <NavUnitLookupFeedback retry={retry} loading={loading} />}
     </>
   );
 };

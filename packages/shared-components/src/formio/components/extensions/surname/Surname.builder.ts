@@ -1,16 +1,16 @@
+import { createSurname } from '@navikt/skjemadigitalisering-shared-domain';
 import Surname from './Surname';
 
 const surnameBuilder = (keyPostfix = '') => {
   const schema = Surname.schema();
+  const definition = createSurname();
 
   return {
     title: schema.label,
     schema: {
       ...schema,
-      key: `etternavn${keyPostfix}`,
-      validate: {
-        required: true,
-      },
+      ...definition,
+      key: `${definition.key}${keyPostfix}`,
     },
   };
 };

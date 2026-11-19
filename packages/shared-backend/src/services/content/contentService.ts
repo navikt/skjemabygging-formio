@@ -1,19 +1,20 @@
 import {
   Form,
-  FormsApiTranslation,
   FormsApiTranslationMap,
   FormWithLanguages,
   ResponseError,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import urlUtil from '../../util/url/urlUtil';
 import formClient from '../form/formClient';
 import { resolveFormLanguages } from '../form/formLanguages';
-import translationClient from '../translation/translationClient';
-import { convertToFormsApiTranslationMap, toTranslationMap } from '../translation/translationMapper';
+import { loadFormTranslations, loadGlobalTranslations } from '../translation/translationLoader';
+import { createContentCache } from './contentCache';
 import type { ContentSource } from './contentSource';
 import { loadContent } from './loadContent';
 
 const FETCH_TIMEOUT_MS = 5000;
+const PUBLISHED_CACHE_TTL_MS = 5 * 60 * 1000;
 
 interface FormTranslationRequest {
   formPath: string;
@@ -21,7 +22,7 @@ interface FormTranslationRequest {
 }
 
 type ContentService = {
-  getForm: (props: { formPath: string }) => Promise<FormWithLanguages>;
+  getForm: (props: { formPath: string; revision?: number }) => Promise<FormWithLanguages>;
   getFormTranslations: (props: FormTranslationRequest) => Promise<FormsApiTranslationMap>;
   getGlobalTranslations: (languageCode: TranslationLang) => Promise<FormsApiTranslationMap>;
   getTranslations: (props: FormTranslationRequest) => Promise<FormsApiTranslationMap>;
@@ -32,66 +33,77 @@ interface CreateContentServiceProps {
   source: ContentSource;
 }
 
-const mapTranslations = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
-  if (
-    !Array.isArray(translations) ||
-    !translations.every(
-      (translation) =>
-        translation &&
-        typeof translation.key === 'string' &&
-        [translation.nb, translation.nn, translation.en].every(
-          (value) => value === undefined || value === null || typeof value === 'string',
-        ),
-    )
-  ) {
-    throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid forms-api translation response');
+const requireTranslations = (translations: FormsApiTranslationMap | undefined) => {
+  if (!translations) {
+    throw new ResponseError('SERVICE_UNAVAILABLE', 'Missing forms-api translation response');
   }
-  return convertToFormsApiTranslationMap(translations);
+  return translations;
+};
+
+const assertValidFormPath = (formPath: string) => {
+  if (!urlUtil.isValidPath(formPath)) {
+    throw new ResponseError('BAD_REQUEST', 'Invalid form path');
+  }
 };
 
 const createContentService = ({ baseUrl, source }: CreateContentServiceProps): ContentService => {
-  if (source !== 'published' && source !== 'latest') {
-    throw new Error('Content source must be published or latest');
-  }
-  const transport = { baseUrl, source, timeoutMs: FETCH_TIMEOUT_MS };
+  const transport = { baseUrl, timeoutMs: FETCH_TIMEOUT_MS };
+  // Latest content must show edits immediately, so only published content is cached.
+  const cache = source === 'published' ? createContentCache(PUBLISHED_CACHE_TTL_MS) : undefined;
+  const cached = <T>(key: string, load: () => Promise<T>) => (cache ? cache.get(key, load) : load());
 
-  const getForm: ContentService['getForm'] = async ({ formPath }) => {
-    const form = await loadContent(() => formClient.getForm<Form>({ ...transport, formPath }));
+  const fetchForm = async (formPath: string, revision?: number) => {
+    const form = await loadContent('form', source, () =>
+      source === 'published' && revision === undefined
+        ? formClient.getPublishedForm<Form>({ ...transport, formPath })
+        : formClient.getForm<Form>({ ...transport, formPath, revision }),
+    );
     if (!form || typeof form.path !== 'string' || !Array.isArray(form.components) || !form.properties) {
       throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid forms-api form response');
+    }
+    // A pinned revision is read outside the publication endpoint, so published content must check its status.
+    if (source === 'published' && revision !== undefined && form.status !== 'published') {
+      throw new ResponseError('NOT_FOUND', 'Unable to load form');
     }
     return { ...form, languages: resolveFormLanguages(form, source === 'latest') };
   };
 
-  const getFormTranslations: ContentService['getFormTranslations'] = async ({ formPath, languageCode }) => {
-    const translations = await loadContent(() =>
-      translationClient.getFormTranslations({ ...transport, formPath, languageCodes: [languageCode] }),
+  const fetchFormTranslations = async ({ formPath, languageCode }: FormTranslationRequest) =>
+    requireTranslations(
+      await loadContent('form translations', source, () =>
+        loadFormTranslations({ ...transport, source, formPath, languageCodes: [languageCode] }),
+      ),
     );
-    return mapTranslations(translations);
+
+  const fetchGlobalTranslations = async (languageCode: TranslationLang) =>
+    requireTranslations(
+      await loadContent('global translations', source, () =>
+        loadGlobalTranslations({ ...transport, source, languageCodes: [languageCode] }),
+      ),
+    );
+
+  const getForm: ContentService['getForm'] = async ({ formPath, revision }) => {
+    assertValidFormPath(formPath);
+    const getCurrentForm = () => cached(`form:${formPath}`, () => fetchForm(formPath));
+    if (revision === undefined) return getCurrentForm();
+    if (source === 'published') {
+      // forms-api reports status per revision, so older revisions of an unpublished form can still say published.
+      const publishedForm = await getCurrentForm();
+      if (publishedForm.revision === revision) return publishedForm;
+    }
+    return fetchForm(formPath, revision);
   };
 
-  const getGlobalTranslations: ContentService['getGlobalTranslations'] = async (languageCode) => {
-    if (source === 'published') {
-      const translations = await loadContent(() =>
-        translationClient.getPublishedGlobalTranslations({ ...transport, languageCode }),
-      );
-      if (
-        !translations ||
-        typeof translations !== 'object' ||
-        Object.getPrototypeOf(translations) !== Object.prototype ||
-        !Object.values(translations).every((value) => typeof value === 'string')
-      ) {
-        throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid forms-api translation response');
-      }
-      return toTranslationMap(languageCode, translations);
-    }
-    const translations = await loadContent(() =>
-      translationClient.getGlobalTranslations({ ...transport, languageCodes: [languageCode] }),
-    );
-    return mapTranslations(translations);
+  const getFormTranslations: ContentService['getFormTranslations'] = async (props) => {
+    assertValidFormPath(props.formPath);
+    return cached(`form-translations:${props.formPath}:${props.languageCode}`, () => fetchFormTranslations(props));
   };
+
+  const getGlobalTranslations: ContentService['getGlobalTranslations'] = (languageCode) =>
+    cached(`global-translations:${languageCode}`, () => fetchGlobalTranslations(languageCode));
 
   const getTranslations: ContentService['getTranslations'] = async (props) => {
+    assertValidFormPath(props.formPath);
     const [globalTranslations, formTranslations] = await Promise.all([
       getGlobalTranslations(props.languageCode),
       getFormTranslations(props),
