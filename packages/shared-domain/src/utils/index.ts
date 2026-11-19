@@ -14,6 +14,7 @@ export * from './migration';
 export * from './number';
 export * from './object';
 export * from './party';
+export * from './script-evaluation';
 export * from './sendinn';
 export * from './signature';
 export * from './string';
