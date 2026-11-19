@@ -25,8 +25,6 @@ const isValidCoverPageValue = (value: string) => {
   return validCharactersRegex.test(value);
 };
 
-const isPostalCode = (value: string) => value.length === 4 && /^-?\d+$/.test(value);
-
 const isOrganizationNumber = (organizationNumber: string) => {
   organizationNumber = removeSpaces(organizationNumber);
   if (/^\d{9}$/.test(organizationNumber)) {
@@ -82,7 +80,6 @@ const isValidAttachmentId = (value: string): boolean => {
 };
 
 const validatorUtils = {
-  isPostalCode,
   isOrganizationNumber,
   isAccountNumber,
   isNationalIdentityNumber,
