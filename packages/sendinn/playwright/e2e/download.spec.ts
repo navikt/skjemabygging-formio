@@ -3,9 +3,9 @@ import { readFile } from 'node:fs/promises';
 import { expect, skipUnlessBuilt, test } from '../fixtures/test';
 import { selectDecoratorLanguage } from '../helpers/language';
 
-const next = (page: Page) => page.getByRole('button', { name: 'Neste steg', exact: true }).click();
-const previous = (page: Page) => page.getByRole('button', { name: 'Forrige steg', exact: true }).click();
-const instructions = async (page: Page) => {
+const nextStep = (page: Page) => page.getByRole('button', { name: /^(Neste steg|Next step)$/ }).click();
+const previousStep = (page: Page) => page.getByRole('button', { name: /^(Forrige steg|Previous step)$/ }).click();
+const goToPaperSubmission = async (page: Page) => {
   await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'Dokumentene er ikke sendt ennå' })).toBeFocused();
 };
@@ -14,14 +14,14 @@ const downloadButton = (page: Page) =>
 const unitSelect = (page: Page) =>
   page.getByRole('combobox', { name: 'Velg hvilken Nav-enhet som skal motta innsendingen', exact: true });
 
-const reachInstructions = async (page: Page) => {
+const reachPaperSubmission = async (page: Page) => {
   await page.goto('/sendinn/sendinnjourney?filter=N1');
   await page.getByRole('radio', { name: 'Flere personer / Nav-enhet', exact: true }).check();
   await unitSelect(page).selectOption('0101');
-  await next(page);
+  await nextStep(page);
   await page.getByRole('checkbox').check();
-  await next(page);
-  await instructions(page);
+  await nextStep(page);
+  await goToPaperSubmission(page);
   await expect(page.getByRole('heading', { level: 2, name: 'Dokumentene er ikke sendt ennå' })).toBeFocused();
 };
 
@@ -47,9 +47,9 @@ test.describe('Paper cover-page download', () => {
     await page.goto('/sendinn/sendinnjourney?lang=en&filter=%20N1,%20&filter=N1&sub=digital');
     await page.getByRole('radio', { name: 'Multiple people / Nav unit', exact: true }).check();
     await page.getByRole('combobox').selectOption('0101');
-    await page.getByRole('button', { name: 'Next step', exact: true }).click();
+    await nextStep(page);
     await page.getByRole('checkbox').check();
-    await page.getByRole('button', { name: 'Next step', exact: true }).click();
+    await nextStep(page);
     await page.getByRole('button', { name: 'Submission instructions', exact: true }).click();
     await expect(page.getByRole('heading', { level: 2, name: 'The documents have not been sent yet' })).toBeFocused();
     await expect(page.getByText('Enclose all attachments listed on the cover page.', { exact: true })).toBeVisible();
@@ -65,14 +65,15 @@ test.describe('Paper cover-page download', () => {
     expect(response.headers()['cache-control']).toBe('no-store');
     expect(response.headers()['content-type']).toContain('application/json');
     const body = response.request().postDataJSON();
-    expect(Object.keys(body).sort()).toEqual(['attachmentFilter', 'formPath', 'language', 'submission']);
+    expect(Object.keys(body).sort()).toEqual(['attachmentFilter', 'formPath', 'language', 'revision', 'submission']);
     expect(body).toMatchObject({
       formPath: 'sendinnjourney',
+      revision: 3,
       language: 'en',
       attachmentFilter: ['N1', 'N1'],
       submission: {
         data: {
-          collectionType: 'multiple-people',
+          userType: 'multiple-people',
           navUnit: '0101',
           sendinnAttachment1: {
             evidence: {
@@ -96,7 +97,7 @@ test.describe('Paper cover-page download', () => {
     readyPage: page,
     useRouteVariant,
   }) => {
-    await useRouteVariant('get-form:sendinn-hidden-collection');
+    await useRouteVariant('get-form:sendinn-hidden-user-type');
     await useRouteVariant('foersteside:success-tc08f-sendinn-description');
     await page.goto('/sendinn/sendinnjourney');
     await page
@@ -104,13 +105,13 @@ test.describe('Paper cover-page download', () => {
       .getByRole('checkbox')
       .check();
     await page.getByRole('textbox').fill('Additional evidence');
-    await next(page);
-    await instructions(page);
+    await nextStep(page);
+    await goToPaperSubmission(page);
     const download = page.waitForEvent('download');
     await downloadButton(page).click();
     await expectPdf(await download);
-    await previous(page);
-    await previous(page);
+    await previousStep(page);
+    await previousStep(page);
     await expect(page.getByRole('textbox')).toHaveValue('Additional evidence');
     await expect(page.getByRole('group', { name: /Evidence document/ }).getByRole('checkbox')).not.toBeChecked();
   });
@@ -119,7 +120,7 @@ test.describe('Paper cover-page download', () => {
     readyPage: page,
     useRouteVariant,
   }) => {
-    await reachInstructions(page);
+    await reachPaperSubmission(page);
     await useRouteVariant('foersteside:failure');
     const failure = page.waitForResponse('**/sendinn/api/cover-page');
     await downloadButton(page).click();
@@ -132,15 +133,15 @@ test.describe('Paper cover-page download', () => {
     await expect(alert).toContainText(error.correlationId);
     await expect(alert).toBeFocused();
     await expect(downloadButton(page)).toBeEnabled();
-    await previous(page);
-    await previous(page);
+    await previousStep(page);
+    await previousStep(page);
     await expect(page.getByRole('checkbox')).toBeChecked();
-    await previous(page);
+    await previousStep(page);
     await expect(unitSelect(page)).toHaveValue('0101');
     await unitSelect(page).selectOption('0202');
-    await next(page);
-    await next(page);
-    await instructions(page);
+    await nextStep(page);
+    await nextStep(page);
+    await goToPaperSubmission(page);
     await selectDecoratorLanguage(page, 'en');
     await expect(downloadButton(page)).toHaveText('Download cover page');
     await useRouteVariant('foersteside:success-sendinn');
@@ -168,11 +169,11 @@ test.describe('Paper cover-page download', () => {
     readyPage: page,
     useRouteVariant,
   }) => {
-    await useRouteVariant('get-form:sendinn-hidden-collection');
+    await useRouteVariant('get-form:sendinn-hidden-user-type');
     await page.goto('/sendinn/sendinnjourney?lang=nn&filter=%20,%20');
     await expect(page.getByRole('checkbox')).toHaveCount(2);
-    await next(page);
-    await instructions(page);
+    await nextStep(page);
+    await goToPaperSubmission(page);
     const responsePromise = page.waitForResponse('**/sendinn/api/cover-page');
     const download = page.waitForEvent('download');
     await downloadButton(page).click();
@@ -185,10 +186,10 @@ test.describe('Paper cover-page download', () => {
   });
 
   test('starts over on a full reload without storing answers in the route', async ({ readyPage: page }) => {
-    await reachInstructions(page);
+    await reachPaperSubmission(page);
     await expect(page).toHaveURL(
       (url) =>
-        url.pathname === '/sendinn/sendinnjourney/instructions' && [...url.searchParams.keys()].join(',') === 'filter',
+        url.pathname === '/sendinn/sendinnjourney/send-i-posten' && [...url.searchParams.keys()].join(',') === 'filter',
     );
     await page.reload();
     await expect(page.getByTestId('error-summary').getByRole('heading')).toBeFocused();
@@ -203,7 +204,7 @@ test.describe('Paper cover-page download', () => {
     test(`disables download while pending and ${moveFocus ? 'preserves moved focus' : 'restores lost button focus'}`, async ({
       readyPage: page,
     }) => {
-      await reachInstructions(page);
+      await reachPaperSubmission(page);
       let release!: () => void;
       const pending = new Promise<void>((resolve) => {
         release = resolve;
@@ -221,7 +222,7 @@ test.describe('Paper cover-page download', () => {
       await downloadButton(page).click();
       await expect(downloadButton(page)).toBeDisabled();
       await expect(page.getByRole('status')).toHaveText('Lager førstesiden. Vent litt.');
-      await expect(page).toHaveURL((url) => url.pathname === '/sendinn/sendinnjourney/instructions');
+      await expect(page).toHaveURL((url) => url.pathname === '/sendinn/sendinnjourney/send-i-posten');
       const focusTarget = moveFocus
         ? page.getByRole('button', { name: 'Forrige steg', exact: true })
         : downloadButton(page);
@@ -242,7 +243,7 @@ test.describe('Paper cover-page download', () => {
 
   for (const pdf of ['', 'not-base64!', btoa('not a PDF')]) {
     test(`rejects an unusable success response and allows retry (${pdf || 'empty'})`, async ({ readyPage: page }) => {
-      await reachInstructions(page);
+      await reachPaperSubmission(page);
       await page.route('**/sendinn/api/cover-page', (route) => route.fulfill({ json: { pdf } }), { times: 1 });
       let downloads = 0;
       page.on('download', () => {
@@ -258,7 +259,7 @@ test.describe('Paper cover-page download', () => {
   }
 
   test('reports browser download failure and retries without losing the form', async ({ readyPage: page }) => {
-    await reachInstructions(page);
+    await reachPaperSubmission(page);
     await page.evaluate(() => {
       const createObjectURL = URL.createObjectURL;
       URL.createObjectURL = () => {
@@ -273,17 +274,17 @@ test.describe('Paper cover-page download', () => {
     await expectPdf(await download);
   });
 
-  test('validates direct instruction navigation and blocks an empty available list before any download', async ({
+  test('validates direct paper submission navigation and blocks an empty available list before any download', async ({
     readyPage: page,
   }) => {
     let downloads = 0;
     page.on('request', (request) => {
       if (request.url().endsWith('/api/cover-page')) downloads += 1;
     });
-    await page.goto('/sendinn/sendinnjourney/instructions');
+    await page.goto('/sendinn/sendinnjourney/send-i-posten');
     await expect(page.getByTestId('error-summary').getByRole('heading')).toBeFocused();
     await expect(downloadButton(page)).toHaveCount(0);
-    await page.goto('/sendinn/sendinnjourney/instructions?filter=unknown');
+    await page.goto('/sendinn/sendinnjourney/send-i-posten?filter=unknown');
     await expect(
       page.getByText('Ingen dokumenter passer med denne lenken. Gå tilbake og kontroller lenken du brukte.'),
     ).toBeVisible();
