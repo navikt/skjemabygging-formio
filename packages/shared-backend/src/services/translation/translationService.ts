@@ -8,10 +8,9 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
-import { getCountryNameTranslations } from './countryNameTranslations';
 import { loadFormTranslations, loadGlobalTranslations, TranslationClient } from './translationLoader';
 import {
-  addValidationDefaults,
+  addTranslationDefaults,
   convertI18nTranslationsToFormsApiTranslationMap,
   getGlobalTranslationFilename,
 } from './translationMapper';
@@ -128,8 +127,7 @@ const createTranslationService = ({
       {},
     );
 
-    return addValidationDefaults({
-      ...getCountryNameTranslations(),
+    return addTranslationDefaults({
       ...introPageTranslations,
       ...translations[0],
       ...translations[1],
