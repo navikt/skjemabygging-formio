@@ -78,6 +78,30 @@ describe('Your information', () => {
         });
       });
 
+      describe('Without prefill data', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+          cy.visit('/fyllut/yourinformation?sub=digital');
+          cy.defaultWaits();
+          startFromIntroPage();
+          cy.wait('@getPrefillData');
+          cy.wait('@createMellomlagring');
+          cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        });
+
+        it('Should not validate the locked fields that prefill left empty', () => {
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', '').and('have.attr', 'readonly');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', '').and('have.attr', 'readonly');
+          cy.clickSaveAndContinue();
+
+          cy.findByRole('heading', { name: 'Navn' }).should('exist');
+          cy.clickSaveAndContinue();
+
+          cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+          cy.get('.aksel-alert').should('have.length', 0);
+        });
+      });
+
       describe('Lives in USA', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-prefill-data:success-usa');

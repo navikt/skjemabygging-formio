@@ -79,17 +79,17 @@ const DrivingListPeriod = ({
           value={allSelectedDates}
           onChange={updateDates}
           required
-        >
-          {hasParking &&
-            selectedDates.map((date) => (
+          renderBelowOption={(date) =>
+            hasParking &&
+            selectedDates.includes(date) && (
               <DrivingListParkingExpense
-                key={date}
                 statePath={getParkingFieldPath(statePath, dates, date)}
                 date={date}
                 enforceMaxHundred={submissionMethod === 'digital'}
               />
-            ))}
-        </CheckboxGroup>
+            )
+          }
+        />
 
         {shouldShowExpenseWarning(selectedDateEntries, dailyRate, betalingsplan?.beloep) && (
           <Alert variant="warning">

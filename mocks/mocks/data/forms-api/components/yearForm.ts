@@ -13,9 +13,10 @@ const yearForm = () => {
       panel({
         title: 'Visning',
         components: [
-          year({
-            label: 'Årstall',
-          }),
+          {
+            ...year({ label: 'Årstall' }),
+            inputType: undefined,
+          },
           year({
             label: 'Årstall med beskrivelse',
             description: '<p>Dette er en beskrivelse</p>',

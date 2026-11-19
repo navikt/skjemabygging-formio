@@ -159,6 +159,7 @@ import {
   datePickerDeprecatedForm,
   datePickerDeprecatedTranslations,
 } from '../data/forms-api/date-picker/datePickerDeprecatedForm';
+import { rowForm, rowTranslations } from '../data/forms-api/design-layout/rowForm';
 import {
   digitalnologinAttachmentPanelForm,
   digitalnologinAttachmentPanelTranslations,
@@ -439,6 +440,7 @@ const allForms = [
   { form: pdfStaticForm(), translations: pdfStaticTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: radioPanelForm(), translations: radioPanelTranslations() },
+  { form: rowForm(), translations: rowTranslations() },
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: selectForm(), translations: selectTranslations() },
   { form: senderForm(), translations: senderTranslations() },

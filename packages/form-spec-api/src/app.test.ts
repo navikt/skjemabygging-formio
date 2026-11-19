@@ -20,5 +20,19 @@ describe('createApp', () => {
 
     expect(response.header['content-type']).toMatch(/text\/html/);
     expect(response.text).toContain('Swagger UI');
+    expect(response.text).toContain('swagger-ui-init.js');
+    expect(response.text).not.toContain('swagger-initializer.js');
+  });
+
+  it('redirects the bundled index page to the configured Swagger UI', async () => {
+    await request(createApp()).get('/swagger-ui/index.html').expect(302).expect('Location', '/swagger-ui/');
+  });
+
+  it('initializes Swagger UI with the Form Spec API document instead of Petstore', async () => {
+    const response = await request(createApp()).get('/swagger-ui/swagger-ui-init.js').expect(200);
+
+    expect(response.text).toContain('Form Spec API');
+    expect(response.text).toContain('/api/employee/forms/{formPath}/spec');
+    expect(response.text).not.toContain('petstore.swagger.io');
   });
 });

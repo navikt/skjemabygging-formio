@@ -42,6 +42,24 @@ const addressShape = (component: Component): JsonSchema => ({
   $comment: 'Address shape may vary by address subtype and is intentionally permissive.',
 });
 
+const optionalDateShape: JsonSchema = {
+  anyOf: [
+    { type: 'string', format: 'date' },
+    { const: '', type: 'string' },
+  ],
+};
+
+const addressValidityShape = (component: Component): JsonSchema => ({
+  title: component.label,
+  type: 'object',
+  properties: {
+    gyldigFraOgMed: component.validate?.required ? { type: 'string', format: 'date' } : optionalDateShape,
+    gyldigTilOgMed: optionalDateShape,
+  },
+  ...(component.validate?.required ? { required: ['gyldigFraOgMed'] } : {}),
+  additionalProperties: false,
+});
+
 const identityShape = (component: Component): JsonSchema => ({
   title: component.label,
   type: 'object',
@@ -90,4 +108,4 @@ const countrySelectShape = (component: Component): JsonSchema => ({
   additionalProperties: false,
 });
 
-export { addressShape, countrySelectShape, identityShape, phoneNumberShape, senderShape };
+export { addressShape, addressValidityShape, countrySelectShape, identityShape, phoneNumberShape, senderShape };
