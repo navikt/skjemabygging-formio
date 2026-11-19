@@ -57,6 +57,22 @@ describe('DrivingList', () => {
       cy.findByRole('textbox', { name: /Parkeringsutgifter/ }).should('exist');
     });
 
+    it('should show parking expense field directly below its checked date', () => {
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).type('02.06.2025{esc}');
+      cy.findByRole('radio', { name: 'Ja' }).check();
+      cy.findByRole('button', { name: '02. juni 2025 - 08. juni 2025' }).click();
+      cy.findByRole('checkbox', { name: 'tirsdag 03. juni 2025' }).check();
+
+      cy.findByRole('textbox', { name: 'Parkeringsutgifter (kr)' }).then(($parking) => {
+        cy.findByRole('checkbox', { name: 'tirsdag 03. juni 2025' }).then(($checked) => {
+          expect($checked[0].compareDocumentPosition($parking[0])).to.eq(Node.DOCUMENT_POSITION_FOLLOWING);
+        });
+        cy.findByRole('checkbox', { name: 'onsdag 04. juni 2025' }).then(($next) => {
+          expect($next[0].compareDocumentPosition($parking[0])).to.eq(Node.DOCUMENT_POSITION_PRECEDING);
+        });
+      });
+    });
+
     it('should not show period accordion before both date and parking are selected', () => {
       cy.contains(ACCORDION_HEADER).should('not.exist');
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).type('02.06.2025{esc}');

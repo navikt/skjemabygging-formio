@@ -1,4 +1,3 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it, vi } from 'vitest';
 import type translationClient from './translationClient';
 import { loadFormTranslations, loadGlobalTranslations } from './translationLoader';
@@ -45,19 +44,14 @@ describe('translationLoader', () => {
     expect(translations).toEqual({
       Attachment: { nb: undefined, nn: 'Vedlegg nn', en: 'Attachment en' },
       required: {
-        nb: TEXTS.validering.required,
-        nn: 'Du må fylle ut: {{field}} nn',
-        en: 'You must fill in: {{field}}',
-      },
-      [TEXTS.validering.required]: {
-        nb: TEXTS.validering.required,
+        nb: undefined,
         nn: 'Du må fylle ut: {{field}} nn',
         en: 'You must fill in: {{field}}',
       },
     });
   });
 
-  it('fetches published global translations once per language and keeps published nb over the fallback', async () => {
+  it('fetches published global translations once per language and keeps published nb', async () => {
     const dictionaries: Record<string, Record<string, string>> = {
       nb: { required: 'Published nb' },
       en: { required: 'Published en', Yes: 'Yes' },

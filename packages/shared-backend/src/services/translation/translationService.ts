@@ -9,7 +9,11 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
 import { loadFormTranslations, loadGlobalTranslations, TranslationClient } from './translationLoader';
-import { convertI18nTranslationsToFormsApiTranslationMap, getGlobalTranslationFilename } from './translationMapper';
+import {
+  addTranslationDefaults,
+  convertI18nTranslationsToFormsApiTranslationMap,
+  getGlobalTranslationFilename,
+} from './translationMapper';
 
 interface GetFormTranslationsProps {
   formPath: string;
@@ -123,7 +127,11 @@ const createTranslationService = ({
       {},
     );
 
-    return { ...introPageTranslations, ...translations[0], ...translations[1] };
+    return addTranslationDefaults({
+      ...introPageTranslations,
+      ...translations[0],
+      ...translations[1],
+    });
   };
 
   const createTranslate = async (props: CreateTranslationsProps) => {

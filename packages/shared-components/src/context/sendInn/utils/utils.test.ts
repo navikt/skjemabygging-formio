@@ -1,4 +1,33 @@
-import { transformSubmissionBeforeSubmitting } from './utils';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { isNotFoundError, transformSubmissionBeforeSubmitting } from './utils';
+
+describe('isNotFoundError', () => {
+  it('recognizes a local not-found response error', () => {
+    expect(isNotFoundError(new ResponseError('NOT_FOUND', 'Draft not found'))).toBe(true);
+  });
+
+  it('recognizes a not-found response error from another bundle', () => {
+    class BundledResponseError extends Error {
+      readonly errorCode = 'NOT_FOUND';
+    }
+
+    const error = new BundledResponseError('Draft not found');
+
+    expect(error).not.toBeInstanceOf(ResponseError);
+    expect(isNotFoundError(error)).toBe(true);
+  });
+
+  it.each([
+    new ResponseError('INTERNAL_SERVER_ERROR', 'Save failed'),
+    new ResponseError('UNAUTHORIZED', 'Authentication required'),
+    new Error('Network failure'),
+    { errorCode: 'NOT_FOUND' },
+    null,
+    undefined,
+  ])('does not classify other failures as not found: %s', (error) => {
+    expect(isNotFoundError(error)).toBe(false);
+  });
+});
 
 describe('transformSubmissionBeforeSubmitting', () => {
   const fyllutState = { mellomlagring: { isActive: true } };

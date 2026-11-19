@@ -16,6 +16,9 @@ const DrivingListParkingExpense = ({ statePath, date, enforceMaxHundred }: Drivi
     type="text"
     inputMode="numeric"
     required={false}
+    showOptionalText={false}
+    fieldSize="small"
+    marginBottom="space-16"
     validation={toParkingExpenseRules(date, enforceMaxHundred)}
   />
 );

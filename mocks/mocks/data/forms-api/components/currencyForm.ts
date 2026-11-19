@@ -13,9 +13,10 @@ const currencyForm = () => {
       panel({
         title: 'Visning',
         components: [
-          currency({
-            label: 'Beløp',
-          }),
+          {
+            ...currency({ label: 'Beløp' }),
+            inputType: undefined,
+          },
           currency({
             label: 'Beløp med beskrivelse',
             description: '<p>Dette er en beskrivelse</p>',

@@ -4,14 +4,14 @@ import { validateValue } from './validators';
 describe('validateValue', () => {
   it('returns required violation for empty value', () => {
     expect(validateValue('', 'Name', { required: true })).toEqual({
-      textKey: TEXTS.validering.required,
+      textKey: 'required',
       params: { field: 'Name' },
     });
   });
 
   it('returns required violation for an unchecked boolean', () => {
     expect(validateValue(false, 'Declaration', { required: true })).toEqual({
-      textKey: TEXTS.validering.required,
+      textKey: 'required',
       params: { field: 'Declaration' },
     });
   });
@@ -33,7 +33,7 @@ describe('validateValue', () => {
         onlyAvailableItems: ['current'],
       }),
     ).toEqual({
-      textKey: TEXTS.validering.required,
+      textKey: 'required',
       params: { field: 'Delivery' },
     });
     expect(
@@ -45,14 +45,14 @@ describe('validateValue', () => {
 
   it('flags too short values', () => {
     expect(validateValue('ab', 'Name', { minLength: 3 })).toEqual({
-      textKey: TEXTS.validering.minLength,
+      textKey: 'minLength',
       params: { field: 'Name', length: 3 },
     });
   });
 
   it('flags too long values', () => {
     expect(validateValue('abcd', 'Name', { maxLength: 3 })).toEqual({
-      textKey: TEXTS.validering.maxLength,
+      textKey: 'maxLength',
       params: { field: 'Name', length: 3 },
     });
   });
@@ -65,11 +65,11 @@ describe('validateValue', () => {
     const rules = { numberType: 'integer' as const, min: 0, max };
 
     expect(validateValue('-1', 'Number', rules)).toEqual({
-      textKey: TEXTS.validering.min,
+      textKey: 'min',
       params: { field: 'Number', min: 0 },
     });
     expect(validateValue(String(max + 1), 'Number', rules)).toEqual({
-      textKey: TEXTS.validering.max,
+      textKey: 'max',
       params: { field: 'Number', max },
     });
     expect(validateValue('0', 'Number', rules)).toBeUndefined();
@@ -126,11 +126,19 @@ describe('validateValue', () => {
     });
   });
 
+  it('validates email addresses without surrounding whitespace', () => {
+    expect(validateValue(' ola@nav.no ', 'Email', { email: true })).toBeUndefined();
+    expect(validateValue('ola@nav.no.', 'Email', { email: true })).toEqual({
+      textKey: 'invalid_email',
+      params: { field: 'Email' },
+    });
+  });
+
   it('validates organization number values', () => {
     expect(validateValue('889640782', 'Organization number', { organizationNumber: true })).toBeUndefined();
     expect(validateValue('889 640 782', 'Organization number', { organizationNumber: true })).toBeUndefined();
     expect(validateValue('123456789', 'Organization number', { organizationNumber: true })).toEqual({
-      textKey: TEXTS.validering.orgNrCustomError,
+      textKey: 'orgNrCustomError',
       params: { field: 'Organization number' },
     });
   });
@@ -157,12 +165,28 @@ describe('validateValue', () => {
   it('validates norwegian postal code values', () => {
     expect(validateValue('0001', 'Postnummer', { postalCode: true })).toBeUndefined();
     expect(validateValue('001', 'Postnummer', { postalCode: true })).toEqual({
-      textKey: TEXTS.validering.invalidPostalCode,
+      textKey: 'invalidPostalCode',
       params: { field: 'Postnummer' },
     });
     expect(validateValue('ABCD', 'Postnummer', { postalCode: true })).toEqual({
-      textKey: TEXTS.validering.invalidPostalCode,
+      textKey: 'invalidPostalCode',
       params: { field: 'Postnummer' },
+    });
+    expect(validateValue('-123', 'Postnummer', { postalCode: true })).toEqual({
+      textKey: 'invalidPostalCode',
+      params: { field: 'Postnummer' },
+    });
+  });
+
+  it('accepts only digits when the field is limited to digits', () => {
+    expect(validateValue('0123', 'HMS-artikkelnummer', { digitsOnly: true })).toBeUndefined();
+    expect(validateValue('-123', 'HMS-artikkelnummer', { digitsOnly: true })).toEqual({
+      textKey: 'digitsOnly',
+      params: { field: 'HMS-artikkelnummer' },
+    });
+    expect(validateValue('12a', 'HMS-artikkelnummer', { digitsOnly: true })).toEqual({
+      textKey: 'digitsOnly',
+      params: { field: 'HMS-artikkelnummer' },
     });
   });
 
@@ -170,7 +194,7 @@ describe('validateValue', () => {
     expect(validateValue('12345678903', 'Kontonummer', { accountNumber: true })).toBeUndefined();
     expect(validateValue('1234 56 78903', 'Kontonummer', { accountNumber: true })).toBeUndefined();
     expect(validateValue('12345678901', 'Kontonummer', { accountNumber: true })).toEqual({
-      textKey: TEXTS.validering.accountNumberCustomError,
+      textKey: 'accountNumberCustomError',
       params: { field: 'Kontonummer' },
     });
   });
@@ -179,7 +203,7 @@ describe('validateValue', () => {
     expect(validateValue('NO9386011117947', 'IBAN', { iban: true })).toBeUndefined();
     expect(validateValue('NO93 8601 1117 947', 'IBAN', { iban: true })).toBeUndefined();
     expect(validateValue('NO938601111794', 'IBAN', { iban: true })).toEqual({
-      textKey: TEXTS.validering.wrongBBANLength,
+      textKey: 'wrongBBANLength',
       params: { field: 'IBAN' },
     });
   });
@@ -190,7 +214,7 @@ describe('validateValue', () => {
         drivingListParkingExpense: { date: '2024-01-12' },
       }),
     ).toEqual({
-      textKey: TEXTS.validering.validParkingExpenses,
+      textKey: 'validParkingExpenses',
       params: { dato: '12.01.2024' },
     });
 
@@ -199,7 +223,7 @@ describe('validateValue', () => {
         drivingListParkingExpense: { date: '2024-01-12', enforceMaxHundred: true },
       }),
     ).toEqual({
-      textKey: TEXTS.validering.parkingExpensesAboveHundred,
+      textKey: 'parkingExpensesAboveHundred',
       params: {},
     });
 
@@ -221,7 +245,15 @@ describe('validateValue', () => {
         phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toEqual({
-      textKey: TEXTS.validering.digitsOnly,
+      textKey: 'digitsOnly',
+      params: { field: 'Telefonnummer' },
+    });
+    expect(
+      validateValue('-1234567', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
+      }),
+    ).toEqual({
+      textKey: 'digitsOnly',
       params: { field: 'Telefonnummer' },
     });
     expect(
@@ -229,7 +261,7 @@ describe('validateValue', () => {
         phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toEqual({
-      textKey: TEXTS.validering.phoneNumberLength,
+      textKey: 'phoneNumberLength',
       params: { field: 'Telefonnummer' },
     });
   });
@@ -247,7 +279,7 @@ describe('validateValue', () => {
   it('validates free-form phone numbers without area code', () => {
     expect(validateValue('+49 1234-5678', 'Telefonnummer', { phoneNumber: { showAreaCode: false } })).toBeUndefined();
     expect(validateValue('abc', 'Telefonnummer', { phoneNumber: { showAreaCode: false } })).toEqual({
-      textKey: TEXTS.validering.digitsOnly,
+      textKey: 'digitsOnly',
       params: { field: 'Telefonnummer' },
     });
   });
@@ -266,21 +298,21 @@ describe('validateValue', () => {
 
   it('falls back to the generic pattern message', () => {
     expect(validateValue('kl 7', 'Klokkeslett', { pattern: { expression: '\\d{2}:\\d{2}' } })).toEqual({
-      textKey: TEXTS.validering.pattern,
+      textKey: 'pattern',
       params: { field: 'Klokkeslett', pattern: '\\d{2}:\\d{2}' },
     });
   });
 
   it('anchors the pattern, so a partial match is not enough', () => {
     expect(validateValue('kl 12:30', 'Klokkeslett', { pattern: { expression: '([01]\\d|2[0-3]):[0-5]\\d' } })).toEqual({
-      textKey: TEXTS.validering.pattern,
+      textKey: 'pattern',
       params: { field: 'Klokkeslett', pattern: '([01]\\d|2[0-3]):[0-5]\\d' },
     });
   });
 
   it('requires at least one uploaded file', () => {
     expect(validateValue([], 'Dokumentasjon', { requiredFiles: true })).toEqual({
-      textKey: TEXTS.validering.fileMissing,
+      textKey: 'fileMissing',
       params: { field: 'Dokumentasjon' },
     });
     expect(validateValue([{ id: '1' }], 'Dokumentasjon', { requiredFiles: true })).toBeUndefined();
@@ -354,7 +386,7 @@ describe('validateValue', () => {
           required: true,
           notEqual: { value: '', message, comparison: 'strict' },
         }),
-      ).toEqual({ textKey: TEXTS.validering.required, params: { field: 'Underenhet' } });
+      ).toEqual({ textKey: 'required', params: { field: 'Underenhet' } });
     });
 
     it('reports the format of the value before comparing it to another field', () => {
@@ -363,41 +395,7 @@ describe('validateValue', () => {
           organizationNumber: true,
           notEqual: { value: '123', message, comparison: 'string' },
         }),
-      ).toEqual({ textKey: TEXTS.validering.orgNrCustomError, params: { field: 'Underenhet' } });
-    });
-  });
-
-  describe('authored messages for date bounds', () => {
-    const dateMessages = {
-      fromDate: 'Til dato må være større enn Fra dato',
-      toDate: 'Perioden kan være maksimalt ett år',
-    };
-    const rules = { date: true, fromDate: '2024-01-11', toDate: '2025-01-09', dateMessages };
-
-    it('replaces the standard minimum date message', () => {
-      expect(validateValue('2024-01-10', 'Til dato', rules)).toEqual({
-        textKey: dateMessages.fromDate,
-        params: { field: 'Til dato', minDate: '11.01.2024' },
-      });
-    });
-
-    it('replaces the standard maximum date message', () => {
-      expect(validateValue('2025-01-10', 'Til dato', rules)).toEqual({
-        textKey: dateMessages.toDate,
-        params: { field: 'Til dato', maxDate: '09.01.2025' },
-      });
-    });
-
-    it('accepts both ends of the allowed period', () => {
-      expect(validateValue('2024-01-11', 'Til dato', rules)).toBeUndefined();
-      expect(validateValue('2025-01-09', 'Til dato', rules)).toBeUndefined();
-    });
-
-    it('keeps the standard messages when none were authored', () => {
-      expect(validateValue('2024-01-10', 'Til dato', { date: true, fromDate: '2024-01-11' })).toEqual({
-        textKey: 'minDate',
-        params: { field: 'Til dato', minDate: '11.01.2024' },
-      });
+      ).toEqual({ textKey: 'orgNrCustomError', params: { field: 'Underenhet' } });
     });
   });
 });

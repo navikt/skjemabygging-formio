@@ -120,6 +120,53 @@ describe('prepareInitialSubmission', () => {
     ).toEqual({ data: { groups: [{ members: [{}, { name: 'Kari' }] }] } });
   });
 
+  it('turns a select answer from an old-renderer draft into its option before conditions run', () => {
+    const values = [
+      { label: 'Norge', value: 'norge' },
+      { label: 'Sverige', value: 'sverige' },
+    ];
+    const form = createForm([
+      { key: 'country', label: 'Country', type: 'select', input: true, data: { values } },
+      { key: 'removed', label: 'Removed', type: 'select', input: true, data: { values } },
+      {
+        key: 'details',
+        label: 'Details',
+        type: 'textfield',
+        input: true,
+        customConditional: 'show = data.country?.value === "sverige";',
+      },
+      {
+        key: 'rows',
+        label: 'Rows',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        components: [{ key: 'rowCountry', label: 'Row country', type: 'select', input: true, data: { values } }],
+      },
+    ]);
+
+    expect(
+      prepareInitialSubmission(
+        form,
+        {
+          data: {
+            country: 'sverige',
+            removed: 'danmark',
+            details: 'Keep me',
+            rows: [{ rowCountry: 'norge' }],
+          },
+        },
+        'nb',
+        'digital',
+      )?.data,
+    ).toEqual({
+      country: { label: 'Sverige', value: 'sverige' },
+      removed: 'danmark',
+      details: 'Keep me',
+      rows: [{ rowCountry: { label: 'Norge', value: 'norge' } }],
+    });
+  });
+
   it('hydrates legacy attachments before reconciling conditional fields', () => {
     const attachment: SubmissionAttachment = {
       attachmentId: 'documentation',
