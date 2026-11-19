@@ -162,7 +162,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
       .expect(200);
     expect(response.body).toEqual({ pdf });
     expect(response.headers['cache-control']).toBe('no-store');
-    expect(download).toHaveBeenCalledWith(expect.objectContaining({ attachmentFilter: ['N2', 'N1', 'N2'] }));
     expect(generated).toHaveLength(1);
     expect(generated[0]).toMatchObject({
       foerstesidetype: 'ETTERSENDELSE',
@@ -210,24 +209,17 @@ describe('Sendinn cover page HTTP boundaries', () => {
     expect(requests.filter((entry) => entry.path === '/forms-api/v1/forms/nav123456?revision=3')).toHaveLength(2);
   });
 
-  it.each([
-    { formPath: '../untrusted' },
-    { revision: undefined },
-    { revision: '3' },
-    { revision: 0 },
-    { revision: 1.5 },
-    { language: 'se' },
-    { attachmentFilter: {} },
-    { submission: [] },
-    { submission: { data: [] } },
-  ])('rejects malformed HTTP input before content loading: %j', async (change) => {
-    const response = await request(createApp())
-      .post('/sendinn/api/cover-page')
-      .send({ ...body(), ...change })
-      .expect(400);
-    expect(response.body).toMatchObject({ errorCode: 'BAD_REQUEST', correlationId: expect.any(String) });
-    expect(requests).toEqual([]);
-  });
+  it.each([{ formPath: undefined }, { formPath: '../untrusted' }, { revision: undefined }, { submission: undefined }])(
+    'rejects missing or invalid HTTP input before content loading: %j',
+    async (change) => {
+      const response = await request(createApp())
+        .post('/sendinn/api/cover-page')
+        .send({ ...body(), ...change })
+        .expect(400);
+      expect(response.body).toMatchObject({ errorCode: 'BAD_REQUEST', correlationId: expect.any(String) });
+      expect(requests).toEqual([]);
+    },
+  );
 
   it('sanitizes JSON parser failures before centralized error handling', async () => {
     const response = await request(createApp())

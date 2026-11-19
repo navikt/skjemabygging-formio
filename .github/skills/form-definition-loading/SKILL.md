@@ -202,11 +202,14 @@ the trusted source with the same normalized filter.
 
 ### Sendinn paper cover page
 
-`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `revision`
-(a positive integer), `language` (`nb`, `nn` or `en`, default `nb`),
-`attachmentFilter` (a string or string array, default empty) and
-`submission: { data: ... }`. Pass the canonical Submission answers, the
-revision of the loaded form and the filter retained by `SendinnFormProvider`.
+`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `revision`,
+`language` (default `nb`), `attachmentFilter` (a string or string array,
+default empty) and `submission: { data: ... }`. The route reads them with
+`requestUtil.getBodyValue` and does not check their types, as in Fyllut. A
+missing `formPath`, `revision` or `submission` gives 400, so the revision is
+always pinned. A language the form lacks falls back to `nb`. Pass the
+canonical Submission answers, the revision of the loaded form and the filter
+retained by `SendinnFormProvider`.
 Do not pass a form definition, labels or a Party. Query parameter `sub`
 does not select a submission mode.
 `SendinnCoverPageRequest` and `SendinnCoverPageResult` are exported from
@@ -229,7 +232,7 @@ Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
 `Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
 this endpoint does not return form answers or download assembly data.
 Expected errors use the central `ErrorResponse` and `x-correlation-id`.
-Invalid request fields, an unidentified person without an address, a Nav unit
+Missing request fields, an invalid form path, an unidentified person without an address, a Nav unit
 that is not digits and values the generator cannot encode are 400. Missing or
 paper-disabled forms are 404. Content, token and generator failures are 503.
 `coverPageService` replaces generator errors with a generic message, so
