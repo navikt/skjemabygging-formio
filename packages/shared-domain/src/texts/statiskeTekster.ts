@@ -399,7 +399,6 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
-    reviewAnswers: 'Kontroller opplysningene',
     coverPage: {
       notSent: 'Dokumentene er ikke sendt ennå',
       download: 'Last ned førsteside',

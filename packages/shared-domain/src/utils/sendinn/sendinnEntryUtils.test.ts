@@ -27,7 +27,7 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry('/nav123456/', query())).toEqual({ journey: 'form', formPath: 'nav123456' });
       });
 
-      it.each(['sendinnUserType', 'sendinnAttachments', 'oppsummering'])(
+      it.each(['sendinnUserType', 'sendinnAttachments', 'oppsummering', 'send-i-posten'])(
         'resolves a direct form step %s with language and filters',
         (step) => {
           expect(resolveEntry(`/nav123456/${step}`, query('lang=en&filter=N1&filter=N2'))).toEqual({

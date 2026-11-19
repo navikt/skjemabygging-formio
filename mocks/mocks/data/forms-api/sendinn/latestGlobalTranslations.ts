@@ -73,12 +73,6 @@ const sendinnTranslations = [
     nn: 'Har du vore i kontakt med Nav om saka?',
     en: 'Have you contacted Nav about the case?',
   },
-  {
-    key: 'Kontroller opplysningene',
-    nb: 'Kontroller opplysningene',
-    nn: 'Kontroller opplysningane',
-    en: 'Check your answers',
-  },
   { key: 'Prøv igjen', nb: 'Prøv igjen', nn: 'Prøv igjen', en: 'Try again' },
   {
     key: 'Send dokumenter til Nav',
