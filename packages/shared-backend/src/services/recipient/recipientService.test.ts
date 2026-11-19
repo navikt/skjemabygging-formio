@@ -69,7 +69,7 @@ describe('createRecipientService', () => {
       expectGetRequest(fetchSpy, `${baseUrl}/v1/recipients/${recipient.recipientId}`);
     });
 
-    it('hides recipient lookup errors from the client', async () => {
+    it('maps json error responses from the client endpoint', async () => {
       mockFetchResponse(
         JSON.stringify({ message: 'Recipient not found', correlationId: 'corr-1' }),
         404,
@@ -78,8 +78,8 @@ describe('createRecipientService', () => {
       const service = createService();
 
       await expect(service.getRecipient({ recipientId: recipient.recipientId })).rejects.toMatchObject({
-        errorCode: 'SERVICE_UNAVAILABLE',
-        message: 'Unable to load recipient',
+        errorCode: 'NOT_FOUND',
+        message: 'Recipient not found',
         correlationId: 'corr-1',
       });
     });
