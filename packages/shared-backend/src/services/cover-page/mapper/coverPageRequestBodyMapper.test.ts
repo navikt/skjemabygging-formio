@@ -41,6 +41,15 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it.each([
+    ['se', 'NB'],
+    ['en', 'EN'],
+  ])('maps language %s to cover page language %s', (languageCode, expected) => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(defaultData, languageCode);
+
+    expect(actual.spraakkode).toBe(expected);
+  });
+
   it('creates an ettersending archive title and attachment-only document list', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
       ...defaultData,
@@ -65,6 +74,25 @@ describe('coverPageRequestBodyMapper', () => {
     expect(actual.foerstesidetype).toBe('LOESPOST');
     expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Testskjema', 'Vedlegg 1']);
   });
+
+  it.each(['SKJEMA', 'ETTERSENDELSE'] as const)(
+    'keeps printed and archival attachment languages separate for %s',
+    (type) => {
+      const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+        ...defaultData,
+        type,
+        attachments: ['Attachment one', 'User description'],
+        attachmentsForArchiving: ['Vedlegg 1', 'User description'],
+      });
+
+      expect(actual.vedleggsliste).toEqual(['Vedlegg 1', 'User description']);
+      expect(actual.dokumentlisteFoersteside).toEqual([
+        ...(type === 'SKJEMA' ? ['NAV 12.34-56 Testskjema'] : []),
+        'Attachment one',
+        'User description',
+      ]);
+    },
+  );
 
   it('uses a localized ettersending cover page title', () => {
     const translate = vi.fn((text) =>

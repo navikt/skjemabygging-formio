@@ -17,7 +17,7 @@ const evaluate: EvaluateFunction = (func, args) => {
   return fn(...Object.values(args));
 };
 
-const { checkCondition } = getCheckConditionUtils(Utils, evaluate, () => true);
+const { checkCondition } = getCheckConditionUtils(Utils, evaluate);
 
 const createComponent = (overrides: Partial<Component>): Component =>
   ({

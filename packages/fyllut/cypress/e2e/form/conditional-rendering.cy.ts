@@ -447,6 +447,22 @@ describe('Conditional rendering', () => {
       });
     });
 
+    it('shows fields that depend on an unchecked checkbox before it is touched', () => {
+      const textFieldLabel = 'Tekstfelt vist når ikke avkrysset';
+      const alertText = 'Boksen er ikke avkrysset';
+      cy.findByRole('link', { name: 'Panel 1' }).click();
+      cy.findByRole('textbox', { name: textFieldLabel }).should('exist');
+      cy.findByText(alertText).should('exist');
+
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 1' }).click();
+      cy.findByRole('textbox', { name: textFieldLabel }).should('not.exist');
+      cy.findByText(alertText).should('not.exist');
+
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 1' }).click();
+      cy.findByRole('textbox', { name: textFieldLabel }).should('exist');
+      cy.findByText(alertText).should('exist');
+    });
+
     it('display fields with row in conditional in container', () => {
       cy.findByRole('link', { name: 'Panel 2 med beholder' }).click();
       cy.findByRole('textbox', { name: 'Tekstfelt 2' }).should('not.exist');

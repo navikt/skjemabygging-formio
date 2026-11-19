@@ -42,6 +42,21 @@ describe('PhoneNumber', () => {
         });
     });
 
+    it('should preserve the selected country code while entering a number and navigating', () => {
+      cy.findByRole('textbox', { name: /^Telefonnummer$/ }).type('12345678');
+      cy.findByRole('combobox', { name: 'Landskode' }).select('+46');
+      cy.findByRole('textbox', { name: 'Telefonnummer med landkode' }).type('12345678');
+      cy.findByRole('combobox', { name: 'Landskode' }).should('have.value', '+46');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Validering' }).should('exist');
+      cy.clickPreviousStep();
+
+      cy.findByRole('heading', { name: 'Visning' }).should('exist');
+      cy.findByRole('combobox', { name: 'Landskode' }).should('have.value', '+46');
+      cy.findByRole('textbox', { name: 'Telefonnummer med landkode' }).should('have.value', '12345678');
+    });
+
     it('should keep country code and phone number on one line on a narrow screen', () => {
       cy.viewport(320, 800);
       cy.contains('label', 'Telefonnummer med landkode')
@@ -190,6 +205,37 @@ describe('PhoneNumber', () => {
 
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.testDownloadPdf();
+    });
+
+    it('should not include an untouched phone number with area code in the summary', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Visning' }).should('exist');
+      cy.contains('label', 'Telefonnummer').closest('[data-form-component]').find('input[type="tel"]').type('12345678');
+      cy.contains('label', 'Telefonnummer med landkode')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('12345678');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Validering' }).should('exist');
+      cy.contains('label', 'Telefonnummer påkrevd')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('11223344');
+      cy.contains('label', 'Telefonnummer landkode påkrevd')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('87654321');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Validering', () => {
+        cy.get('dt').should('have.length', 2);
+        cy.contains('dt', 'Telefonnummer landkode ikke påkrevd').should('not.exist');
+        cy.contains('dd', '+47 87 65 43 21').should('exist');
+      });
     });
   });
 

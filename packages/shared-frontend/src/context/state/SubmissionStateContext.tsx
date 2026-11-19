@@ -55,9 +55,11 @@ const clearSubmissionPathsFromSubmission = (
 };
 
 const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
+SubmissionStateContext.displayName = 'SubmissionStateContext';
 // Holds only the stable actions, so consumers that never read the submission do not rerender on
 // every change.
 const SubmissionActionsContext = createContext<SubmissionActionsContextType>({} as SubmissionActionsContextType);
+SubmissionActionsContext.displayName = 'SubmissionActionsContext';
 
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmissionState] = useState<Submission | undefined>(initialSubmission ?? { data: {} });

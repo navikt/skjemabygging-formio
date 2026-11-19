@@ -1,4 +1,4 @@
-import { getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormWithLanguages, getResponseErrorData, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ApplicationLogger, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { NavigateFunction } from 'react-router';
@@ -32,6 +32,7 @@ const useInitializeRenderForm = ({
 }: Props) => {
   const [initializedForm, setInitializedForm] = useState<InitializedForm>();
   const [notFoundLoadKey, setNotFoundLoadKey] = useState<string>();
+  const [notAllowed, setNotAllowed] = useState<{ loadKey: string; form: FormWithLanguages }>();
   const [failedLoadKey, setFailedLoadKey] = useState<string>();
   const loadRef = useRef<{ key: string; promise: Promise<InitializationResult> }>();
 
@@ -72,6 +73,9 @@ const useInitializeRenderForm = ({
           case 'notFound':
             setNotFoundLoadKey(loadKey);
             return;
+          case 'submissionMethodNotAllowed':
+            setNotAllowed({ loadKey, form: result.form });
+            return;
           case 'draftNotFound':
             navigate('/soknad-ikke-funnet', { replace: true });
             return;
@@ -108,10 +112,16 @@ const useInitializeRenderForm = ({
   ]);
 
   const hasInitializationError = failedLoadKey === loadKey;
-  const isLoading = initializedForm?.loadKey !== loadKey && notFoundLoadKey !== loadKey && !hasInitializationError;
+  const submissionMethodNotAllowedForm = notAllowed?.loadKey === loadKey ? notAllowed.form : undefined;
+  const isLoading =
+    initializedForm?.loadKey !== loadKey &&
+    notFoundLoadKey !== loadKey &&
+    !submissionMethodNotAllowedForm &&
+    !hasInitializationError;
 
   return {
     initializedForm: initializedForm?.loadKey === loadKey ? initializedForm : undefined,
+    submissionMethodNotAllowedForm,
     isLoading,
     hasInitializationError,
   };

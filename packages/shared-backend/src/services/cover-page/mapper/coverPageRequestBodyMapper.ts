@@ -26,6 +26,7 @@ const getTitle = (title: string, number: string) => {
   return stringUtils.normalizeUnicode(`${number} ${title}`);
 };
 
+// The cover page service only supports NB, NN and EN, so Sami defaults to Norwegian Bokmål.
 const parseLanguage = (language: string) => {
   switch (language) {
     case 'nn':
@@ -35,6 +36,7 @@ const parseLanguage = (language: string) => {
     case 'nb':
     case 'NB':
     case 'nb-NO':
+    case 'se':
       return 'NB';
     default:
       return 'EN';
@@ -152,7 +154,7 @@ const createRequestBodyFromDownloadData = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   formNumber?: string,
 ): ForstesideRequestBody => {
-  const { type = 'SKJEMA', form, user, recipient, attachments } = data;
+  const { type = 'SKJEMA', form, user, recipient, attachments, attachmentsForArchiving } = data;
   const { properties } = form;
 
   if (!form.skjemanummer || !form.title) {
@@ -182,7 +184,7 @@ const createRequestBodyFromDownloadData = (
       : undefined,
     languageCode,
     tema: properties?.tema,
-    vedleggsliste: attachments,
+    vedleggsliste: attachmentsForArchiving ?? attachments,
     dokumentlisteFoersteside: isSubsequentSubmission ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),

@@ -58,6 +58,7 @@ interface CoverPageDownloadType {
   user: UserType;
   recipient?: RecipientType;
   attachments: string[];
+  attachmentsForArchiving?: string[];
 }
 
 export type { CoverPageDownloadType, CoverPageType };

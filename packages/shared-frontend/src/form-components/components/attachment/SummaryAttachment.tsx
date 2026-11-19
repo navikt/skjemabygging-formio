@@ -13,11 +13,8 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   const { component, submissionPath, submission, translate, formProperties, rendererConfig, handleDownloadFile } =
     props;
   const { submissionMethod } = rendererConfig;
-  const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
   const canDownloadAttachment = enableAttachmentDownload(submissionMethod) && !!handleDownloadFile;
   const { attachments, source } = attachmentUtils.resolveAttachmentsAtPath(component, submissionPath, submission);
-  // Legacy answers (top-level attachments) have always shown the deadline as a warning, also on paper.
-  const showDeadlineAsWarning = attachmentUploadEnabled || source === 'top-level';
 
   const showDeadline = (attachment: SubmissionAttachment) =>
     attachment.value && !!component.attachmentValues?.[attachment.value]?.showDeadline;
@@ -61,23 +58,16 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
           ) : (
             <FormSummary.Value key={attachment.attachmentId}>
               <VStack gap="space-8">
+                {attachment.value === 'leggerVedNaa' && attachment.title && <Label>{attachment.title}</Label>}
                 {translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values))}
                 {attachment.additionalDocumentation && <div>{translate(attachment.additionalDocumentation)}</div>}
-                {showDeadline(attachment) &&
-                  formProperties?.ettersendelsesfrist &&
-                  (showDeadlineAsWarning ? (
-                    <Alert variant="warning">
-                      {translate(TEXTS.statiske.attachment.deadline, {
-                        deadline: formProperties.ettersendelsesfrist,
-                      })}
-                    </Alert>
-                  ) : (
-                    <div>
-                      {translate(TEXTS.statiske.attachment.deadline, {
-                        deadline: formProperties.ettersendelsesfrist,
-                      })}
-                    </div>
-                  ))}
+                {showDeadline(attachment) && formProperties?.ettersendelsesfrist && (
+                  <Alert variant="warning" inline>
+                    {translate(TEXTS.statiske.attachment.deadline, {
+                      deadline: formProperties.ettersendelsesfrist,
+                    })}
+                  </Alert>
+                )}
               </VStack>
             </FormSummary.Value>
           ),

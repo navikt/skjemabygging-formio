@@ -40,6 +40,29 @@ describe('Attachments page (paper submission)', () => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).should('not.exist');
     });
   });
+
+  it('shows the deadline as a warning on the summary page', () => {
+    cy.findByRole('radiogroup', { name: /Vedlegg med masse greier/ }).within(() =>
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check(),
+    );
+    cy.findByRole('radiogroup', { name: /Bekreftelse på utdanning/ }).within(() =>
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check(),
+    );
+    cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() =>
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check(),
+    );
+    cy.clickNextStep();
+
+    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+      .closest('[data-cy=form-summary-panel]')
+      .within(() => {
+        cy.findByText(
+          'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
+        ).should('exist');
+        cy.findByRole('img', { name: 'Advarsel' }).should('exist');
+      });
+  });
 });
 
 describe('Attachments page', () => {

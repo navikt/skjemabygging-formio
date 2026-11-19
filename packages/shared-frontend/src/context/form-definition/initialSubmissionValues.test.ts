@@ -249,6 +249,46 @@ describe('applyInitialValuesToSubmission', () => {
     });
   });
 
+  it('stores false for an untouched checkbox only while it is visible', () => {
+    const form = createForm([
+      { key: 'showExtra', type: 'navCheckbox', input: true },
+      {
+        key: 'extraConfirmed',
+        type: 'navCheckbox',
+        input: true,
+        customConditional: 'show = data.showExtra === true;',
+      },
+      {
+        key: 'count',
+        type: 'number',
+        input: true,
+        defaultValue: '0',
+        conditional: { show: true, when: 'showExtra', eq: 'false' },
+      },
+    ]);
+
+    expect(applyInitialValuesToSubmission(form, { data: {} }, 'nb')).toEqual({
+      data: { showExtra: false, count: '0' },
+    });
+    expect(applyInitialValuesToSubmission(form, { data: { showExtra: true, count: '0' } }, 'nb')).toEqual({
+      data: { showExtra: true, extraConfirmed: false },
+    });
+  });
+
+  it('only checks a checkbox by default when its default is true', () => {
+    const form = createForm([
+      { key: 'checked', type: 'navCheckbox', input: true, defaultValue: true },
+      { key: 'withoutDefault', type: 'navCheckbox', input: true, defaultValue: null },
+      { key: 'withTextDefault', type: 'navCheckbox', input: true, defaultValue: 'ja' },
+    ]);
+
+    expect(applyInitialValuesToSubmission(form, { data: {} }, 'nb')?.data).toEqual({
+      checked: true,
+      withoutDefault: false,
+      withTextDefault: false,
+    });
+  });
+
   it('preserves an existing answer instead of applying its default', () => {
     const form = createForm([{ key: 'count', type: 'number', input: true, defaultValue: '0' }]);
     const submission = { data: { count: 12 } };

@@ -1,4 +1,3 @@
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -35,20 +34,21 @@ const RenderFormPage = () => {
     () => createRenderFormBootstrapService({ http: createIntegrationHttp(http), backendBaseUrl }),
     [backendBaseUrl, http],
   );
-  const { initializedForm, isLoading, hasInitializationError } = useInitializeRenderForm({
-    formPath,
-    revision,
-    routePath,
-    search,
-    submissionMethod,
-    bootstrapService,
-    applications: services.applications,
-    navigate,
-    loadKey,
-    logger,
-  });
+  const { initializedForm, submissionMethodNotAllowedForm, isLoading, hasInitializationError } =
+    useInitializeRenderForm({
+      formPath,
+      revision,
+      routePath,
+      search,
+      submissionMethod,
+      bootstrapService,
+      applications: services.applications,
+      navigate,
+      loadKey,
+      logger,
+    });
 
-  useFormDocumentMetadata(initializedForm?.form);
+  useFormDocumentMetadata(initializedForm?.form ?? submissionMethodNotAllowedForm);
 
   if (!formPath) {
     return <NotFoundPage />;
@@ -62,12 +62,12 @@ const RenderFormPage = () => {
     return <InternalServerErrorPage />;
   }
 
-  if (!initializedForm) {
-    return <NotFoundPage />;
+  if (submissionMethodNotAllowedForm && submissionMethod) {
+    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
-  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, initializedForm.form)) {
-    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
+  if (!initializedForm) {
+    return <NotFoundPage />;
   }
 
   return (

@@ -232,7 +232,7 @@ describe('resolveParty', () => {
     });
   });
 
-  it('resolves a legacy sender without component declarations', () => {
+  it('ignores legacy sender fields when resolving the concerned user', () => {
     const legacyForm = { components: [] } as unknown as Form;
 
     expect(
@@ -244,13 +244,12 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
-      onBehalfOf: 'other-person',
-      sender: { firstName: 'Legacy', surname: 'Sender' },
+      onBehalfOf: 'self',
       user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
     });
   });
 
-  it('does not resolve a legacy sender without a concerned user', () => {
+  it('ignores legacy sender fields without a concerned user', () => {
     expect(
       resolveParty({ components: [] } as unknown as Form, {
         data: {

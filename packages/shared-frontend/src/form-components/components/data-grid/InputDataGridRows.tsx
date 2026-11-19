@@ -6,7 +6,7 @@ import InputDataGridRow from './InputDataGridRow';
 interface InputDataGridRowsProps {
   addLabel?: string;
   componentRegistry?: InputComponentRegistry;
-  onAdd: () => void;
+  onAdd?: () => void;
   onRemove: (index: number) => void;
   allowAddingAndRemovingRows: boolean;
   initEmpty?: boolean;
