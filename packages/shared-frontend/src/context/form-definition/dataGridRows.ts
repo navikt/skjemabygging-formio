@@ -1,6 +1,6 @@
 import {
-  checkCondition,
   Form,
+  scriptEvaluationUtils,
   Submission,
   SubmissionData,
   SubmissionMethod,
@@ -62,9 +62,15 @@ const getActiveRowComponents = (
 ): ComponentDefinition[] =>
   components
     .filter((component) =>
-      checkCondition(component, row, data, form, getConditionInstance(component, form, submissionMethod), submission, {
-        submissionMethod,
-      }),
+      scriptEvaluationUtils.checkCondition(
+        component,
+        row,
+        data,
+        form,
+        getConditionInstance(component, form, submissionMethod),
+        submission,
+        { submissionMethod },
+      ),
     )
     .map((component) => {
       if (component.type === 'datagrid' || !component.components?.length) {
