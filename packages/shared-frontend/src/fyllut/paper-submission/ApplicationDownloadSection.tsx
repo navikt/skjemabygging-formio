@@ -72,6 +72,7 @@ const ApplicationDownloadSection = ({ documentType }: Props) => {
       formPath: form.path,
       submission,
       submissionMethod,
+      revision: form.revision,
       navUnitNumber: selectedNavUnit || undefined,
     });
   };

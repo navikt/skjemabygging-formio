@@ -76,10 +76,11 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { formPath, language, enhetNummer, submissionMethod } = req.body;
+    const { formPath, language, enhetNummer, revision, submissionMethod } = req.body;
     const submission = requestUtil.getBodyValue<string>(req, 'submission');
     const form = await formService.getForm({
       formPath,
+      revision,
       select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
     });
     const submissionParsed = JSON.parse(submission);

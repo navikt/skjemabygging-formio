@@ -92,6 +92,7 @@ interface SubmissionService {
     formPath: string;
     submission: Submission;
     language: TranslationLang;
+    revision?: number;
     submissionMethod?: SubmissionMethod;
     navUnitNumber?: string;
   }) => Promise<Blob>;

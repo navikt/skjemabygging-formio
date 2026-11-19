@@ -23,7 +23,7 @@ const createSubmissionService = ({ http, backendBaseUrl }: Props): SubmissionSer
       headers,
     );
   },
-  createDocument: ({ documentType, formPath, submission, language, submissionMethod, navUnitNumber }) =>
+  createDocument: ({ documentType, formPath, revision, submission, language, submissionMethod, navUnitNumber }) =>
     http.post<Blob>(
       `${backendBaseUrl}/api/documents${
         documentType === 'application' ? '/application' : '/cover-page-and-application'
@@ -32,6 +32,7 @@ const createSubmissionService = ({ http, backendBaseUrl }: Props): SubmissionSer
         language,
         formPath,
         submission: JSON.stringify(submission),
+        revision,
         submissionMethod,
         enhetNummer: navUnitNumber,
       },
