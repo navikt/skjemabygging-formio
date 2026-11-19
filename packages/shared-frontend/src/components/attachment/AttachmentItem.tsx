@@ -64,7 +64,7 @@ const AttachmentItem = ({
 }: Props) => {
   const { translate } = useLanguage();
   const { stateValue } = useFieldBinding({ statePath: submissionPath ?? standaloneAttachmentsPath });
-  const { handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
+  const { changeAttachmentValue, handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const uploadsInProgress = useAttachmentUploadsInProgress(attachmentId);
   const submissionAttachments = readAttachments(stateValue);
@@ -134,12 +134,18 @@ const AttachmentItem = ({
             <VStack gap="space-16">
               {requireAttachmentTitle && (
                 <AttachmentTitleField
-                  initialAttachment={initialAttachment}
+                  attachmentId={initialAttachment.attachmentId}
                   title={attachment?.title}
                   submissionPath={submissionPath}
-                  multipleAttachments={multipleAttachments}
-                  attachmentValue={attachmentValue}
                   readOnly={readOnly}
+                  onChange={(title) =>
+                    changeAttachmentValue(
+                      initialAttachment,
+                      { value: attachmentValue, title },
+                      submissionPath,
+                      multipleAttachments,
+                    )
+                  }
                 />
               )}
               {!readOnly && (

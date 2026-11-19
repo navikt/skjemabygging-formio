@@ -1,8 +1,8 @@
-import { Enhet, Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
-import { useApplication } from '../../context/application/ApplicationContext';
-import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { filterNavUnits, sortNavUnits } from './navUnitUtils';
+import { Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo } from 'react';
+import { useOptionalNavUnitsContext } from './NavUnitsProvider';
+import { filterNavUnits, resolveNavUnits } from './navUnitUtils';
+import { useNavUnitsLoader } from './useNavUnitsLoader';
 
 interface UseNavUnitsOptions {
   enabled?: boolean;
@@ -10,49 +10,28 @@ interface UseNavUnitsOptions {
 }
 
 const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => {
-  const { logger } = useApplication();
-  const { formData } = useRuntimeServices();
-  const [result, setResult] = useState<{ source: typeof formData; units?: Enhet[]; error?: Error }>();
-
+  const shared = useOptionalNavUnitsContext();
+  const own = useNavUnitsLoader(enabled && !shared);
+  const request = shared?.request;
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+    if (enabled) request?.();
+  }, [enabled, request]);
 
-    let cancelled = false;
-
-    void formData
-      .getNavUnits()
-      .then((units) => {
-        if (!cancelled) {
-          setResult({ source: formData, units: sortNavUnits(units) });
-        }
-      })
-      .catch((fetchError) => {
-        if (cancelled) {
-          return;
-        }
-
-        const resolvedError = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
-        logger?.error?.('Failed to load NAV units', { error: resolvedError.message });
-        setResult({ source: formData, error: resolvedError });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, formData, logger]);
-
-  const currentResult = enabled && result?.source === formData ? result : undefined;
-  const allUnits = currentResult?.units;
-  const error = currentResult?.error;
+  const { allUnits, error, loading, retry } = shared && enabled ? shared : own;
   const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
+  const availableUnits = useMemo(
+    () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
+    [allUnits, unitTypes],
+  );
 
   return {
     allUnits,
     units,
+    availableUnits,
     error,
-    loading: enabled && allUnits === undefined && error === undefined,
+    retry,
+    // A shared lookup that has not been requested yet still counts as loading.
+    loading: enabled && (loading || (allUnits === undefined && error === undefined)),
   };
 };
 

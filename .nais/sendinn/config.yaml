@@ -54,6 +54,8 @@ spec:
   accessPolicy:
     outbound:
       rules:
+        - application: norg2
+          namespace: org
         - application: logging
           namespace: nais-system
       {{#each accessPolicy.outbound.rules}}
@@ -66,5 +68,7 @@ spec:
       value: {{content-source}}
     - name: FORMS_API_URL
       value: http://forms-api.fyllut-sendinn
+    - name: NORG2_URL
+      value: http://norg2.org
     - name: INNSENDING_API_AUDIENCE
       value: {{innsending-api-audience}}

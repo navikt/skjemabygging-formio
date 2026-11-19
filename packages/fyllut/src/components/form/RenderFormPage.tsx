@@ -1,4 +1,4 @@
-import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FyllutRuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
@@ -25,7 +25,7 @@ const RenderFormPage = () => {
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const isActiveTasksRoute = routePath === 'paabegynt';
   const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
-  const services = useMemo<RuntimeServices>(
+  const services = useMemo<FyllutRuntimeServices>(
     () => createRuntimeServices({ http: createIntegrationHttp(http), backendBaseUrl, innsendingsId }),
     [backendBaseUrl, http, innsendingsId],
   );

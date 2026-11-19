@@ -23,6 +23,7 @@ import InputIdentity from './components/identity/InputIdentity';
 import InputImage from './components/image/InputImage';
 import InputMonthPicker from './components/month-picker/InputMonthPicker';
 import InputNationalIdentityNumber from './components/national-identity-number/InputNationalIdentityNumber';
+import InputNavUnitSelect from './components/nav-unit-select/InputNavUnitSelect';
 import InputNumber from './components/number/InputNumber';
 import InputOrganizationNumber from './components/organization-number/InputOrganizationNumber';
 import InputPhoneNumber from './components/phone-number/InputPhoneNumber';
@@ -64,6 +65,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   textarea: InputTextArea,
   select: InputSelect,
   navSelect: InputNavSelect,
+  navUnitSelect: InputNavUnitSelect,
   landvelger: InputCountrySelect,
   valutavelger: InputCurrencySelect,
   radiopanel: InputRadioPanel,

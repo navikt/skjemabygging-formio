@@ -29,6 +29,7 @@ const createNavUnitField = (key: string, properties: FormPropertiesType): NavUni
   key,
   label: TEXTS.statiske.navUnit.choose,
   description: properties.navUnitDescription,
+  fieldSize: 'input--xl',
   input: true,
   clearOnHide: true,
   validate: { required: true },

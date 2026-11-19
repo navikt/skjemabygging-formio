@@ -1,59 +1,73 @@
 import {
-  flattenComponents,
   normalizeAttachmentCodeFilter,
   sendinnEntryUtils,
   sendinnLanguageUtils,
-  TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
-import Alert from '../../components/alert/Alert';
-import { useLanguage } from '../../context/language/LanguageContext';
-import { JourneyPlaceholder } from '../JourneyPlaceholder';
-import { LoadSendinnForm } from './createSendinnFormService';
+import { useAppConfig } from '../../app/config/AppConfigProvider';
+import { NavUnitsProvider } from '../../components/nav-unit-select/NavUnitsProvider';
+import { ApplicationProvider } from '../../context/application/ApplicationContext';
+import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
+import { SendinnRuntimeServices } from '../../context/runtime-services/RuntimeServices';
+import { RuntimeServicesProvider } from '../../context/runtime-services/RuntimeServicesContext';
+import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
+import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
+import { SendinnFormRouter } from '../journey/SendinnFormRouter';
+import { LoadSendinnForm } from '../SendinnServices';
 import { SendinnFormProvider, useSendinnForm } from './SendinnFormProvider';
 
 interface Props {
   formPath: string;
   loadForm: LoadSendinnForm;
+  runtimeServices: SendinnRuntimeServices;
   onLoadError: (error: unknown) => void;
 }
 
 const LoadedForm = () => {
   const { form } = useSendinnForm();
-  const { translate } = useLanguage();
-  const hasAttachments = flattenComponents(form.components).some((component) => component.type === 'attachment');
-
   return (
-    <>
-      <JourneyPlaceholder journey="form" />
-      {!hasAttachments && <Alert variant="info">{translate(TEXTS.statiske.sendinn.noMatchingDocuments)}</Alert>}
-    </>
+    <FormDefinitionProvider form={form} submissionMethod="paper">
+      <FormValidationProvider>
+        <SendinnFormRouter />
+      </FormValidationProvider>
+    </FormDefinitionProvider>
   );
 };
 
-const SendinnFormEntry = ({ formPath, loadForm, onLoadError }: Props) => {
+const SendinnFormEntry = ({ formPath, loadForm, runtimeServices, onLoadError }: Props) => {
   const { pathname, search } = useLocation();
+  const { config, logger } = useAppConfig();
+  const params = new URLSearchParams(search);
+  const language = sendinnLanguageUtils.getSelectedLanguage(params);
+  const filterKey = JSON.stringify(normalizeAttachmentCodeFilter(params.getAll('filter')));
   const request = useMemo(() => {
-    const params = new URLSearchParams(search);
     return {
       formPath,
-      language: sendinnLanguageUtils.getSelectedLanguage(params),
-      attachmentFilter: normalizeAttachmentCodeFilter(params.getAll('filter')),
+      language,
+      attachmentFilter: JSON.parse(filterKey) as string[],
     };
-  }, [formPath, search]);
+  }, [formPath, language, filterKey]);
   const loginUrl = sendinnEntryUtils.createLoginUrl(`${sendinnEntryUtils.basePath}${pathname}${search}`);
 
   return (
-    <SendinnFormProvider
-      key={JSON.stringify(request)}
-      request={request}
-      loadForm={loadForm}
-      onLoadError={onLoadError}
-      loginUrl={loginUrl}
-    >
-      <LoadedForm />
-    </SendinnFormProvider>
+    <ApplicationProvider logger={logger} environment={config.isProdGcp ? 'production' : 'development'}>
+      <RuntimeServicesProvider services={runtimeServices}>
+        <NavUnitsProvider>
+          <SubmissionStateProvider key={`${formPath}:${filterKey}`}>
+            <SendinnFormProvider
+              key={JSON.stringify(request)}
+              request={request}
+              loadForm={loadForm}
+              onLoadError={onLoadError}
+              loginUrl={loginUrl}
+            >
+              <LoadedForm />
+            </SendinnFormProvider>
+          </SubmissionStateProvider>
+        </NavUnitsProvider>
+      </RuntimeServicesProvider>
+    </ApplicationProvider>
   );
 };
 

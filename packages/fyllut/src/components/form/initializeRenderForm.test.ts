@@ -1,10 +1,10 @@
 import { Form, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefillDataToForm,
+  FyllutRuntimeServices,
   getFormPrefillKeys,
   initializeDigitalDraft,
   resolveDefaultSubmissionMethod,
-  RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
@@ -35,7 +35,7 @@ const setup = () => {
     load: vi.fn().mockResolvedValue({ form, translations: {} }),
     getPrefillData: vi.fn().mockResolvedValue({}),
   };
-  const applications: RuntimeServices['applications'] = {
+  const applications: FyllutRuntimeServices['applications'] = {
     getActiveTasks: vi.fn(),
     getDraft: vi.fn(),
     createDraft: vi.fn(),

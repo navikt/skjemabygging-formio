@@ -9,6 +9,7 @@ import {
   useValidationErrorsForPage,
   useValidationErrorsForPages,
 } from '../../context/validation/ValidationContext';
+import { focusField } from '../../utils/focusField';
 import { inputId } from '../../utils/inputId';
 import styles from './FormErrorSummary.module.css';
 
@@ -16,11 +17,12 @@ interface Props {
   pageKey?: string;
   pageKeys?: string[];
   onNavigateToField?: (error: FieldError, id: string) => void;
+  preferInputFocus?: boolean;
 }
 
 const noPageKeys: string[] = [];
 
-const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
+const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField, preferInputFocus = false }: Props) => {
   const { translate } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const pageErrors = useValidationErrorsForPage(pageKeys ? undefined : pageKey);
@@ -56,13 +58,7 @@ const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
     }
     event.preventDefault();
     event.stopPropagation();
-    element.scrollIntoView({ block: 'center' });
-    // Fieldset-based groups (radio/checkbox) aren't focusable; focus the first control inside.
-    const focusTarget =
-      element.matches('input, select, textarea, button, [tabindex]') || element.tabIndex >= 0
-        ? element
-        : element.querySelector<HTMLElement>('input, select, textarea, button, [tabindex]');
-    focusTarget?.focus({ preventScroll: true });
+    focusField(element, preferInputFocus);
   };
 
   return (

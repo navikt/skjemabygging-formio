@@ -1,7 +1,7 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
 import { LanguageConfig } from '../context/language/LanguageContext';
-import { RuntimeServices } from '../context/runtime-services/RuntimeServicesContext';
+import { FyllutRuntimeServices } from '../context/runtime-services/RuntimeServicesContext';
 import { IntegrationContextValue } from './context/integration/IntegrationContext';
 import FyllutFormFlow from './form-flow/FyllutFormFlow';
 import FyllutFormProviders from './providers/FyllutFormProviders';
@@ -13,7 +13,7 @@ interface Props {
   submissionMethod?: SubmissionMethod;
   integration: IntegrationContextValue;
   language: LanguageConfig;
-  services: RuntimeServices;
+  services: FyllutRuntimeServices;
 }
 
 const RenderForm = ({

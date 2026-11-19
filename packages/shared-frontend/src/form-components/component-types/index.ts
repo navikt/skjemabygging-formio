@@ -56,6 +56,7 @@ export type {
   MonthPickerDefinition,
   NationalIdentityNumberDefinition,
   NavSelectDefinition,
+  NavUnitSelectDefinition,
   NumberDefinition,
   OrganizationNumberDefinition,
   PanelDefinition,
@@ -70,7 +71,6 @@ export type {
   TextAreaDefinition,
   TextFieldDefinition,
   TypedComponentDefinition,
-  TypedComponentType,
   YearDefinition,
 } from './definitions';
 export type { ComponentDefinition, ComponentDefinitionByType, NoUncoveredComponentTypes };

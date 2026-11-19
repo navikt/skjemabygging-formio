@@ -8,7 +8,7 @@ test.describe('Entry routing', () => {
 
   const journeys = [
     { name: 'standalone', url: '/sendinn/lospost', heading: 'Send dokumenter til Nav' },
-    { name: 'form', url: '/sendinn/nav123456', heading: 'Send inn dokumentasjon til skjema' },
+    { name: 'form', url: '/sendinn/nav123456', heading: 'Ettersend dokumentasjon til Sendinn form loading' },
     {
       name: 'form with a task',
       url: `/sendinn/nav123456?innsendingsId=${submissionId}`,
@@ -39,6 +39,7 @@ test.describe('Entry routing', () => {
     '/sendinn/oppgave',
     '/sendinn/oppgave?innsendingsId=not-a-uuid',
     '/sendinn/nav123456/extra',
+    '/sendinn/nav123456//sendinnAttachments',
     '/sendinn/nav123456?innsendingsId=not-a-uuid',
     '/sendinn/404/',
   ]) {
