@@ -1,4 +1,4 @@
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../../shared/logger/logger';
 import { createContentService } from './contentService';
@@ -74,7 +74,7 @@ describe('createContentService', () => {
       await expect(service.getTranslations({ formPath, languageCode: 'en' })).resolves.toMatchObject({
         Yes: { en: 'Yes' },
         Attachment: { en: 'Form attachment' },
-        [TEXTS.validering.required]: { nb: TEXTS.validering.required, en: 'You must fill in: {{field}}' },
+        required: { en: 'You must fill in: {{field}}' },
       });
       expect(fetchSpy).toHaveBeenCalledTimes(3);
       for (const [, options] of fetchSpy.mock.calls) {

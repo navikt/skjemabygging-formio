@@ -21,6 +21,7 @@ test.describe('Generated paper journey', () => {
     );
     await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
+    await expect(errorSummary(page).getByRole('link')).toHaveText(/^Du må fylle ut: .+/);
     await errorSummary(page).getByRole('link').click();
     const identified = page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true });
     await expect(identified).toBeFocused();

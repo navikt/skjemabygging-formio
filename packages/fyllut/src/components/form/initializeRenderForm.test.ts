@@ -89,6 +89,20 @@ describe('initializeRenderForm', () => {
     expect(initializeDigitalDraft).not.toHaveBeenCalled();
   });
 
+  it('skips prefill and draft side effects when the submission method is not allowed', async () => {
+    const { bootstrapService, initialize } = setup();
+    const paperForm: Form = { ...form, properties: { ...form.properties, submissionTypes: ['PAPER'] } };
+    vi.mocked(bootstrapService.load).mockResolvedValue({ form: paperForm, translations: {} });
+    vi.mocked(getFormPrefillKeys).mockReturnValue(['name']);
+
+    await expect(initialize({ search: '?sub=digital' })).resolves.toEqual({
+      type: 'submissionMethodNotAllowed',
+      form: paperForm,
+    });
+    expect(bootstrapService.getPrefillData).not.toHaveBeenCalled();
+    expect(initializeDigitalDraft).not.toHaveBeenCalled();
+  });
+
   it('propagates bootstrap failures instead of reporting a missing form', async () => {
     const { bootstrapService, initialize } = setup();
     const error = new ResponseError('SERVICE_UNAVAILABLE', 'Bootstrap unavailable');

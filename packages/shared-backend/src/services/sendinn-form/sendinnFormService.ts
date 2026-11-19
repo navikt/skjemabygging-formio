@@ -5,6 +5,7 @@ import {
   SendinnFormResult,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ContentService } from '../content';
+import { addTranslationDefaults } from '../translation/translationMapper';
 
 interface SendinnFormService {
   getForm: (request: SendinnFormRequest & { revision?: number }) => Promise<SendinnFormResult>;
@@ -30,7 +31,7 @@ const createSendinnFormService = ({
       throw new ResponseError('SERVICE_UNAVAILABLE', 'Invalid form language metadata');
     }
     const selectedLanguage = languages.includes(language) ? language : 'nb';
-    const translations = await (async () => {
+    const formTranslations = await (async () => {
       if (selectedLanguage === 'nb') return {};
       try {
         return await contentService.getTranslations({ formPath, languageCode: selectedLanguage });
@@ -46,7 +47,7 @@ const createSendinnFormService = ({
       form: convertToSendinnPaperForm(source, { attachmentFilter }),
       languages,
       language: selectedLanguage,
-      translations,
+      translations: addTranslationDefaults(formTranslations),
       attachmentFilter: [...attachmentFilter],
     };
   };
