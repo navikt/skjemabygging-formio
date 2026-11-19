@@ -1,4 +1,9 @@
-import { FormWithLanguages, ResponseError, SendinnFormRequest } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormWithLanguages,
+  ResponseError,
+  SendinnFormRequest,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createSendinnFormService } from './sendinnFormService';
 
 const createForm = (): FormWithLanguages => ({
@@ -79,8 +84,19 @@ describe('createSendinnFormService', () => {
 
   it('falls back to Bokmål for an unpublished language without requesting its translations', async () => {
     const result = await service.getForm({ ...request, language: 'nn' });
-    expect(result).toMatchObject({ language: 'nb', languages: ['nb', 'en'], translations: {} });
+    expect(result).toMatchObject({ language: 'nb', languages: ['nb', 'en'] });
+    expect(result.translations.required).toEqual({ nb: TEXTS.validering.required });
     expect(getTranslations).not.toHaveBeenCalled();
+  });
+
+  it('adds country names and validation defaults below the form translations', async () => {
+    getTranslations.mockResolvedValue({ Sverige: { en: 'Kingdom of Sweden' }, required: { en: 'Required' } });
+
+    const { translations } = await service.getForm({ ...request, language: 'en' });
+
+    expect(translations.Norge).toMatchObject({ nb: 'Norge', en: 'Norway' });
+    expect(translations.Sverige).toEqual({ en: 'Kingdom of Sweden' });
+    expect(translations.required).toEqual({ en: 'Required', nb: TEXTS.validering.required });
   });
 
   it('retains the successful no-matching-documents state instead of restoring all choices', async () => {
