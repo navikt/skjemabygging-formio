@@ -1,5 +1,6 @@
 import globalTranslations from '../data/forms-api/global-translations.json';
 import publishedGlobalTranslations from '../data/forms-api/published-global-translations';
+import { latestSendinnGlobalTranslations } from '../data/forms-api/sendinn/latestGlobalTranslations';
 import { findTestdata } from './formio-api';
 
 const toFormsApiTranslations = (formPath: string) => {
@@ -34,6 +35,17 @@ export default [
             res.contentType('application/json; charset=UTF-8');
             // To update the mock data, just copy from prod https://forms-api.intern.nav.no/v1/global-translations
             res.send(globalTranslations);
+          },
+        },
+      },
+      {
+        id: 'sendinn',
+        type: 'middleware',
+        options: {
+          middleware: (_req, res) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send(latestSendinnGlobalTranslations);
           },
         },
       },
