@@ -4,6 +4,7 @@ import {
   FormsApiTranslation,
   I18nTranslations,
   Language,
+  ResponseError,
   languageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { FyllutBackendConfig } from '../config/types';
@@ -49,7 +50,7 @@ class TranslationsService {
 
   private validateFormPath(formPath: string) {
     if (!urlUtil.isValidPath(formPath)) {
-      throw new Error(`Invalid formPath: ${formPath}`);
+      throw new ResponseError('BAD_REQUEST', 'Form path contains invalid characters.');
     }
   }
 

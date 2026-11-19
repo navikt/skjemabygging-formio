@@ -2,6 +2,7 @@ import correlator from 'express-correlation-id';
 import { createEntraIdM2mHandler, createEntraIdOboHandler } from './entraIdHandler';
 import errorHandler from './error/errorHandler';
 import paramValidation from './error/paramValidation';
+import { requestAbortHandler } from './error/requestAbortHandler';
 import { rateLimiter } from './rateLimiter';
 import { createIdportenAuth, createTokenxHandler, getIdportenUser, getTokenxToken } from './texas';
 
@@ -18,4 +19,5 @@ export {
   getTokenxToken,
   paramValidation,
   rateLimiter,
+  requestAbortHandler,
 };

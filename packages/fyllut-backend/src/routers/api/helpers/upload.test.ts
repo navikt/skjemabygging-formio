@@ -27,8 +27,8 @@ const createUploadApp = (maxFileSizeBytes?: number) => {
 };
 
 describe('uploadSingleFile', () => {
-  it('allows files under configured size limit', async () => {
-    const app = createUploadApp(10);
+  it('allows files at the configured size limit', async () => {
+    const app = createUploadApp(5);
 
     const response = await request(app)
       .post('/upload')
