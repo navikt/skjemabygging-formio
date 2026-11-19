@@ -1,10 +1,11 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
-import { dateUtils, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, stringUtils, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { SkyraSurvey } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
 import InnerHtml from '../../components/inner-html/InnerHtml';
+import LetterUXSignals from '../../components/letter/ux-signals/LetterUXSignals';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -73,7 +74,7 @@ const useStyles = makeStyles({
 
 export function ReceiptPage() {
   const { setFormProgressVisible, setTitle, form } = useForm();
-  const { logEvent, submissionMethod } = useAppConfig();
+  const { logEvent, submissionMethod, config } = useAppConfig();
   const styles = useStyles();
   const { currentLanguage, translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
@@ -108,6 +109,11 @@ export function ReceiptPage() {
   const skalSendesAvAndre = receipt?.attachmentsToBeSentByOthers ?? [];
 
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
+  const { uxSignalsId, uxSignalsSubmissionTypes } = form.properties;
+  const showFeedback =
+    uxSignalsId &&
+    submissionMethod &&
+    uxSignalsSubmissionTypes?.some((type) => submissionTypesUtils.asMethod(type) === submissionMethod);
 
   return (
     <VStack gap="space-32" className={styles.root}>
@@ -241,6 +247,11 @@ export function ReceiptPage() {
               {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
             </Button>
           </HStack>
+          {showFeedback && (
+            <div className={styles.hideOnPrint}>
+              <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />
+            </div>
+          )}
           <SkyraSurvey slug={form.properties.skyraSlug} />
         </>
       ) : (
