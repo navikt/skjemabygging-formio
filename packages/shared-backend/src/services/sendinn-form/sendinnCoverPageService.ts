@@ -8,13 +8,13 @@ import {
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { coverPageMapper, CoverPageService } from '../cover-page';
-import { RecipientService } from '../recipient';
 import { SendinnFormService } from './sendinnFormService';
 
 interface SendinnCoverPageService {
   downloadCoverPage: (request: SendinnCoverPageRequest) => Promise<SendinnCoverPageResult>;
 }
 
+// mottaksadresseId is not used: it is unclear whether a form's recipient also applies to ettersending.
 // Hidden Nav unit fields are cleared by the renderer, so only the visible one has an answer.
 const getNavUnit = (form: Form, submission: Submission) =>
   submissionUtils
@@ -26,12 +26,10 @@ const getNavUnit = (form: Form, submission: Submission) =>
 const createSendinnCoverPageService = ({
   formService,
   coverPageService,
-  recipientService,
   getAccessToken,
 }: {
   formService: SendinnFormService;
   coverPageService: CoverPageService;
-  recipientService: Pick<RecipientService, 'getRecipient'>;
   getAccessToken: () => Promise<string>;
 }): SendinnCoverPageService => {
   const downloadCoverPage: SendinnCoverPageService['downloadCoverPage'] = async (request) => {
@@ -42,13 +40,11 @@ const createSendinnCoverPageService = ({
       attachmentFilter: normalizeAttachmentCodeFilter(request.attachmentFilter),
     });
     const translate = formsApiTranslationUtils.createTranslate(translations, language);
-    const recipient = await recipientService.getRecipient({ recipientId: form.properties.mottaksadresseId });
     const data = coverPageMapper.createDownloadDataFromSubmission({
       form,
       submission: request.submission,
       type: 'ETTERSENDELSE',
       languageCode: language,
-      recipient,
       unitNumber: getNavUnit(form, request.submission),
       translate,
     });

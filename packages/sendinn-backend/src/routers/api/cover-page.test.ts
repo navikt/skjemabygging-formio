@@ -2,7 +2,6 @@ import {
   createContentService,
   createCoverPageService,
   createEntraIdTokenService,
-  createRecipientService,
   createSendinnCoverPageService,
   createSendinnFormService,
   ForstesideRequestBody,
@@ -149,7 +148,6 @@ describe('Sendinn cover page HTTP boundaries', () => {
         contentService: createContentService({ baseUrl: `${baseUrl}/forms-api`, source: 'latest' }),
       }),
       coverPageService: createCoverPageService({ baseUrl: `${baseUrl}/proxy` }),
-      recipientService: createRecipientService({ baseUrl: `${baseUrl}/forms-api` }),
       getAccessToken: () => tokenService.getAccessToken(),
     });
     download.mockClear();

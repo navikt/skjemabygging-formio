@@ -2,7 +2,6 @@ import {
   convertToSendinnPaperForm,
   CoverPageDownloadType,
   Form,
-  Recipient,
   Submission,
   SubmissionAddress,
   SubmissionAttachment,
@@ -84,7 +83,6 @@ const assemble = async (
   submission: Submission,
   properties: Partial<Form['properties']> = {},
   filter: string[] = [],
-  recipient?: Recipient,
 ) => {
   const form = convertToSendinnPaperForm(
     { ...source, properties: { ...source.properties, ...properties } },
@@ -106,9 +104,6 @@ const assemble = async (
         data = props.data;
         return 'pdf';
       },
-    },
-    recipientService: {
-      getRecipient: async ({ recipientId }) => (recipientId === recipient?.recipientId ? recipient : undefined),
     },
     getAccessToken: async () => 'token',
   });
@@ -164,26 +159,12 @@ describe('createSendinnCoverPageService', () => {
     expect(result.recipient).toEqual({ navUnit: '0101' });
   });
 
-  it('sends to the form recipient instead of the chosen Nav unit', async () => {
-    const recipient: Recipient = {
-      recipientId: 'recipient-id',
-      name: 'Nav Test',
-      poBoxAddress: '1234',
-      postalCode: '0101',
-      postalName: 'Oslo',
-    };
+  it('sends to the chosen Nav unit even when the form has a recipient', async () => {
     const result = await assemble(
       { data: { navUnit: '0101' } },
       { enhetMaVelgesVedPapirInnsending: true, mottaksadresseId: 'recipient-id' },
-      [],
-      recipient,
     );
-    expect(result.recipient).toEqual({
-      name: 'Nav Test',
-      postOfficeBox: '1234',
-      postalCode: '0101',
-      postalName: 'Oslo',
-    });
+    expect(result.recipient).toEqual({ navUnit: '0101' });
   });
 
   it.each([

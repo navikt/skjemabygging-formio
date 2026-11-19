@@ -231,10 +231,9 @@ this endpoint does not return form answers or download assembly data.
 Expected errors use the central `ErrorResponse` and `x-correlation-id`.
 Invalid request fields, an unidentified person without an address, a Nav unit
 that is not digits and values the generator cannot encode are 400. Missing or
-paper-disabled forms are 404. Content, recipient, token and generator failures
-are 503. `coverPageService` and `recipientService.getRecipient` replace
-upstream errors with a generic message, so diagnostics never contain answers or
-raw upstream bodies.
+paper-disabled forms are 404. Content, token and generator failures are 503.
+`coverPageService` replaces generator errors with a generic message, so
+diagnostics never contain answers or raw upstream bodies.
 
 The server has no Sendinn-only business rules. The form validation owns
 required fields, the renderer clears hidden answers and the frontend blocks an
@@ -246,9 +245,10 @@ empty attachment list (T9). `createSendinnCoverPageService` uses the same
   `navContactUnit`). Fyllut gets `enhetNummer` from the request body.
 - The cover page is returned alone as base64 JSON. Fyllut merges it with the
   application PDF.
+- The form's `mottaksadresseId` is ignored, as in fyllut-ettersending. It is
+  unclear whether a form's recipient also applies to ettersending (open
+  question in #2245).
 
-The form's `mottaksadresseId` recipient, loaded from forms-api
-(`FORMS_API_URL`), wins over the Nav unit in both flows.
 A Nav unit uses `enhetsnummer` with `netsPostboks: "1400"`. No user is sent
 when party resolution finds nobody, for example when user types are hidden, a
 Nav unit is forced or the user chose multiple people. User information whose

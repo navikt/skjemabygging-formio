@@ -6,7 +6,6 @@ import {
   createEntraIdTokenService,
   createIdportenAuth,
   createNavUnitService,
-  createRecipientService,
   createSendinnCoverPageService,
   createSendinnFormService,
   createTokenxHandler,
@@ -23,7 +22,6 @@ const contentService = createContentService({ baseUrl: config.formsApiUrl, sourc
 const sendinnFormService = createSendinnFormService({ contentService });
 const navUnitService = createNavUnitService({ baseUrl: config.norg2Url, consumerId: 'sendinn' });
 const coverPageService = createCoverPageService({ baseUrl: config.skjemabyggingProxyUrl });
-const recipientService = createRecipientService({ baseUrl: config.formsApiUrl });
 const generatorTokenService = createEntraIdTokenService({
   tokenEndpoint: config.texas.tokenEndpoint,
   target: `api://${config.skjemabyggingProxyClientId}/.default`,
@@ -32,7 +30,6 @@ const generatorTokenService = createEntraIdTokenService({
 const sendinnCoverPageService = createSendinnCoverPageService({
   formService: sendinnFormService,
   coverPageService,
-  recipientService,
   getAccessToken: generatorTokenService.getAccessToken,
 });
 
