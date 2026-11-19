@@ -1,6 +1,7 @@
 import {
   FormsApiTranslationMap,
   FormWithLanguages,
+  navFormUtils,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -26,6 +27,7 @@ interface InitializedForm {
 type InitializationResult =
   | { type: 'ready'; initializedForm: InitializedForm }
   | { type: 'notFound' }
+  | { type: 'submissionMethodNotAllowed'; form: FormWithLanguages }
   | { type: 'draftNotFound' }
   | { type: 'redirect'; pathname?: string; search: string };
 
@@ -65,6 +67,10 @@ const initializeRenderForm = async ({
       type: 'redirect',
       search: buildSearchWithSubmissionMethod(search, defaultSubmissionMethod),
     };
+  }
+
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, bootstrap.form)) {
+    return { type: 'submissionMethodNotAllowed', form: bootstrap.form };
   }
 
   const prefillKeys = submissionMethod === 'digital' ? getFormPrefillKeys(bootstrap.form) : [];

@@ -20,16 +20,11 @@ const getGlobalTranslationFilename = (lang: TranslationLang): string => {
 
 const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
   return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
-    const validationFallback = TEXTS.validering[currentItem.key as keyof typeof TEXTS.validering];
-    const translation = {
-      nb: currentItem.nb ?? validationFallback,
+    accumulator[currentItem.key] = {
+      nb: currentItem.nb,
       nn: currentItem.nn,
       en: currentItem.en,
     };
-    accumulator[currentItem.key] = translation;
-    if (validationFallback) {
-      accumulator[validationFallback] = translation;
-    }
     return accumulator;
   }, {} as FormsApiTranslationMap);
 };
@@ -66,7 +61,20 @@ const convertDictionariesToFormsApiTranslations = (dictionaries: TranslationDict
   return [...rows.values()];
 };
 
+// Validation texts are stored under their key (e.g. "maxYear"), usually without a Bokmål value, so the
+// Bokmål text from the code is used unless a Bokmål value is stored.
+const addValidationDefaults = (translations: FormsApiTranslationMap): FormsApiTranslationMap => ({
+  ...translations,
+  ...Object.fromEntries(
+    Object.entries(TEXTS.validering).map(([key, nb]) => [
+      key,
+      { ...translations[key], nb: translations[key]?.nb || nb },
+    ]),
+  ),
+});
+
 export {
+  addValidationDefaults,
   convertDictionariesToFormsApiTranslations,
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,

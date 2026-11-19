@@ -5,6 +5,7 @@ import {
   SubmissionData,
   dateUtils,
   formSummaryUtils,
+  hasErrorCode,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { SendInnSoknadResponse } from '../../../api/sendinn/sendInnSoknad';
 
@@ -121,3 +122,7 @@ export const transformSubmissionBeforeSubmitting = (submission: Submission): Sub
 
   return { data: dataCopy, ...rest };
 };
+
+const isNotFoundError = (error: unknown): boolean => hasErrorCode(error, 'NOT_FOUND');
+
+export { isNotFoundError };

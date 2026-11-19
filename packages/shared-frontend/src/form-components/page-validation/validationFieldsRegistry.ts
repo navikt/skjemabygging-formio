@@ -40,7 +40,6 @@ import {
   getMonthPickerMinYear,
 } from '../dateDefinitionUtils';
 import { getValues, isRequired } from '../inputComponentUtils';
-import { isLockedByPrefill } from '../prefillLock';
 import { toSelectedValuesList } from '../shared/selectedValuesUtils';
 import { ValidationFieldsBuilder, ValidationFieldsRegistry } from './validationFieldsTypes';
 import { toFieldValidationInput } from './validationFieldUtils';
@@ -191,11 +190,11 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
       submissionMethod,
     }),
 
-  identity: ({ component, submissionPath, value, submissionMethod }) =>
+  identity: ({ component, submissionPath, value }) =>
     toIdentityValidationFields({
       statePath: submissionPath,
       required: component.validate?.required ?? true,
-      readOnly: component.readOnly || isLockedByPrefill(component, submissionMethod),
+      readOnly: component.readOnly,
       customLabels: component.customLabels,
       value: value as Parameters<typeof toIdentityValidationFields>[0]['value'],
     }),

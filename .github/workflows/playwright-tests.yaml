@@ -26,12 +26,12 @@ jobs:
           run_install: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.22.1'
+          node-version: '24.22.3'
           cache: pnpm
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir packages/fyllut exec playwright install --with-deps chromium
+      - run: pnpm --dir packages/fyllut exec playwright install chromium
       - run: pnpm build:fyllut
       - name: Run the built pilot
         run: pnpm playwright:fyllut:built
@@ -56,12 +56,12 @@ jobs:
           run_install: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.22.1'
+          node-version: '24.22.3'
           cache: pnpm
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir packages/sendinn exec playwright install --with-deps chromium
+      - run: pnpm --dir packages/sendinn exec playwright install chromium
       - run: pnpm build:sendinn
       - name: Run the built Sendinn suite
         run: pnpm playwright:sendinn:built
