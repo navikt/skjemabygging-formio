@@ -5,4 +5,15 @@
  */
 const inputId = (statePath: string): string => `input-${statePath.replace(/[.[\]]/g, '-')}`;
 
-export { inputId };
+/**
+ * Field name attribute derived from the last key in a state path (e.g. "address.co" -> "co").
+ * Browser and password-manager autofill heuristics read the name before the id. Without it they
+ * parse the id, where parent keys like "virksomhetensAdresse" make unrelated fields look like address lines.
+ */
+const inputName = (statePath: string): string =>
+  statePath
+    .replace(/\[\d+\]/g, '')
+    .split('.')
+    .pop() ?? '';
+
+export { inputId, inputName };

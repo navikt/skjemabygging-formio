@@ -1,5 +1,4 @@
 import { ErrorSummary } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import {
@@ -67,12 +66,7 @@ const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
   };
 
   return (
-    <ErrorSummary
-      ref={ref}
-      heading={translate(TEXTS.validering.error)}
-      data-cy="error-summary"
-      className={styles.summary}
-    >
+    <ErrorSummary ref={ref} heading={translate('error')} data-cy="error-summary" className={styles.summary}>
       {errors.map((error) => {
         const { submissionPath, message } = error;
         const id = inputId(submissionPath);

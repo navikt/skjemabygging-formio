@@ -46,6 +46,12 @@ import { SubmissionStateProvider, useSubmissionState } from './context/state/Sub
 import { ValidationProvider } from './context/validation/ValidationContext';
 import { RenderSummaryForm } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
+import {
+  formatDraftLogMessage,
+  getDraftFailureMetadata,
+  getSubmissionFailureLog,
+  shouldLogDraftFailure,
+} from './fyllut/draft/draftFailureUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
 import { SendinnApp } from './sendinn';
 
@@ -106,6 +112,7 @@ export {
   ErrorBoundary,
   ErrorPage,
   ErrorPageLayout,
+  formatDraftLogMessage,
   FormContainer,
   FormDefinitionProvider,
   FormErrorSummary,
@@ -114,7 +121,9 @@ export {
   getAkselLocale,
   getAvailableLanguages,
   getCurrentLanguage,
+  getDraftFailureMetadata,
   getFormPrefillKeys,
+  getSubmissionFailureLog,
   http,
   initializeDigitalDraft,
   LanguageProvider,
@@ -132,6 +141,7 @@ export {
   ServerErrorContent,
   SessionExpiredMessage,
   sharedFrontendPackageName,
+  shouldLogDraftFailure,
   SkeletonList,
   SkyraSurvey,
   solvePow,

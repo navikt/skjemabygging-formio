@@ -95,9 +95,12 @@ describe('Submission Type', () => {
     });
 
     it('Use digital submission type on paper only', () => {
+      cy.defaultInterceptsMellomlagring();
       cy.visit('/fyllut/submissiontypespaper?sub=digital');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
+      cy.get('@createMellomlagring.all').should('have.length', 0);
+      cy.url().should('not.include', 'innsendingsId');
     });
 
     it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {

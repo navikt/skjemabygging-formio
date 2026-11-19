@@ -21,6 +21,7 @@ interface HttpOptions {
   responseType?: 'metadata' | 'stream';
   signal?: AbortSignal;
   timeoutMs?: number;
+  suppressTransportLogs?: boolean;
 }
 
 type HttpMetadataResponse<T> = {
@@ -42,7 +43,7 @@ function get(url: string, options: HttpOptions & { responseType: 'stream' }): Pr
 function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }): Promise<HttpMetadataResponse<T>>;
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
-  logger.debug(`GET request to ${url}`);
+  if (!options?.suppressTransportLogs) logger.debug(`GET request to ${url}`);
   const response = await fetch(url, {
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
@@ -60,7 +61,7 @@ function post<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`POST request to ${url}`);
+  if (!options?.suppressTransportLogs) logger.debug(`POST request to ${url}`);
   const response = await fetch(url, {
     method: 'POST',
     headers: createHeaders(defaultOptions(options)),
@@ -79,7 +80,7 @@ function put<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`PUT request to ${url}`);
+  if (!options?.suppressTransportLogs) logger.debug(`PUT request to ${url}`);
   const response = await fetch(url, {
     method: 'PUT',
     headers: createHeaders(defaultOptions(options)),
@@ -98,7 +99,7 @@ function httpDelete<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`DELETE request to ${url}`);
+  if (!options?.suppressTransportLogs) logger.debug(`DELETE request to ${url}`);
   const response = await fetch(url, {
     method: 'DELETE',
     headers: createHeaders(defaultOptions(options)),
@@ -121,7 +122,7 @@ async function postMultipart<T>(
   body: FormData,
   options?: HttpOptions,
 ): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`POST multipart request to ${url}`);
+  if (!options?.suppressTransportLogs) logger.debug(`POST multipart request to ${url}`);
   const multipartOptions = defaultOptions(options);
   const { contentType: _contentType, ...optionsWithoutContentType } = multipartOptions;
   const response = await fetch(url, {
@@ -236,14 +237,15 @@ const handleResponse = async <T>(
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
   const upstreamErrorCode = errorBody?.errorCode;
 
-  logger.warn('Http request failed', {
-    service: responseUrl.hostname,
-    endpoint: responseUrl.pathname,
-    upstream_status: response.status,
-    error_code: error.errorCode,
-    upstream_error_code: typeof upstreamErrorCode === 'string' ? upstreamErrorCode : undefined,
-    upstream_correlation_id: correlationId,
-  });
+  if (!options?.suppressTransportLogs)
+    logger.warn('Http request failed', {
+      service: responseUrl.hostname,
+      endpoint: responseUrl.pathname,
+      upstream_status: response.status,
+      error_code: error.errorCode,
+      upstream_error_code: typeof upstreamErrorCode === 'string' ? upstreamErrorCode : undefined,
+      upstream_correlation_id: correlationId,
+    });
 
   throw error;
 };

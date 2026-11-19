@@ -84,32 +84,4 @@ describe('date validation fields', () => {
 
     expect(collectEndDate(form, { data: { missingDate: '2025-01-15' } }).rules.fromDate).toBeUndefined();
   });
-
-  it('resolves recognized custom date-period bounds across pages too', () => {
-    const form = createForm(startDate, {
-      ...endDate,
-      mayBeEqual: true,
-      validate: {
-        custom: `
-          var startday = new Date(row.startDate);
-          var endday = new Date(row.endDate);
-          var diffInTime = endday.getTime() - startday.getTime();
-          var diffInDays = diffInTime / (1000 * 3600 * 24);
-          if (endday <= startday) {
-            valid = ((endday > startday) ? true : 'End must be after start');
-          } else {
-            if (diffInDays > 14) {
-              valid = ((diffInDays <= 14) ? true : 'Period must not exceed 14 days');
-            }
-          }
-        `,
-      },
-    });
-
-    expect(collectEndDate(form, { data: { startDate: '2025-01-15' } }).rules).toMatchObject({
-      fromDate: '2025-01-16',
-      toDate: '2025-01-29',
-      dateMessages: { fromDate: 'End must be after start', toDate: 'Period must not exceed 14 days' },
-    });
-  });
 });

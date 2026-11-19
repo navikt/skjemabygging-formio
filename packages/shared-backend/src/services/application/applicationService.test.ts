@@ -25,6 +25,8 @@ describe('createApplicationService', () => {
   });
 
   it('handles draft operations through the real service and client path', async () => {
+    const infoSpy = vi.spyOn(logger, 'info');
+    const debugSpy = vi.spyOn(logger, 'debug');
     const fetchSpy = vi
       .spyOn(global, 'fetch')
       .mockResolvedValueOnce(
@@ -85,6 +87,13 @@ describe('createApplicationService', () => {
         type: 'digital',
       }),
     ).resolves.toBeUndefined();
+
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Getting draft`);
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Creating draft`);
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Updating draft`);
+    expect(debugSpy).not.toHaveBeenCalledWith(`GET request to ${baseUrl}${draftPath}/${innsendingsId}`);
+    expect(debugSpy).not.toHaveBeenCalledWith(`POST request to ${baseUrl}${draftPath}`);
+    expect(debugSpy).not.toHaveBeenCalledWith(`PUT request to ${baseUrl}${draftPath}/${innsendingsId}`);
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
@@ -173,6 +182,30 @@ describe('createApplicationService', () => {
         }),
       }),
     );
+  });
+
+  it('suppresses transport logs for completed draft submission failures', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    const debugSpy = vi.spyOn(logger, 'debug');
+    const infoSpy = vi.spyOn(logger, 'info');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'Downstream service unavailable' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.submitCompletedApplication({ accessToken, innsendingsId, body: { data: true } }),
+    ).rejects.toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Draft request failed',
+      correlationId,
+    });
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Submitting completed draft`);
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
   });
 
   it('handles attachment operations and records upload metrics through the real service and client path', async () => {
@@ -488,23 +521,67 @@ describe('createApplicationService', () => {
     });
   });
 
-  it('normalizes sent-or-deleted draft errors through the real service and client path', async () => {
+  it.each(['get', 'update'] as const)('normalizes sent-or-deleted draft errors during %s', async (operation) => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    const debugSpy = vi.spyOn(logger, 'debug');
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'illegalAction.applicationSentInOrDeleted' }), {
         status: 400,
         statusText: 'Bad Request',
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      operation === 'get'
+        ? service.getApplication({ accessToken, innsendingsId })
+        : service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
+    ).rejects.toMatchObject({
+      errorCode: 'NOT_FOUND',
+      correlationId,
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
+  });
+
+  it('preserves draft update BAD_REQUEST errors without transport logs', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    const debugSpy = vi.spyOn(logger, 'debug');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ errorCode: 'validationFailure', message: 'Rejected draft state' }), {
+        status: 400,
         headers: { 'Content-Type': 'application/json' },
       }),
     );
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.getApplication({
-        accessToken,
-        innsendingsId,
+      service.updateApplication({ accessToken, innsendingsId, body: { formPath: 'nav123' } }),
+    ).rejects.toMatchObject({ errorCode: 'BAD_REQUEST', message: 'Draft request failed' });
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
+  });
+
+  it('suppresses transport logs for rejected draft creation', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
+    const debugSpy = vi.spyOn(logger, 'debug');
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'Downstream service unavailable' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.createApplication({ accessToken, innsendingsId: '', body: { formPath: 'nav123' } }),
     ).rejects.toMatchObject({
-      errorCode: 'NOT_FOUND',
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Draft request failed',
+      correlationId,
     });
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
   });
 });

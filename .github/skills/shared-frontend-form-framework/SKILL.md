@@ -324,10 +324,11 @@ that knows the scripts exist:
   that repeats the component's `customConditional` and never assigned `valid`),
   `rules` (replaced by declarative value rules), or `unsupported`.
 - `customValidationRules.ts` turns a recognized script into plain
-  `ValidationRules` with every referenced value already resolved
-  (`notEqual`, and stricter `fromDate`/`toDate` bounds with `dateMessages`).
+  `ValidationRules` with every referenced value already resolved (`notEqual`).
   Rendered inputs get them through `useResolvedValidation`, the headless rebuild
   through `toFieldValidationInput` - the same two functions, so the two agree.
+- Never turn a `navDatepicker` script into rules. The old date picker did not
+  run `validate.custom`, so rules would add validation the form never had.
 - Every script in the published production forms
   (https://github.com/navikt/skjemautfylling-formio, `forms/`) is recognized.
   Anything else is ignored at runtime, and the renderer is never switched: the
