@@ -11,7 +11,6 @@ export * from './forms-api-backwards-compatibility';
 export * from './guid';
 export * from './logging';
 export * from './migration';
-export * from './nav-unit';
 export * from './number';
 export * from './object';
 export * from './party';

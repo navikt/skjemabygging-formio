@@ -1,6 +1,7 @@
-import { Enhetstype, navUnitUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhetstype } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useOptionalNavUnitsContext } from './NavUnitsProvider';
+import { filterNavUnits, resolveNavUnits } from './navUnitUtils';
 import { useNavUnitsLoader } from './useNavUnitsLoader';
 
 interface UseNavUnitsOptions {
@@ -17,12 +18,9 @@ const useNavUnits = ({ enabled = true, unitTypes }: UseNavUnitsOptions = {}) => 
   }, [enabled, request]);
 
   const { allUnits, error, loading, retry } = shared && enabled ? shared : own;
-  const units = useMemo(
-    () => (allUnits ? navUnitUtils.filterNavUnits(allUnits, unitTypes) : undefined),
-    [allUnits, unitTypes],
-  );
+  const units = useMemo(() => (allUnits ? filterNavUnits(allUnits, unitTypes) : undefined), [allUnits, unitTypes]);
   const availableUnits = useMemo(
-    () => (allUnits ? navUnitUtils.resolveNavUnits(allUnits, unitTypes) : undefined),
+    () => (allUnits ? resolveNavUnits(allUnits, unitTypes) : undefined),
     [allUnits, unitTypes],
   );
 
