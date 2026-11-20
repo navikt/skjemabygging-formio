@@ -2,6 +2,43 @@ import globalTranslations from '../global-translations.json';
 
 const sendinnTranslations = [
   {
+    key: 'Ettersending til {{formNumber}} {{title}}',
+    nb: 'Ettersending til {{formNumber}} {{title}}',
+    en: 'Additional documentation for {{formNumber}} {{title}}',
+  },
+  {
+    key: 'Dokumentene er ikke sendt ennå',
+    nb: 'Dokumentene er ikke sendt ennå',
+    en: 'The documents have not been sent yet',
+  },
+  { key: 'Last ned førsteside', nb: 'Last ned førsteside', en: 'Download cover page' },
+  { key: 'Skriv ut førstesiden', nb: 'Skriv ut førstesiden', en: 'Print the cover page' },
+  {
+    key: 'Lager førstesiden. Vent litt.',
+    nb: 'Lager førstesiden. Vent litt.',
+    en: 'Preparing the cover page. Please wait.',
+  },
+  {
+    key: 'Vi kunne ikke laste ned førstesiden. Prøv igjen.',
+    nb: 'Vi kunne ikke laste ned førstesiden. Prøv igjen.',
+    en: 'We could not download the cover page. Try again.',
+  },
+  {
+    key: 'Instruksjoner for innsending',
+    nb: 'Instruksjoner for innsending',
+    en: 'Submission instructions',
+  },
+  {
+    key: 'Legg førstesiden med strekkode på toppen av dokumentene.',
+    nb: 'Legg førstesiden med strekkode på toppen av dokumentene.',
+    en: 'Place the cover page with the barcode on top of the documents.',
+  },
+  {
+    key: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
+    nb: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
+    en: 'Put the documents in an envelope and post it to the address on the cover page.',
+  },
+  {
     key: 'Hvem gjelder innsendingen for?',
     nb: 'Hvem gjelder innsendingen for?',
     nn: 'Kven gjeld innsendinga for?',
@@ -30,12 +67,6 @@ const sendinnTranslations = [
     nb: 'Har du vært i kontakt med Nav om saken?',
     nn: 'Har du vore i kontakt med Nav om saka?',
     en: 'Have you contacted Nav about the case?',
-  },
-  {
-    key: 'Kontroller opplysningene',
-    nb: 'Kontroller opplysningene',
-    nn: 'Kontroller opplysningane',
-    en: 'Check your answers',
   },
   { key: 'Prøv igjen', nb: 'Prøv igjen', nn: 'Prøv igjen', en: 'Try again' },
   {

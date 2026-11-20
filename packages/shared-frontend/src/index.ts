@@ -54,6 +54,7 @@ import {
 } from './fyllut/draft/draftFailureUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
 import { SendinnApp } from './sendinn';
+import { b64toBlob } from './utils/blob';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
@@ -108,6 +109,7 @@ export type { LoadSendinnForm, SendinnServices } from './sendinn';
 export {
   AppConfigProvider,
   ApplicationProvider,
+  b64toBlob,
   applyInitialValuesToSubmission,
   applyPrefillDataToForm,
   CountrySelect,

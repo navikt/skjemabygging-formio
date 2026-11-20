@@ -3,8 +3,8 @@ import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-const sendinnJourneyForm = () =>
-  form({
+const sendinnJourneyForm = () => ({
+  ...form({
     title: 'Sendinn journey',
     formNumber: 'NAV test',
     path: 'sendinnjourney',
@@ -23,14 +23,28 @@ const sendinnJourneyForm = () =>
             key: 'nestedSource',
             label: 'Nested source',
             components: [
-              attachment({ key: 'evidence', label: 'Evidence document', properties: { vedleggskode: 'N1' } }),
+              attachment({
+                key: 'evidence',
+                id: 'evidence-id',
+                navId: 'evidence-id',
+                label: 'Evidence document',
+                properties: { vedleggskode: 'N1' },
+              }),
             ],
           }),
-          attachment({ key: 'other', label: 'Other document', attachmentType: 'other' }),
+          attachment({
+            key: 'other',
+            id: 'other-id',
+            navId: 'other-id',
+            label: 'Other document',
+            attachmentType: 'other',
+          }),
         ],
       }),
     ],
-  });
+  }),
+  revision: 3,
+});
 
 const sendinnJourneyTranslations = () => getMockTranslationsFromForm(sendinnJourneyForm());
 

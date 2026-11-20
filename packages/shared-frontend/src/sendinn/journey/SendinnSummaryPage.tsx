@@ -7,6 +7,7 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useValidationActions } from '../../context/validation/ValidationContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
+import { PAPER_SUBMISSION_KEY } from '../../form-flow/constants';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../../form-flow/layout/FormButtonRow';
 import styles from './SendinnSummaryPage.module.css';
 import { useSendinnStepNavigation } from './useSendinnStepNavigation';
@@ -47,8 +48,10 @@ const SendinnSummaryPage = () => {
         }
         nextButton={
           <FormNextButton
-            label={translate(TEXTS.statiske.sendinn.reviewAnswers)}
-            onClick={() => validatePages(pageKeys)}
+            label={translate(TEXTS.grensesnitt.navigation.instructions)}
+            onClick={() => {
+              if (validatePages(pageKeys).length === 0) goToStep(PAPER_SUBMISSION_KEY);
+            }}
           />
         }
       />

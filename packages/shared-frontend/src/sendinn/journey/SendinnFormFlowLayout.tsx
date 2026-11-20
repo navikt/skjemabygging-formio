@@ -1,5 +1,4 @@
-import { flattenComponents, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Outlet, useLocation } from 'react-router';
 import Alert from '../../components/alert/Alert';
 import { useFormDefinitionForm, useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
@@ -7,6 +6,7 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { SUMMARY_KEY } from '../../form-flow/constants';
 import FormFlowLayout from '../../form-flow/FormFlowLayout';
 import { useFieldFocus } from '../../form-flow/useFieldFocus';
+import { useSendinnPageSetup } from './useSendinnPageSetup';
 import { useSendinnStepNavigation } from './useSendinnStepNavigation';
 
 const SendinnFormFlowLayout = () => {
@@ -15,20 +15,13 @@ const SendinnFormFlowLayout = () => {
   const form = useFormDefinitionForm();
   const panels = useFormDefinitionPanels();
   const goToStep = useSendinnStepNavigation();
+  const { formTitle, hasAttachments } = useSendinnPageSetup();
   const routeKey = pathname.slice(`/${form.path}`.length).replace(/^\//, '');
   const summary = routeKey === SUMMARY_KEY;
   const panelIndex = panels.findIndex((panel) => panel.key === routeKey);
   const currentIndex = Math.max(panelIndex, 0);
-  const hasAttachments = useMemo(
-    () => flattenComponents(form.components).some((component) => component.type === 'attachment'),
-    [form],
-  );
-  const formTitle = translate(TEXTS.statiske.sendinn.journey.formTitle, { title: translate(form.title) });
 
   useFieldFocus({ preferInputFocus: true });
-  useEffect(() => {
-    document.title = formTitle;
-  }, [formTitle]);
 
   return (
     <div data-journey="form">

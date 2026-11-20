@@ -5,6 +5,7 @@ import type {
   Enhet,
   ReceiptSummary,
   SendInnAktivitet,
+  SendinnCoverPageRequest,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -110,8 +111,13 @@ interface FyllutRuntimeServices extends CommonRuntimeServices {
   submissions: SubmissionService;
 }
 
+interface CoverPageService {
+  create: (request: SendinnCoverPageRequest) => Promise<Blob>;
+}
+
 interface SendinnRuntimeServices extends CommonRuntimeServices {
   host: 'sendinn';
+  coverPage: CoverPageService;
 }
 
 export type {
@@ -120,6 +126,7 @@ export type {
   AttachmentApplication,
   AttachmentService,
   CommonRuntimeServices,
+  CoverPageService,
   CreateDraftResult,
   Draft,
   DraftRequest,

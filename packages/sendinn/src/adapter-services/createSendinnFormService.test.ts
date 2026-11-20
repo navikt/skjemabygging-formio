@@ -4,7 +4,7 @@ describe('Sendinn form host adapter', () => {
   it('uses the injected host HTTP client and keeps the normalized context in repeated query values', async () => {
     const result = { form: { path: 'nav123456' }, language: 'en' };
     const get = vi.fn().mockResolvedValue(result);
-    const { loadForm } = createSendinnFormService({ baseUrl: '/host', http: { get } });
+    const { loadForm } = createSendinnFormService({ baseUrl: '/host', http: { get, post: vi.fn() } });
 
     await expect(
       loadForm({ formPath: 'nav123456', language: 'en', attachmentFilter: ['N2', 'N1', 'N2'] }),

@@ -23,6 +23,12 @@ const useRuntimeServices = (): FyllutRuntimeServices => {
   return services;
 };
 
+const useSendinnRuntimeServices = (): SendinnRuntimeServices => {
+  const services = useContext(RuntimeServicesContext);
+  if (services?.host !== 'sendinn') throw new Error('Sendinn runtime services are required.');
+  return services;
+};
+
 const useCommonRuntimeServices = (): CommonRuntimeServices => {
   const services = useContext(RuntimeServicesContext);
   if (!services) throw new Error('Runtime services are required to render network-backed form components.');
@@ -30,4 +36,4 @@ const useCommonRuntimeServices = (): CommonRuntimeServices => {
 };
 
 export type * from './RuntimeServices';
-export { RuntimeServicesProvider, useCommonRuntimeServices, useRuntimeServices };
+export { RuntimeServicesProvider, useCommonRuntimeServices, useRuntimeServices, useSendinnRuntimeServices };
