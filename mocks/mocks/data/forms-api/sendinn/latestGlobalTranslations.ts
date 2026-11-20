@@ -34,11 +34,6 @@ const sendinnTranslations = [
     en: 'Place the cover page with the barcode on top of the documents.',
   },
   {
-    key: 'Legg ved alle vedlegg som er listet på førstesiden.',
-    nb: 'Legg ved alle vedlegg som er listet på førstesiden.',
-    en: 'Enclose all attachments listed on the cover page.',
-  },
-  {
     key: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     nb: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     en: 'Put the documents in an envelope and post it to the address on the cover page.',

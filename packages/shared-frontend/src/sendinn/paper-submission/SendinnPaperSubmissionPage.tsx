@@ -1,10 +1,11 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import Alert from '../../components/alert/Alert';
 import PostalSubmissionInstructions from '../../components/postal-submission-instructions/PostalSubmissionInstructions';
 import { useFormDefinitionForm, useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useValidationActions } from '../../context/validation/ValidationContext';
 import { SUMMARY_KEY } from '../../form-flow/constants';
 import { focusPageTitleAfterNavigation } from '../../form-flow/focusPageTitleAfterNavigation';
@@ -22,9 +23,22 @@ const SendinnPaperSubmissionPage = () => {
   const panels = useFormDefinitionPanels();
   const { validatePages } = useValidationActions();
   const goToStep = useSendinnStepNavigation();
+  const { submission } = useSubmissionState();
   const { formTitle, hasAttachments } = useSendinnPageSetup();
   const pageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
   const checkedOnEntry = useRef(false);
+  const selectedAttachments = useMemo(
+    () =>
+      submission
+        ? attachmentUtils.getSelectedAttachmentsForCoverPage(submission, form).flatMap(({ component, attachments }) =>
+            attachments.map((attachment) => ({
+              key: attachment.attachmentId,
+              content: attachment.title || translate(component.label),
+            })),
+          )
+        : [],
+    [form, submission, translate],
+  );
 
   // Answers live only in memory, so a direct visit or a reload sends the user back to the summary's error list.
   const isValid = useCallback(() => {
@@ -54,15 +68,8 @@ const SendinnPaperSubmissionPage = () => {
               title: translate(TEXTS.statiske.sendinn.coverPage.print),
               description: translate(TEXTS.statiske.staticPdf.instructions.step2),
             }}
-            attachments={{
-              title: translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo),
-              description: translate(TEXTS.statiske.staticPdf.instructions.step3),
-              items: [],
-            }}
-            mailing={{
-              title: translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitleWithAttachment),
-              description: translate(TEXTS.statiske.staticPdf.instructions.step4),
-            }}
+            attachments={selectedAttachments}
+            mailingDescription={translate(TEXTS.statiske.staticPdf.instructions.step4)}
           />
           <FormButtonRow
             previousButton={

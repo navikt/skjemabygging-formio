@@ -52,7 +52,8 @@ test.describe('Paper cover-page download', () => {
     await nextStep(page);
     await page.getByRole('button', { name: 'Submission instructions', exact: true }).click();
     await expect(page.getByRole('heading', { level: 2, name: 'The documents have not been sent yet' })).toBeFocused();
-    await expect(page.getByText('Enclose all attachments listed on the cover page.', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3, name: '3. Attach the following document' })).toBeVisible();
+    await expect(page.getByRole('listitem')).toHaveText(['Evidence document (en)']);
     await expect(
       page.getByText('Put the documents in an envelope and post it to the address on the cover page.'),
     ).toBeVisible();
@@ -107,6 +108,8 @@ test.describe('Paper cover-page download', () => {
     await page.getByRole('textbox').fill('Additional evidence');
     await nextStep(page);
     await goToPaperSubmission(page);
+    await expect(page.getByRole('heading', { level: 3, name: '3. Legg ved dette vedlegget' })).toBeVisible();
+    await expect(page.getByRole('listitem')).toHaveText(['Additional evidence']);
     const download = page.waitForEvent('download');
     await downloadButton(page).click();
     await expectPdf(await download);
