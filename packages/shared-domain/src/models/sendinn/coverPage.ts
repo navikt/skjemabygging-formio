@@ -7,7 +7,7 @@ interface SendinnCoverPageRequest extends SendinnFormRequest {
 }
 
 interface SendinnCoverPageResult {
-  pdf: string;
+  pdfBase64: string;
 }
 
 export type { SendinnCoverPageRequest, SendinnCoverPageResult };

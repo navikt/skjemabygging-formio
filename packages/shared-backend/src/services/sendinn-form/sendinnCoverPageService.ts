@@ -37,13 +37,13 @@ const createSendinnCoverPageService = ({
       unitNumber: submissionUtils.getFirstAnsweredValueByType(form.components, 'navUnitSelect', request.submission),
       translate,
     });
-    const pdf = await coverPageService.downloadCoverPage({
+    const pdfBase64 = await coverPageService.downloadCoverPage({
       data,
       accessToken: await getAccessToken(),
       languageCode: language,
       translate,
     });
-    return { pdf };
+    return { pdfBase64 };
   };
   return { downloadCoverPage };
 };
