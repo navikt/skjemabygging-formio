@@ -19,7 +19,7 @@ describe('Sendinn cover-page runtime adapter', () => {
 
   it('posts the supplied canonical context and decodes the JSON PDF as an application/pdf Blob', async () => {
     const bytes = '%PDF-1.4\ncover page\n%%EOF';
-    post.mockResolvedValue({ pdf: btoa(bytes) });
+    post.mockResolvedValue({ pdfBase64: btoa(bytes) });
     const pdf = await service.coverPage.create(request);
     expect(post).toHaveBeenCalledWith('/sendinn/api/cover-page', request);
     expect(pdf.type).toBe('application/pdf');

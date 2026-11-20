@@ -15,8 +15,8 @@ const createSendinnRuntimeServices = ({
   },
   coverPage: {
     create: async (request) => {
-      const { pdf } = await http.post<SendinnCoverPageResult>(`${baseUrl}/api/cover-page`, request);
-      return b64toBlob(pdf, 'application/pdf');
+      const { pdfBase64 } = await http.post<SendinnCoverPageResult>(`${baseUrl}/api/cover-page`, request);
+      return b64toBlob(pdfBase64, 'application/pdf');
     },
   },
 });
