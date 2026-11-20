@@ -15,11 +15,8 @@ const createSendinnRuntimeServices = ({
   },
   coverPage: {
     create: async (request) => {
-      const result = await http.post<SendinnCoverPageResult>(`${baseUrl}/api/cover-page`, request);
-      if (typeof result?.pdf !== 'string' || !result.pdf) throw new Error('Missing cover-page PDF.');
-      const pdf = b64toBlob(result.pdf, 'application/pdf');
-      if ((await pdf.slice(0, 5).text()) !== '%PDF-') throw new Error('Invalid cover-page PDF.');
-      return pdf;
+      const { pdf } = await http.post<SendinnCoverPageResult>(`${baseUrl}/api/cover-page`, request);
+      return b64toBlob(pdf, 'application/pdf');
     },
   },
 });

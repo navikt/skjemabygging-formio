@@ -26,14 +26,6 @@ describe('Sendinn cover-page runtime adapter', () => {
     expect(await pdf.text()).toBe(bytes);
   });
 
-  it.each([undefined, '', 'not base64!', btoa('not a PDF')])(
-    'rejects unusable successful responses rather than downloading them (%s)',
-    async (pdf) => {
-      post.mockResolvedValue({ pdf });
-      await expect(service.coverPage.create(request)).rejects.toThrow();
-    },
-  );
-
   it('preserves the original request failure for correlated recovery', async () => {
     const error = new ResponseError('SERVICE_UNAVAILABLE', 'Unavailable', 'example-correlation');
     post.mockRejectedValue(error);

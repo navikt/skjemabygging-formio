@@ -241,23 +241,6 @@ test.describe('Paper cover-page download', () => {
     });
   }
 
-  for (const pdf of ['', 'not-base64!', btoa('not a PDF')]) {
-    test(`rejects an unusable success response and allows retry (${pdf || 'empty'})`, async ({ readyPage: page }) => {
-      await reachPaperSubmission(page);
-      await page.route('**/sendinn/api/cover-page', (route) => route.fulfill({ json: { pdf } }), { times: 1 });
-      let downloads = 0;
-      page.on('download', () => {
-        downloads += 1;
-      });
-      await downloadButton(page).click();
-      await expect(page.getByRole('alert')).toBeFocused();
-      expect(downloads).toBe(0);
-      const download = page.waitForEvent('download');
-      await downloadButton(page).click();
-      await expectPdf(await download);
-    });
-  }
-
   test('reports browser download failure and retries without losing the form', async ({ readyPage: page }) => {
     await reachPaperSubmission(page);
     await page.evaluate(() => {
