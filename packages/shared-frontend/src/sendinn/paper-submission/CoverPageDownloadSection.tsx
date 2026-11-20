@@ -55,9 +55,7 @@ const CoverPageDownloadSection = ({ isValid }: Props) => {
         {translate(TEXTS.statiske.sendinn.coverPage.download)}
       </DownloadPdfButton>
       {downloadState?.status === 'success' && (
-        <div role="status">
-          <Alert variant="info">{translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName })}</Alert>
-        </div>
+        <Alert variant="info">{translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName })}</Alert>
       )}
       {downloadState?.status === 'error' && (
         <div ref={errorRef} tabIndex={-1} role="alert">

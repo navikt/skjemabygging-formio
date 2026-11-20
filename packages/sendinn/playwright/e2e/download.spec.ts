@@ -88,7 +88,7 @@ test.describe('Paper cover-page download', () => {
     });
     expect(body.submission.data).not.toHaveProperty('sendinnAttachment2');
     await expectPdf(await downloadPromise);
-    await expect(page.getByRole('status').filter({ hasText: 'The download is complete.' })).toBeVisible();
+    await expect(page.getByText('The download is complete.')).toBeVisible();
     await expect(page).toHaveURL(
       (url) => url.searchParams.get('lang') === 'en' && url.searchParams.get('sub') === 'digital',
     );
