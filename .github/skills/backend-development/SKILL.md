@@ -100,10 +100,11 @@ Place an integration under `packages/shared-backend/src/services/<area>`.
 
 Consult:
 
-- `auth-agent` for Azure AD, TokenX, ID-porten, Maskinporten, JWT validation,
-  identities, and token exchange;
-- `nais-agent` for Nais, GCP, deployment, and platform configuration;
-- `observability-agent` for metrics, tracing, Grafana, and alerts;
+- the `nav-auth` skill for Azure AD, TokenX, ID-porten, Maskinporten, JWT
+  validation, identities, and token exchange;
+- the `nais` skill for Nais, GCP, deployment, and platform configuration;
+- the `observability-setup` skill for metrics, tracing, and alerts, and the
+  `observability-debugging` skill for Grafana, logs, and traces;
 - `security-champion-agent` for threat modelling, security architecture,
   compliance, and privacy.
 
