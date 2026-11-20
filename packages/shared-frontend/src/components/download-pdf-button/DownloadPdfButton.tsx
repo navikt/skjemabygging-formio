@@ -56,7 +56,6 @@ const DownloadPdfButton = ({
     setDownloading(true);
     try {
       const content = await pdfContent();
-      if (!content.size) throw new Error('Cannot download an empty PDF.');
       downloadBlob(content, fileName);
       onSuccess?.();
     } catch (error: unknown) {
