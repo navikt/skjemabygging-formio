@@ -160,7 +160,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
       .set('x-correlation-id', 'journey-correlation')
       .send({ ...body(), form: { title: 'untrusted' }, party: { nationalIdentityNumber: 'untrusted' } })
       .expect(200);
-    expect(response.body).toEqual({ pdf });
+    expect(response.body).toEqual({ pdfBase64: pdf });
     expect(response.headers['cache-control']).toBe('no-store');
     expect(generated).toHaveLength(1);
     expect(generated[0]).toMatchObject({
@@ -194,7 +194,7 @@ describe('Sendinn cover page HTTP boundaries', () => {
 
     const response = await request(createApp()).post('/sendinn/api/cover-page').send(body()).expect(200);
 
-    expect(response.body).toEqual({ pdf });
+    expect(response.body).toEqual({ pdfBase64: pdf });
     expect(requests.some((entry) => entry.path === '/texas/token')).toBe(false);
     expect(requests.find((entry) => entry.path === '/proxy/foersteside')?.authorization).toBe(
       'Bearer local-generator-token',
