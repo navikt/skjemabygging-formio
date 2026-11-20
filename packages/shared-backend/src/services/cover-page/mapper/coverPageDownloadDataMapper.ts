@@ -86,21 +86,33 @@ const asTranslationLanguage = (languageCode?: string): TranslationLang => {
   }
 };
 
-const createDownloadDataFromSubmission = (
-  form: Form,
-  submission: Submission,
+interface DownloadDataFromSubmissionProps {
+  form: Form;
+  submission: Submission;
+  type?: CoverPageDownloadType['type'];
+  languageCode?: string;
+  recipient?: Recipient;
+  unitNumber?: string;
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string;
+  submissionMethod?: SubmissionMethod;
+}
+
+const createDownloadDataFromSubmission = ({
+  form,
+  submission,
+  type = 'SKJEMA',
   languageCode = 'nb-NO',
-  recipient?: Recipient,
-  unitNumber?: string,
-  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-  submissionMethod: SubmissionMethod = 'paper',
-): CoverPageDownloadType => {
+  recipient,
+  unitNumber,
+  translate,
+  submissionMethod = 'paper',
+}: DownloadDataFromSubmissionProps): CoverPageDownloadType => {
   const party = resolveParty(form, submission, { navUnit: unitNumber });
   const coverPageOrganizationUser = getCoverPageOrganizationUser(form, submission.data);
   const partyData = party ? mapPartyToCoverPage(party) : {};
 
   return {
-    type: 'SKJEMA',
+    type,
     submissionType: asSubmissionType(submissionMethod),
     languageCode: asTranslationLanguage(languageCode),
     form: {
@@ -108,7 +120,7 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
+    user: partyData.user ?? coverPageOrganizationUser,
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
     ...createAttachmentDocumentLists(form, submission, translate),
   };

@@ -19,7 +19,7 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const pdf = await http.post<{
     foersteside: string;
     loepenummer: string;
-  }>(targetUrl, body, { accessToken });
+  }>(targetUrl, body, { accessToken, signal: AbortSignal.timeout(15000) });
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'Cover page not found');

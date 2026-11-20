@@ -31,12 +31,18 @@ const toPartyAddress = (address?: SubmissionAddress): PartyAddress | undefined =
       }
     : undefined;
 
+const hasValue = (value: unknown) => (typeof value === 'string' ? value.trim() !== '' : value != null);
+
+// A container left behind after its inputs were cleared on hide holds no identity, like empty legacy fields.
+const hasIdentityValues = ({ fornavn, etternavn, adresse }: SubmissionYourInformation) =>
+  hasValue(fornavn) || hasValue(etternavn) || Object.values(adresse ?? {}).some(hasValue);
+
 const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
   if (yourInformation?.identitet?.identitetsnummer) {
     return { kind: 'identified-person', nationalIdentityNumber: yourInformation.identitet.identitetsnummer };
   }
 
-  return yourInformation
+  return yourInformation && hasIdentityValues(yourInformation)
     ? {
         kind: 'unidentified-person',
         firstName: yourInformation.fornavn,

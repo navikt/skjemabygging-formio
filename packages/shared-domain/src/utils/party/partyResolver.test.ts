@@ -195,6 +195,10 @@ describe('resolveParty', () => {
     expect(resolve({})).toBeUndefined();
   });
 
+  it('returns undefined for user information whose inputs were cleared', () => {
+    expect(resolve({ yourInformation: { identitet: {}, fornavn: ' ', adresse: { adresse: '' } } })).toBeUndefined();
+  });
+
   it('does not resolve a cover-page-specific organization field', () => {
     const coverPageForm = {
       components: [
