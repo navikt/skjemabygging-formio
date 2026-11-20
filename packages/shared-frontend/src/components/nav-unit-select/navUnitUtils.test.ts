@@ -1,8 +1,6 @@
+import { Enhet } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { Enhet } from '../../models';
-import { navUnitUtils } from './navUnitUtils';
-
-const { filterNavUnits, resolveNavUnits, sortNavUnits } = navUnitUtils;
+import { filterNavUnits, resolveNavUnits, sortNavUnits } from './navUnitUtils';
 
 const units = [
   { enhetNr: '2', navn: 'NAV Ytelse', type: 'YTA' },
