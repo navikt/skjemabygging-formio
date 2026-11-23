@@ -27,7 +27,7 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry('/nav123456/', query())).toEqual({ journey: 'form', formPath: 'nav123456' });
       });
 
-      it.each(['sendinnUserType', 'sendinnAttachments', 'oppsummering'])(
+      it.each(['innsender', 'vedlegg', 'oppsummering'])(
         'resolves a direct form step %s with language and filters',
         (step) => {
           expect(resolveEntry(`/nav123456/${step}`, query('lang=en&filter=N1&filter=N2'))).toEqual({
@@ -125,14 +125,14 @@ describe('sendinnEntryUtils', () => {
 
     describe('unavailable', () => {
       it.each([
-        '/lospost/sendinnUserType',
-        '/oppgave/sendinnUserType',
+        '/lospost/innsender',
+        '/oppgave/innsender',
         '/404/oppsummering',
         `/${submissionId}/oppsummering`,
         '/nav123456/oppsummering/extra',
-        '/nav123456//sendinnAttachments',
-        '//nav123456/sendinnAttachments',
-        '/INVALID/sendinnAttachments',
+        '/nav123456//vedlegg',
+        '//nav123456/vedlegg',
+        '/INVALID/vedlegg',
       ])('rejects form steps outside the paper form journey %s', (path) => {
         expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
       });
