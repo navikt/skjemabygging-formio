@@ -1,9 +1,9 @@
 import {
-  checkCondition,
   Component,
   Form,
   getNavId,
   Panel,
+  scriptEvaluationUtils,
   Submission,
   type CheckConditionOptions,
   type SubmissionData,
@@ -13,7 +13,7 @@ import { getConditionInstance } from './conditionInstances';
 
 const conditionallyTraversedTypes = new Set(['container', 'panel', 'fieldset', 'navSkjemagruppe']);
 
-type ConditionRow = Parameters<typeof checkCondition>[1];
+type ConditionRow = Parameters<typeof scriptEvaluationUtils.checkCondition>[1];
 
 const getChildConditionRow = (component: Component, row: ConditionRow, data: SubmissionData): ConditionRow => {
   if (component.type !== 'container') {
@@ -40,7 +40,7 @@ const resolveActiveComponents = (
   components.forEach((component) => {
     const isActive =
       !evaluateConditionals ||
-      checkCondition(
+      scriptEvaluationUtils.checkCondition(
         component,
         row,
         data,
