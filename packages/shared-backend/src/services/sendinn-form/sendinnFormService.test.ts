@@ -101,7 +101,7 @@ describe('createSendinnFormService', () => {
 
   it('retains the successful no-matching-documents state instead of restoring all choices', async () => {
     const result = await service.getForm({ ...request, attachmentFilter: ['unknown'] });
-    expect(result.form.components.at(-1)).toMatchObject({ key: 'sendinnAttachments', components: [] });
+    expect(result.form.components.at(-1)).toMatchObject({ key: 'vedlegg', components: [] });
     expect(result.attachmentFilter).toEqual(['unknown']);
   });
 
