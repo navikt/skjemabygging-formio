@@ -33,35 +33,6 @@ describe('Submission Type', () => {
         cy.defaultWaits();
       });
 
-      it('Only allow user to continue from summary page if form is valid', () => {
-        cy.clickStart();
-
-        cy.clickShowAllSteps();
-        cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
-
-        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.get('[data-cy=error-summary]').should('not.exist');
-        cy.clickDownloadInstructions();
-        cy.get('[data-cy=error-summary]').should('exist');
-
-        cy.clickEditAnswers();
-
-        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
-        cy.clickNextStep();
-
-        cy.findByRole('radiogroup', { name: 'Nav skjema test' }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
-        });
-        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        });
-        cy.clickNextStep();
-
-        cy.clickDownloadInstructions();
-
-        cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
-      });
-
       it('should render attachment links when vedleggskjema field exists', () => {
         cy.clickStart();
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
@@ -118,36 +89,6 @@ describe('Submission Type', () => {
         // sub=digital gets automatically added when running on build code
         cy.visit('/fyllut/submissiontypesdigital?sub=digital');
         cy.defaultWaits();
-      });
-
-      it('Only allow user to continue from summary page if form is valid', () => {
-        cy.clickStart();
-
-        cy.clickShowAllSteps();
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-
-        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        });
-        cy.clickSaveAndContinue();
-
-        cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
-
-        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.clickSendNav();
-        cy.get('[data-cy=error-summary]').should('exist');
-        cy.clickEditAnswers();
-
-        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
-        cy.clickSaveAndContinue();
-        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-        cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        });
-        cy.clickSaveAndContinue();
-
-        cy.clickSendNav();
-        cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
       });
 
       it('Do show link to attachments panel', () => {

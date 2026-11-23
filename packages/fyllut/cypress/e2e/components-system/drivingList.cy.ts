@@ -35,12 +35,6 @@ describe('DrivingList', () => {
       cy.findByRole('button', { name: '02. juni 2025 - 08. juni 2025' }).should('exist');
     });
 
-    it('should show period date range in accordion header', () => {
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).type('02.06.2025{esc}');
-      cy.findByRole('radio', { name: 'Nei' }).check();
-      cy.findByRole('button', { name: '02. juni 2025 - 08. juni 2025' }).should('exist');
-    });
-
     it('should show date checkboxes when period accordion is opened', () => {
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).type('02.06.2025{esc}');
       cy.findByRole('radio', { name: 'Nei' }).check();

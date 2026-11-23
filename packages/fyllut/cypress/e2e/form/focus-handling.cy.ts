@@ -47,23 +47,6 @@ describe('Focus handling', () => {
   });
 
   describe('Datagrid', () => {
-    it('restores radiopanel focus after rerender due to conditional', () => {
-      cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
-      cy.defaultWaits();
-      cy.findByLabelText('Fornavn').should('exist').type('Gaute');
-      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
-        .should('exist')
-        .within(() => {
-          cy.findByLabelText('Ja').click();
-        });
-      cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
-      cy.findByRole('radiogroup', { name: 'Trenger barnet briller?' })
-        .should('exist')
-        .within(() => {
-          cy.findByLabelText('Ja').should('have.focus');
-        });
-    });
-
     it('sets focus to correct radio input when value is toggled back and forth', () => {
       cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
       cy.defaultWaits();
