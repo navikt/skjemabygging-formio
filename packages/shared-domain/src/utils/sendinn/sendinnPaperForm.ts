@@ -53,9 +53,9 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
     );
   const components = [
     ...(userTypeComponents.length
-      ? [createSendinnPanel('sendinnUserType', TEXTS.statiske.identity.submissionFor, userTypeComponents)]
+      ? [createSendinnPanel('innsender', TEXTS.statiske.identity.submissionFor, userTypeComponents)]
       : []),
-    createSendinnPanel('sendinnAttachments', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
+    createSendinnPanel('vedlegg', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
   ];
 
   return {

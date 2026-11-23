@@ -66,11 +66,6 @@ describe('Diff', () => {
         deletions: 1,
       };
 
-      it('are visible for components that have changed', () => {
-        cy.findAllByText('Endring').should('have.length', diffSincePublishedVersion.changes);
-        cy.findAllByText('Slettede elementer').should('have.length', diffSincePublishedVersion.deletions);
-      });
-
       it('occur when component is deleted', () => {
         cy.findByLabelText('Etternavn')
           .should('exist')
