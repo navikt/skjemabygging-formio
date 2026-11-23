@@ -48,6 +48,15 @@ describe('sendinn-backend app', () => {
 
       expect(getDecoratorMock).toHaveBeenCalledWith(expect.objectContaining({ language }));
     });
+
+    it.each(['/sendinn/api/unknown', '/sendinn/internal/unknown', '/sendinn/assets/missing.js'])(
+      'does not render the index for %s',
+      async (url) => {
+        await request(createApp()).get(url).expect(404);
+
+        expect(getDecoratorMock).not.toHaveBeenCalled();
+      },
+    );
   });
 
   describe('api', () => {
