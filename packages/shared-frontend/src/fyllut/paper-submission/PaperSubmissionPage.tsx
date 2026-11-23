@@ -1,10 +1,5 @@
 import { BodyShort } from '@navikt/ds-react';
-import {
-  attachmentUtils,
-  formioFormsApiUtils,
-  submissionTypesUtils,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
@@ -30,10 +25,9 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   const { submission } = useSubmissionState();
   const { search, state } = useLocation();
   const navigate = useNavigate();
-  const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
   const attachments = useMemo(
-    () => (submission ? attachmentUtils.getAttachmentsForCoverPage(submission, navForm) : []),
-    [navForm, submission],
+    () => (submission ? attachmentUtils.getAttachmentsForCoverPage(submission, form) : []),
+    [form, submission],
   );
   const showNoSubmissionContent = documentType === 'application';
   const { uxSignalsId, uxSignalsSubmissionTypes } = form.properties;

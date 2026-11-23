@@ -17,7 +17,7 @@ test.describe('Generated paper journey', () => {
     });
     await page.goto('/sendinn/sendinnjourney?filter=N1&sub=digital');
     await expect(page).toHaveURL(
-      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnUserType' && !url.searchParams.has('step'),
+      (url) => url.pathname === '/sendinn/sendinnjourney/innsender' && !url.searchParams.has('step'),
     );
     await nextStep(page);
     await expect(errorSummary(page).getByRole('heading')).toBeFocused();
@@ -41,7 +41,7 @@ test.describe('Generated paper journey', () => {
     await expect(errorSummary(page)).toBeHidden();
     await nextStep(page);
     await expect(page).toHaveURL(
-      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnAttachments' && !url.searchParams.has('step'),
+      (url) => url.pathname === '/sendinn/sendinnjourney/vedlegg' && !url.searchParams.has('step'),
     );
     await expect(page.getByRole('heading', { level: 2, name: 'Ettersend dokumentasjon', exact: true })).toBeFocused();
     await expect(page.getByRole('checkbox')).toHaveCount(1);
@@ -86,7 +86,7 @@ test.describe('Generated paper journey', () => {
     ).toBeFocused();
     await expect(errorSummary(page)).toBeHidden();
     await expect(page).toHaveURL(
-      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnUserType' && !url.searchParams.has('step') && !url.hash,
+      (url) => url.pathname === '/sendinn/sendinnjourney/innsender' && !url.searchParams.has('step') && !url.hash,
     );
   });
 
@@ -95,7 +95,7 @@ test.describe('Generated paper journey', () => {
     useRouteVariant,
   }) => {
     await useRouteVariant('get-form:sendinn-hidden-user-type');
-    await page.goto('/sendinn/sendinnjourney/sendinnAttachments?filter=N6');
+    await page.goto('/sendinn/sendinnjourney/vedlegg?filter=N6');
     await expect(page.getByRole('radio')).toHaveCount(0);
     await expect(page.getByRole('combobox')).toHaveCount(0);
     const choice = page.getByRole('checkbox');
@@ -129,7 +129,7 @@ test.describe('Generated paper journey', () => {
     await expect(page.getByTestId('form-summary-panel')).toContainText('Additional evidence');
     await page.getByRole('link', { name: 'Endre svar', exact: true }).click();
     await expect(page).toHaveURL(
-      (url) => url.pathname === '/sendinn/sendinnjourney/sendinnAttachments' && url.searchParams.get('filter') === 'N6',
+      (url) => url.pathname === '/sendinn/sendinnjourney/vedlegg' && url.searchParams.get('filter') === 'N6',
     );
     await expect(title).toHaveValue('Additional evidence');
   });
