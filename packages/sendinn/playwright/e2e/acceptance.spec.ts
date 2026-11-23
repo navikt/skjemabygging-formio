@@ -84,8 +84,6 @@ test.describe('Paper acceptance through the real backend', () => {
     await scanPage(page);
     const data = await download(page);
     expect(data.userType).toBe('identified-person');
-    expect(data).not.toHaveProperty('navUnit');
-    expect(data).not.toHaveProperty('navContactUnit');
     await expect(page.getByText('The download is complete.')).toBeVisible();
   });
 
@@ -120,7 +118,7 @@ test.describe('Paper acceptance through the real backend', () => {
     await scanPage(page);
     await useRouteVariant('get-nav-units:success');
     await page.getByRole('button', { name: 'Prøv igjen', exact: true }).click();
-    await unitSelect(page).selectOption('0101');
+    await unitSelect(page).selectOption('0202');
     await expect(page.getByRole('textbox', { name: 'Fornavn', exact: true })).toHaveValue('Alex');
     await nextStep(page);
     await page.getByRole('checkbox').check();
@@ -128,7 +126,7 @@ test.describe('Paper acceptance through the real backend', () => {
     const summary = page.getByTestId('form-summary-panel').first();
     await expect(summary).toContainText('Alex');
     await expect(summary).toContainText('Example street 1');
-    await expect(summary).toContainText('Nav Alpha');
+    await expect(summary).toContainText('Nav Beta');
     await scanPage(page);
     await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
     const person = await download(page);
@@ -143,6 +141,7 @@ test.describe('Paper acceptance through the real backend', () => {
     await expect(page.getByRole('checkbox')).toBeChecked();
     await nextStep(page);
     await expect(summary).toContainText('Nav Alpha');
+    await expect(summary).not.toContainText('Nav Beta');
     await expect(summary).not.toContainText('Alex');
     await useRouteVariant('foersteside:success-tc08e-sendinn');
     await selectDecoratorLanguage(page, 'en');

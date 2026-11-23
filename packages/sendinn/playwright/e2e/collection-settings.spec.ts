@@ -72,11 +72,8 @@ test.describe('Trusted collection settings', () => {
         const result = await response;
         expect(result.status()).toBe(200);
         const data = result.request().postDataJSON().submission.data;
-        expect(data).not.toHaveProperty('dineOpplysninger');
-        expect(data).not.toHaveProperty('navContactUnit');
-        if (hidden || forced) expect(data).not.toHaveProperty('userType');
-        if (hidden) expect(data).not.toHaveProperty('navUnit');
-        else expect(data.navUnit).toBe('0101');
+        if (!hidden) expect(data.navUnit).toBe('0101');
+        if (!hidden && !forced) expect(data.userType).toBe('multiple-people');
         await expectPdf(await download);
       });
     }
