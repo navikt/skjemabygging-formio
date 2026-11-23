@@ -145,8 +145,8 @@ export default [
         },
       },
       ...[true, false].flatMap((hideUserTypes) =>
-        [true, false, undefined].map((forcedUnit) => ({
-          id: `sendinn-collection-${hideUserTypes}-${forcedUnit ?? 'absent'}`,
+        [true, false, undefined].map((navUnitRequired) => ({
+          id: `sendinn-user-type-settings-${hideUserTypes}-${navUnitRequired ?? 'absent'}`,
           type: 'middleware',
           options: {
             middleware: (_req, res) => {
@@ -156,7 +156,7 @@ export default [
                 properties: {
                   ...form.properties,
                   hideUserTypes,
-                  ...(forcedUnit === undefined ? {} : { enhetMaVelgesVedPapirInnsending: forcedUnit }),
+                  ...(navUnitRequired === undefined ? {} : { enhetMaVelgesVedPapirInnsending: navUnitRequired }),
                 },
               });
             },

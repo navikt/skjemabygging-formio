@@ -2,27 +2,29 @@ import { expect, skipUnlessBuilt, test } from '../fixtures/test';
 import { expectPdf } from '../helpers/download';
 import { nextStep } from '../helpers/form';
 
-test.describe('Trusted collection settings', () => {
+test.describe('User type settings', () => {
   test.beforeEach(skipUnlessBuilt);
 
-  for (const hidden of [true, false]) {
-    for (const forced of [true, false, undefined]) {
-      test(`downloads with hideUserTypes=${hidden} and forced unit=${forced ?? 'absent'}`, async ({
+  for (const hideUserTypes of [true, false]) {
+    for (const navUnitRequired of [true, false, undefined]) {
+      test(`downloads with hideUserTypes=${hideUserTypes} and enhetMaVelgesVedPapirInnsending=${navUnitRequired ?? 'absent'}`, async ({
         readyPage: page,
         useRouteVariant,
       }) => {
-        await useRouteVariant(`get-form:sendinn-collection-${hidden}-${forced ?? 'absent'}`);
+        await useRouteVariant(`get-form:sendinn-user-type-settings-${hideUserTypes}-${navUnitRequired ?? 'absent'}`);
         await useRouteVariant(
-          hidden ? 'foersteside:success-tc08f-sendinn-description' : 'foersteside:success-tc08e-sendinn',
+          hideUserTypes ? 'foersteside:success-tc08f-sendinn-description' : 'foersteside:success-tc08e-sendinn',
         );
-        await page.goto(`/sendinn/sendinnjourney?lang=${hidden ? 'nb' : 'en'}&filter=${hidden ? 'N6' : 'N1'}`);
+        await page.goto(
+          `/sendinn/sendinnjourney?lang=${hideUserTypes ? 'nb' : 'en'}&filter=${hideUserTypes ? 'N6' : 'N1'}`,
+        );
 
-        if (hidden) {
+        if (hideUserTypes) {
           await expect(page.getByRole('radio')).toHaveCount(0);
           await expect(page.getByRole('combobox')).toHaveCount(0);
           await expect(page.getByRole('textbox')).toHaveCount(0);
         } else {
-          if (forced) {
+          if (navUnitRequired) {
             await expect(page.getByRole('radio')).toHaveCount(0);
           } else {
             await expect(page.getByRole('radio')).toHaveCount(3);
@@ -52,28 +54,28 @@ test.describe('Trusted collection settings', () => {
 
         await expect(page.getByRole('checkbox')).not.toBeChecked();
         await page.getByRole('checkbox').check();
-        if (hidden) await page.getByRole('textbox').fill('Additional evidence');
+        if (hideUserTypes) await page.getByRole('textbox').fill('Additional evidence');
         await nextStep(page);
-        if (!hidden) {
+        if (!hideUserTypes) {
           await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
           await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0101');
         }
         await page
           .getByRole('button', {
-            name: hidden ? 'Instruksjoner for innsending' : 'Submission instructions',
+            name: hideUserTypes ? 'Instruksjoner for innsending' : 'Submission instructions',
             exact: true,
           })
           .click();
         const response = page.waitForResponse('**/sendinn/api/cover-page');
         const download = page.waitForEvent('download');
         await page
-          .getByRole('button', { name: hidden ? 'Last ned førsteside' : 'Download cover page', exact: true })
+          .getByRole('button', { name: hideUserTypes ? 'Last ned førsteside' : 'Download cover page', exact: true })
           .click();
         const result = await response;
         expect(result.status()).toBe(200);
         const data = result.request().postDataJSON().submission.data;
-        if (!hidden) expect(data.navUnit).toBe('0101');
-        if (!hidden && !forced) expect(data.userType).toBe('multiple-people');
+        if (!hideUserTypes) expect(data.navUnit).toBe('0101');
+        if (!hideUserTypes && !navUnitRequired) expect(data.userType).toBe('multiple-people');
         await expectPdf(await download);
       });
     }
