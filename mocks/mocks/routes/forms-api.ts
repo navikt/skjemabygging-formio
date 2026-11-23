@@ -128,7 +128,7 @@ export default [
         },
       },
       {
-        id: 'sendinn-hidden-collection',
+        id: 'sendinn-hidden-user-type',
         type: 'middleware',
         options: {
           middleware: (_req, res) => {

@@ -4,7 +4,6 @@ import { submissionUtils } from '../submission/submissionUtils';
 const BASE_PATH = '/sendinn';
 const LOGIN_PATH = `${BASE_PATH}/oauth2/login`;
 const NOT_FOUND_PATH = '/404';
-const FORM_STEPS = new Set(['sendinnCollection', 'sendinnAttachments', 'oppsummering', 'instructions']);
 
 type SendinnEntry =
   | { journey: 'standalone' }
@@ -48,7 +47,8 @@ const resolveForm = (formPath: string, searchParams: URLSearchParams): SendinnEn
  */
 const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry => {
   const segments = path.replace(/\/$/, '').split('/').slice(1);
-  if (segments.length === 2 && FORM_STEPS.has(segments[1])) {
+  // The form journey validates the step against the form's panels and moves an unknown step to the first panel.
+  if (segments.length === 2 && segments[1]) {
     const entry = resolveEntry(`/${segments[0]}`, searchParams);
     return entry.journey === 'form' ? entry : unavailable;
   }

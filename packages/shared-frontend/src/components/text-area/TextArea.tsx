@@ -1,8 +1,8 @@
 import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
-import { inputId } from '../../utils/inputId';
+import { isValueChange, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
+import { inputId, inputName } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
 import { toFieldValidation } from '../shared/fieldValidation';
@@ -61,10 +61,11 @@ const TextArea = ({
     isFocusedRef.current = false;
     const trimmedValue = toInputFormat(event.target.value);
     setDisplayValue(trimmedValue);
+    const nextStateValue = toSubmissionFormat(event.target.value);
     if (controlledOnChange) {
       controlledOnChange(trimmedValue);
-    } else {
-      setStateValue(toSubmissionFormat(event.target.value));
+    } else if (isValueChange(stateValue, nextStateValue)) {
+      setStateValue(nextStateValue);
     }
   };
 
@@ -79,6 +80,7 @@ const TextArea = ({
       <Textarea
         className={styles.text}
         id={inputId(statePath)}
+        name={inputName(statePath)}
         label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
         description={description ? <TranslatedDescription translationKey={description} /> : undefined}
         value={displayValue}

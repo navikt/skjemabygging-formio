@@ -27,6 +27,7 @@ import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
 import NavUnitSelect from './components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from './components/nav-unit-select/useNavUnits';
+import SkyraSurvey from './components/skyra-survey/SkyraSurvey';
 import { ApplicationProvider, useApplication } from './context/application/ApplicationContext';
 import {
   FormDefinitionProvider,
@@ -45,8 +46,15 @@ import { SubmissionStateProvider, useSubmissionState } from './context/state/Sub
 import { ValidationProvider } from './context/validation/ValidationContext';
 import { RenderSummaryForm } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
+import {
+  formatDraftLogMessage,
+  getDraftFailureMetadata,
+  getSubmissionFailureLog,
+  shouldLogDraftFailure,
+} from './fyllut/draft/draftFailureUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
 import { SendinnApp } from './sendinn';
+import { b64toBlob } from './utils/blob';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
@@ -55,6 +63,7 @@ export type { CountrySelectProps } from './components/country-select/CountrySele
 export type { CurrencySelectProps } from './components/currency-select/CurrencySelect';
 export type { NavUnitSelectProps } from './components/nav-unit-select/NavUnitSelect';
 export type { UseNavUnitsOptions } from './components/nav-unit-select/useNavUnits';
+export type { SkyraSurveyProps } from './components/skyra-survey/SkyraSurvey';
 export type {
   ApplicationContextValue,
   ApplicationEnvironment,
@@ -66,12 +75,14 @@ export type {
   ApplicationService,
   AttachmentApplication,
   AttachmentService,
+  CommonRuntimeServices,
   CreateDraftResult,
   Draft,
   DraftRequest,
   FormCodeList,
   FormDataService,
-  RuntimeServices,
+  FyllutRuntimeServices,
+  SendinnRuntimeServices,
   SessionService,
   SubmissionApplication,
   SubmissionService,
@@ -94,9 +105,11 @@ export type {
   IntegrationHttpHeaders,
   RenderFormProps,
 } from './fyllut';
+export type { LoadSendinnForm, SendinnServices } from './sendinn';
 export {
   AppConfigProvider,
   ApplicationProvider,
+  b64toBlob,
   applyInitialValuesToSubmission,
   applyPrefillDataToForm,
   CountrySelect,
@@ -104,6 +117,7 @@ export {
   ErrorBoundary,
   ErrorPage,
   ErrorPageLayout,
+  formatDraftLogMessage,
   FormContainer,
   FormDefinitionProvider,
   FormErrorSummary,
@@ -112,7 +126,9 @@ export {
   getAkselLocale,
   getAvailableLanguages,
   getCurrentLanguage,
+  getDraftFailureMetadata,
   getFormPrefillKeys,
+  getSubmissionFailureLog,
   http,
   initializeDigitalDraft,
   LanguageProvider,
@@ -130,7 +146,9 @@ export {
   ServerErrorContent,
   SessionExpiredMessage,
   sharedFrontendPackageName,
+  shouldLogDraftFailure,
   SkeletonList,
+  SkyraSurvey,
   solvePow,
   StateStoreProvider,
   SubmissionStateProvider,

@@ -159,6 +159,7 @@ import {
   datePickerDeprecatedForm,
   datePickerDeprecatedTranslations,
 } from '../data/forms-api/date-picker/datePickerDeprecatedForm';
+import { rowForm, rowTranslations } from '../data/forms-api/design-layout/rowForm';
 import {
   digitalnologinAttachmentPanelForm,
   digitalnologinAttachmentPanelTranslations,
@@ -305,6 +306,11 @@ import {
 } from '../data/forms-api/select-deprecated/selectDeprecatedForm';
 import { sendinnJourneyForm, sendinnJourneyTranslations } from '../data/forms-api/sendinn-journey/sendinnJourneyForm';
 import { sendinnFormLoadingForm, sendinnFormLoadingTranslations } from '../data/forms-api/sendinn/formLoadingForm';
+import { skyraSurveyForm, skyraSurveyTranslations } from '../data/forms-api/skyra-survey/skyraSurveyForm';
+import {
+  skyraSurveyNoSlugForm,
+  skyraSurveyNoSlugTranslations,
+} from '../data/forms-api/skyra-survey/skyraSurveyNoSlugForm';
 import {
   submissionMethodForm,
   submissionMethodTranslations,
@@ -438,6 +444,7 @@ const allForms = [
   { form: pdfStaticForm(), translations: pdfStaticTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: radioPanelForm(), translations: radioPanelTranslations() },
+  { form: rowForm(), translations: rowTranslations() },
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: selectForm(), translations: selectTranslations() },
   { form: senderForm(), translations: senderTranslations() },
@@ -548,6 +555,8 @@ const allForms = [
   { form: navUnitSelectionForm(), translations: navUnitSelectionTranslations() },
   { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
+  { form: skyraSurveyForm(), translations: skyraSurveyTranslations() },
+  { form: skyraSurveyNoSlugForm(), translations: skyraSurveyNoSlugTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },

@@ -55,10 +55,10 @@ interface CoverPageDownloadType {
   submissionType: SubmissionType;
   languageCode: TranslationLang;
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
-  user: UserType;
+  user?: UserType;
   recipient?: RecipientType;
   attachments: string[];
-  archivedAttachments?: string[];
+  attachmentsForArchiving?: string[];
 }
 
 export type { CoverPageDownloadType, CoverPageType };

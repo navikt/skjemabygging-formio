@@ -134,6 +134,33 @@ describe('submissionUtils', () => {
     });
   });
 
+  describe('getFirstAnsweredValueByType', () => {
+    const components = [
+      {
+        key: 'group',
+        type: 'navSkjemagruppe',
+        input: false,
+        components: [{ key: 'firstUnit', type: 'navUnitSelect', input: true }],
+      },
+      { key: 'other', type: 'textfield', input: true },
+      { key: 'secondUnit', type: 'navUnitSelect', input: true },
+    ] as Component[];
+
+    it('skips unanswered components of the type', () => {
+      const submission: Submission = { data: { firstUnit: '', other: '0101', secondUnit: '0202' } };
+      expect(submissionUtils.getFirstAnsweredValueByType(components, 'navUnitSelect', submission)).toBe('0202');
+    });
+
+    it('returns the first answer in component order', () => {
+      const submission: Submission = { data: { firstUnit: '0101', secondUnit: '0202' } };
+      expect(submissionUtils.getFirstAnsweredValueByType(components, 'navUnitSelect', submission)).toBe('0101');
+    });
+
+    it('returns undefined when no component of the type has an answer', () => {
+      expect(submissionUtils.getFirstAnsweredValueByType(components, 'navUnitSelect', { data: {} })).toBeUndefined();
+    });
+  });
+
   describe('getValidSubmissionId', () => {
     const submissionId = 'b8e1f1b6-2c3d-4e5f-8a9b-0c1d2e3f4a5b';
     const query = (value: string) => new URLSearchParams(value);

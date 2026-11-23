@@ -84,28 +84,28 @@ describe('Address', () => {
     });
 
     it('should render custom livesInNorway radio label', () => {
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('exist');
     });
 
     it('should show contact address type question when Ja is selected', () => {
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => {
         cy.findByLabelText('Ja').check();
       });
-      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).should('exist');
     });
 
     it('should show Norwegian address fields when Vegadresse is selected', () => {
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => {
         cy.findByLabelText('Ja').check();
       });
-      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() => {
         cy.findByLabelText('Vegadresse').check();
       });
       cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist');
     });
 
     it('should show foreign address fields when Nei is selected', () => {
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).within(() => {
         cy.findByLabelText('Nei').check();
       });
       cy.findByRole('combobox', { name: 'Land' }).should('exist');
@@ -117,7 +117,7 @@ describe('Address', () => {
       cy.visit('/fyllut/adresse/utenprefillwizarduser?sub=paper');
       cy.defaultWaits();
 
-      cy.findByRole('group', { name: /Bor du i Norge/ }).should('exist');
+      cy.findByRole('radiogroup', { name: /Bor du i Norge/ }).should('exist');
       cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
     });
 
@@ -125,7 +125,7 @@ describe('Address', () => {
       cy.visit('/fyllut/adresse/utenprefillpredefinedutentype?sub=paper');
       cy.defaultWaits();
 
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('not.exist');
       cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
 
       cy.visit('/fyllut/adresse/utenprefillpredefinednorsk?sub=paper');
@@ -138,7 +138,7 @@ describe('Address', () => {
       cy.visit('/fyllut/adresse/utenprefillundefinedutentype?sub=paper');
       cy.defaultWaits();
 
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' }).should('not.exist');
       cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
 
       cy.visit('/fyllut/adresse/utenprefillundefinednorsk?sub=paper');

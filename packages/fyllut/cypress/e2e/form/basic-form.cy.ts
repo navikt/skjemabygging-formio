@@ -30,7 +30,7 @@ describe('Basic form', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).should('exist').type('Kari');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('exist').type('Norman');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Nei').should('exist').check();
@@ -39,13 +39,13 @@ describe('Basic form', () => {
       cy.findByRole('textbox', { name: /Fødselsdato.*dd\.mm\.åååå/ })
         .should('exist')
         .type('10.05.1995');
-      cy.findByRole('group', { name: 'Bor du i Norge?' })
+      cy.findByRole('radiogroup', { name: 'Bor du i Norge?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Ja').should('exist').check();
         });
 
-      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
+      cy.findByRole('radiogroup', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
         .should('exist')
         .within(() => {
           cy.findByLabelText('Vegadresse').should('exist').check();
@@ -70,7 +70,7 @@ describe('Basic form', () => {
     // Steg 2 -> Steg 3
     clickNext(submissionMethod);
     cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+    cy.findByRole('radiogroup', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check({ force: true });
     });
 

@@ -8,41 +8,32 @@ import {
   SubmissionType,
   TranslationLang,
   attachmentUtils,
-  getNavId,
   resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
 
-const getAttachmentLabels = (
-  form: Form,
-  submission: Submission,
+const translateLabel = (
+  label: string,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-): string[] => {
-  return attachmentUtils
-    .getAttachmentsForCoverPage(submission, form)
-    .map((component) => (translate ? translate(component.label) : component.label));
-};
+) => (translate ? translate(label) : label);
 
 const createAttachmentDocumentLists = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-): Pick<CoverPageDownloadType, 'attachments' | 'archivedAttachments'> => {
-  const selected = attachmentUtils
-    .resolveSubmissionAttachments(form, submission)
-    .filter((attachment) => attachment.value === 'leggerVedNaa');
-  const documents = attachmentUtils.getAttachmentsForCoverPage(submission, form).flatMap((component) =>
-    selected
-      .filter((attachment) => attachment.navId === (getNavId(component) ?? component.key))
-      .map((attachment) => ({
-        printed: attachment.title || (translate ? translate(component.label) : component.label),
-        archived: attachment.title || component.label,
+): Pick<CoverPageDownloadType, 'attachments' | 'attachmentsForArchiving'> => {
+  const documents = attachmentUtils
+    .getSelectedAttachmentsForCoverPage(submission, form)
+    .flatMap(({ component, attachments }) =>
+      attachments.map((attachment) => ({
+        printed: attachment.title || translateLabel(component.label, translate),
+        forArchiving: attachment.title || component.label,
       })),
-  );
+    );
 
   return {
     attachments: documents.map((document) => document.printed),
-    archivedAttachments: documents.map((document) => document.archived),
+    attachmentsForArchiving: documents.map((document) => document.forArchiving),
   };
 };
 
@@ -95,21 +86,33 @@ const asTranslationLanguage = (languageCode?: string): TranslationLang => {
   }
 };
 
-const createDownloadDataFromSubmission = (
-  form: Form,
-  submission: Submission,
+interface DownloadDataFromSubmissionProps {
+  form: Form;
+  submission: Submission;
+  type?: CoverPageDownloadType['type'];
+  languageCode?: string;
+  recipient?: Recipient;
+  unitNumber?: string;
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string;
+  submissionMethod?: SubmissionMethod;
+}
+
+const createDownloadDataFromSubmission = ({
+  form,
+  submission,
+  type = 'SKJEMA',
   languageCode = 'nb-NO',
-  recipient?: Recipient,
-  unitNumber?: string,
-  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-  submissionMethod: SubmissionMethod = 'paper',
-): CoverPageDownloadType => {
+  recipient,
+  unitNumber,
+  translate,
+  submissionMethod = 'paper',
+}: DownloadDataFromSubmissionProps): CoverPageDownloadType => {
   const party = resolveParty(form, submission, { navUnit: unitNumber });
   const coverPageOrganizationUser = getCoverPageOrganizationUser(form, submission.data);
   const partyData = party ? mapPartyToCoverPage(party) : {};
 
   return {
-    type: 'SKJEMA',
+    type,
     submissionType: asSubmissionType(submissionMethod),
     languageCode: asTranslationLanguage(languageCode),
     form: {
@@ -117,9 +120,9 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
+    user: partyData.user ?? coverPageOrganizationUser,
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
-    attachments: getAttachmentLabels(form, submission, translate),
+    ...createAttachmentDocumentLists(form, submission, translate),
   };
 };
 

@@ -19,22 +19,16 @@ export { createApplicationActivitiesService } from './application-activities';
 export type { ApplicationActivitiesService } from './application-activities';
 export { createApplicationPdfService } from './application-pdf';
 export type { ApplicationPdfService } from './application-pdf';
-export { createAzureTokenService } from './azure-token/azureTokenService';
-export type { AzureTokenService } from './azure-token/azureTokenService';
 export { CAPTCHA_FAILURE_REASON, createCaptchaService } from './captcha';
 export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './captcha';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
-export { createContentService } from './content';
+export { createContentService, isContentSource } from './content';
 export type { ContentService, ContentSource } from './content';
-export { coverPageMapper, createCoverPageService, createSubsequentSubmissionDownloadData } from './cover-page';
-export type {
-  CoverPagePartyData,
-  CoverPageService,
-  ForstesideRequestBody,
-  SubsequentSubmissionCoverPageData,
-  SubsequentSubmissionUser,
-} from './cover-page';
+export { coverPageMapper, createCoverPageService } from './cover-page';
+export type { CoverPagePartyData, CoverPageService, ForstesideRequestBody } from './cover-page';
+export { createEntraIdTokenService } from './entra-id-token/entraIdTokenService';
+export type { EntraIdTokenService } from './entra-id-token/entraIdTokenService';
 export { createFormService } from './form';
 export type { FormService } from './form';
 export { createMergeFileService } from './merge-file';
@@ -64,5 +58,5 @@ export { createSendinnCoverPageService } from './sendinn-form/sendinnCoverPageSe
 export type { SendinnCoverPageService } from './sendinn-form/sendinnCoverPageService';
 export { createStaticPdfService } from './static-pdf';
 export type { StaticPdfService } from './static-pdf';
-export { createPublishedTranslationService, createTranslationService } from './translation';
-export type { PublishedTranslationService, TranslationService } from './translation';
+export { createTranslationService } from './translation';
+export type { TranslationService } from './translation';

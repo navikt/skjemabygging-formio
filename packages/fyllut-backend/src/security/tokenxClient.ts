@@ -1,7 +1,6 @@
 import { guid } from '@navikt/skjemadigitalisering-shared-domain';
 import type { SignOptions } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
 import jose from 'node-jose';
 import qs from 'qs';
 import { config } from '../config/config';

@@ -24,31 +24,15 @@ describe('Activities', () => {
       cy.wait('@getActivities');
     });
 
-    it('should render activities as a radio group with the component label', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL }).should('exist');
-    });
-
-    it('should render fetched activity as a radio option', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL }).within(() => {
-        cy.findByRole('radio', { name: ACTIVITY_TEXT }).should('exist');
-      });
-    });
-
-    it('should render default "ingen aktivitet" radio option', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL }).within(() => {
-        cy.findByRole('radio', { name: DEFAULT_ACTIVITY }).should('exist');
-      });
-    });
-
     it('should allow selecting an activity', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL }).within(() => {
+      cy.findByRole('radiogroup', { name: ACTIVITIES_LABEL }).within(() => {
         cy.findByRole('radio', { name: ACTIVITY_TEXT }).check();
         cy.findByRole('radio', { name: ACTIVITY_TEXT }).should('be.checked');
       });
     });
 
     it('should allow selecting the default activity', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL }).within(() => {
+      cy.findByRole('radiogroup', { name: ACTIVITIES_LABEL }).within(() => {
         cy.findByRole('radio', { name: DEFAULT_ACTIVITY }).check();
         cy.findByRole('radio', { name: DEFAULT_ACTIVITY }).should('be.checked');
       });
@@ -93,7 +77,7 @@ describe('Activities', () => {
     });
 
     it('should translate label', () => {
-      cy.findByRole('group', { name: ACTIVITIES_LABEL_EN }).should('exist');
+      cy.findByRole('radiogroup', { name: ACTIVITIES_LABEL_EN }).should('exist');
     });
 
     it('should translate description', () => {

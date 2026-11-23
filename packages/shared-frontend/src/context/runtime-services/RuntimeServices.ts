@@ -5,6 +5,7 @@ import type {
   Enhet,
   ReceiptSummary,
   SendInnAktivitet,
+  SendinnCoverPageRequest,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -97,7 +98,12 @@ interface SubmissionService {
   }) => Promise<Blob>;
 }
 
-interface RuntimeServices {
+interface CommonRuntimeServices {
+  formData: Pick<FormDataService, 'getNavUnits'>;
+}
+
+interface FyllutRuntimeServices extends CommonRuntimeServices {
+  host: 'fyllut';
   applications: ApplicationService;
   attachments: AttachmentService;
   formData: FormDataService;
@@ -105,17 +111,29 @@ interface RuntimeServices {
   submissions: SubmissionService;
 }
 
+interface CoverPageService {
+  create: (request: SendinnCoverPageRequest) => Promise<Blob>;
+}
+
+interface SendinnRuntimeServices extends CommonRuntimeServices {
+  host: 'sendinn';
+  coverPage: CoverPageService;
+}
+
 export type {
   ActiveTask,
   ApplicationService,
   AttachmentApplication,
   AttachmentService,
+  CommonRuntimeServices,
+  CoverPageService,
   CreateDraftResult,
   Draft,
   DraftRequest,
   FormCodeList,
   FormDataService,
-  RuntimeServices,
+  FyllutRuntimeServices,
+  SendinnRuntimeServices,
   SessionService,
   SubmissionApplication,
   SubmissionService,

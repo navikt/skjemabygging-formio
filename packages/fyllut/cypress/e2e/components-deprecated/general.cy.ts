@@ -183,7 +183,7 @@ describe('React components', () => {
         cy.findAllByRole('combobox', { name: labelSelect }).eq(0).type('a{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(0).type('10.10.2000{esc}');
         cy.findAllByText(legendRadiopanel).should('have.length', 1).eq(0).shouldBeVisible();
-        cy.findAllByRole('group', { name: legendRadiopanel })
+        cy.findAllByRole('radiogroup', { name: legendRadiopanel })
           .eq(0)
           .within(() => {
             cy.findByLabelText('Ja').should('exist').click();
@@ -192,7 +192,7 @@ describe('React components', () => {
         cy.findAllByRole('combobox', { name: labelSelect }).eq(1).type('b{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(1).type('11.10.2000{esc}');
         cy.findAllByText(legendRadiopanel).should('have.length', 2).eq(1).shouldBeVisible();
-        cy.findAllByRole('group', { name: legendRadiopanel })
+        cy.findAllByRole('radiogroup', { name: legendRadiopanel })
           .eq(1)
           .within(() => {
             cy.findByLabelText('Nei').should('exist').click();
@@ -201,7 +201,7 @@ describe('React components', () => {
         cy.findAllByRole('combobox', { name: labelSelect }).eq(2).type('a{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(2).type('12.10.2000{esc}');
         cy.findAllByText(legendRadiopanel).should('have.length', 3).eq(2).shouldBeVisible();
-        cy.findAllByRole('group', { name: legendRadiopanel })
+        cy.findAllByRole('radiogroup', { name: legendRadiopanel })
           .eq(2)
           .within(() => {
             cy.findByLabelText('Nei').should('exist').click();

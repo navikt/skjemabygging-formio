@@ -31,6 +31,9 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
+  const maxRows = component.validate?.maxLength;
+  const canAddRow =
+    typeof maxRows !== 'number' || !Number.isFinite(maxRows) || maxRows < 1 || renderedRows.length < maxRows;
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
   const synchronizedRowIds = syncDataGridRowIds(rowIds, renderedRows.length);
   // Persist generated ids so keys stay stable between renders; otherwise rows remount on every change.
@@ -47,6 +50,9 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   };
 
   const addRow = () => {
+    if (!canAddRow) {
+      return;
+    }
     setRowIds(addDataGridRowId(synchronizedRowIds));
     updateRows([...dataGridRows, ...(dataGridRows.length === 0 && renderedRows.length > 0 ? [{}] : []), {}]);
   };
@@ -63,7 +69,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
     <InputDataGridRows
       addLabel={addAnother}
       componentRegistry={componentRegistry}
-      onAdd={addRow}
+      onAdd={canAddRow ? addRow : undefined}
       onRemove={removeRow}
       allowAddingAndRemovingRows={allowAddingAndRemovingRows}
       initEmpty={component.initEmpty}

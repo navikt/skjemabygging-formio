@@ -7,9 +7,11 @@ import FormIcon from './FormIcon';
 interface Props {
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
   pageTitle?: string;
+  /** Already translated title that replaces the form title, for hosts that compose their own. */
+  formTitle?: string;
 }
 
-const FormHeader = ({ form, pageTitle }: Props) => {
+const FormHeader = ({ form, pageTitle, formTitle }: Props) => {
   const { translate } = useLanguage();
 
   return (
@@ -19,11 +21,11 @@ const FormHeader = ({ form, pageTitle }: Props) => {
       </span>
       {pageTitle && (
         <Heading level="1" size="xsmall" textColor="subtle" className={styles.formTitle}>
-          {translate(form.title)}
+          {formTitle ?? translate(form.title)}
         </Heading>
       )}
       <Heading level={pageTitle ? '2' : '1'} size="xlarge" id="page-title" tabIndex={-1}>
-        {translate(pageTitle ?? form.title)}
+        {pageTitle ? translate(pageTitle) : (formTitle ?? translate(form.title))}
       </Heading>
       {form.skjemanummer && (
         <Tag data-color="neutral" variant="moderate" size="small">

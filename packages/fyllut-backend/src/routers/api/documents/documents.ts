@@ -110,18 +110,15 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const recipient = await recipientService.getRecipient({
       recipientId: form?.properties?.mottaksadresseId,
     });
-    const coverPageData = coverPageMapper.createDownloadDataFromSubmission(
+    const coverPageData = coverPageMapper.createDownloadDataFromSubmission({
       form,
-      submissionParsed,
-      language,
+      submission: submissionParsed,
+      languageCode: language,
       recipient,
-      enhetNummer,
+      unitNumber: enhetNummer,
       translate,
-      submissionMethod as SubmissionMethod | undefined,
-    );
-    if (config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath)) {
-      Object.assign(coverPageData, coverPageMapper.createAttachmentDocumentLists(form, submissionParsed, translate));
-    }
+      submissionMethod: submissionMethod as SubmissionMethod | undefined,
+    });
     const coverPageTitle = getCoverPageTitle(form, translate);
     const [coverPagePdfBase64, applicationPdfBase64] = await Promise.all([
       coverPageService.downloadCoverPage({

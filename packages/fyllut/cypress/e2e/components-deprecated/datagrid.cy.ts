@@ -48,7 +48,8 @@ describe('Datagrid', () => {
       // change values
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).click();
       cy.findByRole('textbox', { name: 'Dato inni datagrid' }).type('{selectall}24.12.1999');
-      cy.selectCombobox('Nedtrekksmeny inni datagrid', 'Bu');
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny inni datagrid' }).type('Bu');
+      cy.findByRole('option', { name: 'Buss' }).click();
       cy.findByRole('radio', { name: 'Ja' }).check();
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('{selectall}En vegg av tekst');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('{selectall}Katt');
@@ -98,7 +99,7 @@ describe('Datagrid', () => {
       cy.defaultWaits();
       cy.clickStart();
       cy.clickSaveAndContinue();
-      cy.findByRole('group', { name: 'Vis beholder med repeterende data' }).within(() => {
+      cy.findByRole('radiogroup', { name: 'Vis beholder med repeterende data' }).within(() => {
         cy.findByRole('radio', { name: 'Ja' }).check();
       });
       cy.findByRole('textbox', { name: 'Tekstfelt i datagrid' }).type('Sjokolade');
@@ -134,16 +135,6 @@ describe('Datagrid', () => {
   });
 
   describe('Datagrid and fieldsets', () => {
-    it('fills two textboxes inside lone fieldset in datagrid', () => {
-      cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
-      cy.defaultWaits();
-
-      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
-      cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
-      cy.clickNextStep();
-      cy.url().should('include', '/kjaeledyr');
-    });
-
     it('validates components inside lone fieldset inside datagrid on click next step', () => {
       cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
       cy.defaultWaits();
@@ -160,16 +151,6 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
       cy.clickNextStep();
       cy.url().should('include', '/kjaeledyr');
-    });
-
-    it('fills two textboxes inside datagrid (no fieldset)', () => {
-      cy.visit('/fyllut/datagrid001/kjaeledyr?sub=paper');
-      cy.defaultWaits();
-
-      cy.findByRole('textbox', { name: 'Navn' }).type('Fido');
-      cy.findByRole('textbox', { name: 'Alder' }).type('11');
-      cy.clickNextStep();
-      cy.url().should('include', '/oppsummering');
     });
 
     it('validates components inside datagrid (no fieldset) on click next step', () => {
@@ -200,7 +181,7 @@ describe('Datagrid', () => {
       cy.findByRole('group', { name: 'Ingredienser' }).within(() => {
         cy.findByLabelText('Melk').should('exist').click();
       });
-      cy.findByRole('group', { name: 'Kjøpte du varene rett fra bonden?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Kjøpte du varene rett fra bonden?' }).should('exist');
       cy.findByText('Husk å legge med kvittering på utgiftene til melk').should('exist');
       cy.findByLabelText('Melk').should('have.focus');
 

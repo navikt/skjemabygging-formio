@@ -6,6 +6,7 @@ import {
   Tkey,
   TranslateFunction,
   dateUtils,
+  introPageTexts,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroBulletPoints from './shared/IntroBulletPoints';
 import { tElement, tElementTranslator } from './utils/translate';
@@ -24,14 +25,14 @@ const BeAwareOf = ({ tokenExp, translate, submissionMethod, className }: Props) 
   const tokenExpirationTime = tokenExp ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenExp) : 'XX.XX';
 
   const paperSubmissionBulletPoints: Tkey[] = isPaperSubmission
-    ? ['introPage.beAwareOf.sendByMail', 'introPage.beAwareOf.timeLimit']
+    ? [introPageTexts.beAwareOf.sendByMail, introPageTexts.beAwareOf.timeLimit]
     : [];
   const nologinSubmissionBulletPoints: TElement[] = isDigitalNoLoginSubmission
-    ? [tElement('introPage.beAwareOf.timeLimitNologin', { tokenExpirationTime }), 'introPage.beAwareOf.notSave']
+    ? [tElement(introPageTexts.beAwareOf.timeLimitNologin, { tokenExpirationTime }), introPageTexts.beAwareOf.notSave]
     : [];
   const staticBulletPoints: Tkey[] = [
-    'introPage.beAwareOf.mandatoryFields',
-    'introPage.beAwareOf.useOfPublicComputers',
+    introPageTexts.beAwareOf.mandatoryFields,
+    introPageTexts.beAwareOf.useOfPublicComputers,
   ];
 
   const submissionMethodBulletPoints: TElement[] = [...paperSubmissionBulletPoints, ...nologinSubmissionBulletPoints];
@@ -39,7 +40,7 @@ const BeAwareOf = ({ tokenExp, translate, submissionMethod, className }: Props) 
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>
-        {translate('introPage.beAwareOf.title')}
+        {translate(introPageTexts.beAwareOf.title)}
       </Heading>
       <IntroBulletPoints values={bulletPoints} />
     </div>

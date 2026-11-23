@@ -16,7 +16,7 @@ import { ByggerBackendConfig, NodeEnv } from './types';
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
 
 if (nodeEnv !== 'test') {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
 
 const env = (name: string, devValue?: string): string => {

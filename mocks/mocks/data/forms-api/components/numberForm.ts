@@ -26,6 +26,10 @@ const numberForm = () => {
             label: 'Desimaltall',
             inputType: 'decimal',
           }),
+          {
+            ...number({ label: 'Tall uten inputType', validate: { required: false } }),
+            inputType: undefined,
+          },
         ],
       }),
       panel({
