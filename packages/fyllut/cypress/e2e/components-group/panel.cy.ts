@@ -13,10 +13,6 @@ describe('Panel', () => {
       cy.findByRole('heading', { level: 2, name: 'Oversiktsside' }).should('exist');
     });
 
-    it('should render child components', () => {
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).should('exist');
-    });
-
     it('child component should be interactable', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test verdi');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).should('have.value', 'Test verdi');

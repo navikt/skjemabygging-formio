@@ -36,7 +36,7 @@ const SendinnSummaryPage = () => {
       <FormErrorSummary
         preferInputFocus
         pageKeys={pageKeys}
-        onNavigateToField={(error, id) => goToStep(error.pageKey, id)}
+        onNavigateToField={(error, id) => goToStep(error.pageKey, { focusId: id })}
       />
       <FormButtonRow
         previousButton={

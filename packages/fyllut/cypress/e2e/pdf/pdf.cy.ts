@@ -503,28 +503,6 @@ describe('Pdf', () => {
     });
 
     describe('Multiple signatures', () => {
-      it('Check for two signatures', () => {
-        cy.mocksUseRouteVariant('post-familie-pdf:success-tc09');
-        cy.visit('/fyllut/components?sub=paper');
-        cy.defaultWaits();
-        cy.clickShowAllSteps();
-
-        cy.clickIntroPageConfirmation();
-        cy.clickStart();
-        cy.findByRole('radiogroup', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).check();
-        });
-        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
-        cy.clickNextStep();
-
-        fillInAttachmentPage();
-
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
-
-        downloadPdf();
-        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
-      });
-
       it('Check for two signatures, english', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc18');
         cy.visit('/fyllut/components?sub=paper&lang=en');

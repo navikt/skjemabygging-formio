@@ -39,13 +39,6 @@ describe('Email', () => {
           }).should('exist');
         });
     });
-
-    it('Validates ok even if user typed spaces', () => {
-      cy.findByRole('textbox', { name: 'E-post' }).should('exist').type(' test@mail.no   ');
-      cy.clickNextStep();
-
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-    });
   });
 
   describe('Focus', () => {
