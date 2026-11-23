@@ -191,7 +191,7 @@ A missing form or disabled paper ettersending returns standard `NOT_FOUND`
 Missing translations for an otherwise available form are
 `SERVICE_UNAVAILABLE` (503), not a missing-form result. An eligible form with
 no filter matches remains a successful canonical form with an empty
-`sendinnAttachments` panel.
+`vedlegg` panel.
 
 The shared frontend's `createSendinnFormService({ baseUrl, http })` adapter
 provides `loadForm(request)`. The form entry loads it before mounting the

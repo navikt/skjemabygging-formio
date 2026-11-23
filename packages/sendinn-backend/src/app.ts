@@ -19,6 +19,9 @@ const handleJsonParseError: express.ErrorRequestHandler = (error, _req, _res, ne
 };
 
 const createApp = () => {
+  // Match everything except internal, assets and api
+  const noApiAssetsInternalRegex = /^(?!.*\/(internal|assets|api)\/).*$/;
+
   const app = express();
   // Keep the existing one-hop proxy trust setting until the proxy chain is verified in #2271.
   app.set('trust proxy', 1);
@@ -38,7 +41,7 @@ const createApp = () => {
   // path /internal is not publicly exposed, see https://doc.nais.io/clusters/gcp/#prod-gcp-ingresses
   sendinnRouter.use('/internal', internalRouter);
   // Index rendering calls Texas introspection and the decorator
-  sendinnRouter.get('/{*path}', publicRateLimiter, renderIndex);
+  sendinnRouter.get(noApiAssetsInternalRegex, publicRateLimiter, renderIndex);
 
   app.use(config.basePath, sendinnRouter);
   app.use(errorHandler);
