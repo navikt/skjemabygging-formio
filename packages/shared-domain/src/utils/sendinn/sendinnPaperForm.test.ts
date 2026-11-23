@@ -89,7 +89,7 @@ const convert = (source = createSource(), filter?: string | readonly string[]) =
 
 const getAttachments = (form: Form) => flattenComponents(form.components).filter(({ type }) => type === 'attachment');
 const getUserTypeComponents = (form: Form) =>
-  form.components.find(({ key }) => key === 'sendinnUserType')?.components ?? [];
+  form.components.find(({ key }) => key === 'innsender')?.components ?? [];
 const getActiveForm = (form: Form, data: Submission['data']): Form => ({
   ...form,
   components: navFormUtils.getAllActivePanelsFromForm(form, { data }, { submissionMethod: 'paper' }),
@@ -111,10 +111,10 @@ describe('convertToSendinnPaperForm', () => {
       title: source.title,
       publishedLanguages: source.publishedLanguages,
       properties: { ...source.properties, submissionTypes: ['PAPER'] },
-      firstPanelSlug: 'sendinnUserType',
+      firstPanelSlug: 'innsender',
     });
     expect(result.introPage).toBeUndefined();
-    expect(result.components.map(({ key }) => key)).toEqual(['sendinnUserType', 'sendinnAttachments']);
+    expect(result.components.map(({ key }) => key)).toEqual(['innsender', 'vedlegg']);
     expect(flattenComponents(result.components).map(({ key }) => key)).not.toContain('unrelatedQuestion');
     expect(flattenComponents(result.components).some(({ type }) => type === 'sender' || type === 'orgNr')).toBe(false);
   });
@@ -164,7 +164,7 @@ describe('convertToSendinnPaperForm', () => {
     const form = convert(createSource(), filter);
     expect(getAttachments(form).map(({ key }) => key)).toEqual(keys);
     expect(attachmentUtils.resolveSubmissionAttachments(form, { data: {} })).toEqual([]);
-    expect(form.components.find(({ key }) => key === 'sendinnAttachments')).toBeDefined();
+    expect(form.components.find(({ key }) => key === 'vedlegg')).toBeDefined();
   });
 
   it('keeps canonical attachment answers and the other-documentation title for later T1 composition', () => {
@@ -229,7 +229,7 @@ describe('convertToSendinnPaperForm', () => {
       'userType',
     ]);
     const filtered = convert(source, 'N6');
-    expect(filtered.components.find(({ key }) => key === 'sendinnAttachments')?.components?.[0].key).toBe(
+    expect(filtered.components.find(({ key }) => key === 'vedlegg')?.components?.[0].key).toBe(
       'sendinnAttachment2',
     );
     expect(
@@ -276,8 +276,8 @@ describe('convertToSendinnPaperForm', () => {
 
   it.each([undefined, false, true])('hides all user type fields regardless of unit override %s', (override) => {
     const form = convert(createSource({ hideUserTypes: true, enhetMaVelgesVedPapirInnsending: override }));
-    expect(form.components.map(({ key }) => key)).toEqual(['sendinnAttachments']);
-    expect(form.firstPanelSlug).toBe('sendinnAttachments');
+    expect(form.components.map(({ key }) => key)).toEqual(['vedlegg']);
+    expect(form.firstPanelSlug).toBe('vedlegg');
     expect(flattenComponents(form.components).some(({ type }) => type === 'navUnitSelect')).toBe(false);
     expect(resolveParty(form, { data: {} })).toBeUndefined();
   });
