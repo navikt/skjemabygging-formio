@@ -1,5 +1,6 @@
 import { expect, skipUnlessBuilt, test } from '../fixtures/test';
 import { expectPdf } from '../helpers/download';
+import { nextStep } from '../helpers/form';
 
 test.describe('Trusted collection settings', () => {
   test.beforeEach(skipUnlessBuilt);
@@ -39,20 +40,20 @@ test.describe('Trusted collection settings', () => {
             'Nav Alpha',
             'Nav Beta',
           ]);
-          await page.getByRole('button', { name: 'Next step', exact: true }).click();
+          await nextStep(page);
           const errors = page.getByTestId('error-summary');
           await expect(errors.getByRole('heading')).toBeFocused();
           await errors.getByRole('link').focus();
           await page.keyboard.press('Enter');
           await expect(page.getByRole('combobox')).toBeFocused();
           await page.getByRole('combobox').selectOption('0101');
-          await page.getByRole('button', { name: 'Next step', exact: true }).click();
+          await nextStep(page);
         }
 
         await expect(page.getByRole('checkbox')).not.toBeChecked();
         await page.getByRole('checkbox').check();
         if (hidden) await page.getByRole('textbox').fill('Additional evidence');
-        await page.getByRole('button', { name: hidden ? 'Neste steg' : 'Next step', exact: true }).click();
+        await nextStep(page);
         if (!hidden) {
           await expect(page.getByTestId('form-summary-panel').first()).toContainText('Nav Alpha');
           await expect(page.getByTestId('form-summary-panel').first()).not.toContainText('0101');
@@ -71,9 +72,9 @@ test.describe('Trusted collection settings', () => {
         const result = await response;
         expect(result.status()).toBe(200);
         const data = result.request().postDataJSON().submission.data;
-        expect(data).not.toHaveProperty('yourInformation');
+        expect(data).not.toHaveProperty('dineOpplysninger');
         expect(data).not.toHaveProperty('navContactUnit');
-        if (hidden || forced) expect(data).not.toHaveProperty('collectionType');
+        if (hidden || forced) expect(data).not.toHaveProperty('userType');
         if (hidden) expect(data).not.toHaveProperty('navUnit');
         else expect(data.navUnit).toBe('0101');
         await expectPdf(await download);
