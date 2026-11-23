@@ -1,18 +1,15 @@
 import { Download, Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { expect, skipUnlessBuilt, test } from '../fixtures/test';
+import { nextStep, previousStep, unitSelect } from '../helpers/form';
 import { selectDecoratorLanguage } from '../helpers/language';
 
-const nextStep = (page: Page) => page.getByRole('button', { name: /^(Neste steg|Next step)$/ }).click();
-const previousStep = (page: Page) => page.getByRole('button', { name: /^(Forrige steg|Previous step)$/ }).click();
 const goToPaperSubmission = async (page: Page) => {
   await page.getByRole('button', { name: 'Instruksjoner for innsending', exact: true }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'Dokumentene er ikke sendt ennå' })).toBeFocused();
 };
 const downloadButton = (page: Page) =>
   page.getByRole('button', { name: /^(Last ned førsteside|Download cover page)$/ });
-const unitSelect = (page: Page) =>
-  page.getByRole('combobox', { name: 'Velg hvilken Nav-enhet som skal motta innsendingen', exact: true });
 
 const reachPaperSubmission = async (page: Page) => {
   await page.goto('/sendinn/sendinnjourney?filter=N1');

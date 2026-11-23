@@ -1,11 +1,8 @@
 import { Page } from '@playwright/test';
 import { expect, test } from '../fixtures/test';
+import { nextStep, previousStep, unitSelect } from '../helpers/form';
 import { selectDecoratorLanguage } from '../helpers/language';
 
-const nextStep = (page: Page) => page.getByRole('button', { name: /^(Neste steg|Next step)$/ }).click();
-const previousStep = (page: Page) => page.getByRole('button', { name: /^(Forrige steg|Previous step)$/ }).click();
-const unitSelect = (page: Page) =>
-  page.getByRole('combobox', { name: 'Velg hvilken Nav-enhet som skal motta innsendingen', exact: true });
 const errorSummary = (page: Page) => page.getByTestId('error-summary');
 const identity = (page: Page) => page.getByRole('textbox', { name: 'Fødselsnummer eller d-nummer', exact: true });
 
