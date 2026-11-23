@@ -3,13 +3,13 @@ import {
   ConditionComponent,
   EvaluateFunction,
   Form,
-  navFormioUtils,
+  scriptEvaluationUtils,
   SubmissionMethod,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 // The same sanitizing evaluate that checkCondition gives the instances it creates itself.
-const evaluate: EvaluateFunction = navFormioUtils.evaluate;
+const evaluate: EvaluateFunction = scriptEvaluationUtils.evaluate;
 
 const conditionComponentIndexes = new WeakMap<Form, Map<string, ConditionComponent>>();
 

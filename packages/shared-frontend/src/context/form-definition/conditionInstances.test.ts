@@ -1,5 +1,7 @@
-import { checkCondition, Component, Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, scriptEvaluationUtils, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { getConditionInstance } from './conditionInstances';
+
+const { checkCondition } = scriptEvaluationUtils;
 
 type ConditionRow = Parameters<typeof checkCondition>[1];
 type ConditionData = Parameters<typeof checkCondition>[2];

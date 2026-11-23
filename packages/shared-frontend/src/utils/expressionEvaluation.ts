@@ -1,4 +1,4 @@
-import { navFormioUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { scriptEvaluationUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../form-components/component-types';
 
 interface BaseEvaluationArgs {
@@ -41,15 +41,15 @@ const evaluateExpression = ({
   returnKey: 'valid' | 'value';
   input?: unknown;
 }) =>
-  navFormioUtils.evaluate(
+  scriptEvaluationUtils.evaluate(
     expression,
     {
       value: undefined,
       input,
       data: submission?.data ?? {},
       row: resolveRowData(submissionPath, submission),
-      util: navFormioUtils,
-      utils: navFormioUtils,
+      util: scriptEvaluationUtils.utils,
+      utils: scriptEvaluationUtils.utils,
       component,
       instance: createEvaluationInstance({ allowTestTypes }),
       submission,
