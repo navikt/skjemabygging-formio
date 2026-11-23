@@ -43,9 +43,12 @@ const generateSchema = (form: Form): JsonSchemaObject => {
       language: {
         type: 'string',
       },
+      formRevision: {
+        type: 'integer',
+      },
       data: submissionPayloadSchema,
     },
-    required: ['language', 'data'],
+    required: ['language', 'formRevision', 'data'],
     additionalProperties: false,
   };
 };

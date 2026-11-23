@@ -96,6 +96,7 @@ const anonymizedGroundSupportForm = createBaseForm('nav060304', 20, [
 
 const anonymizedGroundSupportSubmission = {
   language: 'nb',
+  formRevision: 20,
   data: {
     data: {
       adultApplicantInfo: {
@@ -181,6 +182,7 @@ const anonymizedConsentForm = createBaseForm('nav951509', 1, [
 
 const anonymizedConsentSubmission = {
   language: 'nb',
+  formRevision: 1,
   data: {
     data: {
       avsenderPerson: {
