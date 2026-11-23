@@ -42,6 +42,7 @@ describe('sendinn-backend app', () => {
       ['/sendinn/nav123456/innsender', 'nb'],
       ['/sendinn/nav123456/vedlegg?filter=N1&filter=N2', 'nb'],
       ['/sendinn/nav123456/oppsummering?lang=en&filter=N1', 'en'],
+      ['/sendinn/nav123456/ukjent', 'nb'],
     ])('renders the decorator for %s in %s', async (url, language) => {
       await request(createApp()).get(url).expect(200);
 

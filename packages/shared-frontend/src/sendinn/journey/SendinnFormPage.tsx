@@ -19,6 +19,12 @@ const SendinnFormPage = () => {
   const goToStep = useSendinnStepNavigation();
 
   useEffect(() => {
+    if (panelSlug && panels.length > 0 && !panels.some((panel) => panel.key === panelSlug)) {
+      goToStep(panels[0].key, { redirect: true });
+    }
+  }, [goToStep, panelSlug, panels]);
+
+  useEffect(() => {
     if (currentPanel) schedulePageValidation(currentPanel.key);
   }, [components, currentPanel, schedulePageValidation]);
 

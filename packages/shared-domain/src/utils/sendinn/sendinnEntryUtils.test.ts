@@ -27,8 +27,8 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry('/nav123456/', query())).toEqual({ journey: 'form', formPath: 'nav123456' });
       });
 
-      it.each(['innsender', 'vedlegg', 'oppsummering'])(
-        'resolves a direct form step %s with language and filters',
+      it.each(['innsender', 'vedlegg', 'oppsummering', 'ukjent'])(
+        'resolves the form step %s with language and filters',
         (step) => {
           expect(resolveEntry(`/nav123456/${step}`, query('lang=en&filter=N1&filter=N2'))).toEqual({
             journey: 'form',
@@ -130,6 +130,7 @@ describe('sendinnEntryUtils', () => {
         '/404/oppsummering',
         `/${submissionId}/oppsummering`,
         '/nav123456/oppsummering/extra',
+        '/nav123456//',
         '/nav123456//vedlegg',
         '//nav123456/vedlegg',
         '/INVALID/vedlegg',
@@ -152,7 +153,7 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });
       });
 
-      it.each(['/nav123456/extra', '/oppgave/nav123456', '/lospost/nav123456'])(
+      it.each(['/nav123456/innsender/extra', '/oppgave/nav123456', '/lospost/nav123456'])(
         'returns unavailable for more than one segment %s',
         (path) => {
           expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });
