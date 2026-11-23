@@ -20,10 +20,6 @@ describe('DataFetcher', () => {
       cy.defaultWaits();
     });
 
-    it('renders checkbox group with label', () => {
-      cy.findByRole('group', { name: LABEL }).should('exist');
-    });
-
     it('renders fetched activities as checkboxes', () => {
       cy.findByRole('group', { name: LABEL }).within(() => {
         cy.findByRole('checkbox', { name: 'Aktivitet 1' }).should('exist');
