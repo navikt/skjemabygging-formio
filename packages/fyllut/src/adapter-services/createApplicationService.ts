@@ -75,11 +75,12 @@ const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationS
         await http.get<ActiveTaskResponse[]>(`${backendBaseUrl}/api/send-inn/aktive-opprettede-soknader/${formNumber}`)
       ).map(mapActiveTask),
     getDraft: async (id) => mapDraft(await http.get<DraftResponse>(`${draftsUrl}/${id}`)),
-    createDraft: async ({ formPath, submission, language, submissionMethod, force }) => {
+    createDraft: async ({ formPath, revision, submission, language, submissionMethod, force }) => {
       const response = await http.post<DraftResponse | StatusResponse>(
         `${draftsUrl}${force ? '?forceMellomlagring=true' : ''}`,
         {
           formPath,
+          revision,
           submission,
           language,
           submissionMethod,
@@ -90,10 +91,11 @@ const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationS
         ? { status: 'alreadyExists' }
         : ({ status: 'created', draft: mapDraft(response, { language, submission }) } satisfies CreateDraftResult);
     },
-    updateDraft: async ({ id, formPath, submission, language, submissionMethod }) => {
+    updateDraft: async ({ id, formPath, revision, submission, language, submissionMethod }) => {
       const response = await http.put<DraftResponse>(draftsUrl, {
         innsendingsId: id,
         formPath,
+        revision,
         submission,
         language,
         submissionMethod,

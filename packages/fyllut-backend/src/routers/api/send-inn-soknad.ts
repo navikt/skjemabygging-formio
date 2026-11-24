@@ -57,8 +57,10 @@ const sendInnSoknad = {
       const forceMellomlagring = requestUtil.getStringQuery(req, 'forceMellomlagring', true);
       const requestBody = req.body;
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
+      const revision = requestUtil.getBodyValue<string>(req, 'revision', true);
       const form = await formService.getForm({
         formPath,
+        revision: revision,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });
       const translations = await translationService.getTranslations({ formPath });
@@ -93,6 +95,7 @@ const sendInnSoknad = {
       const requestBody = req.body;
       const innsendingsId = requestUtil.getBodyValue<string>(req, 'innsendingsId');
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
+      const revision = requestUtil.getBodyValue<string>(req, 'revision', true);
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
@@ -103,6 +106,7 @@ const sendInnSoknad = {
 
       const form = await formService.getForm({
         formPath,
+        revision: revision,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });
       const translations = await translationService.getTranslations({ formPath });

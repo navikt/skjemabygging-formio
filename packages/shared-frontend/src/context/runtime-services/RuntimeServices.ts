@@ -27,6 +27,7 @@ interface DraftRequest {
   formPath: string;
   submission: Submission;
   language: TranslationLang;
+  revision?: number;
   submissionMethod?: SubmissionMethod;
 }
 

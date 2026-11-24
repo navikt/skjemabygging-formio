@@ -92,6 +92,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
       try {
         return await applications.createDraft({
           formPath: form.path,
+          revision: form.revision,
           submission,
           language: currentLanguage,
           submissionMethod,
@@ -104,7 +105,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
         throw error;
       }
     },
-    [applications, currentLanguage, forceMellomlagring, form.path, submissionMethod],
+    [applications, currentLanguage, forceMellomlagring, form.path, form.revision, submissionMethod],
   );
 
   const ensureInnsendingsId = useCallback(
@@ -132,6 +133,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
                   return await applications.updateDraft({
                     id,
                     formPath: form.path,
+                    revision: form.revision,
                     submission: transportSubmission,
                     language: currentLanguage,
                     submissionMethod,
@@ -146,7 +148,17 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
             });
           }
         : undefined,
-    [applications, createDraft, currentLanguage, form.path, goToActiveTasks, isActive, submissionMethod, syncDraft],
+    [
+      applications,
+      createDraft,
+      currentLanguage,
+      form.path,
+      form.revision,
+      goToActiveTasks,
+      isActive,
+      submissionMethod,
+      syncDraft,
+    ],
   );
 
   return { ensureInnsendingsId, saveDraft };

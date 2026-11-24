@@ -68,6 +68,7 @@ const initializeDigitalDraft = async ({
   const submission = applyInitialValuesToSubmission(form, undefined, language, { submissionMethod }) ?? { data: {} };
   const result = await applications.createDraft({
     formPath: form.path,
+    revision: form.revision,
     submission,
     language,
     submissionMethod,
