@@ -59,6 +59,7 @@ const useFormSubmission = (
             formPath: form.path,
             submission: transportSubmission,
             language: currentLanguage,
+            revision: form.revision,
             submissionMethod,
           });
           completeSubmission(response);
@@ -72,6 +73,7 @@ const useFormSubmission = (
               formPath: form.path,
               submission: transportSubmission,
               language: currentLanguage,
+              revision: form.revision,
               submissionMethod,
             });
             clearNologinToken();
@@ -98,6 +100,7 @@ const useFormSubmission = (
       currentLanguage,
       ensureInnsendingsId,
       form.path,
+      form.revision,
       getNologinToken,
       handleSessionExpired,
       logger,

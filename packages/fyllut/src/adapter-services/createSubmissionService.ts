@@ -7,7 +7,7 @@ interface Props {
 }
 
 const createSubmissionService = ({ http, backendBaseUrl }: Props): SubmissionService => ({
-  submit: ({ application, formPath, submission, language, submissionMethod }) => {
+  submit: ({ application, formPath, revision, submission, language, submissionMethod }) => {
     const applicationPath =
       application.type === 'draft' ? `digital-application/${application.id}` : 'nologin-application';
     const headers = application.type === 'noLogin' ? { NologinToken: application.token } : undefined;
@@ -19,6 +19,7 @@ const createSubmissionService = ({ http, backendBaseUrl }: Props): SubmissionSer
         submission,
         language,
         submissionMethod,
+        revision,
       },
       headers,
     );

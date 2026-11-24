@@ -20,8 +20,9 @@ export const generatePdfAndSubmit = async (
   innsendingsId: string,
   accessToken: string,
 ) => {
-  const { formPath, submission, language, submissionMethod } = req.body as {
+  const { formPath, submission, language, revision, submissionMethod } = req.body as {
     formPath: string;
+    revision?: string;
     submission: Submission;
     language: TranslationLang;
     submissionMethod?: SubmissionMethod;
@@ -29,6 +30,7 @@ export const generatePdfAndSubmit = async (
 
   const form = await formService.getForm({
     formPath,
+    revision: revision,
     select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
   });
   const translations: FormsApiTranslationMap = await translationService.getTranslations({

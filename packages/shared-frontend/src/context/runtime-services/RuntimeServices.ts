@@ -85,6 +85,7 @@ interface SubmissionService {
     formPath: string;
     submission: Submission;
     language: TranslationLang;
+    revision?: number;
     submissionMethod?: SubmissionMethod;
   }) => Promise<{ pdfBase64: string; receipt: ReceiptSummary }>;
   createDocument: (request: {
