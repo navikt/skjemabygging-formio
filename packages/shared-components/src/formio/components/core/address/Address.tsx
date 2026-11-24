@@ -228,10 +228,7 @@ class Address extends BaseComponent {
     const elementId = `address:${addressType}`;
     const value = String(address[addressType] ?? '');
     if (!validatorUtils.hasSupportedCharacters(value)) {
-      super.addError(
-        this.translate(TEXTS.validering.containsUnsupportedCharacters, { field: this.translate(label) }),
-        elementId,
-      );
+      super.addError(this.translate('containsUnsupportedCharacters', { field: this.translate(label) }), elementId);
     } else if (!validatorUtils.isValidCoverPageValue(value)) {
       super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), elementId);
     }

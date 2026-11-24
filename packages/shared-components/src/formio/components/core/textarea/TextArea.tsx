@@ -52,7 +52,7 @@ class TextArea extends BaseComponent {
       typeof value === 'string' &&
       !validatorUtils.hasSupportedCharacters(value)
     ) {
-      const message = this.translateWithLabel(TEXTS.validering.containsUnsupportedCharacters);
+      const message = this.translateWithLabel('containsUnsupportedCharacters');
       return this.setComponentValidity([this.createError(message, undefined)], dirty, undefined);
     }
     return validity;

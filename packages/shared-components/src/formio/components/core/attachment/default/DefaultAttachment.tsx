@@ -1,4 +1,4 @@
-import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAttachment from '../../../../../components/attachment/AttachmentOptionSelect';
 import { ComponentUtilsProvider } from '../../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../../base/BaseComponent';
@@ -87,7 +87,7 @@ class DefaultAttachment extends BaseComponent {
       typeof value?.additionalDocumentation === 'string' &&
       !validatorUtils.hasSupportedCharacters(value.additionalDocumentation)
     ) {
-      const message = this.translate(TEXTS.validering.containsUnsupportedCharacters, {
+      const message = this.translate('containsUnsupportedCharacters', {
         field: this.translate(documentation.label),
       });
       return this.setComponentValidity(

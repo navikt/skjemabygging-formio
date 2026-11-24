@@ -44,7 +44,7 @@ const attachmentValidator = (
       attachment?.value &&
       !validatorUtils.hasSupportedCharacters(attachment.additionalDocumentation ?? '')
     ) {
-      return translate(TEXTS.validering.containsUnsupportedCharacters, {
+      return translate('containsUnsupportedCharacters', {
         field: translate(additionalDocumentationLabel ?? label),
       });
     }
@@ -54,7 +54,7 @@ const attachmentValidator = (
       attachment.value === 'leggerVedNaa' &&
       !validatorUtils.hasSupportedCharacters(attachment.title ?? '')
     ) {
-      return translate(TEXTS.validering.containsUnsupportedCharacters, {
+      return translate('containsUnsupportedCharacters', {
         field: translate(TEXTS.statiske.attachment.attachmentTitle),
       });
     }

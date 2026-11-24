@@ -89,7 +89,7 @@ class TextField extends BaseComponent {
     }
 
     if (typeof value === 'string' && !validatorUtils.hasSupportedCharacters(value)) {
-      return this.translateWithLabel(TEXTS.validering.containsUnsupportedCharacters);
+      return this.translateWithLabel('containsUnsupportedCharacters');
     }
 
     if (this.component?.validate?.digitsOnly) {
