@@ -85,7 +85,7 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       assertCharacterErrorAndRecovery('Representantens fornavn', 'Ola 😀', 'Ola');
     });
 
-    it('keeps an invalid uploaded title editable while the user clears and retypes it', () => {
+    it('blocks file selection until the attachment title is valid', () => {
       cy.defaultInterceptsMellomlagring();
       cy.visit('/fyllut/attachmentuploadonly/visning?sub=digital');
       cy.defaultWaits();
@@ -93,11 +93,56 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
       const label = TEXTS.statiske.attachment.attachmentTitle;
-      cy.findByRole('textbox', { name: label }).type('Title 😀');
       cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('upload');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+        cy.findByText(requiredMessage(label)).should('be.visible');
+        cy.get('input[type=file]').should('not.exist');
+        cy.findByRole('textbox', { name: label }).type('Title 😀');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+        cy.findByText(errorMessage(label)).should('be.visible');
+        cy.findByText(requiredMessage(label)).should('not.exist');
+        cy.findByRole('textbox', { name: label }).should('have.value', 'Title 😀');
+        cy.get('input[type=file]').should('not.exist');
+      });
+      cy.get('@upload.all').should('have.length', 0);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).clear();
+        cy.findByRole('textbox', { name: label }).type('Valid title!');
+        cy.findByText(errorMessage(label)).should('not.exist');
+        cy.get('input[type=file]').should('exist');
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@upload').its('response.statusCode').should('eq', 201);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Valid title!').should('be.visible');
+      });
+    });
+
+    it('keeps a title made invalid during upload editable', { defaultCommandTimeout: 30000 }, () => {
+      let releaseUpload: () => void;
+      const heldResponse = new Cypress.Promise<void>((resolve) => {
+        releaseUpload = resolve;
+      });
+      cy.defaultInterceptsMellomlagring();
+      cy.visit('/fyllut/attachmentuploadonly/visning?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.statusCode').should('eq', 200);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      const label = TEXTS.statiske.attachment.attachmentTitle;
+      cy.findByRole('textbox', { name: label }).type('Valid title');
+      cy.intercept(
+        { method: 'POST', url: '**/fyllut/api/send-inn/digital-application/*/attachments/*', times: 1 },
+        (request) => request.continue(() => heldResponse),
+      ).as('upload');
       cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
         cy.uploadFile('small-file.txt');
       });
+      cy.findByRole('textbox', { name: label }).clear();
+      cy.findByRole('textbox', { name: label }).type('Title 😀');
+      cy.then(() => releaseUpload());
       cy.wait('@upload').its('response.statusCode').should('eq', 201);
       cy.clickSaveAndContinue();
       cy.findAllByText(errorMessage(label)).should('exist');
