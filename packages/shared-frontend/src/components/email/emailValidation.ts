@@ -1,5 +1,6 @@
 import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 
-const toEmailValidation = (input: FieldValidationInput) => toFieldValidation(input, { email: true });
+const toEmailValidation = (input: FieldValidationInput) =>
+  toFieldValidation(input, { email: true, supportedCharacters: true });
 
 export { toEmailValidation };

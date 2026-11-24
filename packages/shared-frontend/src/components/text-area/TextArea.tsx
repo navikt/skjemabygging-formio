@@ -1,15 +1,15 @@
 import { Textarea } from '@navikt/ds-react';
-import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FocusEvent, ReactNode, useEffect, useRef, useState } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { isValueChange, toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId, inputName } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import styles from '../shared/FieldControl.module.css';
-import { toFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps, TextAreaValidation } from '../types';
+import { toTextAreaValidation } from './textAreaValidation';
 
 interface TextAreaProps extends BaseFieldProps {
   label: string;
@@ -17,6 +17,7 @@ interface TextAreaProps extends BaseFieldProps {
   autoComplete?: string;
   value?: string;
   onChange?: (value: string) => void;
+  error?: ReactNode;
   validation?: TextAreaValidation;
 }
 
@@ -30,13 +31,14 @@ const TextArea = ({
   autoComplete = 'off',
   value: controlledValue,
   onChange: controlledOnChange,
+  error: controlledError,
   readMore,
   fieldSize,
   marginBottom,
   validation,
 }: TextAreaProps) => {
   const controlled = controlledOnChange !== undefined;
-  const fieldValidation = toFieldValidation({ statePath, label, required, validation });
+  const fieldValidation = toTextAreaValidation({ statePath, label, required, validation });
   const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
     controlled,
@@ -89,7 +91,7 @@ const TextArea = ({
         }}
         onChange={handleChange}
         onBlur={handleBlur}
-        error={error}
+        error={controlledError ?? error}
         readOnly={readOnly}
         maxLength={maxLength}
         autoComplete={autoComplete}

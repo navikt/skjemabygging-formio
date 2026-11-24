@@ -1,6 +1,6 @@
 import { Box, Button, FileItem, HStack, VStack } from '@navikt/ds-react';
-import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode } from 'react';
+import { SubmissionAttachment, TEXTS, UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReactNode, useState } from 'react';
 import { readAttachments, standaloneAttachmentsPath } from '../../context/attachment/attachmentSubmission';
 import {
   getFileValidationError,
@@ -78,6 +78,13 @@ const AttachmentItem = ({
   const uploadedFiles = attachment?.files ?? noFiles;
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
+  const unsupportedTitle = requireAttachmentTitle && !validatorUtils.hasSupportedCharacters(attachment?.title ?? '');
+  const [editingTitle, setEditingTitle] = useState(false);
+  // Keep the correction input mounted while the user clears and retypes an uploaded title.
+  if (uploadedFiles.length > 0 && unsupportedTitle && !editingTitle) {
+    setEditingTitle(true);
+  }
+  const showInvalidTitle = unsupportedTitle || editingTitle;
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
@@ -128,9 +135,9 @@ const AttachmentItem = ({
           onDownloadFile={downloadEnabled ? handleDownloadFileItem : undefined}
         />
       )}
-      {(showButton || filesError || uploadReadMore) && (
+      {(showButton || showInvalidTitle || filesError || uploadReadMore) && (
         <div>
-          {showButton && (
+          {(showButton || showInvalidTitle) && (
             <VStack gap="space-16">
               {requireAttachmentTitle && (
                 <AttachmentTitleField
@@ -142,7 +149,7 @@ const AttachmentItem = ({
                   readOnly={readOnly}
                 />
               )}
-              {!readOnly && (
+              {showButton && !readOnly && (
                 <HStack gap="space-16">
                   <UploadButton
                     attachmentId={attachmentId}

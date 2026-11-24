@@ -1,6 +1,7 @@
 import { CustomLabels, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
+import { toCoverPageTextFieldValidation } from '../text-field/textFieldValidation';
 
 const ORGANIZATION_NUMBER_LABEL = 'Organisasjonsnummer';
 const ORGANIZATION_NAME_LABEL = 'Virksomhetsnavn';
@@ -69,11 +70,10 @@ const toSenderValidationFields = ({
       ...toValidationFields(
         namePath,
         sender?.organization?.name,
-        toFieldValidation({
+        toCoverPageTextFieldValidation({
           statePath: namePath,
           label: customLabels?.organizationName ?? ORGANIZATION_NAME_LABEL,
           required,
-          validation: { coverPageValue: true },
         }),
       ),
     ];
@@ -97,21 +97,19 @@ const toSenderValidationFields = ({
     ...toValidationFields(
       firstNamePath,
       sender?.person?.firstName,
-      toFieldValidation({
+      toCoverPageTextFieldValidation({
         statePath: firstNamePath,
         label: customLabels?.firstName ?? TEXTS.statiske.identity.firstName,
         required,
-        validation: { coverPageValue: true },
       }),
     ),
     ...toValidationFields(
       surnamePath,
       sender?.person?.surname,
-      toFieldValidation({
+      toCoverPageTextFieldValidation({
         statePath: surnamePath,
         label: customLabels?.surname ?? TEXTS.statiske.identity.surname,
         required,
-        validation: { coverPageValue: true },
       }),
     ),
   ];

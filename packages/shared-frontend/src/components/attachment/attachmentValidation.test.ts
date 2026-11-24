@@ -9,7 +9,11 @@ import { describe, expect, it } from 'vitest';
 import { AttachmentDefinition } from '../../form-components/component-types';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
 import { validateValue } from '../../validation/validators';
-import { toAttachmentFilesValidationFields, toAttachmentValueValidationFields } from './attachmentValidation';
+import {
+  toAttachmentAdditionalDocumentationValidationFields,
+  toAttachmentFilesValidationFields,
+  toAttachmentValueValidationFields,
+} from './attachmentValidation';
 
 const component: AttachmentDefinition = {
   key: 'documentation',
@@ -175,6 +179,7 @@ describe('attachment validation', () => {
     expect(fields.map((field) => field.statePath)).toEqual([
       'documentation.value',
       'documentation.doc.files',
+      'documentation.doc.title',
       'documentation.doc-4.files',
       'documentation.doc-4.title',
     ]);
@@ -195,6 +200,45 @@ describe('attachment validation', () => {
   it('normalizes legacy string and key answers at the validation boundary', () => {
     expect(collect('leggerVedNaa')).toEqual(collect({ key: 'leggerVedNaa' }));
     expect(collect('leggerVedNaa')).toEqual(collect(attachment));
+  });
+
+  it('rebuilds only the selected additional documentation field at the same path as the input', () => {
+    const definition: AttachmentDefinition = {
+      ...component,
+      attachmentValues: {
+        leggerVedNaa: {
+          enabled: true,
+          additionalDocumentation: { enabled: true, label: 'Explanation', description: '' },
+        },
+        ettersender: { enabled: true },
+      },
+    };
+    const answer = { ...attachment, additionalDocumentation: 'Explanation' };
+    const fields = collect(answer, 'paper', definition);
+    expect(fields.slice(1)).toEqual(
+      toAttachmentAdditionalDocumentationValidationFields({
+        submissionPath: 'documentation',
+        attachmentId: 'doc',
+        attachment: answer,
+        values: [{ value: 'leggerVedNaa', label: 'Upload', additionalDocumentation: { label: 'Explanation' } }],
+      }),
+    );
+    expect(fields[1].statePath).toBe('documentation.doc.additionalDocumentation');
+    expect(collect({ ...answer, value: 'ettersender' }, 'paper', definition)).toHaveLength(1);
+  });
+
+  it('keeps uploaded titles in the headless validation fields', () => {
+    const fields = collect(
+      { ...attachment, type: 'other', title: 'Title', files: [{ fileId: 'uploaded' }] },
+      'digital',
+      {
+        ...component,
+        attachmentType: 'other',
+      },
+    );
+    const title = fields.find((field) => field.statePath === 'documentation.doc.title');
+    expect(title?.value).toBe('Title');
+    expect(title?.rules.supportedCharacters).toBe(true);
   });
 
   it('requires files for personal ID through the ordinary shared builder', () => {
