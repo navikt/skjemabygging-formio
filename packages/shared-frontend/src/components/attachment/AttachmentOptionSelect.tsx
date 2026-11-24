@@ -144,7 +144,6 @@ const AttachmentOptionSelect = ({
               description={translate(additionalDocumentation.description ?? '')}
               onChange={handleAdditionalDocumentationChange}
               maxLength={200}
-              required={false}
               readOnly={readOnly}
             />
           ) : (
