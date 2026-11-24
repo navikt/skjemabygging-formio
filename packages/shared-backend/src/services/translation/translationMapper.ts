@@ -6,6 +6,7 @@ import {
   TEXTS,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { getCountryNameTranslations } from './countryNameTranslations';
 
 const getGlobalTranslationFilename = (lang: TranslationLang): string => {
   switch (lang) {
@@ -73,7 +74,11 @@ const addValidationDefaults = (translations: FormsApiTranslationMap): FormsApiTr
   ),
 });
 
+const addTranslationDefaults = (translations: FormsApiTranslationMap): FormsApiTranslationMap =>
+  addValidationDefaults({ ...getCountryNameTranslations(), ...translations });
+
 export {
+  addTranslationDefaults,
   addValidationDefaults,
   convertDictionariesToFormsApiTranslations,
   convertI18nTranslationsToFormsApiTranslationMap,
