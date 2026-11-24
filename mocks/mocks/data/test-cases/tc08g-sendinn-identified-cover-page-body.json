@@ -1,0 +1,15 @@
+{
+  "foerstesidetype": "ETTERSENDELSE",
+  "navSkjemaId": "NAV test",
+  "spraakkode": "EN",
+  "overskriftstittel": "Additional documentation for NAV test Sendinn journey (en)",
+  "arkivtittel": "Ettersending til NAV test Sendinn journey (en)",
+  "tema": "HJE",
+  "vedleggsliste": ["Evidence document", "Additional  evidence.............................."],
+  "dokumentlisteFoersteside": ["Evidence document (en)", "Additional  evidence.............................."],
+  "bruker": {
+    "brukerId": "03876399856",
+    "brukerType": "PERSON"
+  },
+  "netsPostboks": "1400"
+}

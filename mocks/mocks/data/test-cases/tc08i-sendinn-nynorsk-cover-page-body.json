@@ -1,0 +1,11 @@
+{
+  "foerstesidetype": "ETTERSENDELSE",
+  "navSkjemaId": "NAV test",
+  "spraakkode": "NN",
+  "overskriftstittel": "Ettersending til NAV test Sendinn journey (nn)",
+  "arkivtittel": "Ettersending til NAV test Sendinn journey (nn)",
+  "tema": "HJE",
+  "vedleggsliste": ["Evidence document"],
+  "dokumentlisteFoersteside": ["Evidence document (nn)"],
+  "netsPostboks": "1400"
+}

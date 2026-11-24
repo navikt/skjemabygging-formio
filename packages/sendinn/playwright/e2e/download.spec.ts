@@ -1,6 +1,6 @@
-import { Download, Page } from '@playwright/test';
-import { readFile } from 'node:fs/promises';
+import { Page } from '@playwright/test';
 import { expect, skipUnlessBuilt, test } from '../fixtures/test';
+import { expectPdf } from '../helpers/download';
 import { nextStep, previousStep, unitSelect } from '../helpers/form';
 import { selectDecoratorLanguage } from '../helpers/language';
 
@@ -20,17 +20,6 @@ const reachPaperSubmission = async (page: Page) => {
   await nextStep(page);
   await goToPaperSubmission(page);
   await expect(page.getByRole('heading', { level: 2, name: 'Dokumentene er ikke sendt ennå' })).toBeFocused();
-};
-
-const expectPdf = async (download: Download) => {
-  expect(download.suggestedFilename()).toMatch(/^sendinnjourney-\d{8}\.pdf$/);
-  const stream = await download.createReadStream();
-  if (!stream) throw new Error('Expected downloaded PDF bytes.');
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
-  const pdf = Buffer.concat(chunks);
-  expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
-  expect(pdf).toEqual(await readFile('../../mocks/mocks/data/innsending-api/files/mini.pdf'));
 };
 
 test.describe('Paper cover-page download', () => {
