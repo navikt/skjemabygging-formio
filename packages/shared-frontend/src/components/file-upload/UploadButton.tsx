@@ -15,7 +15,7 @@ interface Props {
   submissionPath?: string;
   multipleAttachments?: boolean;
   variant: 'primary' | 'secondary';
-  allowUpload?: boolean;
+  titleError?: string;
   accept?: string;
   maxFileSizeInBytes?: number;
   onSuccess?: () => void;
@@ -27,7 +27,7 @@ const UploadButton = ({
   submissionPath,
   multipleAttachments = false,
   variant,
-  allowUpload,
+  titleError,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
   onSuccess,
@@ -66,16 +66,7 @@ const UploadButton = ({
         maxSizeInBytes={maxFileSizeInBytes}
         onSelect={onSelect}
         onBlockedClick={
-          allowUpload
-            ? undefined
-            : () =>
-                addError(
-                  attachmentId,
-                  translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
-                  'TITLE',
-                  scope?.pageKey,
-                  submissionPath,
-                )
+          titleError ? () => addError(attachmentId, titleError, 'TITLE', scope?.pageKey, submissionPath) : undefined
         }
       />
     </div>

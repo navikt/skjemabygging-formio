@@ -80,6 +80,11 @@ const AttachmentItem = ({
   const showButton = multiple || initialUpload;
   const invalidTitle =
     requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
+  const uploadTitleError = invalidTitle
+    ? translate(attachment?.title?.trim() ? 'containsUnsupportedCharacters' : 'required', {
+        field: translate(TEXTS.statiske.attachment.attachmentTitle),
+      })
+    : undefined;
   const [editingTitle, setEditingTitle] = useState(false);
   // Keep the correction input mounted while the user clears and retypes an uploaded title.
   if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
@@ -158,7 +163,7 @@ const AttachmentItem = ({
                     submissionPath={submissionPath}
                     multipleAttachments={multipleAttachments}
                     variant={initialUpload ? 'primary' : 'secondary'}
-                    allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                    titleError={uploadTitleError}
                     accept={accept}
                     maxFileSizeInBytes={maxFileSizeInBytes}
                     onSuccess={() => onUpload?.(initialAttachment)}
