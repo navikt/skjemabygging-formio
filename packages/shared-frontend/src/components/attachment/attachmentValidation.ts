@@ -122,8 +122,8 @@ const toAttachmentFilesValidationFields = ({
           toTextFieldValidation({
             statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
             label: TEXTS.statiske.attachment.attachmentTitle,
-            required: !attachment?.files?.length,
-            validation: attachment?.files?.length ? undefined : { maxLength: 50 },
+            required: true,
+            validation: { maxLength: 50 },
           }),
         )
       : []),

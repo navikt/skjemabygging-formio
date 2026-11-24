@@ -26,13 +26,15 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const valueValidator = attachmentValidator(translate, ['value', 'supportedAdditionalDocumentation']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
   const titleValidator = attachmentValidator(translate, ['supportedTitle']);
+  const uploadedTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle', 'supportedTitle']);
 
   const validateTitles = () => {
     let valid = true;
     submissionAttachments
       .filter((attachment) => attachments.some((field) => field.navId === attachment.navId))
       .forEach((attachment) => {
-        const error = titleValidator.validate(TEXTS.statiske.attachment.attachmentTitle, attachment);
+        const validator = attachment.files?.length ? uploadedTitleValidator : titleValidator;
+        const error = validator.validate(TEXTS.statiske.attachment.attachmentTitle, attachment);
         if (error) {
           addError(attachment.attachmentId, error, 'TITLE');
           valid = false;
