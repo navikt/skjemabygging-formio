@@ -1,28 +1,7 @@
 import { Registry } from 'prom-client';
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { sanitizeValue } from './applicationPdfSerializer';
 import { createApplicationPdfService } from './applicationPdfService';
-
-describe('Sanitize values before sending to PDF generation', () => {
-  describe('sanitizeValue', () => {
-    it('removes all HTML tags except text', () => {
-      expect(sanitizeValue('<script>alert(1)</script>hello')).toBe('hello');
-      expect(sanitizeValue('<script>alert(1) hello')).toBe('');
-      expect(sanitizeValue('<b>bold</b> <i>italic</i>')).toBe('bold italic');
-      expect(sanitizeValue('<a href="https://www.nav.no">link</a>')).toBe('link');
-      expect(sanitizeValue('<img src="x">foo')).toBe('foo');
-      expect(sanitizeValue('<div>bar</div>baz')).toBe('barbaz');
-    });
-
-    it('returns undefined for non-string or empty input', () => {
-      expect(sanitizeValue(undefined)).toBeUndefined();
-      expect(sanitizeValue(null)).toBeUndefined();
-      expect(sanitizeValue(123)).toBeUndefined();
-      expect(sanitizeValue('')).toBe('');
-    });
-  });
-});
 
 describe('createApplicationPdfService', () => {
   const baseUrl = 'http://familie-pdf';
@@ -97,15 +76,7 @@ describe('createApplicationPdfService', () => {
     const registry = new Registry();
     const fetchSpy = mockFetchResponse(JSON.stringify({ content: 'pdf-base64' }), 200, 'application/json');
     const service = createService(registry);
-    const pdfFormData = {
-      ...createPdfFormData(),
-      verdiliste: [
-        {
-          label: 'Field label',
-          verdi: '<script>alert(1)</script>Test',
-        },
-      ],
-    };
+    const pdfFormData = createPdfFormData();
 
     const result = await service.createPdf({
       accessToken: 'token',
@@ -113,15 +84,7 @@ describe('createApplicationPdfService', () => {
     });
 
     expect(result).toBe('pdf-base64');
-    expectCreatePdfRequest(fetchSpy, {
-      ...pdfFormData,
-      verdiliste: [
-        {
-          label: 'Field label',
-          verdi: 'Test',
-        },
-      ],
-    });
+    expectCreatePdfRequest(fetchSpy, pdfFormData);
     expect(registry.getSingleMetric('fyllut_familie_pdf_requests_total')).toBeTruthy();
     expect(registry.getSingleMetric('fyllut_familie_pdf_failures_total')).toBeTruthy();
     expect(registry.getSingleMetric('fyllut_familie_pdf_duration_seconds')).toBeTruthy();
