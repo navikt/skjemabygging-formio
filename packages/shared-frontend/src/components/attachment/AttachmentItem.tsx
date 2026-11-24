@@ -78,13 +78,14 @@ const AttachmentItem = ({
   const uploadedFiles = attachment?.files ?? noFiles;
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
-  const unsupportedTitle = requireAttachmentTitle && !validatorUtils.hasSupportedCharacters(attachment?.title ?? '');
+  const invalidTitle =
+    requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
   const [editingTitle, setEditingTitle] = useState(false);
   // Keep the correction input mounted while the user clears and retypes an uploaded title.
-  if (uploadedFiles.length > 0 && unsupportedTitle && !editingTitle) {
+  if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
     setEditingTitle(true);
   }
-  const showInvalidTitle = unsupportedTitle || editingTitle;
+  const showInvalidTitle = invalidTitle || editingTitle;
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 

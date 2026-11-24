@@ -133,6 +133,10 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       cy.findByRole('textbox', { name: label }).should('have.focus');
       cy.clickSaveAndContinue();
       cy.findAllByText(requiredMessage(label)).should('exist');
+      cy.clickPreviousStep();
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      cy.findByRole('textbox', { name: label }).should('have.value', '');
       cy.findByRole('textbox', { name: label }).type('Corrected title');
       cy.findAllByText(requiredMessage(label)).should('not.exist');
       cy.findAllByText(errorMessage(label)).should('not.exist');

@@ -85,9 +85,10 @@ const FileUploader = ({
 
   const uploadedFiles = attachment?.files ?? [];
   const initialUpload = uploadedFiles.length === 0;
-  const unsupportedTitle = requireAttachmentTitle && !validatorUtils.hasSupportedCharacters(attachment?.title ?? '');
+  const invalidTitle =
+    requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
   const [editingTitle, setEditingTitle] = useState(false);
-  if (uploadedFiles.length > 0 && unsupportedTitle && !editingTitle) {
+  if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
     setEditingTitle(true);
   }
   const showButton = multiple || initialUpload;
@@ -132,7 +133,7 @@ const FileUploader = ({
           translationParams={fileUploadErrorParams}
         />
       )}
-      {(showButton || unsupportedTitle || editingTitle) && (
+      {(showButton || invalidTitle || editingTitle) && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
