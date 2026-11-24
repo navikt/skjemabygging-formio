@@ -23,7 +23,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const { activeComponents, form, submission } = useForm();
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
 
-  const valueValidator = attachmentValidator(translate, ['value', 'supportedAdditionalDocumentation']);
+  const valueValidator = attachmentValidator(translate, ['value']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
   const titleValidator = attachmentValidator(translate, ['supportedTitle']);
   const uploadedTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle', 'supportedTitle']);

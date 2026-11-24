@@ -7,10 +7,9 @@ import {
   SubmissionAttachment,
   SubmissionAttachmentValue,
   TEXTS,
-  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { MutableRefObject, ReactNode, useState } from 'react';
+import { MutableRefObject, ReactNode } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -52,13 +51,6 @@ const AttachmentUpload = ({
   const { form } = useForm();
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
-  const unsupportedDocumentation = !validatorUtils.hasSupportedCharacters(
-    submissionAttachment?.additionalDocumentation ?? '',
-  );
-  const [editingDocumentation, setEditingDocumentation] = useState(false);
-  if (uploadedAttachmentFiles.length > 0 && unsupportedDocumentation && !editingDocumentation) {
-    setEditingDocumentation(true);
-  }
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, appConfig.submissionMethod);
   const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(attachmentValues, appConfig.submissionMethod);
   const uploadSelected =
@@ -70,7 +62,7 @@ const AttachmentUpload = ({
 
   return (
     <VStack gap="space-24" className={clsx('mb', className)} data-cy="attachment-upload">
-      {uploadedAttachmentFiles.length > 0 && !unsupportedDocumentation && !editingDocumentation ? (
+      {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label>{label}</Label>
           <BodyShort>{description}</BodyShort>
@@ -80,7 +72,6 @@ const AttachmentUpload = ({
           title={label}
           description={description}
           error={error?.message}
-          additionalDocumentationId={`${componentId}-additionalDocumentation`}
           value={
             submissionAttachment?.value
               ? {
@@ -94,7 +85,6 @@ const AttachmentUpload = ({
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           submissionMethod={appConfig.submissionMethod}
-          choiceLocked={uploadedAttachmentFiles.length > 0}
           ref={(ref) => {
             if (refs?.current) {
               // eslint-disable-next-line react-hooks/immutability

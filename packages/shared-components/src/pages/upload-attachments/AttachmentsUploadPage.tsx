@@ -48,14 +48,6 @@ const AttachmentsUploadPage = () => {
   };
 
   const focusOnComponent = (comp: string | { elementId?: string; path?: string }) => {
-    const documentationInput =
-      typeof comp !== 'string' && comp.elementId === 'VALUE'
-        ? document.getElementById(`${comp.path}-additionalDocumentation`)
-        : null;
-    if (documentationInput?.getAttribute('aria-invalid') === 'true') {
-      documentationInput.focus();
-      return;
-    }
     const ref =
       typeof comp === 'string'
         ? attachmentRefs.current[comp]

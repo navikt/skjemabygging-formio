@@ -1,10 +1,5 @@
 import { FileObject } from '@navikt/ds-react';
-import {
-  attachmentSettingKeys,
-  SubmissionAttachment,
-  TEXTS,
-  UploadedFile,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { FrontendLogger } from '@navikt/skjemadigitalisering-shared-frontend';
 import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
 import { Attachment } from '../../attachment/attachmentsUtil';
@@ -15,17 +10,11 @@ const validateAttachment = (
   validator: AttachmentValidator,
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
-  formAttachments.forEach(({ label, navId, attachmentValues }) => {
+  formAttachments.forEach(({ label, navId }) => {
     const matchingAttachments = submissionAttachments.filter((att) => att.attachmentId.startsWith(navId!));
     const error =
       matchingAttachments.length > 0
-        ? matchingAttachments
-            .map((attachment) => {
-              const key = attachmentSettingKeys.find((key) => key === attachment.value);
-              const documentationLabel = key ? attachmentValues?.[key]?.additionalDocumentation?.label : undefined;
-              return validator.validate(label, attachment, documentationLabel);
-            })
-            .find(Boolean)
+        ? matchingAttachments.map((attachment) => validator.validate(label, attachment)).find(Boolean)
         : validator.validate(label);
     if (error) {
       errors[navId!] = error;

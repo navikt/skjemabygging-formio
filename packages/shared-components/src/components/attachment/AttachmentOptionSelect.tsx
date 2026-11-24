@@ -6,18 +6,14 @@ import {
   SubmissionAttachmentValue,
   SubmissionMethod,
   TEXTS,
-  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, forwardRef, ReactNode, Ref, useEffect } from 'react';
+import { ChangeEvent, forwardRef, ReactNode, useEffect } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
 interface Props {
   title: ReactNode;
   description: ReactNode;
   error?: ReactNode;
-  additionalDocumentationError?: ReactNode;
-  additionalDocumentationId?: string;
-  additionalDocumentationRef?: Ref<HTMLTextAreaElement>;
   value?: Partial<SubmissionAttachmentValue>;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: SubmissionAttachmentValue | undefined) => void;
@@ -25,7 +21,6 @@ interface Props {
   deadline?: string;
   className?: string;
   submissionMethod?: SubmissionMethod;
-  choiceLocked?: boolean;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
@@ -36,15 +31,11 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
       title,
       description,
       error,
-      additionalDocumentationError,
-      additionalDocumentationId,
-      additionalDocumentationRef,
       onChange,
       translate,
       deadline,
       className,
       submissionMethod,
-      choiceLocked = false,
     }: Props,
     ref,
   ) => {
@@ -56,9 +47,6 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
       ? attachmentValues?.[selectedValueKey]?.additionalDocumentation
       : undefined;
     const showDeadline = selectedValueKey ? !!attachmentValues?.[selectedValueKey]?.showDeadline : false;
-    const documentationError =
-      additionalDocumentationError ??
-      (!validatorUtils.hasSupportedCharacters(value?.additionalDocumentation ?? '') ? error : undefined);
 
     useEffect(() => {
       if (!implicitValueKey || value?.key === implicitValueKey) {
@@ -102,7 +90,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
 
     return (
       <div className={className}>
-        {implicitValueKey || choiceLocked ? (
+        {implicitValueKey ? (
           <div className="mb-4">
             <Label>{title}</Label>
             <BodyShort>{description}</BodyShort>
@@ -113,7 +101,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
             value={selectedValueKey ?? ''}
             title={title}
             description={description}
-            error={documentationError ? undefined : error}
+            error={error}
             onChange={handleAttachmentChange}
             ref={ref}
             className="mb-4"
@@ -121,15 +109,12 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
         )}
         {additionalDocumentation?.enabled && (
           <Textarea
-            id={additionalDocumentationId}
-            ref={additionalDocumentationRef}
             className="mb-4"
             label={translate(additionalDocumentation.label)}
             value={selectedValueKey === value?.key ? (value?.additionalDocumentation ?? '') : ''}
             description={translate(additionalDocumentation.description)}
             onChange={handleAdditionalDocumentationChange}
             maxLength={additionalDocumentationMaxLength}
-            error={documentationError}
           />
         )}
         {showDeadline && deadline && (
