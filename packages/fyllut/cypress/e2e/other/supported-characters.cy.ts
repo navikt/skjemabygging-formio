@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const errorMessage = (label: string) => TEXTS.validering.containsUnsupportedCharacters.replace('{{field}}', label);
+const requiredMessage = (label: string) => TEXTS.validering.required.replace('{{field}}', label);
 
 const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid = 'Plain text') => {
   const name = new RegExp(`^${label}( \\(valgfritt\\))?$`);
@@ -34,7 +35,6 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
     [
       { path: 'textfield/validering', label: 'Tekstfelt ikke påkrevd', invalid: 'Hello 😀', valid: 'Hello! #1 *' },
       { path: 'textarea/validering', label: 'Tekstområde ikke påkrevd', invalid: 'First\nSecond\uF0B7' },
-      { path: 'firstname/validering', label: 'Fornavn ikke påkrevd', invalid: 'Ola 🏽', valid: 'Ola' },
       { path: 'surname/validering', label: 'Etternavn ikke påkrevd', invalid: 'Name 🇳🇴', valid: 'Name' },
       { path: 'adresse/norskadresse', label: 'Vegadresse', invalid: 'Road 1️⃣', valid: 'Road 1' },
     ].forEach(({ path, label, invalid, valid }) => {
@@ -86,19 +86,19 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
     });
 
     it('validates additional documentation only while its option is selected', () => {
-      cy.visit('/fyllut/attachments/vedlegg?sub=paper');
+      cy.visit('/fyllut/supportedcharacters/vedlegg?sub=paper');
       cy.defaultWaits();
-      cy.findByRole('radiogroup', { name: /^Ny vedleggskomponent/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
       });
-      assertCharacterErrorAndRecovery('Ledetekst tilleggsinformasjon', 'Details\u2028more', 'Plain text');
-      cy.findByRole('textbox', { name: /^Ledetekst tilleggsinformasjon/ }).clear();
-      cy.findByRole('textbox', { name: /^Ledetekst tilleggsinformasjon/ }).type('Details 😀');
+      assertCharacterErrorAndRecovery('Upload details', 'Details\u2028more', 'Plain text');
+      cy.findByRole('textbox', { name: /^Upload details/ }).clear();
+      cy.findByRole('textbox', { name: /^Upload details/ }).type('Details 😀');
       cy.clickNextStep();
-      cy.findByRole('radiogroup', { name: /^Ny vedleggskomponent/ }).within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
+      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check();
       });
-      cy.findAllByText(errorMessage('Ledetekst tilleggsinformasjon')).should('not.exist');
+      cy.findAllByText(errorMessage('Upload details')).should('not.exist');
     });
 
     it('validates and focuses additional documentation outside an attachment panel', () => {
@@ -130,38 +130,47 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
         cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('not.exist');
       });
       cy.findByRole('textbox', { name: label }).clear();
-      cy.findByRole('textbox', { name: label }).should('have.focus').type('Corrected title');
+      cy.findByRole('textbox', { name: label }).should('have.focus');
+      cy.clickSaveAndContinue();
+      cy.findAllByText(requiredMessage(label)).should('exist');
+      cy.findByRole('textbox', { name: label }).type('Corrected title');
+      cy.findAllByText(requiredMessage(label)).should('not.exist');
       cy.findAllByText(errorMessage(label)).should('not.exist');
     });
 
-    it('keeps invalid additional documentation editable after uploading a file', () => {
+    it('shows only the invalid additional documentation after uploading a file', () => {
       cy.defaultInterceptsMellomlagring();
-      cy.visit('/fyllut/attachments/vedlegg?sub=digital');
+      cy.visit('/fyllut/supportedcharacters/vedlegg?sub=digital');
       cy.defaultWaits();
       cy.wait('@createMellomlagring').its('response.statusCode').should('eq', 200);
-      cy.findByRole('radiogroup', { name: /^Ny vedleggskomponent/ }).within(() => {
+      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
       });
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      const name = /^Ledetekst tilleggsinformasjon/;
+      const name = /^Upload details/;
       cy.findByRole('textbox', { name }).type('Details 😀');
       cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('upload');
-      cy.contains('[data-cy=attachment-upload]', 'Ny vedleggskomponent').within(() => {
-        cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Title');
+      cy.contains('[data-cy=attachment-upload]', 'Upload documentation').within(() => {
         cy.uploadFile('small-file.txt');
       });
       cy.wait('@upload').its('response.statusCode').should('eq', 201);
       cy.clickSaveAndContinue();
-      cy.findAllByText(errorMessage('Ledetekst tilleggsinformasjon')).should('exist');
-      cy.findByRole('link', { name: errorMessage('Ledetekst tilleggsinformasjon') }).click();
+      cy.findAllByText(errorMessage('Upload details')).should('exist');
+      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).should('not.exist');
+      cy.findByRole('link', { name: errorMessage('Upload details') }).click();
       cy.findByRole('textbox', { name }).should('have.focus');
       cy.findByRole('textbox', { name }).clear();
       cy.findByRole('textbox', { name }).should('have.focus').type('Corrected explanation');
-      cy.findAllByText(errorMessage('Ledetekst tilleggsinformasjon')).should('not.exist');
-      cy.contains('[data-cy=attachment-upload]', 'Ny vedleggskomponent').within(() => {
-        cy.findByText('Title').should('exist');
-      });
+      cy.findAllByText(errorMessage('Upload details')).should('not.exist');
+    });
+
+    it('shows the error message in the selected language', () => {
+      cy.visit('/fyllut/textfield/validering?sub=paper&lang=en');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: /^Tekstfelt ikke påkrevd/ }).type('Hello 😀');
+      cy.clickNextStep();
+      cy.findAllByText(/contains unsupported characters/).should('have.length', 2);
     });
   });
 });

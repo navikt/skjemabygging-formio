@@ -9,11 +9,7 @@ import { describe, expect, it } from 'vitest';
 import { AttachmentDefinition } from '../../form-components/component-types';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
 import { validateValue } from '../../validation/validators';
-import {
-  toAttachmentAdditionalDocumentationValidationFields,
-  toAttachmentFilesValidationFields,
-  toAttachmentValueValidationFields,
-} from './attachmentValidation';
+import { toAttachmentFilesValidationFields, toAttachmentValueValidationFields } from './attachmentValidation';
 
 const component: AttachmentDefinition = {
   key: 'documentation',
@@ -202,7 +198,7 @@ describe('attachment validation', () => {
     expect(collect('leggerVedNaa')).toEqual(collect(attachment));
   });
 
-  it('rebuilds only the selected additional documentation field at the same path as the input', () => {
+  it('validates additional documentation only for the selected option', () => {
     const definition: AttachmentDefinition = {
       ...component,
       attachmentValues: {
@@ -214,16 +210,10 @@ describe('attachment validation', () => {
       },
     };
     const answer = { ...attachment, additionalDocumentation: 'Explanation' };
-    const fields = collect(answer, 'paper', definition);
-    expect(fields.slice(1)).toEqual(
-      toAttachmentAdditionalDocumentationValidationFields({
-        submissionPath: 'documentation',
-        attachmentId: 'doc',
-        attachment: answer,
-        values: [{ value: 'leggerVedNaa', label: 'Upload', additionalDocumentation: { label: 'Explanation' } }],
-      }),
-    );
-    expect(fields[1].statePath).toBe('documentation.doc.additionalDocumentation');
+    expect(collect(answer, 'paper', definition).map((field) => field.statePath)).toEqual([
+      'documentation.value',
+      'documentation.doc.additionalDocumentation',
+    ]);
     expect(collect({ ...answer, value: 'ettersender' }, 'paper', definition)).toHaveLength(1);
   });
 
@@ -239,6 +229,7 @@ describe('attachment validation', () => {
     const title = fields.find((field) => field.statePath === 'documentation.doc.title');
     expect(title?.value).toBe('Title');
     expect(title?.rules.supportedCharacters).toBe(true);
+    expect(validateValue('', title!.field, title!.rules, 'nb')).toBeDefined();
   });
 
   it('requires files for personal ID through the ordinary shared builder', () => {

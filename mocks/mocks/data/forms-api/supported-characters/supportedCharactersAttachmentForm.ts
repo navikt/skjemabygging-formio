@@ -30,8 +30,30 @@ const supportedCharactersAttachmentForm = () =>
           }),
         ],
       }),
+      panel({
+        key: 'vedlegg',
+        title: 'Vedlegg',
+        isAttachmentPanel: true,
+        components: [
+          attachment({
+            key: 'uploadAttachment',
+            label: 'Upload documentation',
+            attachmentValues: {
+              leggerVedNaa: {
+                enabled: true,
+                additionalDocumentation: {
+                  enabled: true,
+                  label: 'Upload details',
+                  description: 'Describe the upload.',
+                },
+              },
+              ettersender: { enabled: true },
+            },
+          }),
+        ],
+      }),
     ],
-    properties: formProperties({ formNumber: 'supportedcharacters', submissionTypes: ['PAPER'] }),
+    properties: formProperties({ formNumber: 'supportedcharacters', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 
 const supportedCharactersAttachmentTranslations = () =>
