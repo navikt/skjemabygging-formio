@@ -8,7 +8,7 @@ test.describe('Entry routing', () => {
 
   const journeys = [
     { name: 'standalone', url: '/sendinn/lospost', heading: 'Send dokumenter til Nav' },
-    { name: 'form', url: '/sendinn/nav123456', heading: 'Send inn dokumentasjon til skjema' },
+    { name: 'form', url: '/sendinn/nav123456', heading: 'Ettersend dokumentasjon til Sendinn form loading' },
     {
       name: 'form with a task',
       url: `/sendinn/nav123456?innsendingsId=${submissionId}`,
@@ -38,7 +38,7 @@ test.describe('Entry routing', () => {
     '/sendinn',
     '/sendinn/oppgave',
     '/sendinn/oppgave?innsendingsId=not-a-uuid',
-    '/sendinn/nav123456/extra',
+    '/sendinn/nav123456//vedlegg',
     '/sendinn/nav123456?innsendingsId=not-a-uuid',
     '/sendinn/404/',
   ]) {
@@ -48,6 +48,16 @@ test.describe('Entry routing', () => {
       await expect(page.getByRole('heading', { level: 1, name: 'Beklager, fant ikke siden' })).toBeVisible();
     });
   }
+
+  test('moves an unknown form step to the first step', async ({ readyPage: page }) => {
+    await page.goto('/sendinn/sendinnjourney/ukjent?filter=N1');
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/sendinn/sendinnjourney/innsender' && url.search === '?filter=N1',
+    );
+    await expect(
+      page.getByRole('radio', { name: 'Person som har fødselsnummer eller d-nummer', exact: true }),
+    ).toBeVisible();
+  });
 
   test('keeps only the language parameter when moving to the not found page', async ({ readyPage: page }) => {
     await page.goto(`/sendinn/nav123456/extra?innsendingsId=${submissionId}&lang=en&sub=digital`);

@@ -27,6 +27,16 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry('/nav123456/', query())).toEqual({ journey: 'form', formPath: 'nav123456' });
       });
 
+      it.each(['innsender', 'vedlegg', 'oppsummering', 'ukjent'])(
+        'resolves the form step %s with language and filters',
+        (step) => {
+          expect(resolveEntry(`/nav123456/${step}`, query('lang=en&filter=N1&filter=N2'))).toEqual({
+            journey: 'form',
+            formPath: 'nav123456',
+          });
+        },
+      );
+
       it('ignores other query parameters', () => {
         expect(resolveEntry('/nav123456', query('lang=en&sub=digital'))).toEqual({
           journey: 'form',
@@ -114,6 +124,26 @@ describe('sendinnEntryUtils', () => {
     });
 
     describe('unavailable', () => {
+      it.each([
+        '/lospost/innsender',
+        '/oppgave/innsender',
+        '/404/oppsummering',
+        `/${submissionId}/oppsummering`,
+        '/nav123456/oppsummering/extra',
+        '/nav123456//',
+        '/nav123456//vedlegg',
+        '//nav123456/vedlegg',
+        '/INVALID/vedlegg',
+      ])('rejects form steps outside the paper form journey %s', (path) => {
+        expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
+      });
+
+      it('does not open a task-based form through a paper step', () => {
+        expect(resolveEntry('/nav123456/oppsummering', query(`innsendingsId=${submissionId}`))).toEqual({
+          journey: 'unavailable',
+        });
+      });
+
       it.each(['', '/', '//'])('returns unavailable for the root path %j', (path) => {
         expect(resolveEntry(path, query())).toEqual({ journey: 'unavailable' });
       });
@@ -123,7 +153,7 @@ describe('sendinnEntryUtils', () => {
         expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });
       });
 
-      it.each(['/nav123456/extra', '/oppgave/nav123456', '/lospost/nav123456'])(
+      it.each(['/nav123456/innsender/extra', '/oppgave/nav123456', '/lospost/nav123456'])(
         'returns unavailable for more than one segment %s',
         (path) => {
           expect(resolveEntry(path, query(`innsendingsId=${submissionId}`))).toEqual({ journey: 'unavailable' });

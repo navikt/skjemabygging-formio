@@ -5,4 +5,9 @@ const sortNavUnits = (units: Enhet[]) => [...units].sort((unitA, unitB) => unitA
 const filterNavUnits = (units: Enhet[], unitTypes?: Enhetstype[]) =>
   sortNavUnits(units.filter((unit) => !unitTypes?.length || unitTypes.includes(unit.type)));
 
-export { filterNavUnits, sortNavUnits };
+const resolveNavUnits = (units: Enhet[], unitTypes?: Enhetstype[]) => {
+  const filtered = filterNavUnits(units, unitTypes);
+  return filtered.length ? filtered : sortNavUnits(units);
+};
+
+export { filterNavUnits, resolveNavUnits, sortNavUnits };

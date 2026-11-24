@@ -38,6 +38,7 @@ import PdfIntroPage from './components/intro-page/PdfIntroPage';
 import PdfMaalgruppe from './components/maalgruppe/PdfMaalgruppe';
 import PdfMonthPicker from './components/month-picker/PdfMonthPicker';
 import PdfNationalIdentityNumber from './components/national-identity-number/PdfNationalIdentityNumber';
+import PdfNavUnitSelect from './components/nav-unit-select/PdfNavUnitSelect';
 import PdfNumber from './components/number/PdfNumber';
 import PdfOrganizationNumber from './components/organization-number/PdfOrganizationNumber';
 import PdfPanel from './components/panel/PdfPanel';
@@ -106,6 +107,7 @@ const renderPdfForm = ({
     firstName: PdfFirstName,
     iban: PdfIban,
     identity: PdfIdentity,
+    navUnitSelect: PdfNavUnitSelect,
     fnrfield: PdfNationalIdentityNumber,
     orgNr: PdfOrganizationNumber,
     phoneNumber: PdfPhoneNumber,

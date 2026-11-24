@@ -44,6 +44,7 @@
   {
     "id": "sendinn-base",
     "routes": [
+      "get-nav-units:success",
       "get-global-translations:sendinn",
       "get-form-deprecated:success",
       "get-form:success",
