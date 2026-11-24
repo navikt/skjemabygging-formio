@@ -1,16 +1,16 @@
+import { createFirstName } from '@navikt/skjemadigitalisering-shared-domain';
 import FirstName from './FirstName';
 
 const firstNameBuilder = (keyPostfix = '') => {
   const schema = FirstName.schema();
+  const definition = createFirstName();
 
   return {
     title: schema.label,
     schema: {
       ...schema,
-      key: `fornavn${keyPostfix}`,
-      validate: {
-        required: true,
-      },
+      ...definition,
+      key: `${definition.key}${keyPostfix}`,
     },
   };
 };

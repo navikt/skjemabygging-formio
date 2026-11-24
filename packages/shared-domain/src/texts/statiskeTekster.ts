@@ -272,6 +272,7 @@ export const statiske = {
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
   },
   address: {
+    address: 'Adresse',
     livesInNorway: 'Bor du i Norge?',
     yourContactAddress: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
@@ -397,6 +398,10 @@ export const statiske = {
   },
   loading: 'Laster',
   sendinn: {
+    userType: {
+      multiplePeople: 'Flere personer / Nav-enhet',
+      hasNavContact: 'Har du vært i kontakt med Nav om saken?',
+    },
     journey: {
       standalone: 'Send dokumenter til Nav',
       form: 'Send inn dokumentasjon til skjema',
