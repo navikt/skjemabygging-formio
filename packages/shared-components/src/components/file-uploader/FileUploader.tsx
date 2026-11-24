@@ -87,6 +87,11 @@ const FileUploader = ({
   const initialUpload = uploadedFiles.length === 0;
   const invalidTitle =
     requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
+  const uploadTitleError = invalidTitle
+    ? translate(attachment?.title?.trim() ? 'containsUnsupportedCharacters' : 'required', {
+        field: translate(TEXTS.statiske.attachment.attachmentTitle),
+      })
+    : undefined;
   const [editingTitle, setEditingTitle] = useState(false);
   if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
     setEditingTitle(true);
@@ -155,7 +160,7 @@ const FileUploader = ({
               <UploadButton
                 attachmentId={attachmentId}
                 variant={initialUpload ? 'primary' : 'secondary'}
-                allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                titleError={uploadTitleError}
                 refs={refs}
                 translationParams={fileUploadErrorParams}
                 accept={accept}

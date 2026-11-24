@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 interface Props {
   attachmentId: string;
   variant: 'primary' | 'secondary';
-  allowUpload?: boolean;
+  titleError?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
   translationParams?: Record<string, string>;
@@ -30,7 +30,7 @@ interface Props {
 const UploadButton = ({
   attachmentId,
   variant = 'primary',
-  allowUpload,
+  titleError,
   refs,
   readMore,
   translationParams,
@@ -62,7 +62,7 @@ const UploadButton = ({
 
   return (
     <VStack gap="space-8">
-      {allowUpload ? (
+      {!titleError ? (
         <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes} multiple={false}>
           <Button
             variant={variant}
@@ -92,13 +92,7 @@ const UploadButton = ({
               refs.current[`${attachmentId}-FILE`] = ref;
             }
           }}
-          onClick={() =>
-            addError(
-              attachmentId,
-              translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
-              'TITLE',
-            )
-          }
+          onClick={() => addError(attachmentId, titleError, 'TITLE')}
         >
           {translate(
             variant === 'primary' ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
