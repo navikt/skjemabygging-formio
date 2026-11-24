@@ -358,6 +358,10 @@ import {
   summaryPageAttachmentDownloadTranslations,
 } from '../data/forms-api/summary-page/summaryPageAttachmentDownloadForm';
 import {
+  supportedCharactersAttachmentForm,
+  supportedCharactersAttachmentTranslations,
+} from '../data/forms-api/supported-characters/supportedCharactersAttachmentForm';
+import {
   textfieldFormattingForm,
   textfieldFormattingTranslations,
 } from '../data/forms-api/textfield/textfieldFormattingForm';
@@ -553,6 +557,7 @@ const allForms = [
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
   { form: skyraSurveyForm(), translations: skyraSurveyTranslations() },
   { form: skyraSurveyNoSlugForm(), translations: skyraSurveyNoSlugTranslations() },
+  { form: supportedCharactersAttachmentForm(), translations: supportedCharactersAttachmentTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
   { form: textfieldMainForm(), translations: textfieldMainTranslations() },

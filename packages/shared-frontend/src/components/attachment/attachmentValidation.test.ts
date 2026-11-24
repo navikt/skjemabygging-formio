@@ -198,6 +198,25 @@ describe('attachment validation', () => {
     expect(collect('leggerVedNaa')).toEqual(collect(attachment));
   });
 
+  it('validates additional documentation only for the selected option', () => {
+    const definition: AttachmentDefinition = {
+      ...component,
+      attachmentValues: {
+        leggerVedNaa: {
+          enabled: true,
+          additionalDocumentation: { enabled: true, label: 'Explanation', description: '' },
+        },
+        ettersender: { enabled: true },
+      },
+    };
+    const answer = { ...attachment, additionalDocumentation: 'Explanation' };
+    expect(collect(answer, 'paper', definition).map((field) => field.statePath)).toEqual([
+      'documentation.value',
+      'documentation.doc.additionalDocumentation',
+    ]);
+    expect(collect({ ...answer, value: 'ettersender' }, 'paper', definition)).toHaveLength(1);
+  });
+
   it('keeps uploaded titles in the headless validation fields', () => {
     const fields = collect(
       { ...attachment, type: 'other', title: 'Title', files: [{ fileId: 'uploaded' }] },
