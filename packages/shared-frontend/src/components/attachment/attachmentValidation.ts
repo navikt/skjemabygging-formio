@@ -62,6 +62,8 @@ const toAttachmentFilesValidationFields = ({
   requiredFilesMessage,
 }: AttachmentUploadValidationInput): ValidationField[] => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'files');
+  // Without upload the title is printed on the cover page, so it must pass the generator's character rule.
+  const titleOnCoverPage = requiresAttachmentTitleWithoutUpload(attachment, uploadEnabled);
 
   return [
     ...(uploadSelected
@@ -78,8 +80,7 @@ const toAttachmentFilesValidationFields = ({
           }),
         )
       : []),
-    ...(requiresAttachmentTitleWithoutUpload(attachment, uploadEnabled) ||
-    (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
+    ...(titleOnCoverPage || (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
       ? toValidationFields(
           attachmentFieldPath(submissionPath, attachmentId, 'title'),
           attachment?.title,
@@ -87,7 +88,7 @@ const toAttachmentFilesValidationFields = ({
             statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
             label: TEXTS.statiske.attachment.attachmentTitle,
             required: true,
-            validation: { maxLength: 50 },
+            validation: { maxLength: 50, ...(titleOnCoverPage ? { coverPageValue: true } : {}) },
           }),
         )
       : []),

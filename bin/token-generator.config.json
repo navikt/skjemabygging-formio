@@ -6,6 +6,12 @@
     "tags": ["forms-api", "bygger"]
   },
   {
+    "filePath": "packages/sendinn-backend/.env",
+    "name": "SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN",
+    "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-fss:skjemadigitalisering:skjemabygging-proxy",
+    "tags": ["skjemabygging-proxy", "sendinn"]
+  },
+  {
     "filePath": "packages/fyllut-backend/.env",
     "name": "INNSENDING_API_M2M_ACCESS_TOKEN",
     "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp:team-soknad:innsending-api",

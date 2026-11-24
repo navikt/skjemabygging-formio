@@ -644,7 +644,7 @@ describe('Pdf', () => {
 
       it('shows error message when cover page generation fails', () => {
         cy.mocksUseRouteVariant('foersteside:failure');
-        fillFormAndDownloadPdf(500);
+        fillFormAndDownloadPdf(503);
         cy.findByText(TEXTS.statiske.prepareLetterPage.downloadError).should('exist');
       });
 

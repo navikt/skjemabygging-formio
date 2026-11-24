@@ -4,6 +4,7 @@ import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
 
 type MimeType =
+  | 'application/x-www-form-urlencoded'
   | 'application/json'
   | 'application/pdf'
   | 'application/octet-stream'

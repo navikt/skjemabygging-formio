@@ -199,3 +199,69 @@ journey. `useSendinnForm()` reads the loaded response from
 `SendinnFormProvider`; it does not provide draft, upload or submission
 capabilities. Document preparation must independently reload and reconvert
 the trusted source with the same normalized filter.
+
+### Sendinn paper cover page
+
+`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `revision`,
+`language` (default `nb`), `attachmentFilter` (a string or string array,
+default empty) and `submission: { data: ... }`. The route reads them with
+`requestUtil.getBodyValue` and does not check their types, as in Fyllut. A
+missing `formPath`, `revision` or `submission` gives 400, so the revision is
+always pinned. A language the form lacks falls back to `nb`. Pass the
+canonical Submission answers, the revision of the loaded form and the filter
+retained by `SendinnFormProvider`.
+Do not pass a form definition, labels or a Party. Query parameter `sub`
+does not select a submission mode.
+`SendinnCoverPageRequest` and `SendinnCoverPageResult` are exported from
+shared-domain for the T7 host adapter. Concerned-person answers are supplied
+postal metadata, not proof of the caller's identity or resource ownership.
+
+With the `published` content source the service first reads the cached
+publication. An unpublished form gives 404. If the publication has the pinned
+revision, the service uses it. Otherwise it loads
+`GET /v1/forms/{path}?revision=N` and rejects a `status` other than
+`published` as 404. forms-api computes that status per revision, so the
+publication check is what stops older revisions of an unpublished form. With
+`latest` the service always loads the pinned revision, without cache. It then
+rechecks paper eligibility, language availability and normalized filter
+membership. Translations are not pinned: only
+`publicationId` pins them, and forms-api has no endpoint that fetches by it.
+Preprod cleanup can delete old revisions, which also gives 404.
+
+Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
+`Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
+this endpoint does not return form answers or download assembly data.
+Expected errors use the central `ErrorResponse` and `x-correlation-id`.
+Missing request fields, an invalid form path, an unidentified person without an address, a Nav unit
+that is not digits and values the generator cannot encode are 400. Missing or
+paper-disabled forms are 404. Content, token and generator failures are 503.
+`coverPageService` replaces generator errors with a generic message, so
+diagnostics never contain answers or raw upstream bodies.
+
+The server has no Sendinn-only business rules. The form validation owns
+required fields, the renderer clears hidden answers and the frontend blocks an
+empty attachment list (T9). `createSendinnCoverPageService` uses the same
+`coverPageMapper.createDownloadDataFromSubmission` as Fyllut's paper flow, with
+`type: 'ETTERSENDELSE'`. Differences from Fyllut are deliberate:
+
+- The Nav unit is the answered `navUnitSelect` field (`navUnit` or
+  `navContactUnit`). Fyllut gets `enhetNummer` from the request body.
+- The cover page is returned alone as base64 JSON. Fyllut merges it with the
+  application PDF.
+- The form's `mottaksadresseId` is ignored, as in fyllut-ettersending. It is
+  unclear whether a form's recipient also applies to ettersending (open
+  question in #2245).
+
+A Nav unit uses `enhetsnummer` with `netsPostboks: "1400"`. No user is sent
+when party resolution finds nobody, for example when user types are hidden, a
+Nav unit is forced or the user chose multiple people. User information whose
+inputs were cleared on hide counts as no user.
+
+Sendinn configures the existing cover-page service with
+`SKJEMABYGGING_PROXY_URL`. It gets client-credentials tokens from Texas
+through `createEntraIdTokenService`, with target
+`api://<SKJEMABYGGING_PROXY_CLIENT_ID>/.default`. Local development outside
+mocks can use `SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN`; mock runs never send it.
+Preprod release also requires the proxy's inbound policy and Entra ID caller
+authorization to accept both Sendinn applications. Those permissions live
+outside this repo.
