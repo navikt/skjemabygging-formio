@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
-import { SUMMARY_KEY } from '../../form-flow/constants';
+import { PAPER_SUBMISSION_KEY, SUMMARY_KEY } from '../../form-flow/constants';
+import SendinnPaperSubmissionPage from '../paper-submission/SendinnPaperSubmissionPage';
 import { SendinnFormFlowLayout } from './SendinnFormFlowLayout';
 import { SendinnFormPage } from './SendinnFormPage';
 import { SendinnSummaryPage } from './SendinnSummaryPage';
@@ -17,6 +18,7 @@ const SendinnFormRouter = () => {
         <Route path={SUMMARY_KEY} element={<SendinnSummaryPage />} />
         <Route path=":panelSlug" element={<SendinnFormPage />} />
       </Route>
+      <Route path={PAPER_SUBMISSION_KEY} element={<SendinnPaperSubmissionPage />} />
     </Routes>
   );
 };

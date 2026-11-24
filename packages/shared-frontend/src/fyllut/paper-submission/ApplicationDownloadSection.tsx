@@ -1,6 +1,7 @@
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import Alert from '../../components/alert/Alert';
+import DownloadPdfButton from '../../components/download-pdf-button/DownloadPdfButton';
 import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
 import { useApplication } from '../../context/application/ApplicationContext';
@@ -13,7 +14,6 @@ import { useRuntimeServices } from '../../context/runtime-services/RuntimeServic
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import styles from './ApplicationDownloadSection.module.css';
-import DownloadPdfButton from './DownloadPdfButton';
 
 interface Props {
   documentType: 'application' | 'application-with-cover-page';
