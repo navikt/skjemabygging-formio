@@ -16,6 +16,11 @@ import {
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
 const deleteErrorMessage = 'Kan ikke slette mellomlagret søknad.';
+const getDraftForm = (formPath: string) =>
+  formService.getForm({
+    formPath,
+    select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
+  });
 
 const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
@@ -57,10 +62,7 @@ const sendInnSoknad = {
       const forceMellomlagring = requestUtil.getStringQuery(req, 'forceMellomlagring', true);
       const requestBody = req.body;
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
-      const form = await formService.getForm({
-        formPath,
-        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
-      });
+      const form = await getDraftForm(formPath);
       const translations = await translationService.getTranslations({ formPath });
 
       const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
@@ -101,10 +103,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const form = await formService.getForm({
-        formPath,
-        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
-      });
+      const form = await getDraftForm(formPath);
       const translations = await translationService.getTranslations({ formPath });
 
       const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
