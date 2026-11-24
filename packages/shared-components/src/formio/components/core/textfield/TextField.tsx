@@ -71,8 +71,8 @@ class TextField extends BaseComponent {
 
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
-    if (validity && !this.shouldSkipValidation(data, dirty, row)) {
-      const errorMessage = this.validateTextfield();
+    if (validity) {
+      const errorMessage = this.validateTextfield(!this.shouldSkipValidation(data, dirty, row));
       if (errorMessage) {
         return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
       }
@@ -81,14 +81,14 @@ class TextField extends BaseComponent {
     return validity;
   }
 
-  private validateTextfield(): string | undefined {
+  private validateTextfield(validateCharacters: boolean): string | undefined {
     const value = this.getValue();
 
     if (value === '' || value === undefined) {
       return;
     }
 
-    if (typeof value === 'string' && !validatorUtils.hasSupportedCharacters(value)) {
+    if (validateCharacters && typeof value === 'string' && !validatorUtils.hasSupportedCharacters(value)) {
       return this.translateWithLabel('containsUnsupportedCharacters');
     }
 
