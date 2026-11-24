@@ -1,7 +1,12 @@
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Label, VStack } from '@navikt/ds-react';
-import { AttachmentType, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useRef } from 'react';
+import {
+  AttachmentType,
+  SubmissionAttachment,
+  TEXTS,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useRef, useState } from 'react';
 import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import { createAttachmentId } from '../../context/attachment/attachmentData';
 import { readAttachments } from '../../context/attachment/attachmentSubmission';
@@ -26,6 +31,7 @@ import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
 import {
   requiresAttachmentTitleWithoutUpload,
+  toAttachmentAdditionalDocumentationValidationFields,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
 } from './attachmentValidation';
@@ -132,6 +138,18 @@ const Attachment = ({
     );
   };
   const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
+  const unsupportedDocumentation = !validatorUtils.hasSupportedCharacters(attachment?.additionalDocumentation ?? '');
+  const [editingDocumentation, setEditingDocumentation] = useState(false);
+  if (uploadedFiles.length > 0 && unsupportedDocumentation && !editingDocumentation) {
+    setEditingDocumentation(true);
+  }
+  const additionalDocumentationFields = toAttachmentAdditionalDocumentationValidationFields({
+    submissionPath: statePath,
+    attachmentId,
+    attachment,
+    values,
+    uploadEnabled,
+  });
   const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
   const titleWithoutUploadFields = titleWithoutUploadRequired
     ? documents.flatMap((item) =>
@@ -154,7 +172,7 @@ const Attachment = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {[...fields, ...titleWithoutUploadFields].map((field) => (
+      {[...fields, ...titleWithoutUploadFields, ...additionalDocumentationFields].map((field) => (
         <ValidationRegistration
           key={field.statePath}
           label={field.field}
@@ -165,7 +183,7 @@ const Attachment = ({
       ))}
       <VStack gap="space-24" data-cy={uploadEnabled ? 'attachment-upload' : undefined}>
         <div>
-          {uploadEnabled && uploadedFiles.length > 0 ? (
+          {uploadEnabled && uploadedFiles.length > 0 && !unsupportedDocumentation && !editingDocumentation ? (
             <div id={inputId(choicePath)} tabIndex={-1}>
               <Label>{translate(label)}</Label>
               {description && <TranslatedDescription translationKey={description} />}
@@ -188,6 +206,7 @@ const Attachment = ({
               uploadEnabled={uploadEnabled}
               submissionPath={statePath}
               readOnly={readOnly}
+              choiceLocked={uploadEnabled && uploadedFiles.length > 0}
             />
           )}
           {readMore && <ReadMore {...readMore} />}

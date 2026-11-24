@@ -1,7 +1,8 @@
 import { Label } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect } from 'react';
-import { UnvalidatedFields } from '../../context/validation/ValidationScopeContext';
+import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
+import { UnvalidatedFields, useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
@@ -29,6 +30,7 @@ interface Props {
   submissionPath?: string;
   attachmentId: string;
   readOnly?: boolean;
+  choiceLocked?: boolean;
 }
 
 const AttachmentOptionSelect = ({
@@ -46,6 +48,7 @@ const AttachmentOptionSelect = ({
   submissionPath,
   attachmentId,
   readOnly,
+  choiceLocked = false,
 }: Props) => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'value');
   const implicitValueKey = getImplicitAttachmentValue(values, uploadEnabled);
@@ -53,6 +56,10 @@ const AttachmentOptionSelect = ({
   const selectedOption = values.find((option) => option.value === selectedValueKey);
   const additionalDocumentation = selectedOption?.additionalDocumentation;
   const showDeadline = selectedOption?.showDeadline;
+  const additionalDocumentationPath = attachmentFieldPath(submissionPath, attachmentId, 'additionalDocumentation');
+  const pageKey = useOptionalValidationScope()?.pageKey;
+  const documentationError = useValidationFieldError(additionalDocumentationPath, pageKey);
+  const externalDocumentationError = useValidationExternalError(additionalDocumentationPath);
 
   useEffect(() => {
     if (!implicitValueKey || value?.value === implicitValueKey) {
@@ -91,7 +98,7 @@ const AttachmentOptionSelect = ({
     // state paths as the rest of the form.
     <UnvalidatedFields>
       <div className={className}>
-        {implicitValueKey ? (
+        {implicitValueKey || choiceLocked ? (
           <div className={styles.implicitChoice} id={inputId(statePath)} tabIndex={-1}>
             <Label>{title}</Label>
             {description && <TranslatedDescription translationKey={description} />}
@@ -130,7 +137,8 @@ const AttachmentOptionSelect = ({
           (uploadEnabled ? (
             <TextArea
               marginBottom={showDeadline && deadline ? 'space-16' : 'space-0'}
-              statePath={attachmentFieldPath(submissionPath, attachmentId, 'additionalDocumentation')}
+              statePath={additionalDocumentationPath}
+              error={documentationError ?? externalDocumentationError}
               label={translate(additionalDocumentation.label)}
               value={selectedValueKey === value?.value ? (value?.additionalDocumentation ?? '') : ''}
               description={translate(additionalDocumentation.description ?? '')}
@@ -140,7 +148,8 @@ const AttachmentOptionSelect = ({
             />
           ) : (
             <TextField
-              statePath={attachmentFieldPath(submissionPath, attachmentId, 'additionalDocumentation')}
+              statePath={additionalDocumentationPath}
+              error={documentationError ?? externalDocumentationError}
               label={translate(additionalDocumentation.label)}
               description={translate(additionalDocumentation.description ?? '')}
               value={value?.additionalDocumentation ?? ''}
