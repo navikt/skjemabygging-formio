@@ -94,6 +94,7 @@ const AttachmentUpload = ({
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           submissionMethod={appConfig.submissionMethod}
+          choiceLocked={uploadedAttachmentFiles.length > 0}
           ref={(ref) => {
             if (refs?.current) {
               // eslint-disable-next-line react-hooks/immutability

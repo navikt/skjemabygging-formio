@@ -206,6 +206,7 @@ const Attachment = ({
               uploadEnabled={uploadEnabled}
               submissionPath={statePath}
               readOnly={readOnly}
+              choiceLocked={uploadEnabled && uploadedFiles.length > 0}
             />
           )}
           {readMore && <ReadMore {...readMore} />}

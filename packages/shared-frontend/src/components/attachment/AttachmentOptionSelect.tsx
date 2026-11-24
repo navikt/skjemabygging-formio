@@ -30,6 +30,7 @@ interface Props {
   submissionPath?: string;
   attachmentId: string;
   readOnly?: boolean;
+  choiceLocked?: boolean;
 }
 
 const AttachmentOptionSelect = ({
@@ -47,6 +48,7 @@ const AttachmentOptionSelect = ({
   submissionPath,
   attachmentId,
   readOnly,
+  choiceLocked = false,
 }: Props) => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'value');
   const implicitValueKey = getImplicitAttachmentValue(values, uploadEnabled);
@@ -96,7 +98,7 @@ const AttachmentOptionSelect = ({
     // state paths as the rest of the form.
     <UnvalidatedFields>
       <div className={className}>
-        {implicitValueKey ? (
+        {implicitValueKey || choiceLocked ? (
           <div className={styles.implicitChoice} id={inputId(statePath)} tabIndex={-1}>
             <Label>{title}</Label>
             {description && <TranslatedDescription translationKey={description} />}

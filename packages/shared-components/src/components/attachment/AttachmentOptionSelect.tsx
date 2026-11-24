@@ -25,6 +25,7 @@ interface Props {
   deadline?: string;
   className?: string;
   submissionMethod?: SubmissionMethod;
+  choiceLocked?: boolean;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
@@ -43,6 +44,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
       deadline,
       className,
       submissionMethod,
+      choiceLocked = false,
     }: Props,
     ref,
   ) => {
@@ -100,7 +102,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
 
     return (
       <div className={className}>
-        {implicitValueKey ? (
+        {implicitValueKey || choiceLocked ? (
           <div className="mb-4">
             <Label>{title}</Label>
             <BodyShort>{description}</BodyShort>
