@@ -23,8 +23,23 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const { activeComponents, form, submission } = useForm();
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
 
-  const valueValidator = attachmentValidator(translate, ['value']);
+  const valueValidator = attachmentValidator(translate, ['value', 'supportedAdditionalDocumentation']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
+  const titleValidator = attachmentValidator(translate, ['supportedTitle']);
+
+  const validateTitles = () => {
+    let valid = true;
+    submissionAttachments
+      .filter((attachment) => attachments.some((field) => field.navId === attachment.navId))
+      .forEach((attachment) => {
+        const error = titleValidator.validate(TEXTS.statiske.attachment.attachmentTitle, attachment);
+        if (error) {
+          addError(attachment.attachmentId, error, 'TITLE');
+          valid = false;
+        }
+      });
+    return valid;
+  };
 
   const validateValues = () => {
     const valueErrors = validateAttachment(attachments, submissionAttachments, valueValidator);
@@ -46,6 +61,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
     removeAllErrors();
     let isValid = validateValues();
     isValid = validateFileUploads() && isValid;
+    isValid = validateTitles() && isValid;
     if (isValid) {
       navigate({ pathname: '../oppsummering', search });
     } else {
@@ -57,6 +73,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
     removeAllErrors();
     let isValid = validateValues();
     isValid = validateFileUploads() && isValid;
+    isValid = validateTitles() && isValid;
     if (isValid) {
       await updateMellomlagring();
       navigate({ pathname: '../oppsummering', search });

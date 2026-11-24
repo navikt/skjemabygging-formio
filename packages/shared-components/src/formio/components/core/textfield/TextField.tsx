@@ -1,5 +1,5 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
-import { InputMode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { InputMode, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -71,7 +71,7 @@ class TextField extends BaseComponent {
 
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
-    if (validity) {
+    if (validity && !this.shouldSkipValidation(data, dirty, row)) {
       const errorMessage = this.validateTextfield();
       if (errorMessage) {
         return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
@@ -86,6 +86,10 @@ class TextField extends BaseComponent {
 
     if (value === '' || value === undefined) {
       return;
+    }
+
+    if (typeof value === 'string' && !validatorUtils.hasSupportedCharacters(value)) {
+      return this.translateWithLabel(TEXTS.validering.containsUnsupportedCharacters);
     }
 
     if (this.component?.validate?.digitsOnly) {

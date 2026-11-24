@@ -357,9 +357,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
         }
         return {
           ...att,
-          value: values?.value,
-          title: values?.title,
-          additionalDocumentation: values?.additionalDocumentation,
+          ...(values ?? { value: undefined, title: undefined, additionalDocumentation: undefined }),
         };
       });
       return { ...current, attachments: updatedAttachments } as Submission;

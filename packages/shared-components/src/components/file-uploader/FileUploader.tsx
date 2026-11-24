@@ -1,6 +1,11 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
-import { enableAttachmentDownload, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
+import {
+  enableAttachmentDownload,
+  SubmissionAttachment,
+  TEXTS,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { ChangeEvent, MutableRefObject, ReactNode, useCallback, useState } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -80,13 +85,18 @@ const FileUploader = ({
 
   const uploadedFiles = attachment?.files ?? [];
   const initialUpload = uploadedFiles.length === 0;
+  const unsupportedTitle = requireAttachmentTitle && !validatorUtils.hasSupportedCharacters(attachment?.title ?? '');
+  const [editingTitle, setEditingTitle] = useState(false);
+  if (uploadedFiles.length > 0 && unsupportedTitle && !editingTitle) {
+    setEditingTitle(true);
+  }
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
   const fileItems = [...uploadedFiles, ...inProgress];
   const deleteAttachmentDisabled = hasActiveUpload(inProgress);
 
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
-  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
+  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle', 'supportedTitle']);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     changeAttachmentValue(
@@ -122,7 +132,7 @@ const FileUploader = ({
           translationParams={fileUploadErrorParams}
         />
       )}
-      {showButton && (
+      {(showButton || unsupportedTitle || editingTitle) && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
@@ -139,29 +149,31 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          <HStack gap="space-16">
-            <UploadButton
-              attachmentId={attachmentId}
-              variant={initialUpload ? 'primary' : 'secondary'}
-              allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-              refs={refs}
-              translationParams={fileUploadErrorParams}
-              accept={accept}
-              readMore={readMore}
-              maxFileSizeInBytes={maxFileSizeInBytes}
-              onSuccess={logUploadEvent}
-            />
-            {showDeleteAttachmentButton && onDeleteAttachment && (
-              <Button
-                className={styles.deleteButton}
-                variant="tertiary"
-                disabled={deleteAttachmentDisabled}
-                onClick={() => onDeleteAttachment(attachmentId)}
-              >
-                {translate(TEXTS.statiske.attachment.deleteAttachment)}
-              </Button>
-            )}
-          </HStack>
+          {showButton && (
+            <HStack gap="space-16">
+              <UploadButton
+                attachmentId={attachmentId}
+                variant={initialUpload ? 'primary' : 'secondary'}
+                allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                refs={refs}
+                translationParams={fileUploadErrorParams}
+                accept={accept}
+                readMore={readMore}
+                maxFileSizeInBytes={maxFileSizeInBytes}
+                onSuccess={logUploadEvent}
+              />
+              {showDeleteAttachmentButton && onDeleteAttachment && (
+                <Button
+                  className={styles.deleteButton}
+                  variant="tertiary"
+                  disabled={deleteAttachmentDisabled}
+                  onClick={() => onDeleteAttachment(attachmentId)}
+                >
+                  {translate(TEXTS.statiske.attachment.deleteAttachment)}
+                </Button>
+              )}
+            </HStack>
+          )}
         </VStack>
       )}
     </VStack>
