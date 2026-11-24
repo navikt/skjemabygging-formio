@@ -49,13 +49,7 @@ const Attachment = ({
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
       attachment ?? { attachmentId: componentId, navId: componentId, type },
-      value
-        ? {
-            value: value.key,
-            additionalDocumentation: value.additionalDocumentation,
-            ...(value.key !== attachment?.value ? { title: undefined } : {}),
-          }
-        : { value: undefined, title: undefined, additionalDocumentation: undefined },
+      value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
       validator,
     );
   };

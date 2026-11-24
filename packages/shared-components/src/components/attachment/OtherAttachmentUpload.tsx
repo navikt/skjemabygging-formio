@@ -7,7 +7,6 @@ import {
   SubmissionAttachment,
   SubmissionAttachmentValue,
   TEXTS,
-  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { MutableRefObject, ReactNode, useState } from 'react';
@@ -63,13 +62,6 @@ const OtherAttachmentUpload = ({
   const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
-  const unsupportedDocumentation = !validatorUtils.hasSupportedCharacters(
-    submissionAttachment?.additionalDocumentation ?? '',
-  );
-  const [editingDocumentation, setEditingDocumentation] = useState(false);
-  if (uploadedAttachmentFiles.length > 0 && unsupportedDocumentation && !editingDocumentation) {
-    setEditingDocumentation(true);
-  }
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, appConfig.submissionMethod);
   const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(attachmentValues, appConfig.submissionMethod);
   const uploadSelected =
@@ -109,7 +101,7 @@ const OtherAttachmentUpload = ({
 
   return (
     <VStack gap="space-24" className={clsx('mb', className)} data-cy="attachment-upload">
-      {uploadedAttachmentFiles.length > 0 && !unsupportedDocumentation && !editingDocumentation ? (
+      {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
           <BodyShort>{description}</BodyShort>
@@ -119,15 +111,7 @@ const OtherAttachmentUpload = ({
           title={label}
           description={description}
           error={error?.message}
-          additionalDocumentationId={`${componentId}-additionalDocumentation`}
-          value={
-            submissionAttachment?.value
-              ? {
-                  key: submissionAttachment.value,
-                  additionalDocumentation: submissionAttachment.additionalDocumentation,
-                }
-              : undefined
-          }
+          value={submissionAttachment?.value ? { key: submissionAttachment.value } : undefined}
           attachmentValues={attachmentValues}
           onChange={onValueChange}
           translate={translate}

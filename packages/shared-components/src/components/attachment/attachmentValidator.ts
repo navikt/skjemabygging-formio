@@ -21,13 +21,7 @@ const isOtherAttachmentTitleValid = (attachment?: SubmissionAttachment) =>
 
 const attachmentValidator = (
   translate: (text: string, params?: Record<string, string>) => string,
-  rules: Rule[] = [
-    'value',
-    'fileUploaded',
-    'otherDocumentationTitle',
-    'supportedAdditionalDocumentation',
-    'supportedTitle',
-  ],
+  rules: Rule[] = ['value', 'fileUploaded', 'otherDocumentationTitle'],
 ): AttachmentValidator => ({
   validate: (label: string, attachment?: SubmissionAttachment, additionalDocumentationLabel?: string) => {
     if (rules.includes('value') && !isValueValid(attachment)) {
