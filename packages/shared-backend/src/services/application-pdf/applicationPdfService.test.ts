@@ -93,6 +93,30 @@ describe('createApplicationPdfService', () => {
     expect(await registry.metrics()).toContain('fyllut_familie_pdf_duration_seconds_count{error="false"} 1');
   });
 
+  it('sends values to familie-pdf exactly as the user wrote them', async () => {
+    const fetchSpy = mockFetchResponse(JSON.stringify({ content: 'pdf-base64' }), 200, 'application/json');
+    const service = createService();
+    const pdfFormData = {
+      ...createPdfFormData(),
+      verdiliste: [
+        {
+          label: 'Section',
+          verdiliste: [
+            { label: 'Escaped characters', verdi: 'Tom & Jerry, 5 > 3 <3' },
+            { label: 'Less than', verdi: '1<2' },
+            { label: 'Unclosed tag', verdi: 'x <y z' },
+            { label: 'Heart', verdi: '<3 hilsen' },
+            { label: 'Markup', verdi: '<b>bold</b> <script>alert(1)</script>' },
+          ],
+        },
+      ],
+    };
+
+    await service.createPdf({ accessToken: 'token', pdfFormData });
+
+    expectCreatePdfRequest(fetchSpy, pdfFormData);
+  });
+
   it('records failure and duration on error', async () => {
     const registry = new Registry();
     mockFetchResponse('pdf failed', 503, 'text/plain');
