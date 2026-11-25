@@ -14,6 +14,8 @@ export const validering = {
   // Tekstfelt
   digitsOnly: '{{field}} kan bare inneholde tall',
   containsInvalidCharacters: '{{field}} inneholder ugyldige tegn',
+  containsUnsupportedCharacters:
+    '{{field}} inneholder tegn som ikke støttes. Fjern uvanlige tegn eller skriv teksten på nytt.',
 
   // PhoneNumber
   phoneNumberLength: '{{field}} må ha 8 siffer',

@@ -41,6 +41,7 @@ interface ValidationRules {
   minLength?: number;
   maxLength?: number;
   email?: boolean;
+  supportedCharacters?: boolean;
   coverPageValue?: boolean;
   postalCode?: boolean;
   numberType?: 'integer' | 'decimal';
@@ -184,6 +185,9 @@ const validateValue = (
   }
   if (rules.email && typeof value === 'string' && !isValidEmailAddress(value.trim())) {
     return ruleViolation('invalid_email', { field });
+  }
+  if (rules.supportedCharacters && typeof value === 'string' && !validatorUtils.hasSupportedCharacters(value)) {
+    return ruleViolation('containsUnsupportedCharacters', { field });
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
     return ruleViolation('containsInvalidCharacters', { field });

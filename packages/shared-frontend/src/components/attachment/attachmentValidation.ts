@@ -2,6 +2,7 @@ import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared
 import { ValidationField } from '../../context/validation/validationTypes';
 import { ValidationRules } from '../../validation/validators';
 import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
+import { toTextFieldValidation } from '../text-field/textFieldValidation';
 import { ChoiceValidation } from '../types';
 import { attachmentFieldPath } from './attachmentFieldPath';
 
@@ -79,11 +80,11 @@ const toAttachmentFilesValidationFields = ({
         )
       : []),
     ...(requiresAttachmentTitleWithoutUpload(attachment, uploadEnabled) ||
-    (uploadSelected && attachment?.type === 'other' && !attachment.files?.length)
+    (uploadSelected && attachment?.type === 'other')
       ? toValidationFields(
           attachmentFieldPath(submissionPath, attachmentId, 'title'),
           attachment?.title,
-          toFieldValidation({
+          toTextFieldValidation({
             statePath: attachmentFieldPath(submissionPath, attachmentId, 'title'),
             label: TEXTS.statiske.attachment.attachmentTitle,
             required: true,

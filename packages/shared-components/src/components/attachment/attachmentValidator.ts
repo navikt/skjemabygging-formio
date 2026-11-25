@@ -1,10 +1,10 @@
-import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface AttachmentValidator {
   validate: (label: string, attachment?: SubmissionAttachment) => string | undefined;
 }
 
-type Rule = 'value' | 'fileUploaded' | 'otherDocumentationTitle';
+type Rule = 'value' | 'fileUploaded' | 'otherDocumentationTitle' | 'supportedTitle';
 
 const isValueValid = (attachment?: SubmissionAttachment) => !!attachment?.value;
 
@@ -27,6 +27,16 @@ const attachmentValidator = (
     }
     if (rules.includes('otherDocumentationTitle') && !isOtherAttachmentTitleValid(attachment)) {
       return translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) });
+    }
+    if (
+      rules.includes('supportedTitle') &&
+      attachment?.type === 'other' &&
+      attachment.value === 'leggerVedNaa' &&
+      !validatorUtils.hasSupportedCharacters(attachment.title ?? '')
+    ) {
+      return translate('containsUnsupportedCharacters', {
+        field: translate(TEXTS.statiske.attachment.attachmentTitle),
+      });
     }
     return undefined;
   },

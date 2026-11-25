@@ -175,6 +175,7 @@ describe('attachment validation', () => {
     expect(fields.map((field) => field.statePath)).toEqual([
       'documentation.value',
       'documentation.doc.files',
+      'documentation.doc.title',
       'documentation.doc-4.files',
       'documentation.doc-4.title',
     ]);
@@ -195,6 +196,21 @@ describe('attachment validation', () => {
   it('normalizes legacy string and key answers at the validation boundary', () => {
     expect(collect('leggerVedNaa')).toEqual(collect({ key: 'leggerVedNaa' }));
     expect(collect('leggerVedNaa')).toEqual(collect(attachment));
+  });
+
+  it('keeps uploaded titles in the headless validation fields', () => {
+    const fields = collect(
+      { ...attachment, type: 'other', title: 'Title', files: [{ fileId: 'uploaded' }] },
+      'digital',
+      {
+        ...component,
+        attachmentType: 'other',
+      },
+    );
+    const title = fields.find((field) => field.statePath === 'documentation.doc.title');
+    expect(title?.value).toBe('Title');
+    expect(title?.rules.supportedCharacters).toBe(true);
+    expect(validateValue('', title!.field, title!.rules, 'nb')).toBeDefined();
   });
 
   it('requires files for personal ID through the ordinary shared builder', () => {

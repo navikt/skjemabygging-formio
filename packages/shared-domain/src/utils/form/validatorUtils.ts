@@ -25,6 +25,20 @@ const isValidCoverPageValue = (value: string) => {
   return validCharactersRegex.test(value);
 };
 
+// Extended_Pictographic: pictographs, including emoji and symbols such as copyright/trademark.
+// Regional_Indicator: flag letters; Emoji_Modifier: skin tones; U+20E3: combining keycap.
+// Do not use \p{Emoji}, which also matches ordinary digits, # and *.
+const emojiRegex = /[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}\u20E3]/u;
+const containsEmoji = (value: string) => emojiRegex.test(value);
+
+// U+FE0E/FE0F: text/emoji variation selectors; U+2028/2029: line/paragraph separators.
+// U+E000-F8FF: private-use characters, including pasted Word bullets (U+F0B7).
+// U+FFFD: replacement character from broken text encoding.
+const unsupportedCharactersRegex = /[\uFE0E\uFE0F\u2028\u2029\uE000-\uF8FF\uFFFD]/u;
+
+// Reject common pasted characters that cause PDF problems, not every unsupported font glyph.
+const hasSupportedCharacters = (value: string) => !containsEmoji(value) && !unsupportedCharactersRegex.test(value);
+
 const isOrganizationNumber = (organizationNumber: string) => {
   organizationNumber = removeSpaces(organizationNumber);
   if (/^\d{9}$/.test(organizationNumber)) {
@@ -84,6 +98,8 @@ const validatorUtils = {
   isAccountNumber,
   isNationalIdentityNumber,
   isValidCoverPageValue,
+  containsEmoji,
+  hasSupportedCharacters,
   isValidUuid,
   isValidFormPath,
   isValidAttachmentId,

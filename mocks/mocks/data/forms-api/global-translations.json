@@ -5833,6 +5833,13 @@
     "publishedBy": "Mock"
   },
   {
+    "key": "containsUnsupportedCharacters",
+    "tag": "validering",
+    "nb": "{{field}} inneholder tegn som ikke støttes. Fjern uvanlige tegn eller skriv teksten på nytt.",
+    "nn": "{{field}} inneheld teikn som ikkje blir støtta. Fjern uvanlege teikn eller skriv teksten på nytt.",
+    "en": "{{field}} contains unsupported characters. Remove unusual characters or type the text again."
+  },
+  {
     "id": 390,
     "key": "introPage.dataDisclosure.nationalPopulationRegister",
     "tag": "introPage",

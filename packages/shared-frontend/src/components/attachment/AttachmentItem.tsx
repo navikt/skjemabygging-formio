@@ -1,5 +1,5 @@
 import { Box, Button, FileItem, HStack, VStack } from '@navikt/ds-react';
-import { SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment, TEXTS, UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import { readAttachments, standaloneAttachmentsPath } from '../../context/attachment/attachmentSubmission';
 import {
@@ -78,6 +78,13 @@ const AttachmentItem = ({
   const uploadedFiles = attachment?.files ?? noFiles;
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
+  const invalidTitle =
+    requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
+  const uploadTitleError = invalidTitle
+    ? translate(attachment?.title?.trim() ? 'containsUnsupportedCharacters' : 'required', {
+        field: translate(TEXTS.statiske.attachment.attachmentTitle),
+      })
+    : undefined;
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
@@ -150,7 +157,7 @@ const AttachmentItem = ({
                     submissionPath={submissionPath}
                     multipleAttachments={multipleAttachments}
                     variant={initialUpload ? 'primary' : 'secondary'}
-                    allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+                    titleError={uploadTitleError}
                     accept={accept}
                     maxFileSizeInBytes={maxFileSizeInBytes}
                     onSuccess={() => onUpload?.(initialAttachment)}

@@ -1,6 +1,32 @@
 import { validatorUtils } from './validatorUtils';
 
 describe('validatorUtils.ts', () => {
+  describe('hasSupportedCharacters', () => {
+    it.each(['', 'Hello! #1 * + & @', 'Æøå ÁáČčĐđŊŋŠšŦŧŽž', 'e\u0301', 'First line\r\nSecond line\twith\u00a0spaces'])(
+      'accepts ordinary text: %j',
+      (value) => {
+        expect(validatorUtils.hasSupportedCharacters(value)).toBe(true);
+        expect(validatorUtils.containsEmoji(value)).toBe(false);
+      },
+    );
+
+    it.each(['😀', '👨‍👩‍👧‍👦', '🇳🇴', '🇳', '🏽', '👍🏽', '1️⃣', '#\u20e3', '©', '™'])(
+      'rejects pictographs and emoji sequence parts: %j',
+      (value) => {
+        expect(validatorUtils.containsEmoji(value)).toBe(true);
+        expect(validatorUtils.hasSupportedCharacters(`Text ${value}`)).toBe(false);
+      },
+    );
+
+    it.each(['\uFE0E', '\uFE0F', '\u2028', '\u2029', '\uF0B7', '\uE000', '\uF8FF', '\uFFFD'])(
+      'rejects pasted special characters independently of emoji: %j',
+      (character) => {
+        expect(validatorUtils.containsEmoji(character)).toBe(false);
+        expect(validatorUtils.hasSupportedCharacters(`Text${character}text`)).toBe(false);
+      },
+    );
+  });
+
   describe('validatorUtils.isOrganizationNumber', () => {
     it('Valid organization numbers', () => {
       expect(validatorUtils.isOrganizationNumber('889640782')).toBe(true);

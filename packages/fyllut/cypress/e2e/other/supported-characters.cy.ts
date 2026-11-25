@@ -1,0 +1,183 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
+const errorMessage = (label: string) => TEXTS.validering.containsUnsupportedCharacters.replace('{{field}}', label);
+const requiredMessage = (label: string) => TEXTS.validering.required.replace('{{field}}', label);
+
+const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid = 'Plain text') => {
+  const name = new RegExp(`^${label}( \\(valgfritt\\))?$`);
+  const message = errorMessage(label);
+  cy.findByRole('textbox', { name }).type(invalid);
+  cy.clickNextStep();
+  cy.findAllByText(message).should('have.length', 2);
+  cy.findByRole('link', { name: message }).click();
+  cy.findByRole('textbox', { name }).should('have.focus');
+  cy.findByRole('textbox', { name }).should('have.value', invalid);
+  cy.findByRole('textbox', { name }).clear();
+  cy.findByRole('textbox', { name }).type(valid);
+  cy.findAllByText(message).should('not.exist');
+};
+
+(['new', 'legacy'] as const).forEach((renderer) => {
+  describe(`Supported characters (${renderer} renderer)`, () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      if (renderer === 'legacy') {
+        cy.intercept('GET', '/fyllut/api/config*', (request) => {
+          request.headers['accept-encoding'] = 'identity';
+          delete request.headers['if-none-match'];
+          request.continue((response) => {
+            response.body.newRenderForms = [];
+          });
+        }).as('getConfig');
+      }
+    });
+
+    [
+      { path: 'textfield/validering', label: 'Tekstfelt ikke påkrevd', invalid: 'Hello 😀', valid: 'Hello! #1 *' },
+      { path: 'textarea/validering', label: 'Tekstområde ikke påkrevd', invalid: 'First\nSecond\uF0B7' },
+      { path: 'surname/validering', label: 'Etternavn ikke påkrevd', invalid: 'Name 🇳🇴', valid: 'Name' },
+      { path: 'adresse/norskadresse', label: 'Vegadresse', invalid: 'Road 1️⃣', valid: 'Road 1' },
+    ].forEach(({ path, label, invalid, valid }) => {
+      it(`rejects unsupported characters in ${path} without changing the answer`, () => {
+        cy.visit(`/fyllut/${path}?sub=paper`);
+        cy.defaultWaits();
+        assertCharacterErrorAndRecovery(label, invalid, valid);
+      });
+    });
+
+    it('rejects emoji in an email address', () => {
+      cy.visit('/fyllut/email/validering?sub=paper');
+      cy.defaultWaits();
+      const name = /^E-post ikke påkrevd/;
+      cy.findByRole('textbox', { name }).type('😀@example.no');
+      cy.clickNextStep();
+      cy.findByRole('textbox', { name }).should('have.attr', 'aria-invalid', 'true');
+      cy.findByRole('textbox', { name }).clear();
+      cy.findByRole('textbox', { name }).type('person@example.no');
+      cy.findByRole('textbox', { name }).should('not.have.attr', 'aria-invalid');
+    });
+
+    it('removes character errors when the field becomes hidden', () => {
+      cy.defaultInterceptsMellomlagring();
+      cy.visit('/fyllut/nestedconditions?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring');
+      cy.clickStart();
+      cy.findByRole('checkbox', { name: /^Root toggle/ }).check();
+      cy.findByRole('checkbox', { name: /^Include expense details/ }).check();
+      cy.findByRole('textbox', { name: 'Expense details' }).type('Receipt 😀');
+      cy.clickSaveAndContinue();
+      cy.findByRole('link', { name: errorMessage('Expense details') }).should('exist');
+      cy.findByRole('checkbox', { name: /^Include expense details/ }).uncheck();
+      cy.findByRole('textbox', { name: 'Expense details' }).should('not.exist');
+      cy.findAllByText(errorMessage('Expense details')).should('not.exist');
+    });
+
+    it('validates sender text fields beside the cover-page rule', () => {
+      cy.visit('/fyllut/sender?sub=paper');
+      cy.defaultWaits();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+      cy.findByRole('radiogroup', { name: /^Velg avsenderpanel/ }).within(() => {
+        cy.findByRole('radio', { name: 'Person' }).check();
+      });
+      cy.clickNextStep();
+      assertCharacterErrorAndRecovery('Representantens fornavn', 'Ola 😀', 'Ola');
+    });
+
+    it('blocks file selection until the attachment title is valid', () => {
+      cy.defaultInterceptsMellomlagring();
+      cy.visit('/fyllut/attachmentuploadonly/visning?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.statusCode').should('eq', 200);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      const label = TEXTS.statiske.attachment.attachmentTitle;
+      cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('upload');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+        cy.findByText(requiredMessage(label)).should('be.visible');
+        cy.get('input[type=file]').should('not.exist');
+        cy.findByRole('textbox', { name: label }).type('Title 😀');
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+        cy.findByText(errorMessage(label)).should('be.visible');
+        cy.findByText(requiredMessage(label)).should('not.exist');
+        cy.findByRole('textbox', { name: label }).should('have.value', 'Title 😀');
+        cy.get('input[type=file]').should('not.exist');
+      });
+      cy.get('@upload.all').should('have.length', 0);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).clear();
+        cy.findByRole('textbox', { name: label }).type('Valid title!');
+        cy.findByText(errorMessage(label)).should('not.exist');
+        cy.get('input[type=file]').should('exist');
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@upload').its('response.statusCode').should('eq', 201);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Valid title!').should('be.visible');
+      });
+    });
+
+    it('hides invalid uploaded titles and allows re-uploading', { defaultCommandTimeout: 30000 }, () => {
+      let releaseUpload: () => void;
+      const heldResponse = new Cypress.Promise<void>((resolve) => {
+        releaseUpload = resolve;
+      });
+      cy.defaultInterceptsMellomlagring();
+      cy.visit('/fyllut/attachmentuploadonly/visning?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.statusCode').should('eq', 200);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      const label = TEXTS.statiske.attachment.attachmentTitle;
+      cy.findByRole('textbox', { name: label }).type('Valid title');
+      cy.intercept(
+        { method: 'POST', url: '**/fyllut/api/send-inn/digital-application/*/attachments/*', times: 1 },
+        (request) => request.continue(() => heldResponse),
+      ).as('upload');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.uploadFile('small-file.txt');
+      });
+      cy.findByRole('textbox', { name: label }).clear();
+      cy.findByRole('textbox', { name: label }).type('Title 😀');
+      cy.then(() => releaseUpload());
+      cy.wait('@upload').its('response.statusCode').should('eq', 201);
+      cy.clickSaveAndContinue();
+      cy.findAllByText(errorMessage(label)).should('exist');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('not.exist');
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Title 😀').should('be.visible');
+      });
+      cy.intercept('DELETE', '**/fyllut/api/send-inn/digital-application/*/attachments/**', { statusCode: 204 }).as(
+        'deleteAttachmentFile',
+      );
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('button', { name: 'Slett filen' }).click();
+      });
+      cy.wait('@deleteAttachmentFile').its('response.statusCode').should('eq', 204);
+      cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('replacementUpload');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).clear();
+        cy.findByRole('textbox', { name: label }).type('Corrected title');
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@replacementUpload').its('response.statusCode').should('eq', 201);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Corrected title').should('be.visible');
+      });
+      cy.findAllByText(errorMessage(label)).should('not.exist');
+    });
+
+    it('shows the error message in the selected language', () => {
+      cy.visit('/fyllut/textfield/validering?sub=paper&lang=en');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: /^Tekstfelt ikke påkrevd/ }).type('Hello 😀');
+      cy.clickNextStep();
+      cy.findAllByText(/contains unsupported characters/).should('have.length', 2);
+    });
+  });
+});
