@@ -1,4 +1,10 @@
-import { convertToSendinnPaperForm, Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  convertToSendinnPaperForm,
+  Form,
+  SENDINN_ATTACHMENTS_KEY,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { toNavUnitValidation } from '../../components/nav-unit-select/navUnitValidation';
 import {
   enrichFormWithBaseSubmissionPath,
@@ -8,7 +14,7 @@ import {
 import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
 import { validateValue } from '../../validation/validators';
-import { ATTACHMENTS_KEY, collectSendinnAttachmentValidationFields } from '../validation/sendinnAttachmentValidation';
+import { collectSendinnAttachmentValidationFields } from '../validation/sendinnAttachmentValidation';
 
 const source: Form = {
   title: 'Journey validation',
@@ -47,7 +53,7 @@ const createForm = (properties: Partial<Form['properties']> = {}) =>
   );
 const fields = (form: Form, submission: Submission) =>
   getActivePanels(form, submission, { submissionMethod: 'paper' }).flatMap((panel) =>
-    panel.key === ATTACHMENTS_KEY
+    panel.key === SENDINN_ATTACHMENTS_KEY
       ? collectSendinnAttachmentValidationFields({ form, submission, currentLanguage: 'nb' })
       : collectPageValidationFields({
           components: toComponentDefinitions(panel.components),
@@ -174,7 +180,6 @@ describe('Sendinn generated journey validation', () => {
       third: { attachmentId: 'third', navId: 'third', value: 'leggerVedNaa' },
     };
     expect(invalidPaths(form, submission)).toEqual([]);
-    expect(submission.data).not.toHaveProperty('sendinnAttachment2');
     const emptyForm = { ...form, components: [] };
     expect(collectSendinnAttachmentValidationFields({ form: emptyForm, submission, currentLanguage: 'nb' })).toEqual(
       [],

@@ -1,8 +1,12 @@
-import { attachmentUtils, Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  attachmentUtils,
+  Form,
+  SENDINN_ATTACHMENTS_KEY,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { getActivePanels, toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
-
-const ATTACHMENTS_KEY = 'vedlegg';
 
 const collectSendinnAttachmentValidationFields = ({
   form,
@@ -14,7 +18,7 @@ const collectSendinnAttachmentValidationFields = ({
   currentLanguage: string;
 }) => {
   const panel = getActivePanels(form, submission, { submissionMethod: 'paper' }).find(
-    ({ key }) => key === ATTACHMENTS_KEY,
+    ({ key }) => key === SENDINN_ATTACHMENTS_KEY,
   );
   const components = panel?.components ?? [];
   const fields = collectPageValidationFields({
@@ -47,4 +51,4 @@ const collectSendinnAttachmentValidationFields = ({
   );
 };
 
-export { ATTACHMENTS_KEY, collectSendinnAttachmentValidationFields };
+export { collectSendinnAttachmentValidationFields };

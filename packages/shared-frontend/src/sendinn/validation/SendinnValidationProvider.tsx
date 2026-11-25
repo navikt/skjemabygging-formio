@@ -1,14 +1,14 @@
-import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SENDINN_ATTACHMENTS_KEY, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useCallback } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import FormValidationProvider from '../../form-components/page-validation/FormValidationProvider';
-import { ATTACHMENTS_KEY, collectSendinnAttachmentValidationFields } from './sendinnAttachmentValidation';
+import { collectSendinnAttachmentValidationFields } from './sendinnAttachmentValidation';
 
 const SendinnValidationProvider = ({ children }: { children: ReactNode }) => {
   const { currentLanguage } = useLanguage();
   const resolveSpecialPageFields = useCallback(
     (pageKey: string, submission: Submission | undefined, form: Form) =>
-      pageKey === ATTACHMENTS_KEY
+      pageKey === SENDINN_ATTACHMENTS_KEY
         ? collectSendinnAttachmentValidationFields({ form, submission, currentLanguage })
         : undefined,
     [currentLanguage],

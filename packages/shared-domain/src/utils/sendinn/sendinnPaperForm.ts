@@ -5,6 +5,8 @@ import { createAttachmentCodeFilter } from '../attachment/attachmentCodeFilter';
 import { flattenComponents } from '../form/componentUtil';
 import { createSendinnUserTypeComponents } from './sendinnUserType';
 
+const SENDINN_ATTACHMENTS_KEY = 'vedlegg';
+
 interface SendinnPaperFormContext {
   attachmentFilter: readonly string[];
 }
@@ -56,7 +58,7 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
     ...(userTypeComponents.length
       ? [createSendinnPanel('innsender', TEXTS.statiske.identity.submissionFor, userTypeComponents)]
       : []),
-    createSendinnPanel('vedlegg', TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
+    createSendinnPanel(SENDINN_ATTACHMENTS_KEY, TEXTS.statiske.staticPdf.ettersendingTitle, attachments),
   ];
 
   return {
@@ -68,5 +70,5 @@ const convertToSendinnPaperForm = (source: Form, { attachmentFilter }: SendinnPa
   };
 };
 
-export { convertToSendinnPaperForm };
+export { convertToSendinnPaperForm, SENDINN_ATTACHMENTS_KEY };
 export type { SendinnPaperFormContext };
