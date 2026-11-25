@@ -23,10 +23,10 @@ type FormService = {
   getForm: {
     <S extends FormWithLanguagesSelectType[]>(props: {
       formPath: string;
-      revision?: string;
+      revision?: number;
       select: S;
     }): Promise<Pick<FormWithLanguages, S[number]>>;
-    (props: { formPath: string; revision?: string; select?: undefined }): Promise<Form>;
+    (props: { formPath: string; revision?: number; select?: undefined }): Promise<Form>;
   };
 };
 
@@ -63,7 +63,7 @@ const createFormService = ({
     select,
   }: {
     formPath: string;
-    revision?: string;
+    revision?: number;
     select?: FormSelectType[];
   }) => {
     if (formsApiStaging || mocksEnabled) {
@@ -98,7 +98,7 @@ const createFormService = ({
     select,
   }: {
     formPath: string;
-    revision?: string;
+    revision?: number;
     select?: FormWithLanguagesSelectType[];
   }) => {
     if (!select?.includes('languages')) {

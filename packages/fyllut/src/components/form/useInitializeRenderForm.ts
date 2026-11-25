@@ -7,7 +7,7 @@ import { InitializationResult, InitializedForm, initializeRenderForm } from './i
 
 interface Props {
   formPath?: string;
-  revision?: string;
+  revision?: number;
   routePath?: string;
   search: string;
   submissionMethod?: SubmissionMethod;

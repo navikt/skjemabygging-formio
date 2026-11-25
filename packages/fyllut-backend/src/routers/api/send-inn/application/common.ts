@@ -22,7 +22,7 @@ export const generatePdfAndSubmit = async (
 ) => {
   const { formPath, submission, language, revision, submissionMethod } = req.body as {
     formPath: string;
-    revision?: string;
+    revision?: number;
     submission: Submission;
     language: TranslationLang;
     submissionMethod?: SubmissionMethod;

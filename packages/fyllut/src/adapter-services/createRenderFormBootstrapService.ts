@@ -14,7 +14,7 @@ interface RenderFormBootstrap {
 }
 
 interface RenderFormBootstrapService {
-  load: (formPath: string, revision?: string) => Promise<RenderFormBootstrap | undefined>;
+  load: (formPath: string, revision?: number) => Promise<RenderFormBootstrap | undefined>;
   getPrefillData: (properties: string[]) => Promise<SubmissionData>;
 }
 

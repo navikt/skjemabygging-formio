@@ -4,12 +4,12 @@ import { logger } from '../../shared/logger/logger';
 
 const formsUrl = 'v1/forms';
 
-const withSearchParams = (url: string, select?: string, revision?: string) => {
+const withSearchParams = (url: string, select?: string, revision?: number) => {
   if (!select && !revision) {
     return url;
   }
 
-  return `${url}?${select ? new URLSearchParams({ select }).toString() : ''}${revision ? '&' + new URLSearchParams({ revision }).toString() : ''}`;
+  return `${url}?${select ? new URLSearchParams({ select }).toString() : ''}${revision ? '&' + new URLSearchParams({ revision: revision.toString() }).toString() : ''}`;
 };
 
 interface GetFormsProps {
@@ -27,7 +27,7 @@ const getForms = async <T = Form>(props: GetFormsProps): Promise<T[]> => {
 interface GetFormProps {
   baseUrl: string;
   formPath: string;
-  revision?: string;
+  revision?: number;
   select?: string;
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {

@@ -50,6 +50,25 @@ const getStringQuery = (req: Request, name: string, optional?: boolean) => {
   throw new ResponseError('BAD_REQUEST', `Missing query param "${name}"`);
 };
 
+type GetQueryValue = {
+  <T = unknown>(req: Request, name: string): T;
+  <T = unknown>(req: Request, name: string, optional: false): T;
+  <T = unknown>(req: Request, name: string, optional: true): T | undefined;
+};
+
+const getQueryValue: GetQueryValue = <T = unknown>(req: Request, name: string, optional?: boolean) => {
+  const value = req.query?.[name] as T | null | undefined;
+  if (value !== undefined && value !== null) {
+    return value;
+  }
+
+  if (optional) {
+    return undefined;
+  }
+
+  throw new ResponseError('BAD_REQUEST', `Missing query param "${name}"`);
+};
+
 const getQueryObject = <T extends Request['query'] = Request['query']>(req: Request): T => {
   return req.query as T;
 };
@@ -107,6 +126,7 @@ const requestUtil = {
   getQueryObject,
   getStringParam,
   getStringQuery,
+  getQueryValue,
 };
 
 export default requestUtil;

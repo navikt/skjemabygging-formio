@@ -57,7 +57,7 @@ const sendInnSoknad = {
       const forceMellomlagring = requestUtil.getStringQuery(req, 'forceMellomlagring', true);
       const requestBody = req.body;
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
-      const revision = requestUtil.getBodyValue<string>(req, 'revision', true);
+      const revision = requestUtil.getBodyValue<number>(req, 'revision', true);
       const form = await formService.getForm({
         formPath,
         revision: revision,
@@ -95,7 +95,7 @@ const sendInnSoknad = {
       const requestBody = req.body;
       const innsendingsId = requestUtil.getBodyValue<string>(req, 'innsendingsId');
       const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
-      const revision = requestUtil.getBodyValue<string>(req, 'revision', true);
+      const revision = requestUtil.getQueryValue<number>(req, 'revision', true);
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);

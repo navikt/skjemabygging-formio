@@ -33,7 +33,7 @@ type InitializationResult =
 
 interface InitializeRenderFormProps {
   formPath: string;
-  revision?: string;
+  revision?: number;
   routePath?: string;
   search: string;
   submissionMethod?: SubmissionMethod;

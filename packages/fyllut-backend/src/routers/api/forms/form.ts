@@ -21,7 +21,7 @@ const form = {
     const type = requestUtil.getStringQuery(req, 'type', true);
     const lang = requestUtil.getStringQuery(req, 'lang', true);
     const select = requestUtil.getStringQuery(req, 'select', true);
-    const revision = requestUtil.getStringQuery(req, 'revision', true);
+    const revision = requestUtil.getQueryValue<number>(req, 'revision', true);
     const form = select
       ? await formService.getForm({
           formPath,
