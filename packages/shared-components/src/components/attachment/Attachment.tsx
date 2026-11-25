@@ -43,7 +43,7 @@ const Attachment = ({
 
   const attachment = findAttachmentByComponentId(submissionAttachments, componentId);
   const enableUpload = attachmentUtils.enableAttachmentUpload(config?.submissionMethod);
-  const validator = attachmentValidator(translate, ['value']);
+  const validator = attachmentValidator(translate, ['value', 'supportedAdditionalDocumentation']);
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
@@ -91,6 +91,7 @@ const Attachment = ({
       title={label}
       description={description}
       error={attachmentError?.message}
+      additionalDocumentationId={`${componentId}-additionalDocumentation`}
       value={
         attachment?.value
           ? { key: attachment.value, additionalDocumentation: attachment?.additionalDocumentation }

@@ -89,9 +89,11 @@ export function SummaryPage() {
             const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
               ? attachmentValidator(
                   translate,
-                  uploadOnlyMode ? ['fileUploaded', 'supportedTitle'] : ['value', 'fileUploaded', 'supportedTitle'],
+                  uploadOnlyMode
+                    ? ['fileUploaded', 'supportedAdditionalDocumentation', 'supportedTitle']
+                    : ['value', 'fileUploaded', 'supportedAdditionalDocumentation', 'supportedTitle'],
                 )
-              : attachmentValidator(translate, ['value']);
+              : attachmentValidator(translate, ['value', 'supportedAdditionalDocumentation']);
 
             return validator.validate(label, submissionAttachment);
           },

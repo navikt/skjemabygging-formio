@@ -1,6 +1,7 @@
 import { attachmentUtils, getNavId } from '@navikt/skjemadigitalisering-shared-domain';
 import { getImplicitAttachmentValue } from '../../../components/attachment/attachmentOptions';
 import {
+  toAttachmentAdditionalDocumentationValidationFields,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
 } from '../../../components/attachment/attachmentValidation';
@@ -55,6 +56,13 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
       validation: toFieldValidationInput(context).validation,
     }),
     ...fileFields,
+    ...toAttachmentAdditionalDocumentationValidationFields({
+      submissionPath,
+      attachmentId: baseAttachment.attachmentId,
+      attachment: baseAttachment,
+      values: options,
+      uploadEnabled,
+    }),
   ];
 };
 
