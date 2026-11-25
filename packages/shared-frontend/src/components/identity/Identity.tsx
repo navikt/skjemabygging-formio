@@ -11,7 +11,7 @@ interface IdentityProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 
 }
 
 const Identity = ({ statePath, required = true, readOnly, customLabels }: IdentityProps) => {
-  const { stateValue } = useFieldBinding({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const identity = stateValue as SubmissionIdentity | undefined;
   const isPrefilled = showsPrefilledIdentityNumber(identity);
 
@@ -39,6 +39,13 @@ const Identity = ({ statePath, required = true, readOnly, customLabels }: Identi
         // A prefilled identity number answers the question, so it is not asked again.
         required={required && !isPrefilled}
         showOptionalText={false}
+        // Only the field shown for the new answer keeps its value, so a hidden number or date is not submitted.
+        onChange={(answer) =>
+          setStateValue({
+            harDuFodselsnummer: answer,
+            ...(answer === 'ja' && identity?.identitetsnummer ? { identitetsnummer: identity.identitetsnummer } : {}),
+          } satisfies SubmissionIdentity)
+        }
       />
       {(identity?.harDuFodselsnummer === 'ja' || isPrefilled) && (
         <NationalIdentityNumber

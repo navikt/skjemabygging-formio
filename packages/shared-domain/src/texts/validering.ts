@@ -55,3 +55,7 @@ export const validering = {
   // File upload
   fileMissing: 'Du må laste opp fil: {{field}}',
 };
+
+type ValidationTextKey = keyof typeof validering;
+
+export type { ValidationTextKey };

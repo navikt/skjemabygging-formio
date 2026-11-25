@@ -155,10 +155,22 @@ export default [
       },
       {
         id: 'already-exists',
-        type: 'json',
+        type: 'middleware',
         options: {
-          status: 200,
-          body: { status: 'soknadAlreadyExists' },
+          middleware: (req, res) => {
+            res.contentType('application/json; charset=UTF-8');
+            // Like innsending-api, force=true creates a new draft even when one already exists.
+            if (req.query.force === 'true') {
+              res.status(201);
+              res.send({
+                ...convertToInnsendingApiResponse(req.body),
+                innsendingsId: uuidv4(),
+              });
+              return;
+            }
+            res.status(200);
+            res.send({ status: 'soknadAlreadyExists' });
+          },
         },
       },
     ],

@@ -129,6 +129,19 @@ const flattenComponentsWithPath = (
   }, []);
 
 /**
+ * Returns the answer of the first component of the given type that has an answer.
+ *
+ * @param components
+ * @param type
+ * @param submission
+ */
+const getFirstAnsweredValueByType = (components: Component[] | undefined, type: string, submission?: Submission) =>
+  flattenComponentsWithPath(components)
+    .filter(({ component }) => component.type === type)
+    .map(({ submissionPath }) => getSubmissionValue(submissionPath, submission))
+    .find((value) => value !== undefined);
+
+/**
  * Returns innsendingsId from the URL when it occurs exactly once and is a UUID, otherwise undefined.
  */
 const getValidSubmissionId = (searchParams: URLSearchParams): string | undefined => {
@@ -146,6 +159,7 @@ const submissionUtils = {
   noChildValuesForDataGrid,
   getComponentSubmissionPath,
   flattenComponentsWithPath,
+  getFirstAnsweredValueByType,
   getValidSubmissionId,
 };
 

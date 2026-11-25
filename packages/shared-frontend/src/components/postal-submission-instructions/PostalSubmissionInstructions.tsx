@@ -1,17 +1,31 @@
 import { BodyShort, Heading, List, VStack } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
+import { useLanguage } from '../../context/language/LanguageContext';
 import styles from './PostalSubmissionInstructions.module.css';
 
 interface Props {
   introduction: string;
   download: { title: string; content: ReactNode };
   print: { title: string; description: string };
-  attachments: { title: string; description?: string; items: { key: string; content: ReactNode }[] };
-  mailing: { title: string; description: string };
+  attachments: { key: string; content: ReactNode }[];
+  mailingDescription: string;
 }
 
-const PostalSubmissionInstructions = ({ introduction, download, print, attachments, mailing }: Props) => {
-  const hasAttachments = attachments.items.length > 0 || Boolean(attachments.description);
+const PostalSubmissionInstructions = ({ introduction, download, print, attachments, mailingDescription }: Props) => {
+  const { translate } = useLanguage();
+  const hasAttachments = attachments.length > 0;
+  const attachmentSectionTitle = `${translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)} ${translate(
+    attachments.length > 1
+      ? TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments
+      : TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment,
+  )}`;
+  const mailingSectionTitle = translate(
+    hasAttachments
+      ? TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitleWithAttachment
+      : TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle,
+  );
+
   return (
     <VStack gap="space-16" className={styles.instructions}>
       <section aria-labelledby="postal-download-title">
@@ -30,23 +44,20 @@ const PostalSubmissionInstructions = ({ introduction, download, print, attachmen
       {hasAttachments && (
         <section aria-labelledby="postal-attachments-title">
           <Heading id="postal-attachments-title" level="3" size="medium" spacing>
-            3. {attachments.title}
+            3. {attachmentSectionTitle}
           </Heading>
-          {attachments.description && <BodyShort>{attachments.description}</BodyShort>}
-          {attachments.items.length > 0 && (
-            <List>
-              {attachments.items.map(({ key, content }) => (
-                <List.Item key={key}>{content}</List.Item>
-              ))}
-            </List>
-          )}
+          <List>
+            {attachments.map(({ key, content }) => (
+              <List.Item key={key}>{content}</List.Item>
+            ))}
+          </List>
         </section>
       )}
       <section aria-labelledby="postal-mail-title">
         <Heading id="postal-mail-title" level="3" size="medium" spacing>
-          {hasAttachments ? 4 : 3}. {mailing.title}
+          {hasAttachments ? 4 : 3}. {mailingSectionTitle}
         </Heading>
-        <BodyShort>{mailing.description}</BodyShort>
+        <BodyShort>{mailingDescription}</BodyShort>
       </section>
     </VStack>
   );

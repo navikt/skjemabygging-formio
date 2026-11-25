@@ -1,4 +1,4 @@
-import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { introPageTexts, TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
 import NavigationButtonRow from '../../components/navigation/NavigationButtonRow';
@@ -23,7 +23,7 @@ const IntroPageButtonRow = () => {
   const { search } = useLocation();
 
   const href = `${form.path}?${searchParams.toString()}`;
-  const validationError: Tkey = 'introPage.selfDeclaration.validationError';
+  const validationError: Tkey = introPageTexts.selfDeclaration.validationError;
   const firstPanelSlug = form.firstPanelSlug ? form.firstPanelSlug : formUtils.getPanelSlug(form, 0);
 
   const navigateToFormPage = async () => {

@@ -8,7 +8,7 @@ import {
 import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
 import { validateValue } from '../../validation/validators';
-import { collectSendinnAttachmentValidationFields } from './sendinnAttachmentValidation';
+import { ATTACHMENTS_KEY, collectSendinnAttachmentValidationFields } from '../validation/sendinnAttachmentValidation';
 
 const source: Form = {
   title: 'Journey validation',
@@ -47,7 +47,7 @@ const createForm = (properties: Partial<Form['properties']> = {}) =>
   );
 const fields = (form: Form, submission: Submission) =>
   getActivePanels(form, submission, { submissionMethod: 'paper' }).flatMap((panel) =>
-    panel.key === 'sendinnAttachments'
+    panel.key === ATTACHMENTS_KEY
       ? collectSendinnAttachmentValidationFields({ form, submission, currentLanguage: 'nb' })
       : collectPageValidationFields({
           components: toComponentDefinitions(panel.components),
@@ -61,7 +61,7 @@ const invalidPaths = (form: Form, submission: Submission) =>
   fields(form, submission)
     .filter((field) => validateValue(field.value, field.field, field.rules, 'nb'))
     .map((field) => field.statePath);
-const invalidCollectionPaths = (form: Form, data: Submission['data']) =>
+const invalidUserTypePaths = (form: Form, data: Submission['data']) =>
   invalidPaths(form, {
     data: {
       ...data,
@@ -80,21 +80,21 @@ describe('Sendinn generated journey validation', () => {
       field: toNavUnitValidation({ statePath: 'navUnit', label: field.field, required: true }).field,
       rules: toNavUnitValidation({ statePath: 'navUnit', label: field.field, required: true }).rules,
     });
-    expect(invalidCollectionPaths(form, {})).toEqual(['navUnit']);
-    expect(invalidCollectionPaths(form, { navUnit: '0101' })).toEqual([]);
+    expect(invalidUserTypePaths(form, {})).toEqual(['navUnit']);
+    expect(invalidUserTypePaths(form, { navUnit: '0101' })).toEqual([]);
   });
 
-  it('validates only the active collection branch, including conditional Nav contact', () => {
+  it('validates only the active user type branch, including conditional Nav contact', () => {
     const form = createForm();
-    expect(invalidCollectionPaths(form, {})).toEqual(['collectionType']);
-    expect(invalidCollectionPaths(form, { collectionType: 'multiple-people' })).toEqual(['navUnit']);
-    expect(invalidCollectionPaths(form, { collectionType: 'identified-person' })).toEqual([
-      'yourInformation.identitet.identitetsnummer',
+    expect(invalidUserTypePaths(form, {})).toEqual(['userType']);
+    expect(invalidUserTypePaths(form, { userType: 'multiple-people' })).toEqual(['navUnit']);
+    expect(invalidUserTypePaths(form, { userType: 'identified-person' })).toEqual([
+      'dineOpplysninger.identitet.identitetsnummer',
     ]);
-    expect(invalidCollectionPaths(form, { collectionType: 'unidentified-person', hasNavContact: 'ja' })).toEqual(
-      expect.arrayContaining(['yourInformation.fornavn', 'yourInformation.etternavn', 'navContactUnit']),
+    expect(invalidUserTypePaths(form, { userType: 'unidentified-person', hasNavContact: 'ja' })).toEqual(
+      expect.arrayContaining(['dineOpplysninger.fornavn', 'dineOpplysninger.etternavn', 'navContactUnit']),
     );
-    expect(invalidCollectionPaths(form, { collectionType: 'unidentified-person', hasNavContact: 'nei' })).not.toContain(
+    expect(invalidUserTypePaths(form, { userType: 'unidentified-person', hasNavContact: 'nei' })).not.toContain(
       'navContactUnit',
     );
   });
@@ -105,8 +105,8 @@ describe('Sendinn generated journey validation', () => {
       form,
       {
         data: {
-          collectionType: 'multiple-people',
-          yourInformation: { identitet: { identitetsnummer: '03876399856' }, fornavn: 'Test' },
+          userType: 'multiple-people',
+          dineOpplysninger: { identitet: { identitetsnummer: '03876399856' }, fornavn: 'Test' },
           hasNavContact: 'ja',
           navContactUnit: '0202',
           navUnit: '0101',
@@ -115,8 +115,8 @@ describe('Sendinn generated journey validation', () => {
       'nb',
       { submissionMethod: 'paper' },
     );
-    expect(result?.data).toMatchObject({ collectionType: 'multiple-people', navUnit: '0101' });
-    expect(result?.data).not.toHaveProperty('yourInformation');
+    expect(result?.data).toMatchObject({ userType: 'multiple-people', navUnit: '0101' });
+    expect(result?.data).not.toHaveProperty('dineOpplysninger');
     expect(result?.data).not.toHaveProperty('hasNavContact');
     expect(result?.data).not.toHaveProperty('navContactUnit');
   });

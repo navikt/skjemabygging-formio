@@ -1,3 +1,4 @@
+import { createContainer } from '@navikt/skjemadigitalisering-shared-domain';
 import Container from './Container';
 
 const ContainerBuilder = () => {
@@ -6,6 +7,7 @@ const ContainerBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
+      ...createContainer(),
       validateOn: 'blur',
       validate: {
         required: false,

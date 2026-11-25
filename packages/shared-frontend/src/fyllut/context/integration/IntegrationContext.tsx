@@ -64,6 +64,7 @@ interface Props {
 }
 
 const IntegrationContext = createContext<IntegrationContextValue | undefined>(undefined);
+IntegrationContext.displayName = 'IntegrationContext';
 
 const IntegrationProvider = ({ children, value }: Props) => {
   const stableValue = useMemo(

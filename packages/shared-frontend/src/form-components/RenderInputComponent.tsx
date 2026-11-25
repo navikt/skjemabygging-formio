@@ -9,7 +9,7 @@ import {
 import { UnvalidatedFields } from '../context/validation/ValidationScopeContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 import { InputComponentProps, InputComponentType } from './inputComponentUtils';
-import { withPrefillLock } from './prefillLock';
+import { isLockedByPrefill, withPrefillLock } from './prefillLock';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 interface Props {
@@ -61,10 +61,12 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
     />
   );
 
+  const isUnvalidated = !!component.calculateValue || isLockedByPrefill(component, submissionMethod);
+
   return (
     <div data-form-component="" data-component-key={component.key}>
-      {/* A value the form calculates is not something the user can fix, so it is not validated. */}
-      {component.calculateValue ? <UnvalidatedFields>{input}</UnvalidatedFields> : input}
+      {/* The user cannot fix a calculated or prefill-locked value, so it is not validated. */}
+      {isUnvalidated ? <UnvalidatedFields>{input}</UnvalidatedFields> : input}
     </div>
   );
 };

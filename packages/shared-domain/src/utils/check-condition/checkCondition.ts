@@ -1,7 +1,6 @@
 import { Component, Form, Submission } from '../../models';
 import { createConditionInstance, shouldCreateSyntheticInstance } from './conditionInstance';
 import { createCheckCustomConditional } from './customCondition';
-import getFormioCheckConditionUtils from './formioCheckCondition';
 import { checkSimpleConditional, hasUnsupportedConditional } from './simpleCondition';
 import {
   CheckConditionOptions,
@@ -10,22 +9,9 @@ import {
   ConditionRow,
   ConditionUtils,
   EvaluateFunction,
-  OriginalCheckCondition,
 } from './types';
 
-const USE_FORMIO_CHECK_CONDITION = false;
-
-const getCheckConditionUtils = (
-  Utils: ConditionUtils,
-  evaluate: EvaluateFunction,
-  originalCheckCondition: OriginalCheckCondition,
-) => {
-  // Quick switchback to FormioJS condition logic.
-  // Delete this once the custom implementation has been validated in production.
-  if (USE_FORMIO_CHECK_CONDITION) {
-    return getFormioCheckConditionUtils(Utils, evaluate, originalCheckCondition);
-  }
-
+const getCheckConditionUtils = (Utils: ConditionUtils, evaluate: EvaluateFunction) => {
   const checkCustomConditional = createCheckCustomConditional(Utils, evaluate);
 
   const checkCondition = (

@@ -1,8 +1,6 @@
 import {
   ConcernedPerson,
   Form,
-  isSenderPerson,
-  LegacySender,
   Party,
   PartyAddress,
   SenderOrganization,
@@ -33,12 +31,18 @@ const toPartyAddress = (address?: SubmissionAddress): PartyAddress | undefined =
       }
     : undefined;
 
+const hasValue = (value: unknown) => (typeof value === 'string' ? value.trim() !== '' : value != null);
+
+// A container left behind after its inputs were cleared on hide holds no identity, like empty legacy fields.
+const hasIdentityValues = ({ fornavn, etternavn, adresse }: SubmissionYourInformation) =>
+  hasValue(fornavn) || hasValue(etternavn) || Object.values(adresse ?? {}).some(hasValue);
+
 const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
   if (yourInformation?.identitet?.identitetsnummer) {
     return { kind: 'identified-person', nationalIdentityNumber: yourInformation.identitet.identitetsnummer };
   }
 
-  return yourInformation
+  return yourInformation && hasIdentityValues(yourInformation)
     ? {
         kind: 'unidentified-person',
         firstName: yourInformation.fornavn,
@@ -46,12 +50,6 @@ const toConcernedPerson = (yourInformation?: SubmissionYourInformation): Concern
         address: toPartyAddress(yourInformation.adresse),
       }
     : undefined;
-};
-
-const getLegacySender = (submission: Submission): LegacySender | undefined => {
-  const { fornavnAvsender: firstName, etternavnAvsender: surname } = submission.data;
-
-  return firstName && surname ? { firstName, surname } : undefined;
 };
 
 const selectConcernedPerson = (
@@ -76,16 +74,12 @@ const resolveConcernedPerson = (form: Form, submission: Submission): ConcernedPe
   return selectConcernedPerson(canonicalUser, flatUser);
 };
 
-const resolvePersonSenderParty = (sender: SenderPerson | LegacySender, user?: ConcernedPerson): Party | undefined => {
+const resolvePersonSenderParty = (sender: SenderPerson, user?: ConcernedPerson): Party => {
   if (user) {
     return { onBehalfOf: 'other-person', sender, user };
   }
 
-  if (isSenderPerson(sender)) {
-    return { onBehalfOf: 'self', sender };
-  }
-
-  return undefined;
+  return { onBehalfOf: 'self', sender };
 };
 
 const resolveOrganizationParty = (sender: SenderOrganization, user?: ConcernedPerson, navUnit?: string): Party => {
@@ -114,11 +108,6 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
 
   if (submittedSender?.organization) {
     return resolveOrganizationParty(submittedSender.organization, user, options.navUnit);
-  }
-
-  const legacySender = getLegacySender(submission);
-  if (legacySender) {
-    return resolvePersonSenderParty(legacySender, user);
   }
 
   return user ? { onBehalfOf: 'self', user } : undefined;

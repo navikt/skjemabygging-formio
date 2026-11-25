@@ -26,6 +26,7 @@ interface Props extends FormActionHandlers {
 }
 
 const FormActionsContext = createContext<FormActionsContextValue>({} as FormActionsContextValue);
+FormActionsContext.displayName = 'FormActionsContext';
 
 const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandler }: Props) => {
   const { getLatestSubmission } = useSubmissionActions();

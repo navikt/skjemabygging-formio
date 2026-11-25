@@ -25,6 +25,7 @@ const LanguageContext = createContext<LanguageContextValue>({
   currentLanguage: 'nb',
   availableLanguages: [],
 });
+LanguageContext.displayName = 'LanguageContext';
 
 const LanguageProvider = ({ children, translations, currentLanguage, availableLanguages }: Props) => {
   const translate = useMemo(

@@ -12,6 +12,18 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+// The new renderer and Sendinn must not depend on Formio, directly or through shared-domain's Formio-based utils.
+const noFormioPaths = [
+  {
+    name: '@navikt/skjemadigitalisering-shared-domain',
+    importNames: ['navFormioUtils', 'checkCondition', 'checkCustomConditional', 'formioFormsApiUtils'],
+    message: 'These depend on Formio. Use scriptEvaluationUtils, or Form without mapping to NavFormType.',
+  },
+];
+const noFormioPatterns = [
+  { group: ['formiojs', 'formiojs/*'], message: 'Formio is only used by the legacy renderer.' },
+];
+
 export default tseslint.config(
   {
     ignores: ['**/src/template/**', '**/dist/**', '**/build/**', '**/node_modules/**'],
@@ -100,13 +112,21 @@ export default tseslint.config(
     },
   },
   {
+    files: ['packages/sendinn/**', 'packages/shared-frontend/**'],
+    rules: {
+      'no-restricted-imports': ['error', { paths: noFormioPaths, patterns: noFormioPatterns }],
+    },
+  },
+  {
     // Sendinn and the host-independent app shell must not depend on legacy shared-components or fyllut-specific code
     files: ['packages/sendinn/**', 'packages/shared-frontend/src/app/**', 'packages/shared-frontend/src/sendinn/**'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
+          paths: noFormioPaths,
           patterns: [
+            ...noFormioPatterns,
             {
               group: [
                 '@navikt/skjemadigitalisering-shared-components',
@@ -130,6 +150,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-expressions': 'off',
       'mocha/no-exclusive-tests': 'error',
       'vitest/valid-expect': 'off', // Cypress uses Chai assertions, e.g. expect(x).to.be.closeTo(...)
+      'vitest/valid-expect-in-promise': 'off', // Cypress chains are not promises and must not be returned or awaited
     },
   },
   {

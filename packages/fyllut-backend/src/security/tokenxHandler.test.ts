@@ -3,6 +3,13 @@ import { mockRequest, mockResponse } from '../test/testHelpers';
 import TokenXClient from './tokenxClient';
 import tokenxHandler from './tokenxHandler';
 
+const config = vi.hoisted(() => ({}) as { isDevelopment: boolean; mocksEnabled: boolean });
+
+vi.mock('../config/config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../config/config')>();
+  return { ...actual, config: Object.assign(config, actual.config, { isDevelopment: false, mocksEnabled: false }) };
+});
+
 describe('tokenxHandler', () => {
   const targetClientId = 'send-inn-client';
 
@@ -48,5 +55,33 @@ describe('tokenxHandler', () => {
 
     expect(next).toHaveBeenCalledExactlyOnceWith(failure);
     expect(req.getTokenxAccessToken).toBeUndefined();
+  });
+
+  describe('in development', () => {
+    afterEach(() => {
+      config.isDevelopment = false;
+      config.mocksEnabled = false;
+    });
+
+    it.each([
+      { name: 'uses the local token when mocks are disabled', mocksEnabled: false, expected: 'local-token' },
+      {
+        name: 'ignores the local token when mocks are enabled',
+        mocksEnabled: true,
+        expected: 'mocked-tokenx-access-token',
+      },
+    ])('$name', async ({ mocksEnabled, expected }) => {
+      config.isDevelopment = true;
+      config.mocksEnabled = mocksEnabled;
+      vi.resetModules();
+      const { default: devTokenxHandler } = await import('./tokenxHandler');
+      const req = mockRequest({});
+      const next = vi.fn();
+
+      await devTokenxHandler(targetClientId, { token: 'local-token' })(req, mockResponse(), next);
+
+      expect(req.getTokenxAccessToken()).toBe(expected);
+      expect(next).toHaveBeenCalledExactlyOnceWith();
+    });
   });
 });

@@ -92,13 +92,29 @@ repository.
 ## Sendinn content source
 
 Sendinn uses `SENDINN_CONTENT_SOURCE`, not Fyllut's `FORMS_SOURCE`.
-The value is required at startup in every environment. Missing, empty or
-unknown values fail startup. `prod-gcp` also rejects `latest`.
+The value is required when `NODE_ENV=production`. In development and test it
+defaults to `latest`. Empty or unknown values fail startup, and `prod-gcp`
+also rejects `latest`.
 
 | Value       | Form definition                | Form translations                           | Global translations                                |
 | ----------- | ------------------------------ | ------------------------------------------- | -------------------------------------------------- |
 | `published` | `/v1/form-publications/{path}` | `/v1/form-publications/{path}/translations` | `/v1/published-global-translations/{language}`     |
 | `latest`    | `/v1/forms/{path}`             | `/v1/forms/{path}/translations`             | `/v1/global-translations?languageCodes={language}` |
+
+The two sources return translations in different shapes. `latest` returns
+translation rows (`[{ key, nb, nn, en }]`). Published form translations
+return `{ publishedAt, publishedBy, translations: { [language]: { [key]: text } } }`,
+with `translations: {}` when the language has no published translations.
+Published global translations return a flat `{ [key]: text }` dictionary.
+`loadFormTranslations` and `loadGlobalTranslations` in
+`services/translation/translationLoader.ts` read both shapes for one or more
+languages. They build one row per key across the requested languages and map
+the rows with `convertToFormsApiTranslationMap`, so validation keys such as
+`required` also get an entry under their Bokmål text and an `nb` fallback for
+both sources. A published `nb` value wins over that fallback. `published`
+requires explicit `languageCodes` and fetches global translations once per
+language. A missing response returns `undefined`, so each service decides
+how to handle it.
 
 Both sources fetch the whole form without `select`. Sendinn never loads
 static snapshots. `latest` returns the current revision, including pending
@@ -112,14 +128,22 @@ There is no production Sendinn manifest yet. When #2283 adds it, select
 `published` and add forms-api production inbound access in `navikt/forms-api`
 before exposing the journey.
 
-Neither source has an application content cache. Every call fetches fresh
-content, with a five-second timeout per outbound request, including reading
-the response body. There is no stale, static, cross-source or empty-success
+`published` caches successful form, form-translation and global-translation
+responses in memory for five minutes per form path and language. Concurrent
+requests share one fetch, and callers get a copy of the cached value. `latest`
+has no cache, so edits show immediately. Failures are never cached, so the
+next request retries, and unknown paths from user input do not grow the
+cache. Each outbound request has a five-second timeout, including reading the
+response body. There is no stale, static, cross-source or empty-success
 fallback on failure. Requests are not revision-pinned: content can change
-between a form request and a translation request.
+between a form request and a translation request, and a new publication can
+take up to five minutes to appear.
 
-`createContentService({ baseUrl, source })` and the `ContentService` and
-`ContentSource` types are exported through shared-backend's services barrel.
+`createContentService({ baseUrl, source })`, `isContentSource` and the
+`ContentService` and `ContentSource` types are exported through
+shared-backend's services barrel. The private clients have separate published
+functions (`getPublishedForm`, `getPublishedFormTranslations`,
+`getPublishedGlobalTranslations`) instead of a source parameter.
 Sendinn initializes `contentService` once in `src/services/index.ts`.
 Downstream form loading and document preparation use `getForm({ formPath })`
 and `getTranslations({ formPath, languageCode })`. The service also exposes
@@ -129,22 +153,29 @@ and `getTranslations({ formPath, languageCode })`. The service also exposes
 keys in `getTranslations`. Forms include resolved `languages`, using the
 existing published/unpublished language rules.
 
-Upstream missing content remains `NOT_FOUND`. Other HTTP dependency errors,
+The service rejects a form path that is not lowercase letters and digits with
+`BAD_REQUEST` before calling forms-api. Upstream missing content remains
+`NOT_FOUND`. Other HTTP dependency errors,
 connection failures and timeouts become `SERVICE_UNAVAILABLE` with a safe
-English message. Malformed content responses also fail explicitly.
-The centralized handler returns the standard correlated error. Upstream
+English message. Malformed form responses and missing translation responses
+also fail explicitly.
+Connection failures and timeouts are logged as warnings with the resource,
+source and error name. The centralized handler returns the standard correlated
+error. Upstream
 correlation IDs are preserved for HTTP failures. No upstream body, author
 metadata or answers are logged or included in the public diagnostic.
 
-Existing Fyllut form/translation defaults and the legacy
-`PublishedTranslationService` cache/fallback contract are unchanged.
+Existing Fyllut form/translation defaults are unchanged. When Fyllut loads
+from forms-api (`FORMS_SOURCE=formsapi-staging` or mocks), `translationService`
+uses the same loader with `latest`. A missing response still gives no
+translations. Static-file loading is unchanged.
 
 ### Sendinn paper form loading
 
 `GET /sendinn/api/forms/{formPath}?lang={nb|nn|en}&filter={code}`
 loads a canonical paper form through the configured content service.
 `lang` defaults to `nb`. Repeated `filter` values and comma-separated codes
-use `normalizeSendinnAttachmentFilter`; empty input means all attachments.
+use `normalizeAttachmentCodeFilter`; empty input means all attachments.
 `sub` has no effect. Paper eligibility comes from the source form's
 `properties.subsequentSubmissionTypes`, never from the converted form's
 `submissionTypes`.
@@ -160,7 +191,7 @@ A missing form or disabled paper ettersending returns standard `NOT_FOUND`
 Missing translations for an otherwise available form are
 `SERVICE_UNAVAILABLE` (503), not a missing-form result. An eligible form with
 no filter matches remains a successful canonical form with an empty
-`sendinnAttachments` panel.
+`vedlegg` panel.
 
 The shared frontend's `createSendinnFormService({ baseUrl, http })` adapter
 provides `loadForm(request)`. The form entry loads it before mounting the
@@ -171,44 +202,66 @@ the trusted source with the same normalized filter.
 
 ### Sendinn paper cover page
 
-`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `language`
-(`nb`, `nn` or `en`, default `nb`), `attachmentFilter` (a string or string
-array, default empty) and `submission: { data: ... }`. Pass the canonical
-Submission answers and the filter retained by `SendinnFormProvider`.
+`POST /sendinn/api/cover-page` accepts JSON with `formPath`, `revision`,
+`language` (default `nb`), `attachmentFilter` (a string or string array,
+default empty) and `submission: { data: ... }`. The route reads them with
+`requestUtil.getBodyValue` and does not check their types, as in Fyllut. A
+missing `formPath`, `revision` or `submission` gives 400, so the revision is
+always pinned. A language the form lacks falls back to `nb`. Pass the
+canonical Submission answers, the revision of the loaded form and the filter
+retained by `SendinnFormProvider`.
 Do not pass a form definition, labels or a Party. Query parameter `sub`
 does not select a submission mode.
 `SendinnCoverPageRequest` and `SendinnCoverPageResult` are exported from
 shared-domain for the T7 host adapter. Concerned-person answers are supplied
 postal metadata, not proof of the caller's identity or resource ownership.
 
-The service calls the same configured form loader as GET, rechecking current
-paper eligibility, language availability and normalized filter membership.
-It does not compare revisions or pin publication IDs. A changed definition
-can therefore reject an answer that was available when the page loaded.
+With the `published` content source the service first reads the cached
+publication. An unpublished form gives 404. If the publication has the pinned
+revision, the service uses it. Otherwise it loads
+`GET /v1/forms/{path}?revision=N` and rejects a `status` other than
+`published` as 404. forms-api computes that status per revision, so the
+publication check is what stops older revisions of an unpublished form. With
+`latest` the service always loads the pinned revision, without cache. It then
+rechecks paper eligibility, language availability and normalized filter
+membership. Translations are not pinned: only
+`publicationId` pins them, and forms-api has no endpoint that fetches by it.
+Preprod cleanup can delete old revisions, which also gives 404.
 
 Success is `200 application/json` with `{ "pdf": "<base64 PDF>" }` and
 `Cache-Control: no-store`. T7 decodes the PDF and owns the browser download;
 this endpoint does not return form answers or download assembly data.
-Expected errors use the central `ErrorResponse` and `x-correlation-id`:
-invalid answers, unavailable selections and empty available attachment lists
-are 400; missing or paper-disabled forms are 404; content, Nav-unit, Azure
-token and generator failures are 503. Diagnostics never contain answers or
-raw upstream bodies. A nonempty available attachment list still permits
-zero selections until T9 adds the final minimum-selection rule.
+Expected errors use the central `ErrorResponse` and `x-correlation-id`.
+Missing request fields, an invalid form path, an unidentified person without an address, a Nav unit
+that is not digits and values the generator cannot encode are 400. Missing or
+paper-disabled forms are 404. Content, token and generator failures are 503.
+`coverPageService` replaces generator errors with a generic message, so
+diagnostics never contain answers or raw upstream bodies.
 
-Shared-backend exports `createSendinnCoverPageService` and
-`createSubsequentSubmissionDownloadData`. The latter returns
-`SubsequentSubmissionCoverPageData`: identified person, unidentified person,
-or an explicit `authorized-no-user` state with reason `hidden`, `forced-unit`
-or `multiple-people`. Existing `CoverPageDownloadType` still requires a user.
-Only active converted inputs reach party resolution and recipient mapping.
-Selected Nav units use `enhetsnummer` with the mapper's existing
-`netsPostboks: "1400"` routing, not a fabricated postal address.
+The server has no Sendinn-only business rules. The form validation owns
+required fields, the renderer clears hidden answers and the frontend blocks an
+empty attachment list (T9). `createSendinnCoverPageService` uses the same
+`coverPageMapper.createDownloadDataFromSubmission` as Fyllut's paper flow, with
+`type: 'ETTERSENDELSE'`. Differences from Fyllut are deliberate:
+
+- The Nav unit is the answered `navUnitSelect` field (`navUnit` or
+  `navContactUnit`). Fyllut gets `enhetNummer` from the request body.
+- The cover page is returned alone as base64 JSON. Fyllut merges it with the
+  application PDF.
+- The form's `mottaksadresseId` is ignored, as in fyllut-ettersending. It is
+  unclear whether a form's recipient also applies to ettersending (open
+  question in #2245).
+
+A Nav unit uses `enhetsnummer` with `netsPostboks: "1400"`. No user is sent
+when party resolution finds nobody, for example when user types are hidden, a
+Nav unit is forced or the user chose multiple people. User information whose
+inputs were cleared on hide counts as no user.
 
 Sendinn configures the existing cover-page service with
-`SKJEMABYGGING_PROXY_URL`. Its own Azure application obtains client-credentials
-tokens through `createAzureTokenService`, using injected Azure environment
-variables and the target `SKJEMABYGGING_PROXY_CLIENT_ID`. Local mock launchers
-provide mock credentials and the existing proxy/token routes. Preprod release
-also requires the proxy's inbound policy and Azure caller authorization to
-accept both Sendinn applications. Those permissions live outside this repo.
+`SKJEMABYGGING_PROXY_URL`. It gets client-credentials tokens from Texas
+through `createEntraIdTokenService`, with target
+`api://<SKJEMABYGGING_PROXY_CLIENT_ID>/.default`. Local development outside
+mocks can use `SKJEMABYGGING_PROXY_M2M_ACCESS_TOKEN`; mock runs never send it.
+Preprod release also requires the proxy's inbound policy and Entra ID caller
+authorization to accept both Sendinn applications. Those permissions live
+outside this repo.

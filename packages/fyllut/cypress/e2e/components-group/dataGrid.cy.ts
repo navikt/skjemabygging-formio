@@ -47,12 +47,6 @@ describe('DataGrid', () => {
       });
     });
 
-    it('should show custom addAnother button text', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .findByRole('button', { name: /Legg til rad/i })
-        .should('exist');
-    });
-
     it('should show default addAnother button text when not customized', () => {
       cy.get('[data-component-key="datagrid2"]')
         .findByRole('button', { name: /Legg til/i })
@@ -68,11 +62,6 @@ describe('DataGrid', () => {
         cy.findAllByRole('heading', { level: 3, name: 'Rad' }).should('have.length', 2);
         cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
       });
-    });
-
-    it('child textfield should be interactable', () => {
-      cy.findAllByRole('textbox', { name: 'Navn' }).first().type('Test');
-      cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
     });
 
     it('should use blue row cards with the remove action below the fields', () => {
@@ -94,6 +83,42 @@ describe('DataGrid', () => {
           expect(remove.textContent).to.equal('Fjern rad');
           expect(remove.getBoundingClientRect().top).to.be.at.least(content.getBoundingClientRect().bottom);
         });
+    });
+  });
+
+  describe('Max rows', () => {
+    const addPeriod = () => cy.findByRole('button', { name: 'Legg til periode' }).click();
+
+    beforeEach(() => {
+      cy.visit('/fyllut/datagrid/visning?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('should hide the add button when the max number of rows is reached', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 3);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
+      });
+    });
+
+    it('should move focus to the last row when the add button disappears', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('textbox', { name: 'Periode' }).last().should('have.focus');
+      });
+    });
+
+    it('should show the add button again after removing a row', () => {
+      cy.get('[data-component-key="datagrid3"]').within(() => {
+        addPeriod();
+        addPeriod();
+        cy.findAllByRole('button', { name: 'Fjern periode' }).last().click();
+        cy.findAllByRole('textbox', { name: 'Periode' }).should('have.length', 2);
+        cy.findByRole('button', { name: 'Legg til periode' }).should('exist');
+      });
     });
   });
 

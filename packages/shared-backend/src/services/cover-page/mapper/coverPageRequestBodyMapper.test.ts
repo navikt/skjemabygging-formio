@@ -41,6 +41,15 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it.each([
+    ['se', 'NB'],
+    ['en', 'EN'],
+  ])('maps language %s to cover page language %s', (languageCode, expected) => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(defaultData, languageCode);
+
+    expect(actual.spraakkode).toBe(expected);
+  });
+
   it('creates an ettersending archive title and attachment-only document list', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
       ...defaultData,
@@ -73,7 +82,7 @@ describe('coverPageRequestBodyMapper', () => {
         ...defaultData,
         type,
         attachments: ['Attachment one', 'User description'],
-        archivedAttachments: ['Vedlegg 1', 'User description'],
+        attachmentsForArchiving: ['Vedlegg 1', 'User description'],
       });
 
       expect(actual.vedleggsliste).toEqual(['Vedlegg 1', 'User description']);
@@ -215,6 +224,15 @@ describe('coverPageRequestBodyMapper', () => {
     expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Mål', 'Vedlegg 1']);
   });
 
+  it.each([' 1234', '12a4', 1234])('rejects a Nav unit the cover page generator does not accept: %j', (navUnit) => {
+    expect(() =>
+      coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+        ...defaultData,
+        recipient: { navUnit: navUnit as string },
+      }),
+    ).toThrowError('Invalid Nav unit for cover page');
+  });
+
   it('throws on invalid user values', () => {
     expect(() =>
       coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
@@ -242,4 +260,13 @@ describe('coverPageRequestBodyMapper', () => {
       }),
     ).toThrowError('Invalid value for cover page');
   });
+
+  it.each([{ attachments: ['Vedlegg <1>'] }, { attachments: ['Vedlegg 1'], attachmentsForArchiving: ['Vedlegg <1>'] }])(
+    'rejects attachment titles the cover page generator does not accept: %j',
+    (lists) => {
+      expect(() =>
+        coverPageRequestBodyMapper.createRequestBodyFromDownloadData({ ...defaultData, ...lists }),
+      ).toThrowError('Invalid value for cover page');
+    },
+  );
 });

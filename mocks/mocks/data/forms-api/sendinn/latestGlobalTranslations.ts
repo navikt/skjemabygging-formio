@@ -46,12 +46,6 @@ const sendinnTranslations = [
     en: 'Place the cover page with the barcode on top of the documents.',
   },
   {
-    key: 'Legg ved alle vedlegg som er listet på førstesiden.',
-    nb: 'Legg ved alle vedlegg som er listet på førstesiden.',
-    nn: 'Legg ved alle vedlegg som er lista på førstesida.',
-    en: 'Enclose all attachments listed on the cover page.',
-  },
-  {
     key: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     nb: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     nn: 'Legg dokumenta i ein konvolutt som du sender i posten til adressa som står på førstesida.',
@@ -87,12 +81,6 @@ const sendinnTranslations = [
     nn: 'Har du vore i kontakt med Nav om saka?',
     en: 'Have you contacted Nav about the case?',
   },
-  {
-    key: 'Kontroller opplysningene',
-    nb: 'Kontroller opplysningene',
-    nn: 'Kontroller opplysningane',
-    en: 'Check your answers',
-  },
   { key: 'Prøv igjen', nb: 'Prøv igjen', nn: 'Prøv igjen', en: 'Try again' },
   {
     key: 'Send dokumenter til Nav',
@@ -105,6 +93,12 @@ const sendinnTranslations = [
     nb: 'Send inn dokumentasjon til skjema',
     nn: 'Send inn dokumentasjon til skjema',
     en: 'Submit documentation for a form',
+  },
+  {
+    key: 'Ettersend dokumentasjon til {{title}}',
+    nb: 'Ettersend dokumentasjon til {{title}}',
+    nn: 'Ettersend dokumentasjon til {{title}}',
+    en: 'Submit additional documentation for {{title}}',
   },
   {
     key: 'Send inn etterspurt dokumentasjon til skjema',

@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Identity', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -10,7 +12,7 @@ describe('Identity', () => {
     });
 
     it('should render the default radio question', () => {
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).should('exist');
     });
 
     it('should show Ja and Nei options', () => {
@@ -27,6 +29,21 @@ describe('Identity', () => {
       cy.findByLabelText('Nei').check();
       cy.findByRole('textbox', { name: 'Fødselsdato (dd.mm.åååå)' }).should('exist');
     });
+
+    it('should not keep the identity number when the answer is changed to Nei', () => {
+      cy.findByLabelText('Ja').check();
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('20905995783');
+      cy.findByLabelText('Nei').check();
+      cy.findByRole('textbox', { name: 'Fødselsdato (dd.mm.åååå)' }).type('01.01.1990');
+      cy.findByRole('textbox', { name: 'Fødselsdato (dd.mm.åååå)' }).blur();
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
+      cy.withinSummaryGroup('Standard', () => {
+        cy.get('dt').should('have.length', 1).and('contain.text', TEXTS.statiske.identity.yourBirthdate);
+        cy.get('dd').should('have.length', 1).and('contain.text', '01.01.1990');
+      });
+    });
   });
 
   describe('Custom label (customLabels.doYouHaveIdentityNumber)', () => {
@@ -36,7 +53,7 @@ describe('Identity', () => {
     });
 
     it('should render the custom radio question label', () => {
-      cy.findByRole('group', { name: 'Har du et gyldig identitetsdokument?' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du et gyldig identitetsdokument?' }).should('exist');
     });
 
     it('should show Ja and Nei options', () => {
@@ -57,7 +74,7 @@ describe('Identity', () => {
     });
 
     it('should translate the custom radio question label', () => {
-      cy.findByRole('group', { name: 'Har du et gyldig identitetsdokument? (en)' }).should('exist');
+      cy.findByRole('radiogroup', { name: 'Har du et gyldig identitetsdokument? (en)' }).should('exist');
     });
   });
 });

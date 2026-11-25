@@ -24,7 +24,8 @@ describe('Select', () => {
       });
 
       //Nedtrekksmeny med standard-verdi
-      cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B{downArrow}{enter}');
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B');
+      cy.findByRole('option', { name: 'Blå' }).click();
       cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
         cy.assertCombobox('Blå');
       });

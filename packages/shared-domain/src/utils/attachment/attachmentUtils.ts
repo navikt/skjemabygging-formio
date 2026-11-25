@@ -157,24 +157,30 @@ const mapToAttachmentSummary = ({
   };
 };
 
-const getAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>): Component[] => {
-  const attachments = resolveSubmissionAttachments(form, submission);
+const getSelectedAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>) => {
+  const selectedAttachments = resolveSubmissionAttachments(form, submission).filter(
+    (attachment) => attachment.value === 'leggerVedNaa',
+  );
 
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => {
+    .flatMap((component) => {
       const attachmentId = navFormUtils.getNavId(component) ?? component.key;
-
-      return attachments.some((attachment) => attachment.navId === attachmentId && attachment.value === 'leggerVedNaa');
+      const componentAttachments = selectedAttachments.filter((attachment) => attachment.navId === attachmentId);
+      return componentAttachments.length ? [{ component, attachments: componentAttachments }] : [];
     });
 };
+
+const getAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>): Component[] =>
+  getSelectedAttachmentsForCoverPage(submission, form).map(({ component }) => component);
 
 const attachmentUtils = {
   collectAttachmentsFromData,
   enableAttachmentDownload,
   enableAttachmentUpload,
   getAttachmentsForCoverPage,
+  getSelectedAttachmentsForCoverPage,
   getImplicitValueKey,
   getAttachmentLabel,
   isSingleUploadOnlyOption,

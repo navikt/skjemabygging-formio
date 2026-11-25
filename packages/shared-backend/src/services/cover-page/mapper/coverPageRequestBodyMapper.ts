@@ -7,18 +7,22 @@ import {
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
-import { SubsequentSubmissionCoverPageData } from '../subsequentSubmissionTypes';
 
 type DownloadUserData = Pick<ForstesideRequestBody, 'bruker' | 'ukjentBrukerPersoninfo'>;
+
+// The cover page generator rejects values with characters outside its allowed set.
+const assertValidCoverPageValues = (...values: string[]) => {
+  if (!values.every((value) => validatorUtils.isValidCoverPageValue(value))) {
+    throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
+  }
+};
 
 const addressLine = (text?: string, prefix: string = ', ') => {
   if (!text) {
     return '';
   }
 
-  if (!validatorUtils.isValidCoverPageValue(text)) {
-    throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
-  }
+  assertValidCoverPageValues(text);
 
   return `${prefix}${text}`;
 };
@@ -27,6 +31,7 @@ const getTitle = (title: string, number: string) => {
   return stringUtils.normalizeUnicode(`${number} ${title}`);
 };
 
+// The cover page service only supports NB, NN and EN, so Sami defaults to Norwegian Bokmål.
 const parseLanguage = (language: string) => {
   switch (language) {
     case 'nn':
@@ -36,6 +41,7 @@ const parseLanguage = (language: string) => {
     case 'nb':
     case 'NB':
     case 'nb-NO':
+    case 'se':
       return 'NB';
     default:
       return 'EN';
@@ -83,9 +89,7 @@ const getDownloadUserData = (user?: CoverPageDownloadType['user']): Partial<Down
   }
 
   if (user.nationalIdentityNumber) {
-    if (!validatorUtils.isValidCoverPageValue(user.nationalIdentityNumber)) {
-      throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
-    }
+    assertValidCoverPageValues(user.nationalIdentityNumber);
 
     return {
       bruker: {
@@ -96,9 +100,7 @@ const getDownloadUserData = (user?: CoverPageDownloadType['user']): Partial<Down
   }
 
   if ('organizationNumber' in user && user.organizationNumber) {
-    if (!validatorUtils.isValidCoverPageValue(user.organizationNumber)) {
-      throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
-    }
+    assertValidCoverPageValues(user.organizationNumber);
 
     return {
       bruker: {
@@ -136,6 +138,11 @@ const getDownloadRecipientData = (recipient?: CoverPageDownloadType['recipient']
   }
 
   if (recipient?.navUnit) {
+    // The cover page generator accepts only digits in enhetsnummer.
+    if (typeof recipient.navUnit !== 'string' || !/^\d+$/.test(recipient.navUnit)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid Nav unit for cover page');
+    }
+
     return {
       enhetsnummer: recipient.navUnit,
       netsPostboks: '1400',
@@ -148,17 +155,18 @@ const getDownloadRecipientData = (recipient?: CoverPageDownloadType['recipient']
 };
 
 const createRequestBodyFromDownloadData = (
-  data: CoverPageDownloadType | SubsequentSubmissionCoverPageData,
+  data: CoverPageDownloadType,
   languageCode = 'NB',
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   formNumber?: string,
 ): ForstesideRequestBody => {
-  const { type = 'SKJEMA', form, user, recipient, attachments } = data;
+  const { type = 'SKJEMA', form, user, recipient, attachments, attachmentsForArchiving } = data;
   const { properties } = form;
 
   if (!form.skjemanummer || !form.title) {
     throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
   }
+  assertValidCoverPageValues(...attachments, ...(attachmentsForArchiving ?? []));
 
   const translatedFormTitle = translate ? translate(form.title) : form.title;
   const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
@@ -183,7 +191,7 @@ const createRequestBodyFromDownloadData = (
       : undefined,
     languageCode,
     tema: properties?.tema,
-    vedleggsliste: data.archivedAttachments ?? attachments,
+    vedleggsliste: attachmentsForArchiving ?? attachments,
     dokumentlisteFoersteside: isSubsequentSubmission ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),

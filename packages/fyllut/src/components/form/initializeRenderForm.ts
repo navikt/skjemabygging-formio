@@ -1,16 +1,17 @@
 import {
   FormsApiTranslationMap,
   FormWithLanguages,
+  navFormUtils,
   Submission,
   SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefillDataToForm,
+  FyllutRuntimeServices,
   getFormPrefillKeys,
   initializeDigitalDraft,
   resolveDefaultSubmissionMethod,
-  RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import type { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
 
@@ -26,6 +27,7 @@ interface InitializedForm {
 type InitializationResult =
   | { type: 'ready'; initializedForm: InitializedForm }
   | { type: 'notFound' }
+  | { type: 'submissionMethodNotAllowed'; form: FormWithLanguages }
   | { type: 'draftNotFound' }
   | { type: 'redirect'; pathname?: string; search: string };
 
@@ -35,7 +37,7 @@ interface InitializeRenderFormProps {
   search: string;
   submissionMethod?: SubmissionMethod;
   bootstrapService: RenderFormBootstrapService;
-  applications: RuntimeServices['applications'];
+  applications: FyllutRuntimeServices['applications'];
   loadKey: string;
 }
 
@@ -65,6 +67,10 @@ const initializeRenderForm = async ({
       type: 'redirect',
       search: buildSearchWithSubmissionMethod(search, defaultSubmissionMethod),
     };
+  }
+
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, bootstrap.form)) {
+    return { type: 'submissionMethodNotAllowed', form: bootstrap.form };
   }
 
   const prefillKeys = submissionMethod === 'digital' ? getFormPrefillKeys(bootstrap.form) : [];

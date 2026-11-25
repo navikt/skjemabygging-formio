@@ -18,7 +18,7 @@ describe('Umami', () => {
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
@@ -34,20 +34,22 @@ describe('Umami', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Annet').check(),
+      );
       cy.clickNextStep();
 
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
-      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Bekreftelse på utdanning' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
 
@@ -103,7 +105,7 @@ describe('Umami', () => {
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
-      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
@@ -149,14 +151,14 @@ describe('Umami', () => {
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: /Utdanning/ }).should('exist');
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickSaveAndContinue();
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
-      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
@@ -187,20 +189,20 @@ describe('Umami', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
         cy.findByLabelText('Ja').check(),
       );
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: /Utdanning/ }).should('exist');
-      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+      cy.findByRole('radiogroup', { name: 'Høyeste fullførte utdanning' }).within(() =>
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
-      cy.findByRole('group', { name: /Vedlegg med masse greier/ }).within(() =>
+      cy.findByRole('radiogroup', { name: /Vedlegg med masse greier/ }).within(() =>
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
       cy.findByLabelText('Tilleggsinfo').type('Ekstra opplysninger');
@@ -237,7 +239,7 @@ describe('Umami', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
-      cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
+      cy.findByRole('radiogroup', { name: /Nav skjema test/ }).within(() =>
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
 

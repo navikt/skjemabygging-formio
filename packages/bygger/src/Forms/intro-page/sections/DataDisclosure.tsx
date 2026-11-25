@@ -1,6 +1,6 @@
 import { Accordion, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, introPageTexts } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
@@ -42,10 +42,10 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             onChange={(value) => updateSection(form, 'dataDisclosure', 'title', value, handleChange)}
             error={errors?.sections?.dataDisclosure?.title}
           >
-            <Radio value="introPage.dataDisclosure.title.alt1" ref={refMap['sections.dataDisclosure.title']}>
+            <Radio value={introPageTexts.dataDisclosure.titles[0]} ref={refMap['sections.dataDisclosure.title']}>
               Informasjon vi henter om deg
             </Radio>
-            <Radio value="introPage.dataDisclosure.title.alt2">Informasjon vi henter</Radio>
+            <Radio value={introPageTexts.dataDisclosure.titles[1]}>Informasjon vi henter</Radio>
           </RadioGroup>
           {bulletPoints?.map((bullet, index) => (
             <FormIntroPageWysiwygEditor

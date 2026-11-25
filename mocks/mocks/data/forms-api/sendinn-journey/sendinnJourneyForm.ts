@@ -3,8 +3,8 @@ import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-const sendinnJourneyForm = () =>
-  form({
+const sendinnJourneyForm = () => ({
+  ...form({
     title: 'Sendinn journey',
     formNumber: 'NAV test',
     path: 'sendinnjourney',
@@ -42,7 +42,9 @@ const sendinnJourneyForm = () =>
         ],
       }),
     ],
-  });
+  }),
+  revision: 3,
+});
 
 const sendinnJourneyTranslations = () => getMockTranslationsFromForm(sendinnJourneyForm());
 

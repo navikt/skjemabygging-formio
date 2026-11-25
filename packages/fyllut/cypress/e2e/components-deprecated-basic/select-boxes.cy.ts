@@ -33,7 +33,7 @@ describe('Select boxes', () => {
       cy.clickNextStep();
 
       cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
-      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Supporting documentation');
+      cy.findByRole('textbox', { name: TEXTS.statiske.attachment.attachmentTitle }).type('Dokumentasjon av utgifter');
 
       cy.clickNextStep();
 

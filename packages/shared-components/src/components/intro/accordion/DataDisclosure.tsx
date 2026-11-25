@@ -1,4 +1,4 @@
-import { IntroPageSection, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPageSection, introPageTexts, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 import IntroAccordion from '../shared/IntroAccordion';
 
@@ -14,10 +14,10 @@ const DataDisclosure = ({ properties, translate, className, defaultOpen }: Props
     return null;
   }
 
-  const description: Tkey = 'introPage.dataDisclosure.ingress';
-  const staticBulletPoints: Tkey[] = ['introPage.dataDisclosure.nationalPopulationRegister'];
+  const description: Tkey = introPageTexts.dataDisclosure.ingress;
+  const staticBulletPoints: Tkey[] = [introPageTexts.dataDisclosure.nationalPopulationRegister];
   const bulletPoints = [...staticBulletPoints, ...(properties?.bulletPoints ?? [])].map(translate);
-  const readMore: Tkey = 'introPage.dataTreatment.readMore';
+  const readMore: Tkey = introPageTexts.dataDisclosure.readMore;
 
   return (
     <IntroAccordion

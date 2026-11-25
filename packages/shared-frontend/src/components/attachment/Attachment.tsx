@@ -21,9 +21,14 @@ import TranslatedDescription from '../shared/TranslatedDescription';
 import { BaseFieldProps, ChoiceValidation } from '../types';
 import AttachmentItem from './AttachmentItem';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
+import AttachmentTitleField from './AttachmentTitleField';
 import { attachmentFieldPath } from './attachmentFieldPath';
 import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
-import { toAttachmentValueValidationFields } from './attachmentValidation';
+import {
+  requiresAttachmentTitleWithoutUpload,
+  toAttachmentFilesValidationFields,
+  toAttachmentValueValidationFields,
+} from './attachmentValidation';
 
 interface AttachmentProps extends BaseFieldProps {
   label: string;
@@ -65,7 +70,7 @@ const Attachment = ({
   const implicitValue = getImplicitAttachmentValue(values, uploadEnabled);
   const value = attachment?.value ?? implicitValue;
   const uploadSelected = uploadEnabled && !!values.find((option) => option.value === value)?.upload;
-  const paperTitleRequired = multiple && !uploadEnabled && value === 'leggerVedNaa';
+  const titleWithoutUploadRequired = requiresAttachmentTitleWithoutUpload({ type, value }, uploadEnabled);
   const counter = useRef(getLargestAttachmentIdCounter(attachments));
   const choicePath = attachmentFieldPath(statePath, attachmentId, 'value');
   const scope = useOptionalValidationScope();
@@ -126,8 +131,27 @@ const Attachment = ({
       })),
     );
   };
+  const handleTitleChange = (item: SubmissionAttachment, title: string) => {
+    if (value) removeError(item.attachmentId, statePath);
+    update((current) =>
+      current.some((entry) => entry.attachmentId === item.attachmentId)
+        ? current.map((entry) => (entry.attachmentId === item.attachmentId ? { ...entry, value, title } : entry))
+        : [...current, { ...item, value, title, files: item.files ?? [] }],
+    );
+  };
   const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
   const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
+  const titleWithoutUploadFields = titleWithoutUploadRequired
+    ? documents.flatMap((item) =>
+        toAttachmentFilesValidationFields({
+          submissionPath: statePath,
+          attachmentId: item.attachmentId,
+          label,
+          attachment: item,
+          uploadEnabled,
+        }),
+      )
+    : [];
   const deleteDocument = async (id: string) => {
     try {
       await handleDeleteAttachment(id, statePath, multiple);
@@ -138,7 +162,7 @@ const Attachment = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {fields.map((field) => (
+      {[...fields, ...titleWithoutUploadFields].map((field) => (
         <ValidationRegistration
           key={field.statePath}
           label={field.field}
@@ -176,9 +200,9 @@ const Attachment = ({
           )}
           {readMore && <ReadMore {...readMore} />}
         </div>
-        {(uploadSelected || paperTitleRequired) && (
+        {uploadSelected && (
           <VStack gap="space-8">
-            {uploadSelected && uploadedFiles.length > 0 && (
+            {uploadedFiles.length > 0 && (
               <div>
                 <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
                 {!multiple && uploadedFiles.length > 1 && !readOnly && (
@@ -202,12 +226,12 @@ const Attachment = ({
                   attachmentValue={value}
                   showDeleteAttachmentButton={multiple && documents.length > 1}
                   onDeleteAttachment={multiple ? deleteDocument : undefined}
-                  readMore={uploadSelected ? <FileUploadReadMore /> : undefined}
+                  readMore={<FileUploadReadMore />}
                   readOnly={readOnly}
                   downloadEnabled={downloadEnabled}
                 />
               ))}
-              {uploadSelected && multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
+              {multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
                 <Button
                   variant="tertiary"
                   icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
@@ -233,6 +257,17 @@ const Attachment = ({
             </VStack>
           </VStack>
         )}
+        {titleWithoutUploadRequired &&
+          documents.map((item) => (
+            <AttachmentTitleField
+              key={item.attachmentId}
+              attachmentId={item.attachmentId}
+              title={item.title}
+              submissionPath={statePath}
+              readOnly={readOnly}
+              onChange={(title) => handleTitleChange(item, title)}
+            />
+          ))}
       </VStack>
     </FormElementBox>
   );

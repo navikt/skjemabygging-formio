@@ -3,6 +3,10 @@ const units = [
   { enhetNr: '0303', navn: 'Nav Gamma', type: 'YTA' },
   { enhetNr: '0101', navn: 'Nav Alpha', type: 'LOKAL' },
 ];
+const unsupportedUnits = [
+  { enhetNr: '2990', navn: 'Nav IT-avdelingen', type: 'IT' },
+  { enhetNr: '0000', navn: 'Nav ukjent', type: 'LOKAL' },
+];
 
 export default [
   {
@@ -12,7 +16,7 @@ export default [
     variants: [
       { id: 'success', type: 'json', options: { status: 200, body: units } },
       { id: 'empty', type: 'json', options: { status: 200, body: [] } },
-      { id: 'no-matching-types', type: 'json', options: { status: 200, body: [units[1]] } },
+      { id: 'no-matching-types', type: 'json', options: { status: 200, body: [units[1], ...unsupportedUnits] } },
       {
         id: 'error',
         type: 'json',

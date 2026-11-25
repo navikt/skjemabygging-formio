@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { introPageTexts, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
@@ -16,7 +16,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
     return null;
   }
 
-  const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
+  const inputLabel: Tkey = introPageTexts.selfDeclaration.inputLabel;
 
   return (
     <div className={className}>

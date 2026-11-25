@@ -1,4 +1,4 @@
-import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { introPageTexts, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroAccordion from '../shared/IntroAccordion';
 
 interface Props {
@@ -8,8 +8,8 @@ interface Props {
 }
 
 const DataStorage = ({ translate, className, defaultOpen }: Props) => {
-  const title = translate('introPage.dataStorage.title.digital');
-  const description = translate('introPage.dataStorage.ingress.digital');
+  const title = translate(introPageTexts.dataStorage.title);
+  const description = translate(introPageTexts.dataStorage.ingress);
 
   return <IntroAccordion title={title} description={description} className={className} defaultOpen={defaultOpen} />;
 };

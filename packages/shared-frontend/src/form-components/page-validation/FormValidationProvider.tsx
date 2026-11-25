@@ -11,7 +11,11 @@ import { ValidationProvider } from '../../context/validation/ValidationContext';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { collectPageValidationFields } from './collectPageValidationFields';
 
-type SpecialPageFieldsResolver = (pageKey: string, submission?: Submission) => ValidationField[] | undefined;
+type SpecialPageFieldsResolver = (
+  pageKey: string,
+  submission: Submission | undefined,
+  form: Form,
+) => ValidationField[] | undefined;
 
 interface Props {
   children: ReactNode;
@@ -78,7 +82,7 @@ const FormValidationProvider = ({ children, initialPagesWithErrors, resolveSpeci
         return cachedFields;
       }
 
-      let fields = resolveSpecialPageFields?.(pageKey, submission);
+      let fields = resolveSpecialPageFields?.(pageKey, submission, form);
       if (fields === undefined) {
         currentCache.panels ??= getActivePanels(form, submission, { submissionMethod });
         const panel = currentCache.panels.find((currentPanel) => currentPanel.key === pageKey);

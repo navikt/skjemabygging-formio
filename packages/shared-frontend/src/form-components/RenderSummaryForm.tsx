@@ -7,7 +7,6 @@ import {
   TranslateFunction,
   attachmentUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { To } from 'react-router';
 import RenderComponent from './RenderComponent';
 import SummaryAccordion from './components/accordion/SummaryAccordion';
 import SummaryAccountNumber from './components/account-number/SummaryAccountNumber';
@@ -59,7 +58,6 @@ import {
 } from './types';
 
 interface CommonProps {
-  getPanelLink?: (panelKey: string) => To;
   activeComponents: Component[];
   activeAttachmentUploadsPanel?: Panel;
   submission?: Submission;
@@ -87,7 +85,6 @@ const RenderSummaryForm = ({
   rendererConfig,
   appConfig,
   handleDownloadFile,
-  getPanelLink,
 }: Props) => {
   if (!submission) {
     return null;
@@ -165,7 +162,6 @@ const RenderSummaryForm = ({
           component={component}
           submissionPath=""
           componentRegistry={componentRegistry}
-          getPanelLink={getPanelLink}
           submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}

@@ -1,5 +1,5 @@
 import { FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
-import { TypedComponentDefinition, TypedComponentType } from './definitions';
+import { TypedComponentDefinition } from './definitions';
 
 /**
  * Total, discriminated union of every form component definition. This is the
@@ -16,7 +16,7 @@ import { TypedComponentDefinition, TypedComponentType } from './definitions';
 type ComponentDefinition = TypedComponentDefinition;
 
 /** The typed definition for a given component `type` literal. */
-type ComponentDefinitionByType<K extends TypedComponentType> = Extract<ComponentDefinition, { type: K }>;
+type ComponentDefinitionByType<K extends FormComponentType> = Extract<ComponentDefinition, { type: K }>;
 
 /**
  * Compile-time guarantee that `ComponentDefinition` stays total over
@@ -71,7 +71,6 @@ export type {
   TextAreaDefinition,
   TextFieldDefinition,
   TypedComponentDefinition,
-  TypedComponentType,
   YearDefinition,
 } from './definitions';
 export type { ComponentDefinition, ComponentDefinitionByType, NoUncoveredComponentTypes };

@@ -37,7 +37,10 @@ describe('Select', () => {
         .and('have.value', 'alt1')
         .focus();
       cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.focus');
-      cy.findByRole('combobox', { name: /Låst alternativ/ }).trigger('keydown', { key: 'ArrowDown' });
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).trigger('keydown', {
+        key: 'ArrowDown',
+        code: 'ArrowDown',
+      });
       cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.value', 'alt1');
       cy.findByRole('combobox', { name: /Låst alternativ/ }).select('alt2');
       cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.value', 'alt1');

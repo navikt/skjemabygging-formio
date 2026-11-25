@@ -1,17 +1,17 @@
 import { sendinnEntryUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { UnavailablePage } from '../app/error/UnavailablePage';
-import { LoadSendinnForm } from './form/createSendinnFormService';
 import { SendinnFormEntry } from './form/SendinnFormEntry';
 import { JourneyPlaceholder } from './JourneyPlaceholder';
+import { SendinnServices } from './SendinnServices';
 
 interface Props {
-  loadForm: LoadSendinnForm;
+  services: SendinnServices;
   onLoadError: (error: unknown) => void;
 }
 
 // Expects a router with basename /sendinn, so the pathname is relative to the sendinn base path.
-const SendinnRoutes = ({ loadForm, onLoadError }: Props) => {
+const SendinnRoutes = ({ services, onLoadError }: Props) => {
   const { pathname, search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const entry = sendinnEntryUtils.resolveEntry(pathname, searchParams);
@@ -26,8 +26,15 @@ const SendinnRoutes = ({ loadForm, onLoadError }: Props) => {
     return (
       <Routes>
         <Route
-          path="/:formPath/:step?"
-          element={<SendinnFormEntry formPath={entry.formPath} loadForm={loadForm} onLoadError={onLoadError} />}
+          path="/:formPath/*"
+          element={
+            <SendinnFormEntry
+              formPath={entry.formPath}
+              loadForm={services.loadForm}
+              runtimeServices={services.runtime}
+              onLoadError={onLoadError}
+            />
+          }
         />
       </Routes>
     );
