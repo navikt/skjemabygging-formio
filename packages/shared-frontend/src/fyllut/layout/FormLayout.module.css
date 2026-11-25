@@ -13,6 +13,16 @@
   }
 }
 
+@media screen {
+  .container:has([data-uxsignals-embed]:not(:empty)) {
+    padding-block-end: var(--ax-space-32);
+  }
+
+  .container > section:has(> [data-uxsignals-embed]:not(:empty)) {
+    margin-block-start: var(--ax-space-32);
+  }
+}
+
 @media print {
   :global(#decorator-footer),
   :global(#decorator-header skip-link),

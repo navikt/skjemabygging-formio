@@ -9,3 +9,13 @@
     padding: var(--ax-space-12) var(--ax-space-16);
   }
 }
+
+@media screen {
+  .container:has([data-uxsignals-embed]:not(:empty)) {
+    padding-block-end: var(--ax-space-32);
+  }
+
+  .container > section:has(> [data-uxsignals-embed]:not(:empty)) {
+    margin-block-start: var(--ax-space-32);
+  }
+}
