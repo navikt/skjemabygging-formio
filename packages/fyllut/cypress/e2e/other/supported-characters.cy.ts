@@ -120,7 +120,7 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       });
     });
 
-    it('keeps a title made invalid during upload editable', { defaultCommandTimeout: 30000 }, () => {
+    it('hides invalid uploaded titles and allows re-uploading', { defaultCommandTimeout: 30000 }, () => {
       let releaseUpload: () => void;
       const heldResponse = new Cypress.Promise<void>((resolve) => {
         releaseUpload = resolve;
@@ -148,17 +148,27 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       cy.findAllByText(errorMessage(label)).should('exist');
       cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
         cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('not.exist');
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Title 😀').should('be.visible');
       });
-      cy.findByRole('textbox', { name: label }).clear();
-      cy.findByRole('textbox', { name: label }).should('have.focus');
-      cy.clickSaveAndContinue();
-      cy.findAllByText(requiredMessage(label)).should('exist');
-      cy.clickPreviousStep();
-      cy.clickSaveAndContinue();
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findByRole('textbox', { name: label }).should('have.value', '');
-      cy.findByRole('textbox', { name: label }).type('Corrected title');
-      cy.findAllByText(requiredMessage(label)).should('not.exist');
+      cy.intercept('DELETE', '**/fyllut/api/send-inn/digital-application/*/attachments/**', { statusCode: 204 }).as(
+        'deleteAttachmentFile',
+      );
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('button', { name: 'Slett filen' }).click();
+      });
+      cy.wait('@deleteAttachmentFile').its('response.statusCode').should('eq', 204);
+      cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('replacementUpload');
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).clear();
+        cy.findByRole('textbox', { name: label }).type('Corrected title');
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@replacementUpload').its('response.statusCode').should('eq', 201);
+      cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only').within(() => {
+        cy.findByRole('textbox', { name: label }).should('not.exist');
+        cy.findByText('Corrected title').should('be.visible');
+      });
       cy.findAllByText(errorMessage(label)).should('not.exist');
     });
 

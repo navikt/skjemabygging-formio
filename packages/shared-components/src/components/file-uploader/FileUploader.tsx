@@ -5,7 +5,7 @@ import {
   TEXTS,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject, ReactNode, useCallback, useState } from 'react';
+import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -92,10 +92,6 @@ const FileUploader = ({
         field: translate(TEXTS.statiske.attachment.attachmentTitle),
       })
     : undefined;
-  const [editingTitle, setEditingTitle] = useState(false);
-  if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
-    setEditingTitle(true);
-  }
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
   const fileItems = [...uploadedFiles, ...inProgress];
@@ -138,7 +134,7 @@ const FileUploader = ({
           translationParams={fileUploadErrorParams}
         />
       )}
-      {(showButton || invalidTitle || editingTitle) && (
+      {showButton && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
@@ -155,31 +151,29 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          {showButton && (
-            <HStack gap="space-16">
-              <UploadButton
-                attachmentId={attachmentId}
-                variant={initialUpload ? 'primary' : 'secondary'}
-                titleError={uploadTitleError}
-                refs={refs}
-                translationParams={fileUploadErrorParams}
-                accept={accept}
-                readMore={readMore}
-                maxFileSizeInBytes={maxFileSizeInBytes}
-                onSuccess={logUploadEvent}
-              />
-              {showDeleteAttachmentButton && onDeleteAttachment && (
-                <Button
-                  className={styles.deleteButton}
-                  variant="tertiary"
-                  disabled={deleteAttachmentDisabled}
-                  onClick={() => onDeleteAttachment(attachmentId)}
-                >
-                  {translate(TEXTS.statiske.attachment.deleteAttachment)}
-                </Button>
-              )}
-            </HStack>
-          )}
+          <HStack gap="space-16">
+            <UploadButton
+              attachmentId={attachmentId}
+              variant={initialUpload ? 'primary' : 'secondary'}
+              titleError={uploadTitleError}
+              refs={refs}
+              translationParams={fileUploadErrorParams}
+              accept={accept}
+              readMore={readMore}
+              maxFileSizeInBytes={maxFileSizeInBytes}
+              onSuccess={logUploadEvent}
+            />
+            {showDeleteAttachmentButton && onDeleteAttachment && (
+              <Button
+                className={styles.deleteButton}
+                variant="tertiary"
+                disabled={deleteAttachmentDisabled}
+                onClick={() => onDeleteAttachment(attachmentId)}
+              >
+                {translate(TEXTS.statiske.attachment.deleteAttachment)}
+              </Button>
+            )}
+          </HStack>
         </VStack>
       )}
     </VStack>

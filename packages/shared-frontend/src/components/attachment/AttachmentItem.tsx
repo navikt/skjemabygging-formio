@@ -1,6 +1,6 @@
 import { Box, Button, FileItem, HStack, VStack } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS, UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { readAttachments, standaloneAttachmentsPath } from '../../context/attachment/attachmentSubmission';
 import {
   getFileValidationError,
@@ -85,12 +85,6 @@ const AttachmentItem = ({
         field: translate(TEXTS.statiske.attachment.attachmentTitle),
       })
     : undefined;
-  const [editingTitle, setEditingTitle] = useState(false);
-  // Keep the correction input mounted while the user clears and retypes an uploaded title.
-  if (uploadedFiles.length > 0 && invalidTitle && !editingTitle) {
-    setEditingTitle(true);
-  }
-  const showInvalidTitle = invalidTitle || editingTitle;
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
@@ -141,9 +135,9 @@ const AttachmentItem = ({
           onDownloadFile={downloadEnabled ? handleDownloadFileItem : undefined}
         />
       )}
-      {(showButton || showInvalidTitle || filesError || uploadReadMore) && (
+      {(showButton || filesError || uploadReadMore) && (
         <div>
-          {(showButton || showInvalidTitle) && (
+          {showButton && (
             <VStack gap="space-16">
               {requireAttachmentTitle && (
                 <AttachmentTitleField
@@ -155,7 +149,7 @@ const AttachmentItem = ({
                   readOnly={readOnly}
                 />
               )}
-              {showButton && !readOnly && (
+              {!readOnly && (
                 <HStack gap="space-16">
                   <UploadButton
                     attachmentId={attachmentId}
