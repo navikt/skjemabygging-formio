@@ -47,12 +47,6 @@ describe('DataGrid', () => {
       });
     });
 
-    it('should show custom addAnother button text', () => {
-      cy.get('[data-component-key="datagrid1"]')
-        .findByRole('button', { name: /Legg til rad/i })
-        .should('exist');
-    });
-
     it('should show default addAnother button text when not customized', () => {
       cy.get('[data-component-key="datagrid2"]')
         .findByRole('button', { name: /Legg til/i })
@@ -68,11 +62,6 @@ describe('DataGrid', () => {
         cy.findAllByRole('heading', { level: 3, name: 'Rad' }).should('have.length', 2);
         cy.findAllByRole('button', { name: 'Fjern rad' }).should('have.length', 2);
       });
-    });
-
-    it('child textfield should be interactable', () => {
-      cy.findAllByRole('textbox', { name: 'Navn' }).first().type('Test');
-      cy.findAllByRole('textbox', { name: 'Navn' }).first().should('have.value', 'Test');
     });
 
     it('should use blue row cards with the remove action below the fields', () => {

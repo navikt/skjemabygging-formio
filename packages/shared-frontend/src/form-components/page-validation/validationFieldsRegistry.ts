@@ -17,6 +17,7 @@ import {
   toFieldValidation,
   toValidationFields,
 } from '../../components/shared/fieldValidation';
+import { toTextAreaValidation } from '../../components/text-area/textAreaValidation';
 import { toCoverPageTextFieldValidation, toTextFieldValidation } from '../../components/text-field/textFieldValidation';
 import { toYearValidation } from '../../components/year/yearValidation';
 import {
@@ -143,7 +144,8 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
       toNumberFieldValidation(toFieldValidationInput(context), numberType(context.component)),
     ),
 
-  textarea: plainValidationFields,
+  textarea: (context) =>
+    toValidationFields(context.submissionPath, context.value, toTextAreaValidation(toFieldValidationInput(context))),
   navCheckbox: plainValidationFields,
   selectboxes: selectBoxesValidationFields,
   landvelger: plainValidationFields,

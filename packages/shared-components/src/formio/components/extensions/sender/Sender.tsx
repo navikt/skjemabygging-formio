@@ -122,7 +122,12 @@ class Sender extends BaseComponent {
   }
 
   private validateTextInput(value: string | undefined, field: string, label: string) {
-    if (!validatorUtils.isValidCoverPageValue(value ?? '')) {
+    if (!validatorUtils.hasSupportedCharacters(value ?? '')) {
+      super.addError(
+        this.translate('containsUnsupportedCharacters', { field: this.translate(label) }),
+        `sender:${field}`,
+      );
+    } else if (!validatorUtils.isValidCoverPageValue(value ?? '')) {
       super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), `sender:${field}`);
     }
   }

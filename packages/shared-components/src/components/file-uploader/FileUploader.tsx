@@ -1,5 +1,10 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
-import { enableAttachmentDownload, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  enableAttachmentDownload,
+  SubmissionAttachment,
+  TEXTS,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
@@ -80,13 +85,20 @@ const FileUploader = ({
 
   const uploadedFiles = attachment?.files ?? [];
   const initialUpload = uploadedFiles.length === 0;
+  const invalidTitle =
+    requireAttachmentTitle && (!attachment?.title?.trim() || !validatorUtils.hasSupportedCharacters(attachment.title));
+  const uploadTitleError = invalidTitle
+    ? translate(attachment?.title?.trim() ? 'containsUnsupportedCharacters' : 'required', {
+        field: translate(TEXTS.statiske.attachment.attachmentTitle),
+      })
+    : undefined;
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
   const fileItems = [...uploadedFiles, ...inProgress];
   const deleteAttachmentDisabled = hasActiveUpload(inProgress);
 
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
-  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
+  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle', 'supportedTitle']);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     changeAttachmentValue(
@@ -143,7 +155,7 @@ const FileUploader = ({
             <UploadButton
               attachmentId={attachmentId}
               variant={initialUpload ? 'primary' : 'secondary'}
-              allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+              titleError={uploadTitleError}
               refs={refs}
               translationParams={fileUploadErrorParams}
               accept={accept}

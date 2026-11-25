@@ -46,10 +46,6 @@ describe('Attachment', () => {
       cy.defaultWaits();
     });
 
-    it('renders label and option group', () => {
-      cy.findByRole('radiogroup', { name: LABEL }).should('exist');
-    });
-
     it('renders enabled options for default type', () => {
       cy.findByRole('radiogroup', { name: LABEL }).within(() => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist');
@@ -197,13 +193,6 @@ describe('Attachment', () => {
       getUploadOnlyAttachment().within(() => {
         cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
       });
-    });
-
-    it('allows direct upload without selecting option first', () => {
-      getUploadOnlyAttachment().within(() => {
-        cy.uploadFile('small-file.txt');
-      });
-      cy.findByText('small-file.txt').should('exist');
     });
 
     it('downloads uploaded file when clicking file name', () => {

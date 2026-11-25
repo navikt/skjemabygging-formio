@@ -1,5 +1,5 @@
 import { Textarea as NavTextarea } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
@@ -40,6 +40,22 @@ class TextArea extends BaseComponent {
   getMaxLength() {
     const maxLength = this.component?.validate?.maxLength;
     return maxLength;
+  }
+
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const validity = super.checkComponentValidity(data, dirty, row, options);
+    const value = this.getValue();
+    if (
+      validity &&
+      !this.shouldSkipValidation(data, dirty, row) &&
+      !this.getReadOnly() &&
+      typeof value === 'string' &&
+      !validatorUtils.hasSupportedCharacters(value)
+    ) {
+      const message = this.translateWithLabel('containsUnsupportedCharacters');
+      return this.setComponentValidity([this.createError(message, undefined)], dirty, undefined);
+    }
+    return validity;
   }
 
   renderReact(element) {

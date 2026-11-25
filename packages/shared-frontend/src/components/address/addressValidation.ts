@@ -2,6 +2,7 @@ import { CustomLabels, SubmissionAddress, SubmissionMethod, TEXTS } from '@navik
 import { ValidationField } from '../../context/validation/validationTypes';
 import { toPostalCodeValidation } from '../postal-code/postalCodeValidation';
 import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
+import { toCoverPageTextFieldValidation } from '../text-field/textFieldValidation';
 import { AddressConfig, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
 
 interface AddressValidationInput extends Pick<AddressConfig, 'addressType' | 'addressTypeWizard' | 'prefillKey'> {
@@ -33,7 +34,7 @@ const toAddressPart = ({
     value,
     validation?.postalCode
       ? toPostalCodeValidation({ statePath, label, required, validation })
-      : toFieldValidation({ statePath, label, required, validation }),
+      : toCoverPageTextFieldValidation({ statePath, label, required, validation }),
   );
 
 /**

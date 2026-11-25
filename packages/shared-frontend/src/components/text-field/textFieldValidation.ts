@@ -1,7 +1,7 @@
 import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 
-const toTextFieldValidation = (input: FieldValidationInput) => toFieldValidation(input);
+const toTextFieldValidation = (input: FieldValidationInput) => toFieldValidation(input, { supportedCharacters: true });
 const toCoverPageTextFieldValidation = (input: FieldValidationInput) =>
-  toFieldValidation(input, { coverPageValue: true });
+  toTextFieldValidation({ ...input, validation: { ...input.validation, coverPageValue: true } });
 
 export { toCoverPageTextFieldValidation, toTextFieldValidation };
