@@ -85,31 +85,6 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
       assertCharacterErrorAndRecovery('Representantens fornavn', 'Ola 😀', 'Ola');
     });
 
-    it('validates additional documentation only while its option is selected', () => {
-      cy.visit('/fyllut/supportedcharacters/vedlegg?sub=paper');
-      cy.defaultWaits();
-      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
-      });
-      assertCharacterErrorAndRecovery('Upload details', 'Details\u2028more', 'Plain text');
-      cy.findByRole('textbox', { name: /^Upload details/ }).clear();
-      cy.findByRole('textbox', { name: /^Upload details/ }).type('Details 😀');
-      cy.clickNextStep();
-      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check();
-      });
-      cy.findAllByText(errorMessage('Upload details')).should('not.exist');
-    });
-
-    it('validates and focuses additional documentation outside an attachment panel', () => {
-      cy.visit('/fyllut/supportedcharacters/documentation?sub=paper');
-      cy.defaultWaits();
-      cy.findByRole('radiogroup', { name: /^Supporting documentation/ }).within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
-      });
-      assertCharacterErrorAndRecovery('Additional documentation', 'Receipt 😀');
-    });
-
     it('blocks file selection until the attachment title is valid', () => {
       cy.defaultInterceptsMellomlagring();
       cy.visit('/fyllut/attachmentuploadonly/visning?sub=digital');
@@ -195,33 +170,6 @@ const assertCharacterErrorAndRecovery = (label: string, invalid: string, valid =
         cy.findByText('Corrected title').should('be.visible');
       });
       cy.findAllByText(errorMessage(label)).should('not.exist');
-    });
-
-    it('shows only the invalid additional documentation after uploading a file', () => {
-      cy.defaultInterceptsMellomlagring();
-      cy.visit('/fyllut/supportedcharacters/vedlegg?sub=digital');
-      cy.defaultWaits();
-      cy.wait('@createMellomlagring').its('response.statusCode').should('eq', 200);
-      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
-      });
-      cy.clickSaveAndContinue();
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      const name = /^Upload details/;
-      cy.findByRole('textbox', { name }).type('Details 😀');
-      cy.intercept('POST', '**/fyllut/api/send-inn/digital-application/*/attachments/*').as('upload');
-      cy.contains('[data-cy=attachment-upload]', 'Upload documentation').within(() => {
-        cy.uploadFile('small-file.txt');
-      });
-      cy.wait('@upload').its('response.statusCode').should('eq', 201);
-      cy.clickSaveAndContinue();
-      cy.findAllByText(errorMessage('Upload details')).should('exist');
-      cy.findByRole('radiogroup', { name: /^Upload documentation/ }).should('not.exist');
-      cy.findByRole('link', { name: errorMessage('Upload details') }).click();
-      cy.findByRole('textbox', { name }).should('have.focus');
-      cy.findByRole('textbox', { name }).clear();
-      cy.findByRole('textbox', { name }).should('have.focus').type('Corrected explanation');
-      cy.findAllByText(errorMessage('Upload details')).should('not.exist');
     });
 
     it('shows the error message in the selected language', () => {

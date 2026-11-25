@@ -1,4 +1,3 @@
-import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAttachment from '../../../../../components/attachment/AttachmentOptionSelect';
 import { ComponentUtilsProvider } from '../../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../../base/BaseComponent';
@@ -75,30 +74,6 @@ class DefaultAttachment extends BaseComponent {
     this.rerender();
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
-    const validity = super.checkComponentValidity(data, dirty, row, options);
-    const value = this.getValue();
-    const documentation = this.getAttachmentValues()?.[value?.key]?.additionalDocumentation;
-    if (
-      validity &&
-      !this.shouldSkipValidation(data, dirty, row) &&
-      !this.getReadOnly() &&
-      documentation?.enabled &&
-      typeof value?.additionalDocumentation === 'string' &&
-      !validatorUtils.hasSupportedCharacters(value.additionalDocumentation)
-    ) {
-      const message = this.translate('containsUnsupportedCharacters', {
-        field: this.translate(documentation.label),
-      });
-      return this.setComponentValidity(
-        [this.createError(message, `${this.getId()}-additionalDocumentation`)],
-        dirty,
-        undefined,
-      );
-    }
-    return validity;
-  }
-
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
@@ -109,9 +84,6 @@ class DefaultAttachment extends BaseComponent {
           description={<Description component={this.component} />}
           deadline={this.options.properties?.ettersendelsesfrist}
           error={this.getError()}
-          additionalDocumentationId={`${this.getId()}-additionalDocumentation`}
-          additionalDocumentationError={this.getComponentError(`${this.getId()}-additionalDocumentation`)}
-          additionalDocumentationRef={(ref) => this.addRef(`${this.getId()}-additionalDocumentation`, ref)}
           onChange={(value) => this.handleChange(value)}
           translate={this.translate.bind(this)}
           ref={(ref) => this.setReactInstance(ref)}

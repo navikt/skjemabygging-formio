@@ -5,7 +5,6 @@ import { toFieldValidation, toValidationFields } from '../shared/fieldValidation
 import { toTextFieldValidation } from '../text-field/textFieldValidation';
 import { ChoiceValidation } from '../types';
 import { attachmentFieldPath } from './attachmentFieldPath';
-import { AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
 
 interface AttachmentUploadValidationInput {
   submissionPath?: string;
@@ -31,40 +30,6 @@ const requiresAttachmentTitleWithoutUpload = (
 ) => !uploadEnabled && attachment?.type === 'other' && attachment.value === 'leggerVedNaa';
 
 const attachmentFilesRules: ValidationRules = { requiredFiles: true };
-
-interface AttachmentAdditionalDocumentationInput extends Pick<
-  AttachmentUploadValidationInput,
-  'submissionPath' | 'attachmentId' | 'attachment' | 'uploadEnabled'
-> {
-  values: AttachmentChoiceOption[];
-}
-
-const toAttachmentAdditionalDocumentationValidationFields = ({
-  submissionPath,
-  attachmentId,
-  attachment,
-  values,
-  uploadEnabled = false,
-}: AttachmentAdditionalDocumentationInput): ValidationField[] => {
-  const selectedValue = attachment?.value ?? getImplicitAttachmentValue(values, uploadEnabled);
-  const documentation = values.find((option) => option.value === selectedValue)?.additionalDocumentation;
-  const value = attachment?.additionalDocumentation ?? '';
-
-  if (!documentation?.label) {
-    return [];
-  }
-
-  const statePath = attachmentFieldPath(submissionPath, attachmentId, 'additionalDocumentation');
-  return toValidationFields(
-    statePath,
-    value,
-    toTextFieldValidation({
-      statePath,
-      label: documentation.label,
-      required: false,
-    }),
-  );
-};
 
 /**
  * Upload controls validate the attachment value at its submission path and use stable child paths
@@ -135,7 +100,6 @@ export {
   attachmentValueRules,
   requiresAttachmentTitleWithoutUpload,
   requiresUploadedFiles,
-  toAttachmentAdditionalDocumentationValidationFields,
   toAttachmentFilesValidationFields,
   toAttachmentValueValidationFields,
 };
