@@ -53,7 +53,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
             size="xsmall"
           />
         </span>
-        {form.path.length > 0 && <RevisionViewer formPath={form.path} />}
+        {form.createdAt && <RevisionViewer formPath={form.path} />}
       </VStack>
     </HStack>
   );
