@@ -261,5 +261,24 @@ describe('Global translations', () => {
       cy.wait('@putGlobalTranslation7');
       cy.wait('@postGlobalTranslation');
     });
+
+    it('updates bokmål text', () => {
+      cy.intercept('PUT', '/api/translations/7', (req) => {
+        expect(req.body).to.deep.equal({
+          nb: 'Rett opp dette før du går videre:',
+          nn: 'For å gå vidare må du rette opp følgende:',
+          en: '',
+          revision: 1,
+        });
+        req.reply(200, req.body);
+      }).as('putGlobalTranslation7');
+      cy.findByRole('link', { name: 'Validering' }).click();
+      cy.findByRole('heading', { name: 'Globale valideringstekster' }).should('be.visible');
+      cy.findByText('For å gå videre må du rette opp følgende:').click();
+      cy.findByText('error').should('be.visible');
+      cy.findByRole('textbox', { name: 'Bokmål' }).type('{selectall}Rett opp dette før du går videre:');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putGlobalTranslation7');
+    });
   });
 });

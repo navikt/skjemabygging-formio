@@ -68,7 +68,7 @@ const GlobalTranslationsPage = () => {
             )}
             <GlobalTranslationsTable
               translations={translations}
-              isKeyBased={tag === 'introPage'}
+              isKeyBased={tag === 'introPage' || tag === 'validering'}
               addNewRow={tag === 'skjematekster'}
               loading={!isReady}
             />
