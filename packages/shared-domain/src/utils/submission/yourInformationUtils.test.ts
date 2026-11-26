@@ -15,11 +15,11 @@ describe('getYourInformationUtils', () => {
       ],
     } as NavFormType;
     const submission: SubmissionData = {
-      yourInfo: { name: 'John Doe' },
+      yourInfo: { fornavn: 'John' },
     };
 
     const result = yourInformationUtils.getYourInformation(form, submission);
-    expect(result).toEqual({ name: 'John Doe' });
+    expect(result).toEqual({ fornavn: 'John' });
   });
 
   it('returns the first your information object present in submission data', () => {
@@ -40,12 +40,29 @@ describe('getYourInformationUtils', () => {
       ],
     } as NavFormType;
     const submission: SubmissionData = {
-      yourInfo2: { name: 'John Doe' },
-      yourInfo: { name: 'Jane Doe' },
+      yourInfo2: { fornavn: 'John' },
+      yourInfo: { fornavn: 'Jane' },
     };
 
     const result = yourInformationUtils.getYourInformation(form, submission);
-    expect(result).toEqual({ name: 'Jane Doe' });
+    expect(result).toEqual({ fornavn: 'Jane' });
+  });
+
+  it.each([
+    ['blank values', { fornavn: '', etternavn: ' ', identitet: { identitetsnummer: '' } }],
+    ['an empty object', {}],
+  ])('skips your information objects with %s', (_description, onBehalfOfOthers) => {
+    const form = {
+      components: [
+        { key: 'onBehalfOfOthers', yourInformation: true, label: '', type: '' },
+        { key: 'self', yourInformation: true, label: '', type: '' },
+      ],
+    } as NavFormType;
+    const self = { identitet: { identitetsnummer: '12345678911' }, fornavn: 'Ola', etternavn: 'Nordmann' };
+    const submission: SubmissionData = { onBehalfOfOthers, self };
+
+    const result = yourInformationUtils.getYourInformation(form, submission);
+    expect(result).toEqual(self);
   });
 
   it('returns undefined when your information object is not present in submission data', () => {
