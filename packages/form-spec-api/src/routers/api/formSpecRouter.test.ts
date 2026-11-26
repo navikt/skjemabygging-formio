@@ -69,6 +69,8 @@ describe('formSpecRouter', () => {
       }),
     );
     expect(response.body.$id).toBe('https://skjemabygging.nav.no/forms/nav123456/spec?revision=3');
+    expect(response.body.properties.formRevision).toEqual({ type: 'integer' });
+    expect(response.body.required).toEqual(['language', 'formRevision', 'data']);
   });
 
   it('returns 404 when the form is missing', async () => {

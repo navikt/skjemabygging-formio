@@ -153,11 +153,14 @@ describe('generateSchema', () => {
           required: ['data'],
           type: 'object',
         },
+        formRevision: {
+          type: 'integer',
+        },
         language: {
           type: 'string',
         },
       },
-      required: ['language', 'data'],
+      required: ['language', 'formRevision', 'data'],
       title: 'Test form',
       type: 'object',
     });
@@ -1166,6 +1169,7 @@ describe('generateSchema', () => {
           whatAreYouApplyingFor: 'support',
         },
       },
+      formRevision: 20,
       language: 'nb',
     });
   });
@@ -1178,6 +1182,10 @@ describe('generateSchema', () => {
 
     expect(schemaV1.$id).toBe('https://skjemabygging.nav.no/forms/nav120605/spec?revision=3');
     expect(schemaV2.$id).toBe('https://skjemabygging.nav.no/forms/nav120605/spec?revision=4');
+    expect(schemaV1.properties.formRevision).toEqual({ type: 'integer' });
+    expect(schemaV2.properties.formRevision).toEqual({ type: 'integer' });
+    expect(schemaV1.required).toContain('formRevision');
+    expect(schemaV2.required).toContain('formRevision');
     expect(formDataSchemaV1.properties?.personalInfo).toEqual({
       additionalProperties: false,
       properties: {
@@ -1251,6 +1259,7 @@ describe('generateSchema', () => {
           },
         },
       },
+      formRevision: 1,
       language: 'nb',
     });
   });
