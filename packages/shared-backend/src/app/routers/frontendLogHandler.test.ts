@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { createFrontendLogHandler } from './frontendLogHandler';
 
 const setup = (level: string) => {
-  const logger = { info: vi.fn(), error: vi.fn() };
+  const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
   const req = { params: { level }, body: { message: 'hello' } } as unknown as Request;
   const res = { sendStatus: vi.fn() };
   return { handler: createFrontendLogHandler(logger), logger, req, res: res as unknown as Response };

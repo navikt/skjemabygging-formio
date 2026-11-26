@@ -36,6 +36,10 @@ class FrontendLogger {
     this._info(message, metadata).then(noop);
   }
 
+  warn(message: string, metadata?: object) {
+    this._warn(message, metadata).then(noop);
+  }
+
   error(message: string, metadata?: object) {
     this._error(message, metadata).then(noop);
   }
@@ -50,6 +54,10 @@ class FrontendLogger {
 
   async _info(message: string, metadata?: object) {
     return this.log('info', message, metadata);
+  }
+
+  async _warn(message: string, metadata?: object) {
+    return this.log('warning', message, metadata);
   }
 
   async _error(message: string, metadata?: object) {

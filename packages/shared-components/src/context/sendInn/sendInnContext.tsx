@@ -216,7 +216,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       } catch (error) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
         if (shouldLogDraftFailure(error)) {
-          logger?.info('Draft persistence failed', getDraftFailureMetadata('create', error));
+          logger?.warn('Draft persistence failed', getDraftFailureMetadata('create', error));
         }
       }
     },
@@ -262,7 +262,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
         if (shouldLogDraftFailure(error)) {
-          logger?.info(
+          logger?.warn(
             formatDraftLogMessage(innsendingsId, 'Draft persistence failed'),
             getDraftFailureMetadata('update', error),
           );
@@ -384,7 +384,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           } catch (updateError) {
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
             const failureLog = getSubmissionFailureLog(submitError, { error: updateError });
-            if (failureLog) logger?.info(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
+            if (failureLog) logger?.warn(formatDraftLogMessage(innsendingsId, failureLog.message), failureLog.metadata);
           }
         }
       }
@@ -493,7 +493,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             return;
           }
           if (shouldLogDraftFailure(error)) {
-            logger?.info(
+            logger?.warn(
               formatDraftLogMessage(innsendingsIdFromParams, 'Draft persistence failed'),
               getDraftFailureMetadata('retrieve', error),
             );
