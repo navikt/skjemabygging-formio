@@ -23,11 +23,13 @@ const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunct
       ...errorResponse,
       stackTrace: error.stack,
     });
-    res.locals = res.locals || {};
-    res.locals.errorAlreadyLogged = true;
   } else {
     logger.warn(errorResponse);
   }
+
+  // Tells the access log that this response is already logged, at error or warn level.
+  res.locals = res.locals || {};
+  res.locals.errorAlreadyLogged = true;
 
   if (errorResponse.correlationId) {
     res.header('x-correlation-id', errorResponse.correlationId);
