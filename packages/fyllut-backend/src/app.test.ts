@@ -34,6 +34,24 @@ describe('app', () => {
       expect(fetchedUrls(formFetch)).toEqual([`${formsApiUrl}/v1/forms/testform001`]);
     });
 
+    it('Returns 404 without calling forms-api when formPath is invalid', async () => {
+      const app = createApp();
+      const metricsBefore = await request(app).get('/fyllut/internal/metrics').expect(200);
+      const missBefore = Number(
+        metricsBefore.text.match(/fyllut_form_definition_fetches_total\{result="miss"\} (\d+)/)?.[1],
+      );
+      expect(Number.isNaN(missBefore)).toBe(false);
+
+      const formFetch = vi.spyOn(global, 'fetch');
+
+      const res = await request(app).get('/fyllut/invalid-form');
+      expect(res.status).toBe(404);
+      expect(formFetch).not.toHaveBeenCalled();
+
+      const metricsAfter = await request(app).get('/fyllut/internal/metrics').expect(200);
+      expect(metricsAfter.text).toContain(`fyllut_form_definition_fetches_total{result="miss"} ${missBefore + 1}`);
+    });
+
     describe("Query param 'form'", () => {
       it('redirects with value of query param form in path', async () => {
         const res = await request(createApp()).get('/fyllut/?form=testform001').expect(302);
@@ -75,14 +93,18 @@ describe('app', () => {
   });
 
   it('returns a 404 response error when an api form is not found', async () => {
+    const app = createApp();
+    const metricsBefore = await request(app).get('/fyllut/internal/metrics').expect(200);
+    const missBefore = Number(
+      metricsBefore.text.match(/fyllut_form_definition_fetches_total\{result="miss"\} (\d+)/)?.[1],
+    );
+    expect(Number.isNaN(missBefore)).toBe(false);
+
     const formFetch = vi
       .spyOn(global, 'fetch')
       .mockResolvedValueOnce(Response.json({ message: 'not found', correlationId: 'corr-1' }, { status: 404 }));
 
-    const res = await request(createApp())
-      .get('/fyllut/api/forms/testform001')
-      .set('Accept', 'application/json')
-      .expect(404);
+    const res = await request(app).get('/fyllut/api/forms/testform001').set('Accept', 'application/json').expect(404);
 
     expect(res.body).toMatchObject({
       message: 'not found',
@@ -91,6 +113,9 @@ describe('app', () => {
     });
 
     expect(fetchedUrls(formFetch)).toEqual([`${formsApiUrl}/v1/forms/testform001`]);
+
+    const metricsAfter = await request(app).get('/fyllut/internal/metrics').expect(200);
+    expect(metricsAfter.text).toContain(`fyllut_form_definition_fetches_total{result="miss"} ${missBefore + 1}`);
   });
 
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
