@@ -127,7 +127,7 @@ const Attachment = ({
         value: next?.value,
         additionalDocumentation: next?.additionalDocumentation,
         ...(!uploadEnabled ? { files: [] } : {}),
-        ...((!uploadEnabled || multiple) && next.value !== 'leggerVedNaa' ? { title: undefined } : {}),
+        ...(type === 'other' && next.value !== 'leggerVedNaa' ? { title: undefined } : {}),
       })),
     );
   };

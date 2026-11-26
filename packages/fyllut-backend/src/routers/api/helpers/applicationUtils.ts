@@ -73,15 +73,14 @@ const assembleSubmitApplicationRequest = (
           const component = activeAttachments.find(
             (activeAttachment) => navFormUtils.getNavId(activeAttachment) === attachment.navId,
           );
-          // Drafts can keep an empty title, or a title for other documentation the applicant no longer uploads.
-          const applicantTitle =
+          const providedAttachmentTitle =
             attachment.title?.trim() && (attachment.type !== 'other' || attachment.value === 'leggerVedNaa')
               ? attachment.title
               : undefined;
           return validateAttachment(
             {
               attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
-              label: translate(applicantTitle ?? component?.label ?? ''),
+              label: translate(providedAttachmentTitle ?? component?.label ?? ''),
               title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? ''),
               uploadStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
               fileIds: attachment.files?.map((f) => f.fileId),
