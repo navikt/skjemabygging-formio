@@ -48,7 +48,17 @@ const normalizeLegacyError = (error: any) => {
   return new ResponseError('INTERNAL_SERVER_ERROR', 'Det oppstod en feil', correlator.getId(), 'Det oppstod en feil');
 };
 
-const legacyErrorToResponseError = (error: any, _req: Request, _res: Response, next: NextFunction) => {
+// The client disconnected before the request body was received (body parser or multer).
+const isClientAbort = (error: any, req: Request) =>
+  req.destroyed === true &&
+  req.complete === false &&
+  (error?.type === 'request.aborted' || error?.message === 'Request aborted' || error?.message === 'Request closed');
+
+const legacyErrorToResponseError = (error: any, req: Request, _res: Response, next: NextFunction) => {
+  if (isClientAbort(error, req)) {
+    return next(new ResponseError('BAD_REQUEST', 'Request aborted by client.', getCorrelationId(error)));
+  }
+
   next(normalizeLegacyError(error));
 };
 
