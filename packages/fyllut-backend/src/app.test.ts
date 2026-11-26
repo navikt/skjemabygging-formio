@@ -118,6 +118,21 @@ describe('app', () => {
     expect(metricsAfter.text).toContain(`fyllut_form_definition_fetches_total{result="miss"} ${missBefore + 1}`);
   });
 
+  it('returns 400 without fetching translations when formPath is invalid', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch');
+
+    const res = await request(createApp())
+      .get('/fyllut/api/translations/index.html')
+      .expect('Content-Type', /json/)
+      .expect(400);
+
+    expect(res.body).toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      message: 'Form path contains invalid characters.',
+    });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
     await request(createApp())
       .get('/fyllut/api/config')
