@@ -3,19 +3,29 @@ import { describe, expect, it, vi } from 'vitest';
 import { createFrontendLogHandler } from './frontendLogHandler';
 
 const setup = (level: string) => {
-  const logger = { info: vi.fn(), error: vi.fn() };
+  const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
   const req = { params: { level }, body: { message: 'hello' } } as unknown as Request;
   const res = { sendStatus: vi.fn() };
   return { handler: createFrontendLogHandler(logger), logger, req, res: res as unknown as Response };
 };
 
 describe('createFrontendLogHandler', () => {
-  it.each(['info', 'error'] as const)('logs %s entries marked as frontend', (level) => {
-    const { handler, logger, req, res } = setup(level);
+  it('logs info entries marked as frontend', () => {
+    const { handler, logger, req, res } = setup('info');
 
     handler(req, res);
 
-    expect(logger[level]).toHaveBeenCalledWith({ message: 'hello', source: 'frontend' });
+    expect(logger.info).toHaveBeenCalledWith({ message: 'hello', source: 'frontend' });
+    expect(res.sendStatus).toHaveBeenCalledWith(200);
+  });
+
+  it('logs error entries as warnings marked as frontend', () => {
+    const { handler, logger, req, res } = setup('error');
+
+    handler(req, res);
+
+    expect(logger.warn).toHaveBeenCalledWith({ message: 'hello', source: 'frontend' });
+    expect(logger.error).not.toHaveBeenCalled();
     expect(res.sendStatus).toHaveBeenCalledWith(200);
   });
 
