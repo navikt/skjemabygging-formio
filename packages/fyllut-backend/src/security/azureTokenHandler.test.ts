@@ -83,6 +83,8 @@ describe('azureTokenHandler', () => {
         errorCode: 'SERVICE_UNAVAILABLE',
         message: 'Could not get access token.',
         userMessage: 'Det oppstod en feil',
+        errorType: 'NETWORK_ERROR',
+        dependency: 'azure.example.test',
       });
     });
 

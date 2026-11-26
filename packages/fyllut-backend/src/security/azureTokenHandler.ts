@@ -1,3 +1,4 @@
+import { copyDependencyErrorFields, fetchFromDependency } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import qs from 'qs';
@@ -23,7 +24,7 @@ const azureTokenHandler =
     }
 
     try {
-      const response = await fetch(azureOpenidTokenEndpoint!, {
+      const response = await fetchFromDependency(azureOpenidTokenEndpoint!, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         method: 'POST',
         body: qs.stringify({
@@ -46,7 +47,10 @@ const azureTokenHandler =
       if (error instanceof TypeError && error.message === 'fetch failed') {
         logger.warn(errorMessage);
         return next(
-          new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', undefined, 'Det oppstod en feil'),
+          copyDependencyErrorFields(
+            error,
+            new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', undefined, 'Det oppstod en feil'),
+          ),
         );
       }
 

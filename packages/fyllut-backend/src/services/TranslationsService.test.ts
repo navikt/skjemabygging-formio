@@ -62,4 +62,22 @@ describe('TranslationService', () => {
       });
     });
   });
+
+  describe('fetchTranslationsFromFormsApi', () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('marks a network error with error type and forms-api as dependency', async () => {
+      const networkError = new TypeError('fetch failed');
+      vi.spyOn(global, 'fetch').mockRejectedValue(networkError);
+      const translationsService = new TranslationsService({
+        ...testConfig,
+        formsApiUrl: 'https://forms-api.example.test',
+      });
+
+      await expect(translationsService.fetchTranslationsFromFormsApi('nav123456')).rejects.toBe(networkError);
+      expect(networkError).toMatchObject({ errorType: 'NETWORK_ERROR', dependency: 'forms-api.example.test' });
+    });
+  });
 });

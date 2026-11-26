@@ -89,6 +89,31 @@ describe('idportenAuthHandler', () => {
     });
   });
 
+  describe('when the JWKS cannot be fetched', () => {
+    afterEach(() => {
+      vi.spyOn(global, 'fetch').mockImplementation(async () => Response.json({ keys: [key.toJSON(false)] }));
+    });
+
+    it('forwards the error with error type and ID-porten as dependency', async () => {
+      vi.resetModules();
+      const { default: freshHandler } = await import('./idportenAuthHandler');
+      const { config } = await import('../config/config');
+      const networkError = new TypeError('fetch failed');
+      vi.spyOn(global, 'fetch').mockRejectedValue(networkError);
+      const res = mockResponse();
+      const next = vi.fn();
+
+      await freshHandler(mockRequestWithAccessToken(createMockIdportenJwt({}, '1h', key)), res, next);
+
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledExactlyOnceWith(networkError);
+      expect(networkError).toMatchObject({
+        errorType: 'NETWORK_ERROR',
+        dependency: new URL(config.idporten!.idportenJwksUri).hostname,
+      });
+    });
+  });
+
   describe('Header Submission-Type-Innsending missing', () => {
     it('Skips authentication checks', async () => {
       const req = mockRequest({

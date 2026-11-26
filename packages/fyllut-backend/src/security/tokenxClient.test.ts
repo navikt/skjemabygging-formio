@@ -49,4 +49,26 @@ describe('TokenX client', () => {
 
     expectExchangeRequest(fetchSpy);
   });
+
+  it('marks an error response with error type and TokenX as dependency', async () => {
+    const tokenResponse = Response.json({ message: 'Error occurred' }, { status: 500 });
+    Object.defineProperty(tokenResponse, 'url', { value: token_endpoint });
+    mockTokenx(tokenResponse);
+
+    await expect(client.exchangeToken('idporten-jwt', 'unittest-gcp:namespace:app-a')).rejects.toMatchObject({
+      errorType: 'ERROR_RESPONSE',
+      dependency: new URL(token_endpoint).hostname,
+    });
+  });
+
+  it('marks a network error with error type and TokenX as dependency', async () => {
+    const networkError = new TypeError('fetch failed');
+    vi.spyOn(global, 'fetch').mockImplementation(async (input) => {
+      if (String(input) === tokenxConfig.wellKnownUrl) return Response.json({ token_endpoint });
+      throw networkError;
+    });
+
+    await expect(client.exchangeToken('idporten-jwt', 'unittest-gcp:namespace:app-a')).rejects.toBe(networkError);
+    expect(networkError).toMatchObject({ errorType: 'NETWORK_ERROR', dependency: new URL(token_endpoint).hostname });
+  });
 });

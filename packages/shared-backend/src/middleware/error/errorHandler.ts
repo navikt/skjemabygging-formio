@@ -1,6 +1,7 @@
 import { ErrorCode, ErrorResponse, getStatusFromErrorCode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
+import { getDependencyErrorFields } from '../../shared/http/dependencyError';
 import { logger } from '../../shared/logger/logger';
 
 const createErrorResponse = (error: any): ErrorResponse => {
@@ -17,14 +18,16 @@ const getHttpStatusFromErrorCode = (errorCode: ErrorCode): number =>
 
 const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunction) => {
   const errorResponse = createErrorResponse(error);
+  const dependencyErrorFields = getDependencyErrorFields(error);
 
   if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
     logger.error({
       ...errorResponse,
+      ...dependencyErrorFields,
       stackTrace: error.stack,
     });
   } else {
-    logger.warn(errorResponse);
+    logger.warn({ ...errorResponse, ...dependencyErrorFields });
   }
 
   res.locals = res.locals || {};

@@ -1,4 +1,4 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
+import { copyDependencyErrorFields, correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../utils/errors/HttpError';
@@ -8,7 +8,7 @@ const getCorrelationId = (error: any) => error.correlationId ?? error.correlatio
 
 const cloneAsResponseError = (error: Error, responseError: ResponseError) => {
   responseError.stack = error.stack;
-  return responseError;
+  return copyDependencyErrorFields(error, responseError);
 };
 
 const normalizeLegacyError = (error: any) => {

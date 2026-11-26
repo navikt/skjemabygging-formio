@@ -4,6 +4,9 @@ import { logger } from '../../shared/logger/logger';
 import { createApplicationService } from './applicationService';
 import type { SubmitApplicationRequest, SubmitApplicationResponse } from './applicationTypes';
 
+const withSendInnDependency = (error: ResponseError) =>
+  Object.assign(error, { errorType: 'ERROR_RESPONSE', dependency: 'send-inn.test' });
+
 describe('createApplicationService', () => {
   const accessToken = 'tokenx-access-token';
   const baseUrl = 'https://send-inn.test';
@@ -302,11 +305,13 @@ describe('createApplicationService', () => {
         type: 'nologin',
       }),
     ).rejects.toEqual(
-      new ResponseError(
-        'SERVICE_UNAVAILABLE',
-        'upload failed',
-        undefined,
-        TEXTS.statiske.nologin.temporarilyUnavailable,
+      withSendInnDependency(
+        new ResponseError(
+          'SERVICE_UNAVAILABLE',
+          'upload failed',
+          undefined,
+          TEXTS.statiske.nologin.temporarilyUnavailable,
+        ),
       ),
     );
 
@@ -362,11 +367,13 @@ describe('createApplicationService', () => {
         type: 'digital',
       }),
     ).rejects.toEqual(
-      new ResponseError(
-        'FILE_TOO_MANY_PAGES',
-        'Upload failed because file has too many pages',
-        correlationId,
-        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      withSendInnDependency(
+        new ResponseError(
+          'FILE_TOO_MANY_PAGES',
+          'Upload failed because file has too many pages',
+          correlationId,
+          TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+        ),
       ),
     );
   });
@@ -392,11 +399,13 @@ describe('createApplicationService', () => {
         type: 'nologin',
       }),
     ).rejects.toEqual(
-      new ResponseError(
-        'SERVICE_UNAVAILABLE',
-        'NOLOGIN is not available',
-        correlationId,
-        TEXTS.statiske.nologin.temporarilyUnavailable,
+      withSendInnDependency(
+        new ResponseError(
+          'SERVICE_UNAVAILABLE',
+          'NOLOGIN is not available',
+          correlationId,
+          TEXTS.statiske.nologin.temporarilyUnavailable,
+        ),
       ),
     );
   });
@@ -503,11 +512,13 @@ describe('createApplicationService', () => {
         type: 'nologin',
       }),
     ).rejects.toEqual(
-      new ResponseError(
-        'SERVICE_UNAVAILABLE',
-        'NOLOGIN is not available',
-        correlationId,
-        TEXTS.statiske.nologin.temporarilyUnavailable,
+      withSendInnDependency(
+        new ResponseError(
+          'SERVICE_UNAVAILABLE',
+          'NOLOGIN is not available',
+          correlationId,
+          TEXTS.statiske.nologin.temporarilyUnavailable,
+        ),
       ),
     );
 

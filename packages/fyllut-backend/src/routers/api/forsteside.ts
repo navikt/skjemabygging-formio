@@ -1,4 +1,4 @@
-import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator, fetchFromDependency, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
 import { CoverPageType, ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../config/config';
@@ -74,7 +74,7 @@ const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
 };
 
 const forstesideRequest = async (req: Request, body?: BodyInit) => {
-  const response = await fetch(`${skjemabyggingProxyUrl}/foersteside`, {
+  const response = await fetchFromDependency(`${skjemabyggingProxyUrl}/foersteside`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

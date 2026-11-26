@@ -2,6 +2,7 @@ import { HttpResponseError, ResponseError, getErrorCodeFromStatus } from '@navik
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
+import { fetchFromDependency, markDependencyError } from './dependencyError';
 
 type MimeType =
   | 'application/json'
@@ -40,7 +41,7 @@ function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
   if (!options?.suppressTransportLogs) logger.debug(`GET request to ${url}`);
-  const response = await fetch(url, {
+  const response = await fetchFromDependency(url, {
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
     redirect: options?.redirect,
@@ -58,7 +59,7 @@ function post<T>(
 function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`POST request to ${url}`);
-  const response = await fetch(url, {
+  const response = await fetchFromDependency(url, {
     method: 'POST',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -77,7 +78,7 @@ function put<T>(
 function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`PUT request to ${url}`);
-  const response = await fetch(url, {
+  const response = await fetchFromDependency(url, {
     method: 'PUT',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -96,7 +97,7 @@ function httpDelete<T>(
 function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`DELETE request to ${url}`);
-  const response = await fetch(url, {
+  const response = await fetchFromDependency(url, {
     method: 'DELETE',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -121,7 +122,7 @@ async function postMultipart<T>(
   if (!options?.suppressTransportLogs) logger.debug(`POST multipart request to ${url}`);
   const multipartOptions = defaultOptions(options);
   const { contentType: _contentType, ...optionsWithoutContentType } = multipartOptions;
-  const response = await fetch(url, {
+  const response = await fetchFromDependency(url, {
     method: 'POST',
     headers: createHeaders(optionsWithoutContentType),
     body,
@@ -230,7 +231,10 @@ const handleResponse = async <T>(
         errorBody?.correlation_id ??
         response.headers.get('x-correlation-id') ??
         undefined);
-  const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
+  const error = markDependencyError(
+    new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody),
+    requestUrl,
+  );
   const upstreamErrorCode = errorBody?.errorCode;
 
   if (!options?.suppressTransportLogs)

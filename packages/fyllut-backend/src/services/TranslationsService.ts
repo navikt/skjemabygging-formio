@@ -1,4 +1,4 @@
-import { fileUtil, urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fetchFromDependency, fileUtil, urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormioTranslationPayload,
   FormsApiTranslation,
@@ -57,9 +57,12 @@ class TranslationsService {
   async fetchTranslationsFromFormioApi(formPath: string) {
     this.validateFormPath(formPath);
     const { formioApiServiceUrl } = this._config;
-    const response = await fetch(`${formioApiServiceUrl}/language/submission?data.form=${formPath}&limit=1000`, {
-      method: 'GET',
-    });
+    const response = await fetchFromDependency(
+      `${formioApiServiceUrl}/language/submission?data.form=${formPath}&limit=1000`,
+      {
+        method: 'GET',
+      },
+    );
     if (response.ok) {
       const translationsForForm = (await response.json()) as FormioTranslationPayload[];
       return translationsForForm.reduce((acc, obj) => ({ ...acc, [obj.data.language]: { ...obj.data.i18n } }), {});
@@ -70,7 +73,7 @@ class TranslationsService {
   async fetchTranslationsFromFormsApi(formPath: string): Promise<I18nTranslations> {
     const { formsApiUrl } = this._config;
     this.validateFormPath(formPath);
-    const response = await fetch(`${formsApiUrl}/v1/forms/${formPath}/translations`, {
+    const response = await fetchFromDependency(`${formsApiUrl}/v1/forms/${formPath}/translations`, {
       method: 'GET',
     });
     if (response.ok) {
@@ -108,7 +111,7 @@ class TranslationsService {
   async fetchGlobalTranslationsFromFormsApi(lang: string): Promise<I18nTranslations> {
     const { formsApiUrl } = this._config;
     const formsApiLang = toFormsApiLang(lang);
-    const response = await fetch(`${formsApiUrl}/v1/global-translations`, { method: 'GET' });
+    const response = await fetchFromDependency(`${formsApiUrl}/v1/global-translations`, { method: 'GET' });
     if (response.ok) {
       const responseJson = (await response.json()) as FormsApiTranslation[];
       return responseJson.reduce(

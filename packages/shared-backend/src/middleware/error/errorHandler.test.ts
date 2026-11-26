@@ -30,4 +30,20 @@ describe('errorHandler', () => {
     expect(res.status).toHaveBeenCalledWith(status);
     expect(res.locals.errorAlreadyLogged).toBe(true);
   });
+
+  it.each([
+    ['error', new ResponseError('INTERNAL_SERVER_ERROR', 'Server Error', 'corr-1')],
+    ['warn', new ResponseError('SERVICE_UNAVAILABLE', 'Unavailable', 'corr-1')],
+  ] as const)('logs error type and dependency at %s level without sending them to the client', (level, error) => {
+    const logSpy = vi.spyOn(logger, level).mockImplementation(() => logger);
+    const res = createResponse();
+    Object.assign(error, { errorType: 'ERROR_RESPONSE', dependency: 'pdf.example.test' });
+
+    errorHandler(error, {} as Request, res, vi.fn());
+
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ errorType: 'ERROR_RESPONSE', dependency: 'pdf.example.test' }),
+    );
+    expect(res.send).toHaveBeenCalledWith(expect.not.objectContaining({ dependency: expect.anything() }));
+  });
 });

@@ -1,4 +1,4 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator, markDependencyError } from '@navikt/skjemadigitalisering-shared-backend';
 import { HttpError } from './errors/HttpError';
 
 async function responseToError(response: any, errorMessage: string, functional = false) {
@@ -9,7 +9,7 @@ async function responseToError(response: any, errorMessage: string, functional =
   error.http_url = response.url;
   error.http_status = response.status;
   error.correlation_id = correlator.getId();
-  return error;
+  return markDependencyError(error, response.url);
 }
 
 const toJsonOrThrowError =

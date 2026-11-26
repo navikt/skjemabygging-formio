@@ -55,6 +55,23 @@ describe('legacyErrorToResponseError', () => {
     });
   });
 
+  it('keeps error type and dependency when masking a failed call to another service', () => {
+    const error = Object.assign(new TypeError('fetch failed'), {
+      errorType: 'NETWORK_ERROR',
+      dependency: 'tokenx.example.test',
+    });
+    const next = vi.fn();
+
+    legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
+
+    expect(next.mock.calls[0][0]).toMatchObject({
+      message: 'Det oppstod en feil',
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      errorType: 'NETWORK_ERROR',
+      dependency: 'tokenx.example.test',
+    });
+  });
+
   describe('client aborts', () => {
     const requestWith = (state: { complete: boolean; destroyed: boolean }) =>
       ({ ...mockRequest({}), ...state }) as Request;

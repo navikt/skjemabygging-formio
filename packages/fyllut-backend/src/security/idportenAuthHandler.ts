@@ -1,3 +1,4 @@
+import { markDependencyError } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { createRemoteJWKSet, errors, jwtVerify } from 'jose';
 import { config } from '../config/config';
@@ -45,7 +46,7 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
         logger.warn('Failed to verify ID-porten JWT');
         return res.sendStatus(401);
       }
-      return next(err);
+      return next(markDependencyError(err, config.idporten!.idportenJwksUri));
     } finally {
       stopTimer();
     }

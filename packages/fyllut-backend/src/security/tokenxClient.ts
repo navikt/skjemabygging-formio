@@ -1,3 +1,4 @@
+import { fetchFromDependency } from '@navikt/skjemadigitalisering-shared-backend';
 import { guid } from '@navikt/skjemadigitalisering-shared-domain';
 import type { SignOptions } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
@@ -31,7 +32,7 @@ class TokenXClient {
       audience: targetClientId,
     };
 
-    const response = await fetch(tokenEndpoint, {
+    const response = await fetchFromDependency(tokenEndpoint, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       method: 'POST',
       body: qs.stringify(body),
@@ -80,7 +81,7 @@ class TokenXClient {
 
   init = async () => {
     logger.info('Initializing TokenX client');
-    return fetch(tokenxConfig.wellKnownUrl, { method: 'GET' })
+    return fetchFromDependency(tokenxConfig.wellKnownUrl, { method: 'GET' })
       .then(toJsonOrThrowError('Failed to initialize TokenX client'))
       .then(({ token_endpoint }) => {
         logger.info('TokenX client ready', { token_endpoint });

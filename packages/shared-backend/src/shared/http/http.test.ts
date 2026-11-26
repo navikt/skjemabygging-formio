@@ -39,6 +39,25 @@ describe('http', () => {
     },
   );
 
+  it('marks error responses with error type and the host name of the dependency', async () => {
+    vi.spyOn(logger, 'warn').mockReturnValue(logger);
+    vi.spyOn(global, 'fetch').mockResolvedValue(new Response('Server Error', { status: 500 }));
+
+    await expect(http.post('https://pdf.example.test/api/pdf/convert', {})).rejects.toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      errorType: 'ERROR_RESPONSE',
+      dependency: 'pdf.example.test',
+    });
+  });
+
+  it('marks network errors with error type and the host name of the dependency', async () => {
+    const networkError = new TypeError('fetch failed');
+    vi.spyOn(global, 'fetch').mockRejectedValue(networkError);
+
+    await expect(http.get('https://pdf.example.test/api/pdf/convert')).rejects.toBe(networkError);
+    expect(networkError).toMatchObject({ errorType: 'NETWORK_ERROR', dependency: 'pdf.example.test' });
+  });
+
   it('returns status and headers for manual redirect responses', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(null, {

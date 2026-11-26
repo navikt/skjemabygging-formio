@@ -1,4 +1,5 @@
 import { HttpResponseError, ResponseError, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { copyDependencyErrorFields } from '../../shared/http/dependencyError';
 import type { ApplicationType, UploadAttachmentResponse } from './applicationTypes';
 
 const draftPath = '/fyllUt/v1/soknad';
@@ -62,7 +63,7 @@ const getUpstreamErrorCode = (error: unknown): string | undefined => {
   return typeof errorCode === 'string' ? errorCode : undefined;
 };
 
-const normalizeApplicationError = (error: unknown): ResponseError => {
+const toApplicationError = (error: unknown): ResponseError => {
   const correlationId = error instanceof ResponseError ? error.correlationId : undefined;
 
   switch (getUpstreamErrorCode(error)) {
@@ -89,7 +90,10 @@ const normalizeApplicationError = (error: unknown): ResponseError => {
   }
 };
 
-const createUploadAttachmentError = (error: ResponseError): ResponseError => {
+const normalizeApplicationError = (error: unknown): ResponseError =>
+  copyDependencyErrorFields(error, toApplicationError(error));
+
+const toUploadAttachmentError = (error: ResponseError): ResponseError => {
   if (error.errorCode === 'FORBIDDEN') {
     return new ResponseError(
       'FORBIDDEN',
@@ -125,13 +129,19 @@ const createUploadAttachmentError = (error: ResponseError): ResponseError => {
   );
 };
 
+const createUploadAttachmentError = (error: ResponseError): ResponseError =>
+  copyDependencyErrorFields(error, toUploadAttachmentError(error));
+
 const createSubmitApplicationError = (error: ResponseError, type: ApplicationType): ResponseError => {
   if (type === 'nologin' && error.errorCode === 'SERVICE_UNAVAILABLE') {
-    return new ResponseError(
-      error.errorCode,
-      error.message,
-      error.correlationId,
-      TEXTS.statiske.nologin.temporarilyUnavailable,
+    return copyDependencyErrorFields(
+      error,
+      new ResponseError(
+        error.errorCode,
+        error.message,
+        error.correlationId,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      ),
     );
   }
 
