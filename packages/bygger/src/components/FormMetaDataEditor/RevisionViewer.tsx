@@ -1,4 +1,4 @@
-import { ActionMenu, Button, HStack } from '@navikt/ds-react';
+import { ActionMenu, Button, CopyButton, HStack, Link } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormRevision } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
@@ -39,20 +39,29 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
   return (
     <ActionMenu>
       <ActionMenu.Trigger>
-        <Button variant={'primary'}>Hei</Button>
+        <Button size={'small'} variant={'tertiary'}>
+          Se revisjoner
+        </Button>
       </ActionMenu.Trigger>
       <ActionMenu.Content>
         {revisions
           ?.sort((a, b) => b.revision - a.revision)
           .map((revision) => (
             <ActionMenu.Item key={'revision-' + revision.revision}>
-              <HStack gap={'space-4'}>
-                <Timestamp timestamp={revision.createdAt} />
+              <HStack align={'center'} gap={'space-8'}>
+                <Link
+                  href={`${config!.skjemadelingslenkeUrl}/${formPath}?revision=${revision.revision}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Timestamp timestamp={revision.createdAt} />
+                </Link>
                 {revision.publishedAt ? (
                   <FormStatusIndicator status={'PUBLISHED'} size={'small'} />
                 ) : (
                   <FormStatusIndicator status={'UNPUBLISHED'} size={'small'} />
                 )}
+                <CopyButton size={'small'} copyText={'test'} />
               </HStack>
             </ActionMenu.Item>
           ))}
