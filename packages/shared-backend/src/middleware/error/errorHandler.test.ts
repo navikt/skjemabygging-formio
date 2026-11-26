@@ -30,4 +30,17 @@ describe('errorHandler', () => {
     expect(res.status).toHaveBeenCalledWith(status);
     expect(res.locals.errorAlreadyLogged).toBe(true);
   });
+
+  it.each([
+    ['error', new ResponseError('INTERNAL_SERVER_ERROR', '', 'corr-1')],
+    ['warn', new ResponseError('NOT_FOUND', '', 'corr-1')],
+  ] as const)('logs an empty message as text at %s level', (level, error) => {
+    const logSpy = vi.spyOn(logger, level).mockImplementation(() => logger);
+
+    errorHandler(error, {} as Request, createResponse(), vi.fn());
+
+    expect(logSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ message: 'No message', errorCode: error.errorCode, correlationId: 'corr-1' }),
+    );
+  });
 });

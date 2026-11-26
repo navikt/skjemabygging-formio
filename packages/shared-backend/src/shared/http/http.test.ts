@@ -39,6 +39,16 @@ describe('http', () => {
     },
   );
 
+  it('uses the status in the message when the error response has no message', async () => {
+    vi.spyOn(logger, 'warn').mockReturnValue(logger);
+    vi.spyOn(global, 'fetch').mockResolvedValue(Response.json({ detail: 'Internal error' }, { status: 500 }));
+
+    await expect(http.get('https://register-data.example.test/api/activities')).rejects.toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'Request failed with status 500',
+    });
+  });
+
   it('returns status and headers for manual redirect responses', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(null, {

@@ -222,7 +222,11 @@ const handleResponse = async <T>(
 
   const errorBody = await handleBody(response, options?.signal);
   const responseUrl = new URL(response.url || requestUrl);
-  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  const upstreamMessage = typeof errorBody === 'string' ? errorBody : errorBody?.message;
+  const message =
+    (typeof upstreamMessage === 'string' && upstreamMessage) ||
+    response.statusText ||
+    `Request failed with status ${response.status}`;
   const correlationId =
     typeof errorBody === 'string'
       ? (response.headers.get('x-correlation-id') ?? undefined)

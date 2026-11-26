@@ -1,6 +1,7 @@
 import { ErrorCode, ErrorResponse, getStatusFromErrorCode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
+import { toLogEntry } from '../../shared/logger/logEntry';
 import { logger } from '../../shared/logger/logger';
 
 const createErrorResponse = (error: any): ErrorResponse => {
@@ -19,12 +20,9 @@ const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunct
   const errorResponse = createErrorResponse(error);
 
   if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
-    logger.error({
-      ...errorResponse,
-      stackTrace: error.stack,
-    });
+    logger.error(toLogEntry({ ...errorResponse, stackTrace: error.stack }));
   } else {
-    logger.warn(errorResponse);
+    logger.warn(toLogEntry({ ...errorResponse }));
   }
 
   res.locals = res.locals || {};
