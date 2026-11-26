@@ -48,7 +48,10 @@ describe('getYourInformationUtils', () => {
     expect(result).toEqual({ fornavn: 'Jane' });
   });
 
-  it('skips your information objects without identity number or name', () => {
+  it.each([
+    ['blank values', { fornavn: '', etternavn: ' ', identitet: { identitetsnummer: '' } }],
+    ['an empty object', {}],
+  ])('skips your information objects with %s', (_description, onBehalfOfOthers) => {
     const form = {
       components: [
         { key: 'onBehalfOfOthers', yourInformation: true, label: '', type: '' },
@@ -56,10 +59,7 @@ describe('getYourInformationUtils', () => {
       ],
     } as NavFormType;
     const self = { identitet: { identitetsnummer: '12345678911' }, fornavn: 'Ola', etternavn: 'Nordmann' };
-    const submission: SubmissionData = {
-      onBehalfOfOthers: { fornavn: '', etternavn: ' ', identitet: { identitetsnummer: '' } },
-      self,
-    };
+    const submission: SubmissionData = { onBehalfOfOthers, self };
 
     const result = yourInformationUtils.getYourInformation(form, submission);
     expect(result).toEqual(self);
