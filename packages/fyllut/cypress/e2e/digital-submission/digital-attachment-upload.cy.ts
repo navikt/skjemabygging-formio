@@ -108,6 +108,32 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       });
     });
 
+    it('removes the title when other documentation is no longer uploaded', () => {
+      cy.defaultInterceptsMellomlagring();
+      cy.findAttachment(/Vedlegg 1/).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
+      });
+      cy.findAttachment(/Vedlegg 2/).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
+      });
+      getUploadOnlyAttachment().within(() => cy.uploadFile('test.txt'));
+      cy.findAttachment(/Annen dokumentasjon/).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Abandoned title');
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).clear();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
+      });
+      cy.clickSaveAndContinue();
+
+      cy.wait('@updateMellomlagring').then(({ request }) => {
+        const otherAttachments = Object.values(request.body.submission.data)
+          .flat()
+          .filter((value) => (value as { type?: string } | undefined)?.type === 'other');
+        expect(otherAttachments).to.have.length(1);
+        expect(otherAttachments[0]).to.include({ value: 'nei' }).and.not.have.property('title');
+      });
+    });
+
     describe('uploading files', () => {
       beforeEach(() => {
         cy.findAttachment(/Vedlegg 1/).within(() => {
