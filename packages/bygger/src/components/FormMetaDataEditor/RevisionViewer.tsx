@@ -61,7 +61,10 @@ export const RevisionViewer = ({ formPath }: RevisionViewerProps) => {
                 ) : (
                   <FormStatusIndicator status={'UNPUBLISHED'} size={'small'} />
                 )}
-                <CopyButton size={'small'} copyText={'test'} />
+                <CopyButton
+                  size={'small'}
+                  copyText={`${config!.skjemadelingslenkeUrl}/${formPath}?revision=${revision.revision}`}
+                />
               </HStack>
             </ActionMenu.Item>
           ))}
