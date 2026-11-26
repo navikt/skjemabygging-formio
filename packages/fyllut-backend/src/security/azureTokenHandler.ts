@@ -43,8 +43,6 @@ const azureTokenHandler =
         ? `Access token for ${scope} failed with: ${JSON.stringify(error.http_response_body)}`
         : `Access token for ${scope} failed with: ${error.message}${error.cause ? ` (${error.cause.code ?? error.cause.message})` : ''}`;
 
-      // fetch rejects with "fetch failed" when Azure cannot be reached, for example on DNS failure or connect timeout.
-      // These failures are usually short, so we log a warning and alert on how many occur over time.
       if (error instanceof TypeError && error.message === 'fetch failed') {
         logger.warn(errorMessage);
         return next(

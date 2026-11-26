@@ -140,7 +140,6 @@ const createAttachmentOperations = ({
         return { status: 'auth-error' as const };
       }
 
-      // Responses from our backend carry a correlation id and the user message to show, also for 503.
       const isBackendResponseError = error instanceof ResponseError && !!error.correlationId;
       const userMessage =
         !isBackendResponseError && hasErrorCode(error, 'SERVICE_UNAVAILABLE')
