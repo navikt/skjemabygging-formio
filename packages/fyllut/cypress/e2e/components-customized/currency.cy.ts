@@ -46,7 +46,7 @@ describe('Currency', () => {
       cy.findByLabelText('Kalkulert sum').should('have.value', '');
       cy.findByRole('textbox', { name: 'Beløp A' }).type('100');
       cy.findByRole('textbox', { name: 'Beløp B' }).type('50');
-      cy.findByLabelText('Kalkulert sum').should('have.value', '150');
+      cy.findByLabelText('Kalkulert sum').should('have.value', '150,00');
       cy.findByLabelText('Kalkulert sum').should('have.attr', 'readonly');
     });
   });
