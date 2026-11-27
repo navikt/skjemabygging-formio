@@ -106,19 +106,44 @@ class ResponseError extends Error {
    * @param correlationId Send inn correlation id.
    * @param userMessage   Message intended for the end user and to be used in the translate() function.
    */
-  constructor(errorCode: ErrorCode, message: string, correlationId?: string, userMessage?: string) {
-    super(message);
+  constructor(
+    errorCode: ErrorCode,
+    message: string,
+    correlationId?: string,
+    userMessage?: string,
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
     this.errorCode = errorCode;
     this.correlationId = correlationId;
     this.userMessage = userMessage;
+  }
+
+  // Exclude `cause` (and subclass fields such as raw upstream `body`) from JSON serialization
+  // so structured logging never leaks wrapped upstream payloads or URLs.
+  toJSON() {
+    return {
+      stack: this.stack,
+      message: this.message,
+      errorCode: this.errorCode,
+      correlationId: this.correlationId,
+      userMessage: this.userMessage,
+    };
   }
 }
 
 class HttpResponseError extends ResponseError {
   public readonly body: any;
 
-  constructor(errorCode: ErrorCode, message: string, correlationId?: string, body?: any, userMessage?: string) {
-    super(errorCode, message, correlationId, userMessage);
+  constructor(
+    errorCode: ErrorCode,
+    message: string,
+    correlationId?: string,
+    body?: any,
+    userMessage?: string,
+    options?: ErrorOptions,
+  ) {
+    super(errorCode, message, correlationId, userMessage, options);
     this.body = body;
   }
 }

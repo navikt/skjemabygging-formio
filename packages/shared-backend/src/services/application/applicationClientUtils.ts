@@ -67,25 +67,37 @@ const normalizeApplicationError = (error: unknown): ResponseError => {
 
   switch (getUpstreamErrorCode(error)) {
     case 'illegalAction.applicationSentInOrDeleted':
-      return new ResponseError('NOT_FOUND', error instanceof Error ? error.message : 'Not Found', correlationId);
+      return new ResponseError(
+        'NOT_FOUND',
+        error instanceof Error ? error.message : 'Not Found',
+        correlationId,
+        undefined,
+        { cause: error },
+      );
     case 'illegalAction.fileWithTooManyPages':
       return new ResponseError(
         'FILE_TOO_MANY_PAGES',
         error instanceof Error ? error.message : 'Bad Request',
         correlationId,
+        undefined,
+        { cause: error },
       );
     case 'temporarilyUnavailable':
       return new ResponseError(
         'SERVICE_UNAVAILABLE',
         error instanceof Error ? error.message : 'Service Unavailable',
         correlationId,
+        undefined,
+        { cause: error },
       );
     default:
       if (error instanceof ResponseError) {
         return error;
       }
 
-      return new ResponseError('INTERNAL_SERVER_ERROR', 'Internal Server Error', correlationId);
+      return new ResponseError('INTERNAL_SERVER_ERROR', 'Internal Server Error', correlationId, undefined, {
+        cause: error,
+      });
   }
 };
 
@@ -96,6 +108,7 @@ const createUploadAttachmentError = (error: ResponseError): ResponseError => {
       'Upload failed because authorization failed',
       error.correlationId,
       TEXTS.statiske.uploadFile.uploadFileError,
+      { cause: error },
     );
   }
 
@@ -105,6 +118,7 @@ const createUploadAttachmentError = (error: ResponseError): ResponseError => {
       'Upload failed because file has too many pages',
       error.correlationId,
       TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      { cause: error },
     );
   }
 
@@ -114,6 +128,7 @@ const createUploadAttachmentError = (error: ResponseError): ResponseError => {
       error.message,
       error.correlationId,
       TEXTS.statiske.nologin.temporarilyUnavailable,
+      { cause: error },
     );
   }
 
@@ -122,6 +137,7 @@ const createUploadAttachmentError = (error: ResponseError): ResponseError => {
     error.message,
     error.correlationId,
     TEXTS.statiske.uploadFile.uploadFileError,
+    { cause: error },
   );
 };
 
@@ -132,6 +148,7 @@ const createSubmitApplicationError = (error: ResponseError, type: ApplicationTyp
       error.message,
       error.correlationId,
       TEXTS.statiske.nologin.temporarilyUnavailable,
+      { cause: error },
     );
   }
 
