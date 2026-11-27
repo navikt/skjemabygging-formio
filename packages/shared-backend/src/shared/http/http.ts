@@ -73,7 +73,7 @@ const fetchWithOptionalSocketRetry = async (
       error_code: socketErrorCode,
     });
 
-    return await fetch(url, init);
+    return await fetchWithOptionalSocketRetry(url, init, false);
   }
 };
 
