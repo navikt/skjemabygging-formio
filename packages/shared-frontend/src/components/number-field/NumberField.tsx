@@ -40,6 +40,7 @@ const NumberField = ({
       return numberUtils.toLocaleString(
         typeof value === 'number' || typeof value === 'string' ? value : String(value),
         {
+          minimumFractionDigits: numberType === 'integer' ? 0 : 2,
           maximumFractionDigits: 2,
         },
       );
