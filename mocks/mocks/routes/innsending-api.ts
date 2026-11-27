@@ -49,6 +49,7 @@ import tc21f from '../data/test-cases/tc21f-innsending-soknad-body.json';
 import tc22 from '../data/test-cases/tc22-innsending-nologin-soknad-body.json';
 import tc23a from '../data/test-cases/tc23a-innsending-nologin-soknad-body.json';
 import tc23b from '../data/test-cases/tc23b-innsending-nologin-soknad-body.json';
+import tc24 from '../data/test-cases/tc24-innsending-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
@@ -659,6 +660,14 @@ export default [
         },
       },
       {
+        id: 'failure',
+        type: 'text',
+        options: {
+          status: 500,
+          body: 'Internal Server Error',
+        },
+      },
+      {
         id: 'success-empty-maalgruppe',
         type: 'json',
         options: {
@@ -777,6 +786,17 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc21f,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc24',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc24,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             okResponseHandlerNologinSubmission,
           ),

@@ -284,6 +284,10 @@ import {
   personSenderPartyForm,
   personSenderPartyTranslations,
 } from '../data/forms-api/party-mapping-regression/personSenderPartyForm';
+import {
+  prefillUnavailablePartyForm,
+  prefillUnavailablePartyTranslations,
+} from '../data/forms-api/party-mapping-regression/prefillUnavailablePartyForm';
 import { pdfConditionalPageForm, pdfConditionalPageTranslations } from '../data/forms-api/pdf/pdfConditionalPageForm';
 import { pdfPaperDigitalForm, pdfPaperDigitalTranslations } from '../data/forms-api/pdf/pdfPaperDigitalForm';
 import { pdfPaperForm, pdfPaperTranslations } from '../data/forms-api/pdf/pdfPaperForm';
@@ -468,6 +472,7 @@ const allForms = [
   { form: unknownPersonCoverPageForm(), translations: unknownPersonCoverPageTranslations() },
   { form: organizationSenderPartyForm(), translations: organizationSenderPartyTranslations() },
   { form: personSenderPartyForm(), translations: personSenderPartyTranslations() },
+  { form: prefillUnavailablePartyForm(), translations: prefillUnavailablePartyTranslations() },
   { form: currencyAndAccountForm(), translations: currencyAndAccountTranslations() },
   { form: dataFetcherAnnetDeprecatedForm(), translations: dataFetcherAnnetDeprecatedTranslations() },
   { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
