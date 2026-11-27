@@ -46,7 +46,7 @@ describe('Edits during draft saving', () => {
   });
 
   beforeEach(() => {
-    storedSubmission = { data: { answer: 'Initial answer' }, selfDeclaration: true };
+    storedSubmission = { data: { answer: 'Initial answer', otherAnswer: 'Other answer' }, selfDeclaration: true };
     cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.intercept('GET', draftUrl, (request) => request.reply(draftResponse(storedSubmission))).as('loadDraft');
@@ -138,6 +138,31 @@ describe('Edits during draft saving', () => {
     cy.then(() => first.resolve());
     cy.wait('@saveDraft');
     cy.findByRole('heading', { name: 'Oppsummering', level: 2 }).should('be.visible');
+  });
+
+  it('submits once on double click and allows retry after failure', { defaultCommandTimeout: 30000 }, () => {
+    const save = deferred();
+    const requests = interceptSaves(save);
+    cy.intercept('POST', `/fyllut/api/send-inn/digital-application/${draftId}`, { statusCode: 503 }).as('submit');
+
+    cy.clickSaveAndContinue();
+    cy.wrap(requests).should('have.length', 1);
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Oppsummering' }).click();
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).as('sendButton', { type: 'static' });
+    cy.get('@sendButton').dblclick();
+    cy.get('@sendButton').should('be.disabled');
+    cy.get('@submit.all').should('have.length', 0);
+
+    cy.then(() => save.resolve());
+    cy.wait('@saveDraft').its('response.statusCode').should('eq', 200);
+    cy.wait('@submit').its('response.statusCode').should('eq', 503);
+    cy.findByText(TEXTS.statiske.error.serverErrorTitle).should('be.visible');
+    cy.get('@submit.all').should('have.length', 1);
+
+    cy.clickSendNav();
+    cy.wait('@submit').its('response.statusCode').should('eq', 503);
+    cy.get('@submit.all').should('have.length', 2);
   });
 
   it('requires the self-declaration if it is unchecked while the introduction is saving', () => {
