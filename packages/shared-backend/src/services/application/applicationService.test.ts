@@ -584,4 +584,79 @@ describe('createApplicationService', () => {
     expect(warnSpy).not.toHaveBeenCalled();
     expect(debugSpy).not.toHaveBeenCalled();
   });
+
+  it('retries getApplication and updateApplication once on UND_ERR_SOCKET without logging draft payloads', async () => {
+    const socketError = new TypeError('fetch failed', {
+      cause: Object.assign(new Error('other side closed'), { code: 'UND_ERR_SOCKET' }),
+    });
+    const warnSpy = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockRejectedValueOnce(socketError)
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ innsendingsId }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      )
+      .mockRejectedValueOnce(socketError)
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ updated: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.getApplication<{ innsendingsId: string }>({ accessToken, correlationId, innsendingsId }),
+    ).resolves.toEqual({ innsendingsId });
+    await expect(
+      service.updateApplication<{ updated: boolean }>({
+        accessToken,
+        correlationId,
+        innsendingsId,
+        body: { formPath: 'nav123', answer: 'private-draft-answer' },
+      }),
+    ).resolves.toEqual({ updated: true });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(4);
+    expect(warnSpy).toHaveBeenNthCalledWith(1, 'Retrying http request after socket error', {
+      method: 'GET',
+      service: 'send-inn.test',
+      endpoint: `${draftPath}/${innsendingsId}`,
+      error_code: 'UND_ERR_SOCKET',
+    });
+    expect(warnSpy).toHaveBeenNthCalledWith(2, 'Retrying http request after socket error', {
+      method: 'PUT',
+      service: 'send-inn.test',
+      endpoint: `${draftPath}/${innsendingsId}`,
+      error_code: 'UND_ERR_SOCKET',
+    });
+    expect(JSON.stringify(warnSpy.mock.calls)).not.toContain('private-draft-answer');
+  });
+
+  it('does not retry submitCompletedApplication on UND_ERR_SOCKET', async () => {
+    const socketError = new TypeError('fetch failed', {
+      cause: Object.assign(new Error('other side closed'), { code: 'UND_ERR_SOCKET' }),
+    });
+    const warnSpy = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+    const fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(socketError);
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.submitCompletedApplication({
+        accessToken,
+        correlationId,
+        innsendingsId,
+        body: { data: true },
+      }),
+    ).rejects.toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'Draft request failed',
+    });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
 });

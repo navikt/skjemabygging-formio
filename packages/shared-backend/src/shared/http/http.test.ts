@@ -2,6 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../logger/logger';
 import http from './http';
 
+const createSocketFetchError = (code: string, message = 'other side closed') =>
+  new TypeError('fetch failed', {
+    cause: Object.assign(new Error(message), { code }),
+  });
+
 describe('http', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -26,7 +31,9 @@ describe('http', () => {
           ? http.get(url, options)
           : method === 'postMultipart'
             ? http.postMultipart(url, new FormData(), options)
-            : http[method](url, undefined, options);
+            : method === 'put'
+              ? http.put(url, undefined, options)
+              : http[method](url, undefined, options);
 
       await expect(request).rejects.toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
@@ -253,6 +260,171 @@ describe('http', () => {
         upstream_correlation_id: undefined,
       });
       expect(JSON.stringify(warn.mock.calls)).not.toContain('private-upstream-details');
+    },
+  );
+
+  it.each(['UND_ERR_SOCKET', 'ECONNRESET'] as const)(
+    'retries GET once on %s and logs a safe warning',
+    async (errorCode) => {
+      const fetchSpy = vi
+        .spyOn(global, 'fetch')
+        .mockRejectedValueOnce(createSocketFetchError(errorCode))
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        );
+      const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+      const response = await http.get<{ ok: boolean }>('https://kodeverk.test/api/currencies?secret=private-query', {
+        accessToken: 'private-token',
+      });
+
+      expect(response).toEqual({ ok: true });
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy.mock.calls[1]).toEqual(fetchSpy.mock.calls[0]);
+      expect(warn).toHaveBeenCalledExactlyOnceWith('Retrying http request after socket error', {
+        method: 'GET',
+        service: 'kodeverk.test',
+        endpoint: '/api/currencies',
+        error_code: errorCode,
+      });
+      expect(JSON.stringify(warn.mock.calls)).not.toContain('private-');
+    },
+  );
+
+  it('retries at most once when the retry also fails with UND_ERR_SOCKET', async () => {
+    const firstError = createSocketFetchError('UND_ERR_SOCKET');
+    const secondError = createSocketFetchError('UND_ERR_SOCKET');
+    const fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(firstError).mockRejectedValueOnce(secondError);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.get('https://kodeverk.test/api/currencies')).rejects.toBe(secondError);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not retry GET when the AbortSignal is aborted', async () => {
+    const controller = new AbortController();
+    const socketError = createSocketFetchError('UND_ERR_SOCKET');
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+      controller.abort(new DOMException('Request timed out', 'TimeoutError'));
+      throw socketError;
+    });
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.get('https://kodeverk.test/api/currencies', { signal: controller.signal })).rejects.toBe(
+      socketError,
+    );
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['TypeError without cause', new TypeError('fetch failed')],
+    ['TypeError with ECONNREFUSED', createSocketFetchError('ECONNREFUSED', 'connect ECONNREFUSED')],
+    ['non-TypeError with UND_ERR_SOCKET', new Error('fetch failed', { cause: { code: 'UND_ERR_SOCKET' } })],
+  ])('does not retry GET on %s', async (_label, error) => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(error);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.get('https://kodeverk.test/api/currencies')).rejects.toBe(error);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each(['UND_ERR_SOCKET', 'ECONNRESET'] as const)(
+    'retries PUT once on %s when retryOnSocketError is enabled and omits payloads from logs',
+    async (errorCode) => {
+      const fetchSpy = vi
+        .spyOn(global, 'fetch')
+        .mockRejectedValueOnce(createSocketFetchError(errorCode))
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ saved: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        );
+      const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+      const response = await http.put<{ saved: boolean }>(
+        'https://send-inn.test/fyllUt/v1/soknad/123?secret=private-query',
+        { answer: 'private-payload' },
+        {
+          accessToken: 'private-token',
+          retryOnSocketError: true,
+          suppressTransportLogs: true,
+        },
+      );
+
+      expect(response).toEqual({ saved: true });
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy.mock.calls[1]).toEqual(fetchSpy.mock.calls[0]);
+      expect(warn).toHaveBeenCalledExactlyOnceWith('Retrying http request after socket error', {
+        method: 'PUT',
+        service: 'send-inn.test',
+        endpoint: '/fyllUt/v1/soknad/123',
+        error_code: errorCode,
+      });
+      expect(JSON.stringify(warn.mock.calls)).not.toContain('private-');
+    },
+  );
+
+  it('does not retry PUT when retryOnSocketError is not enabled', async () => {
+    const socketError = createSocketFetchError('UND_ERR_SOCKET');
+    const fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(socketError);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    await expect(http.put('https://send-inn.test/fyllUt/v1/utfyltSoknad/123', { data: true })).rejects.toBe(
+      socketError,
+    );
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each(['post', 'postMultipart', 'delete'] as const)('does not retry %s on UND_ERR_SOCKET', async (method) => {
+    const socketError = createSocketFetchError('UND_ERR_SOCKET');
+    const fetchSpy = vi.spyOn(global, 'fetch').mockRejectedValueOnce(socketError);
+    const warn = vi.spyOn(logger, 'warn').mockReturnValue(logger);
+
+    const request =
+      method === 'postMultipart'
+        ? http.postMultipart('https://send-inn.test/upload', new FormData())
+        : http[method]('https://send-inn.test/resource', { data: true });
+
+    await expect(request).rejects.toBe(socketError);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each([400, 404, 429, 500, 502, 503, 504, 599])(
+    'does not retry GET or retryable PUT on HTTP %i error status',
+    async (status) => {
+      const fetchSpy = vi
+        .spyOn(global, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ message: `HTTP ${status}` }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ message: `HTTP ${status}` }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        );
+
+      await expect(http.get('https://example.test/resource')).rejects.toMatchObject({
+        message: `HTTP ${status}`,
+      });
+      await expect(
+        http.put('https://example.test/resource', { data: true }, { retryOnSocketError: true }),
+      ).rejects.toMatchObject({
+        message: `HTTP ${status}`,
+      });
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
     },
   );
 });

@@ -126,6 +126,7 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
       suppressTransportLogs: true,
+      retryOnSocketError: true,
       accessToken,
       headers: createHeaders({ correlationId, innsendingsId }),
     });

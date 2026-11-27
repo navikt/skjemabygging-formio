@@ -23,6 +23,60 @@ interface HttpOptions {
   suppressTransportLogs?: boolean;
 }
 
+interface PutHttpOptions extends HttpOptions {
+  retryOnSocketError?: boolean;
+}
+
+const RETRYABLE_SOCKET_ERROR_CODES = new Set(['UND_ERR_SOCKET', 'ECONNRESET']);
+
+const parseUrlForLog = (url: string): URL | undefined => {
+  try {
+    return new URL(url);
+  } catch {
+    return undefined;
+  }
+};
+
+const getRetryableSocketErrorCode = (error: unknown): string | undefined => {
+  if (!(error instanceof TypeError)) {
+    return undefined;
+  }
+
+  const { cause } = error;
+  if (typeof cause !== 'object' || cause === null || !('code' in cause)) {
+    return undefined;
+  }
+
+  const { code } = cause as { code?: unknown };
+  return typeof code === 'string' && RETRYABLE_SOCKET_ERROR_CODES.has(code) ? code : undefined;
+};
+
+const fetchWithOptionalSocketRetry = async (
+  url: string,
+  init: RequestInit,
+  retryOnSocketError: boolean,
+): Promise<Response> => {
+  try {
+    return await fetch(url, init);
+  } catch (error) {
+    const socketErrorCode =
+      retryOnSocketError && !init.signal?.aborted ? getRetryableSocketErrorCode(error) : undefined;
+    if (!socketErrorCode) {
+      throw error;
+    }
+
+    const parsedUrl = parseUrlForLog(url);
+    logger.warn('Retrying http request after socket error', {
+      method: init.method,
+      service: parsedUrl?.hostname,
+      endpoint: parsedUrl?.pathname,
+      error_code: socketErrorCode,
+    });
+
+    return await fetchWithOptionalSocketRetry(url, init, false);
+  }
+};
+
 type HttpMetadataResponse<T> = {
   status: number;
   headers: Record<string, string>;
@@ -40,12 +94,16 @@ function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
   if (!options?.suppressTransportLogs) logger.debug(`GET request to ${url}`);
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: createHeaders(defaultOptions(options)),
-    redirect: options?.redirect,
-    signal: options?.signal,
-  });
+  const response = await fetchWithOptionalSocketRetry(
+    url,
+    {
+      method: 'GET',
+      headers: createHeaders(defaultOptions(options)),
+      redirect: options?.redirect,
+      signal: options?.signal,
+    },
+    true,
+  );
 
   return handleResponse<T>(response, url, options);
 }
@@ -72,18 +130,23 @@ async function post<T>(url: string, body?: object, options?: HttpOptions): Promi
 function put<T>(
   url: string,
   body: object | undefined,
-  options: HttpOptions & { responseType: 'metadata' },
+  options: PutHttpOptions & { responseType: 'metadata' },
 ): Promise<HttpMetadataResponse<T>>;
-function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
-async function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
+function put<T>(url: string, body?: object, options?: PutHttpOptions): Promise<T>;
+async function put<T>(url: string, body?: object, options?: PutHttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`PUT request to ${url}`);
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: createHeaders(defaultOptions(options)),
-    body: createBody(body, defaultOptions(options)),
-    redirect: options?.redirect,
-    signal: options?.signal,
-  });
+  const resolvedOptions = defaultOptions(options);
+  const response = await fetchWithOptionalSocketRetry(
+    url,
+    {
+      method: 'PUT',
+      headers: createHeaders(resolvedOptions),
+      body: createBody(body, resolvedOptions),
+      redirect: options?.redirect,
+      signal: options?.signal,
+    },
+    options?.retryOnSocketError === true,
+  );
 
   return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
 }
