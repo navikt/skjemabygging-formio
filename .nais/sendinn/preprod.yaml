@@ -1,4 +1,5 @@
 app-name: sendinn-preprod
+content-source: latest
 ingresses:
   - 'https://sendinn-preprod.intern.dev.nav.no/sendinn'
   - 'https://sendinn-preprod.ansatt.dev.nav.no/sendinn'
