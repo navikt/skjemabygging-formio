@@ -47,7 +47,8 @@ export default class Identity extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.hasPrefill()) {
+    // Without a prefill value, keep the identity from a resumed draft instead of clearing it.
+    if (this.hasPrefill() && this.component?.prefillValue) {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue({
         identitetsnummer: this.component?.prefillValue,

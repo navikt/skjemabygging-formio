@@ -28,6 +28,8 @@ import nav083591soknadComplete from '../data/innsending-api/mellomlagring/nav083
 import nav083501IncompleteDraft from '../data/innsending-api/mellomlagring/nav083591/incomplete';
 import responseWithInnsendingsId from '../data/innsending-api/mellomlagring/responseWithInnsendingsId.json';
 import stdigital from '../data/innsending-api/mellomlagring/stdigital.json';
+import yourInformationCreatedWithoutPersonData from '../data/innsending-api/mellomlagring/your-information/created-without-person-data.json';
+import yourInformationResumedWithIdentity from '../data/innsending-api/mellomlagring/your-information/resumed-with-identity.json';
 import mellomlagringMonthPicker from '../data/innsending-api/month-picker/mellomlagring-month-picker.json';
 import prefillDataNames from '../data/innsending-api/prefill-data/prefill-data-names.json';
 import prefillDataUsa from '../data/innsending-api/prefill-data/prefill-data-usa.json';
@@ -256,6 +258,22 @@ export default [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
+        id: 'success-your-information-with-identity',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(yourInformationResumedWithIdentity),
+        },
+      },
+      {
+        id: 'success-your-information-without-person-data',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(yourInformationCreatedWithoutPersonData),
         },
       },
       {

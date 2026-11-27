@@ -125,6 +125,29 @@ describe('createPrefillService', () => {
       expect(response).toEqual({ sokerIdentifikasjonsnummer: nationalIdentityNumber });
     });
 
+    it('falls back to the national identity number when the request times out', async () => {
+      vi.spyOn(AbortSignal, 'timeout').mockReturnValue(
+        AbortSignal.abort(new DOMException('The operation timed out.', 'TimeoutError')),
+      );
+      vi.spyOn(global, 'fetch').mockImplementation(async (_url, init) => {
+        init?.signal?.throwIfAborted();
+        return new Response(JSON.stringify({ sokerFornavn: 'Ada' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      });
+
+      const service = createPrefillService({ baseUrl });
+
+      const response = await service.getPrefillData({
+        accessToken,
+        properties: 'sokerFornavn,sokerIdentifikasjonsnummer',
+        nationalIdentityNumber,
+      });
+
+      expect(response).toEqual({ sokerIdentifikasjonsnummer: nationalIdentityNumber });
+    });
+
     it('returns empty prefill data when the national identity number is not requested', async () => {
       vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 500 }));
 
