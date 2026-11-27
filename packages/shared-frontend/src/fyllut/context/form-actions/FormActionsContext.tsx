@@ -34,13 +34,14 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
   const [status, setStatus] = useState<FormActionStatus>('idle');
   const [error, setError] = useState<unknown>();
   const saveLoopRef = useRef<Promise<boolean> | null>(null);
+  const submitInFlight = useRef(false);
 
   const saveDraft = useCallback(async () => {
     if (!saveHandler) return false;
 
     if (!saveLoopRef.current) {
       saveLoopRef.current = (async () => {
-        setStatus('saving');
+        setStatus((current) => (current === 'submitting' ? current : 'saving'));
         setError(undefined);
 
         try {
@@ -50,7 +51,7 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
           return false;
         } finally {
           saveLoopRef.current = null;
-          setStatus('idle');
+          setStatus((current) => (current === 'saving' ? 'idle' : current));
         }
       })();
     }
@@ -60,24 +61,28 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
   }, [getLatestSubmission, saveHandler]);
 
   const submit = useCallback(async () => {
-    if (!submitHandler || hasPendingOperations()) return;
+    if (!submitHandler || submitInFlight.current || hasPendingOperations()) return;
 
-    if (saveLoopRef.current && !(await saveLoopRef.current)) {
-      return;
-    }
-    if (hasPendingOperations()) return;
-
-    const latestSubmission = getLatestSubmission();
-    if (!latestSubmission) return;
-
+    // Two clicks can otherwise resume from the same pending draft save.
+    submitInFlight.current = true;
     setStatus('submitting');
     setError(undefined);
+    let submitted = false;
     try {
+      if (saveLoopRef.current && !(await saveLoopRef.current)) return;
+      if (hasPendingOperations()) return;
+
+      const latestSubmission = getLatestSubmission();
+      if (!latestSubmission) return;
+
       await submitHandler(latestSubmission);
-      setStatus('submitted');
+      submitted = true;
     } catch (e) {
       setError(e);
-      setStatus('idle');
+    } finally {
+      submitInFlight.current = false;
+      const draftStatus = saveLoopRef.current ? 'saving' : 'idle';
+      setStatus(submitted ? 'submitted' : draftStatus);
     }
   }, [getLatestSubmission, hasPendingOperations, submitHandler]);
 
