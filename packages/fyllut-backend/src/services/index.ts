@@ -76,6 +76,10 @@ const formService = createFormService({
   formsApiStaging: useFormsApiStaging,
   formsLocation: skjemaDir,
   mocksEnabled,
+  metrics: {
+    appName: 'fyllut',
+    registry: appMetrics.register,
+  },
 });
 
 const mergeFileService = createMergeFileService({

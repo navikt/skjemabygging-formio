@@ -3,10 +3,13 @@ import {
   formioFormsApiUtils,
   FormWithLanguages,
   ResponseError,
+  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
+import { MetricServiceConfig } from '../metrics/metricService';
 import formClient from './formClient';
 import { resolveFormLanguages } from './formLanguages';
+import { createFormMetrics } from './formMetrics';
 
 type FormSelectType = keyof Form;
 type FormWithLanguagesSelectType = keyof FormWithLanguages;
@@ -31,16 +34,22 @@ type FormService = {
 
 interface CreateFormServiceProps extends GetFormsConfig {
   baseUrl: string;
+  metrics?: MetricServiceConfig;
   client?: FormClient;
 }
+
+const isFormNotFoundError = (error: unknown) => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
 
 const createFormService = ({
   baseUrl,
   formsApiStaging,
   mocksEnabled,
   formsLocation,
+  metrics,
   client = formClient,
 }: CreateFormServiceProps): FormService => {
+  const formMetrics = createFormMetrics(metrics);
+
   const getForms: FormService['getForms'] = async ({ select }) => {
     if (!select) {
       throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch forms');
@@ -57,6 +66,10 @@ const createFormService = ({
   const includeUnpublishedLanguages = !!(formsApiStaging || mocksEnabled);
 
   const fetchForm = async ({ formPath, select }: { formPath: string; select?: FormSelectType[] }) => {
+    if (!validatorUtils.isValidFormPath(formPath)) {
+      throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found`);
+    }
+
     if (formsApiStaging || mocksEnabled) {
       if (!select) {
         return client.getForm<Form>({ baseUrl, formPath });
@@ -79,20 +92,29 @@ const createFormService = ({
   };
 
   const getForm = (async ({ formPath, select }: { formPath: string; select?: FormWithLanguagesSelectType[] }) => {
-    if (!select?.includes('languages')) {
-      return fetchForm({ formPath, select: select as FormSelectType[] | undefined });
+    try {
+      if (!select?.includes('languages')) {
+        const form = await fetchForm({ formPath, select: select as FormSelectType[] | undefined });
+        formMetrics.fetches.increment({ result: 'hit' });
+        return form;
+      }
+
+      const formSelect = select.filter((field): field is FormSelectType => field !== 'languages');
+      const form = await fetchForm({
+        formPath,
+        select:
+          formSelect.length > 0
+            ? Array.from(new Set([...formSelect, 'publishedLanguages' as const, 'status' as const]))
+            : undefined,
+      });
+
+      const resolvedForm = { ...form, languages: resolveFormLanguages(form, includeUnpublishedLanguages) };
+      formMetrics.fetches.increment({ result: 'hit' });
+      return resolvedForm;
+    } catch (error) {
+      formMetrics.fetches.increment({ result: isFormNotFoundError(error) ? 'miss' : 'error' });
+      throw error;
     }
-
-    const formSelect = select.filter((field): field is FormSelectType => field !== 'languages');
-    const form = await fetchForm({
-      formPath,
-      select:
-        formSelect.length > 0
-          ? Array.from(new Set([...formSelect, 'publishedLanguages' as const, 'status' as const]))
-          : undefined,
-    });
-
-    return { ...form, languages: resolveFormLanguages(form, includeUnpublishedLanguages) };
   }) as FormService['getForm'];
 
   return {

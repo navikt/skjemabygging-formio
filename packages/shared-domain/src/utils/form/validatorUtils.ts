@@ -34,7 +34,8 @@ const containsEmoji = (value: string) => emojiRegex.test(value);
 // U+FE0E/FE0F: text/emoji variation selectors; U+2028/2029: line/paragraph separators.
 // U+E000-F8FF: private-use characters, including pasted Word bullets (U+F0B7).
 // U+FFFD: replacement character from broken text encoding.
-const unsupportedCharactersRegex = /[\uFE0E\uFE0F\u2028\u2029\uE000-\uF8FF\uFFFD]/u;
+// U+2010/2011: hyphen and non-breaking hyphen, missing from the familie-pdf font (SourceSansPro).
+const unsupportedCharactersRegex = /[\uFE0E\uFE0F\u2010\u2011\u2028\u2029\uE000-\uF8FF\uFFFD]/u;
 
 // Reject common pasted characters that cause PDF problems, not every unsupported font glyph.
 const hasSupportedCharacters = (value: string) => !containsEmoji(value) && !unsupportedCharactersRegex.test(value);

@@ -1,8 +1,15 @@
 import { Form, NavFormType, Submission, SubmissionData, SubmissionYourInformation } from '../../models';
 import { navFormUtils } from '../form';
 
+const hasText = (value?: string) => !!value?.trim();
+
+const identifiesPerson = (yourInformation?: SubmissionYourInformation) =>
+  hasText(yourInformation?.identitet?.identitetsnummer) ||
+  hasText(yourInformation?.fornavn) ||
+  hasText(yourInformation?.etternavn);
+
 /**
- * Returns the first your information object from the submission data.
+ * Returns the first your information object from the submission data with an identity number or a name.
  * @param form
  * @param submissionData
  */
@@ -12,7 +19,11 @@ const getYourInformation = (
 ): SubmissionYourInformation | undefined => {
   const yourInformationForm = navFormUtils
     .flattenComponents(form.components)
-    .find((component) => component.yourInformation && submissionData[component.key]);
+    .find(
+      (component) =>
+        component.yourInformation &&
+        identifiesPerson(submissionData[component.key] as SubmissionYourInformation | undefined),
+    );
 
   if (yourInformationForm) {
     return submissionData[yourInformationForm.key] as SubmissionYourInformation;

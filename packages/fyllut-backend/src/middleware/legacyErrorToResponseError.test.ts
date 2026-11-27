@@ -1,4 +1,5 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { Request } from 'express';
 import { mockRequest } from '../test/testHelpers';
 import { HttpError } from '../utils/errors/HttpError';
 import legacyErrorToResponseError from './legacyErrorToResponseError';
@@ -51,6 +52,46 @@ describe('legacyErrorToResponseError', () => {
       errorCode: 'INTERNAL_SERVER_ERROR',
       correlationId: 'test-correlation-id',
       userMessage: 'Det oppstod en feil',
+    });
+  });
+
+  describe('client aborts', () => {
+    const requestWith = (state: { complete: boolean; destroyed: boolean }) =>
+      ({ ...mockRequest({}), ...state }) as Request;
+    const disconnectedBeforeBody = requestWith({ complete: false, destroyed: true });
+
+    it.each([
+      ['body parser', Object.assign(new Error('request aborted'), { type: 'request.aborted', status: 400 })],
+      ['multer', new Error('Request aborted')],
+      ['multer on close', new Error('Request closed')],
+    ])('maps %s aborts to BAD_REQUEST when the client disconnected before the body was received', (_source, error) => {
+      const next = vi.fn();
+
+      legacyErrorToResponseError(error, disconnectedBeforeBody, {} as any, next);
+
+      expect(next.mock.calls[0][0]).toMatchObject({
+        message: 'Request aborted by client.',
+        errorCode: 'BAD_REQUEST',
+      });
+    });
+
+    it.each([
+      ['the body was fully received', new Error('Request aborted'), requestWith({ complete: true, destroyed: true })],
+      [
+        'the connection is still open',
+        new Error('Request aborted'),
+        requestWith({ complete: false, destroyed: false }),
+      ],
+      ['the error is unrelated', new Error('Upstream failed'), disconnectedBeforeBody],
+    ])('keeps INTERNAL_SERVER_ERROR when %s', (_case, error, req) => {
+      const next = vi.fn();
+
+      legacyErrorToResponseError(error, req, {} as any, next);
+
+      expect(next.mock.calls[0][0]).toMatchObject({
+        message: 'Det oppstod en feil',
+        errorCode: 'INTERNAL_SERVER_ERROR',
+      });
     });
   });
 
