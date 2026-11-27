@@ -8,10 +8,10 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefillDataToForm,
+  FyllutRuntimeServices,
   getFormPrefillKeys,
   initializeDigitalDraft,
   resolveDefaultSubmissionMethod,
-  RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import type { RenderFormBootstrapService } from '../../adapter-services/createRenderFormBootstrapService';
 
@@ -37,7 +37,7 @@ interface InitializeRenderFormProps {
   search: string;
   submissionMethod?: SubmissionMethod;
   bootstrapService: RenderFormBootstrapService;
-  applications: RuntimeServices['applications'];
+  applications: FyllutRuntimeServices['applications'];
   loadKey: string;
 }
 

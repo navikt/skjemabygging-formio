@@ -8,6 +8,7 @@ import type {
   ComponentValue,
   CustomLabels,
   DataFetcherSourceId,
+  Enhetstype,
   PrefillKey,
   RecipientRole,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -68,6 +69,7 @@ type SelectDefinition = BaseComponentDefinition &
 type NavSelectDefinition = BaseComponentDefinition &
   OptionValuesDefinition &
   DefaultValueDefinition & { selectType?: 'auto' | 'select' | 'combobox'; type: 'navSelect' };
+type NavUnitSelectDefinition = BaseComponentDefinition & { type: 'navUnitSelect'; unitTypes?: Enhetstype[] };
 type SelectBoxesDefinition = BaseComponentDefinition &
   OptionValuesDefinition &
   DefaultValueDefinition & { type: 'selectboxes' };
@@ -167,6 +169,7 @@ type TypedComponentDefinition =
   | RadioPanelDefinition
   | SelectDefinition
   | NavSelectDefinition
+  | NavUnitSelectDefinition
   | SelectBoxesDefinition
   | TextAreaDefinition
   | TextFieldDefinition
@@ -199,9 +202,6 @@ type TypedComponentDefinition =
   | DrivingListDefinition
   | TargetGroupDefinition;
 
-/** The `type` literals that have a dedicated typed variant. */
-type TypedComponentType = TypedComponentDefinition['type'];
-
 export type {
   AccordionDefinition,
   AccountNumberDefinition,
@@ -231,6 +231,7 @@ export type {
   MonthPickerDefinition,
   NationalIdentityNumberDefinition,
   NavSelectDefinition,
+  NavUnitSelectDefinition,
   NumberDefinition,
   OrganizationNumberDefinition,
   PanelDefinition,
@@ -245,6 +246,5 @@ export type {
   TextAreaDefinition,
   TextFieldDefinition,
   TypedComponentDefinition,
-  TypedComponentType,
   YearDefinition,
 };

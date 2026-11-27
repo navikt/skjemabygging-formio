@@ -3,6 +3,7 @@ import {
   createContentService,
   createDecorator,
   createIdportenAuth,
+  createNavUnitService,
   createSendinnFormService,
   createTokenxHandler,
 } from '@navikt/skjemadigitalisering-shared-backend';
@@ -16,6 +17,7 @@ collectDefaultMetrics({ register: metricsRegister });
 
 const contentService = createContentService({ baseUrl: config.formsApiUrl, source: config.contentSource });
 const sendinnFormService = createSendinnFormService({ contentService });
+const navUnitService = createNavUnitService({ baseUrl: config.norg2Url, consumerId: 'sendinn' });
 
 const idportenAuth = createIdportenAuth({ introspectionEndpoint: config.texas.introspectionEndpoint, logger });
 
@@ -40,4 +42,12 @@ const decorator = createDecorator({
   },
 });
 
-export { contentService, decorator, idportenAuth, metricsRegister, sendinnFormService, tokenxForInnsendingApi };
+export {
+  contentService,
+  decorator,
+  idportenAuth,
+  metricsRegister,
+  navUnitService,
+  sendinnFormService,
+  tokenxForInnsendingApi,
+};

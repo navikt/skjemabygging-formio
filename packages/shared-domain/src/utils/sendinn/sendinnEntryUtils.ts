@@ -46,7 +46,12 @@ const resolveForm = (formPath: string, searchParams: URLSearchParams): SendinnEn
  * @param searchParams the query parameters of the URL
  */
 const resolveEntry = (path: string, searchParams: URLSearchParams): SendinnEntry => {
-  const segments = path.split('/').filter(Boolean);
+  const segments = path.replace(/\/$/, '').split('/').slice(1);
+  // The form journey validates the step against the form's panels and moves an unknown step to the first panel.
+  if (segments.length === 2 && segments[1]) {
+    const entry = resolveEntry(`/${segments[0]}`, searchParams);
+    return entry.journey === 'form' ? entry : unavailable;
+  }
   if (segments.length !== 1) {
     return unavailable;
   }

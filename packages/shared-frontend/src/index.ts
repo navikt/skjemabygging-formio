@@ -74,12 +74,14 @@ export type {
   ApplicationService,
   AttachmentApplication,
   AttachmentService,
+  CommonRuntimeServices,
   CreateDraftResult,
   Draft,
   DraftRequest,
   FormCodeList,
   FormDataService,
-  RuntimeServices,
+  FyllutRuntimeServices,
+  SendinnRuntimeServices,
   SessionService,
   SubmissionApplication,
   SubmissionService,
@@ -102,6 +104,7 @@ export type {
   IntegrationHttpHeaders,
   RenderFormProps,
 } from './fyllut';
+export type { LoadSendinnForm, SendinnServices } from './sendinn';
 export {
   AppConfigProvider,
   ApplicationProvider,

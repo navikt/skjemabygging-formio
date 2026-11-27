@@ -11,6 +11,7 @@ const createSendinnServerConfig = (options) =>
       NO_DECORATOR: 'true',
       FORMS_API_URL: `${mockURL}/forms-api`,
       SENDINN_CONTENT_SOURCE: 'latest',
+      NORG2_URL: mockURL,
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: `${mockURL}/texas/introspect`,
       NAIS_TOKEN_EXCHANGE_ENDPOINT: `${mockURL}/texas/exchange`,
     }),

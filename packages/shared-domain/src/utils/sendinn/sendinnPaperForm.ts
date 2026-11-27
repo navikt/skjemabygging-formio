@@ -16,6 +16,7 @@ const toSendinnAttachment = (source: Component): Component => ({
   navId: source.navId,
   label: source.label,
   description: source.description,
+  fieldSize: source.fieldSize,
   properties: source.properties,
   attachmentType: source.attachmentType,
   otherDocumentation: source.otherDocumentation,

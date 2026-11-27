@@ -34,6 +34,7 @@ import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
 import SummaryNationalIdentityNumber from './components/national-identity-number/SummaryNationalIdentityNumber';
+import SummaryNavUnitSelect from './components/nav-unit-select/SummaryNavUnitSelect';
 import SummaryNumber from './components/number/SummaryNumber';
 import SummaryOrganizationNumber from './components/organization-number/SummaryOrganizationNumber';
 import SummaryPanel from './components/panel/SummaryPanel';
@@ -104,6 +105,7 @@ const RenderSummaryForm = ({
     radiopanel: SummaryRadio,
     select: SummarySelect,
     navSelect: SummaryNavSelect,
+    navUnitSelect: SummaryNavUnitSelect,
     selectboxes: SummarySelectBoxes,
     textarea: SummaryTextArea,
     textfield: SummaryTextField,
