@@ -1,9 +1,19 @@
 import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
 import forsteside, { validateForstesideRequest } from './forsteside';
 
 const { skjemabyggingProxyUrl } = config;
+
+const foerstesideBody = {
+  foerstesidetype: 'ETTERSENDELSE',
+  navSkjemaId: 'NAV 10.10.10',
+  spraakkode: 'NB',
+  overskriftstittel: 'Tittel',
+  arkivtittel: 'Tittel',
+  tema: 'HJE',
+};
 
 describe('[endpoint] forsteside', () => {
   afterEach(() => {
@@ -17,14 +27,7 @@ describe('[endpoint] forsteside', () => {
       headers: {
         AzureAccessToken: '',
       },
-      body: {
-        foerstesidetype: 'ETTERSENDELSE',
-        navSkjemaId: 'NAV 10.10.10',
-        spraakkode: 'NB',
-        overskriftstittel: 'Tittel',
-        arkivtittel: 'Tittel',
-        tema: 'HJE',
-      },
+      body: { ...foerstesideBody },
     });
 
     await forsteside.post(req, mockResponse(), mockNext());
@@ -57,6 +60,65 @@ describe('[endpoint] forsteside', () => {
       }),
     );
     expect(generateFileMock).not.toHaveBeenCalled();
+  });
+
+  it('forwards BAD_REQUEST ResponseError when the proxy rejects the request with HTTP 400', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response('Validering av ident feilet. brukerId=110550, brukerType=PERSON.', { status: 400 }),
+    );
+    const next = vi.fn();
+    const req = mockRequest({
+      headers: { AzureAccessToken: '' },
+      body: { ...foerstesideBody },
+    });
+
+    await forsteside.post(req, mockResponse(), next);
+
+    expect(next).toHaveBeenCalledOnce();
+    const forwardedError = next.mock.calls[0][0];
+    expect(forwardedError).toBeInstanceOf(ResponseError);
+    expect(forwardedError).toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      message: 'Feil ved generering av førsteside',
+      userMessage: 'Feil ved generering av førsteside',
+    });
+  });
+
+  it.each([500, 503])(
+    'forwards INTERNAL_SERVER_ERROR ResponseError when the proxy responds with HTTP %i',
+    async (status) => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response('Upstream error', { status }));
+      const next = vi.fn();
+      const req = mockRequest({
+        headers: { AzureAccessToken: '' },
+        body: { ...foerstesideBody },
+      });
+
+      await forsteside.post(req, mockResponse(), next);
+
+      expect(next).toHaveBeenCalledOnce();
+      const forwardedError = next.mock.calls[0][0];
+      expect(forwardedError).toBeInstanceOf(ResponseError);
+      expect(forwardedError).toMatchObject({
+        errorCode: 'INTERNAL_SERVER_ERROR',
+        message: 'Feil ved generering av førsteside',
+        userMessage: 'Feil ved generering av førsteside',
+      });
+    },
+  );
+
+  it('forwards network failures from the proxy call to next', async () => {
+    const networkError = new TypeError('fetch failed');
+    vi.spyOn(global, 'fetch').mockRejectedValueOnce(networkError);
+    const next = mockNext();
+    const req = mockRequest({
+      headers: { AzureAccessToken: '' },
+      body: { ...foerstesideBody },
+    });
+
+    await forsteside.post(req, mockResponse(), next);
+
+    expect(next).toHaveBeenCalledExactlyOnceWith(networkError);
   });
 
   describe('validateForstesideRequest', () => {

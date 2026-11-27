@@ -24,9 +24,10 @@ describe('legacyErrorToResponseError', () => {
     });
   });
 
-  it('normalizes functional HttpError into ResponseError for the shared handler', () => {
+  it('maps functional HttpError with HTTP 400 to BAD_REQUEST ResponseError', () => {
     const error = new HttpError('Feil ved generering av førsteside');
     error.functional = true;
+    error.http_status = 400;
     error.correlation_id = 'test-correlation-id';
     const next = vi.fn();
 
@@ -34,9 +35,46 @@ describe('legacyErrorToResponseError', () => {
 
     expect(next.mock.calls[0][0]).toMatchObject({
       message: 'Feil ved generering av førsteside',
-      errorCode: 'INTERNAL_SERVER_ERROR',
+      errorCode: 'BAD_REQUEST',
       correlationId: 'test-correlation-id',
       userMessage: 'Feil ved generering av førsteside',
+    });
+  });
+
+  it.each([undefined, 500, 503])(
+    'normalizes functional HttpError with status %s to INTERNAL_SERVER_ERROR ResponseError',
+    (status) => {
+      const error = new HttpError('Feil ved generering av førsteside');
+      error.functional = true;
+      error.http_status = status;
+      error.correlation_id = 'test-correlation-id';
+      const next = vi.fn();
+
+      legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
+
+      expect(next.mock.calls[0][0]).toMatchObject({
+        message: 'Feil ved generering av førsteside',
+        errorCode: 'INTERNAL_SERVER_ERROR',
+        correlationId: 'test-correlation-id',
+        userMessage: 'Feil ved generering av førsteside',
+      });
+    },
+  );
+
+  it('keeps non-functional HttpError with HTTP 400 as masked INTERNAL_SERVER_ERROR', () => {
+    const error = new HttpError('Feil ved autentisering');
+    error.functional = false;
+    error.http_status = 400;
+    error.correlation_id = 'test-correlation-id';
+    const next = vi.fn();
+
+    legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
+
+    expect(next.mock.calls[0][0]).toMatchObject({
+      message: 'Det oppstod en feil',
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      correlationId: 'test-correlation-id',
+      userMessage: 'Det oppstod en feil',
     });
   });
 

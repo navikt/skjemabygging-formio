@@ -19,14 +19,18 @@ describe('errorHandler', () => {
 
   it.each([
     ['error', new ResponseError('INTERNAL_SERVER_ERROR', 'Failed', 'corr-1'), 500],
+    ['warn', new ResponseError('BAD_REQUEST', 'Bad request', 'corr-1'), 400],
     ['warn', new ResponseError('SERVICE_UNAVAILABLE', 'Unavailable', 'corr-1'), 503],
   ] as const)('logs at %s level and marks the response as already logged', (level, error, status) => {
     const logSpy = vi.spyOn(logger, level).mockImplementation(() => logger);
+    const otherLevel = level === 'error' ? 'warn' : 'error';
+    const otherLogSpy = vi.spyOn(logger, otherLevel).mockImplementation(() => logger);
     const res = createResponse();
 
     errorHandler(error, {} as Request, res, vi.fn());
 
     expect(logSpy).toHaveBeenCalledOnce();
+    expect(otherLogSpy).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(status);
     expect(res.locals.errorAlreadyLogged).toBe(true);
   });

@@ -11,6 +11,15 @@ vi.mock('./dekorator', () => ({
 
 const { formsApiUrl, norg2 } = config;
 
+const foerstesideBody = {
+  foerstesidetype: 'ETTERSENDELSE',
+  navSkjemaId: 'NAV 10.10.10',
+  spraakkode: 'NB',
+  overskriftstittel: 'Tittel',
+  arkivtittel: 'Tittel',
+  tema: 'HJE',
+};
+
 describe('app', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -141,7 +150,7 @@ describe('app', () => {
       .expect(401);
   });
 
-  it('Returns error message and a correlationId', async () => {
+  it('returns 400 with BAD_REQUEST and correlationId when foersteside proxy rejects the request', async () => {
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const fetchSpy = vi
       .spyOn(global, 'fetch')
@@ -155,22 +164,64 @@ describe('app', () => {
         ),
       );
 
-    const foerstesideBody = {
-      foerstesidetype: 'ETTERSENDELSE',
-      navSkjemaId: 'NAV 10.10.10',
-      spraakkode: 'NB',
-      overskriftstittel: 'Tittel',
-      arkivtittel: 'Tittel',
-      tema: 'HJE',
-    };
+    const res = await request(createApp())
+      .post('/fyllut/api/foersteside')
+      .send(foerstesideBody)
+      .expect('Content-Type', /json/)
+      .expect(400);
+
+    expect(res.body).toMatchObject({
+      errorCode: 'BAD_REQUEST',
+      message: 'Feil ved generering av førsteside',
+      userMessage: 'Feil ved generering av førsteside',
+    });
+    expect(res.body.correlationId).toBeTruthy();
+
+    expect(fetchedUrls(fetchSpy)).toEqual([tokenEndpoint, `${process.env.SKJEMABYGGING_PROXY_URL}/foersteside`]);
+  });
+
+  it.each([500, 503])('returns 500 when foersteside proxy responds with HTTP %i', async (status) => {
+    const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ access_token: 'test-token' }))
+      .mockResolvedValueOnce(new Response('Upstream failure', { status }));
+
     const res = await request(createApp())
       .post('/fyllut/api/foersteside')
       .send(foerstesideBody)
       .expect('Content-Type', /json/)
       .expect(500);
 
-    expect(res.body.message).toBe('Feil ved generering av førsteside');
-    expect(res.body.correlationId).not.toBeNull();
+    expect(res.body).toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'Feil ved generering av førsteside',
+      userMessage: 'Feil ved generering av førsteside',
+    });
+    expect(res.body.correlationId).toBeTruthy();
+
+    expect(fetchedUrls(fetchSpy)).toEqual([tokenEndpoint, `${process.env.SKJEMABYGGING_PROXY_URL}/foersteside`]);
+  });
+
+  it('returns 500 when foersteside proxy call fails with a network error', async () => {
+    const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(Response.json({ access_token: 'test-token' }))
+      .mockRejectedValueOnce(new TypeError('fetch failed'));
+
+    const res = await request(createApp())
+      .post('/fyllut/api/foersteside')
+      .send(foerstesideBody)
+      .expect('Content-Type', /json/)
+      .expect(500);
+
+    expect(res.body).toMatchObject({
+      errorCode: 'INTERNAL_SERVER_ERROR',
+      message: 'Det oppstod en feil',
+      userMessage: 'Det oppstod en feil',
+    });
+    expect(res.body.correlationId).toBeTruthy();
 
     expect(fetchedUrls(fetchSpy)).toEqual([tokenEndpoint, `${process.env.SKJEMABYGGING_PROXY_URL}/foersteside`]);
   });

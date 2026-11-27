@@ -5,7 +5,6 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
-import { responseToError } from '../../utils/errorHandling';
 
 const { skjemabyggingProxyUrl } = config;
 
@@ -88,7 +87,10 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
     return response.text();
   }
 
-  throw await responseToError(response, 'Feil ved generering av førsteside', true);
+  await response.body?.cancel();
+  const errorCode = response.status === 400 ? 'BAD_REQUEST' : 'INTERNAL_SERVER_ERROR';
+  const message = 'Feil ved generering av førsteside';
+  throw new ResponseError(errorCode, message, correlator.getId(), message);
 };
 
 const logForsteside = (forsteside: ForstesideRequestBody, response: any, logMeta: LogMetadata) => {
