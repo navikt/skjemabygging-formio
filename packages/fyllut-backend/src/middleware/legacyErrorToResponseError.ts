@@ -19,14 +19,14 @@ const normalizeLegacyError = (error: any) => {
 
     return cloneAsResponseError(
       error,
-      new ResponseError(error.errorCode, error.message, getCorrelationId(error), error.userMessage),
+      new ResponseError(error.errorCode, error.message, getCorrelationId(error), error.userMessage, { cause: error }),
     );
   }
 
   if (error instanceof CorsError) {
     return cloneAsResponseError(
       error,
-      new ResponseError('FORBIDDEN', error.message, getCorrelationId(error), error.message),
+      new ResponseError('FORBIDDEN', error.message, getCorrelationId(error), error.message, { cause: error }),
     );
   }
 
@@ -34,14 +34,22 @@ const normalizeLegacyError = (error: any) => {
     const message = error.functional ? error.message : 'Det oppstod en feil';
     return cloneAsResponseError(
       error,
-      new ResponseError('INTERNAL_SERVER_ERROR', message, getCorrelationId(error), message),
+      new ResponseError('INTERNAL_SERVER_ERROR', message, getCorrelationId(error), message, { cause: error }),
     );
   }
 
   if (error instanceof Error) {
     return cloneAsResponseError(
       error,
-      new ResponseError('INTERNAL_SERVER_ERROR', 'Det oppstod en feil', getCorrelationId(error), 'Det oppstod en feil'),
+      new ResponseError(
+        'INTERNAL_SERVER_ERROR',
+        'Det oppstod en feil',
+        getCorrelationId(error),
+        'Det oppstod en feil',
+        {
+          cause: error,
+        },
+      ),
     );
   }
 

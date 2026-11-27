@@ -16,6 +16,7 @@ describe('legacyErrorToResponseError', () => {
 
     const forwardedError = next.mock.calls[0][0];
     expect(forwardedError).toBeInstanceOf(ResponseError);
+    expect(forwardedError.cause).toBe(error);
     expect(forwardedError).toMatchObject({
       message: 'Upstream failed',
       errorCode: 'SERVICE_UNAVAILABLE',
@@ -32,6 +33,7 @@ describe('legacyErrorToResponseError', () => {
 
     legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
 
+    expect(next.mock.calls[0][0].cause).toBe(error);
     expect(next.mock.calls[0][0]).toMatchObject({
       message: 'Feil ved generering av førsteside',
       errorCode: 'INTERNAL_SERVER_ERROR',
@@ -47,6 +49,7 @@ describe('legacyErrorToResponseError', () => {
 
     legacyErrorToResponseError(error, mockRequest({}), {} as any, next);
 
+    expect(next.mock.calls[0][0].cause).toBe(error);
     expect(next.mock.calls[0][0]).toMatchObject({
       message: 'Det oppstod en feil',
       errorCode: 'INTERNAL_SERVER_ERROR',

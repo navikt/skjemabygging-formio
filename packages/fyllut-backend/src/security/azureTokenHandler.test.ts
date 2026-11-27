@@ -68,9 +68,10 @@ describe('azureTokenHandler', () => {
     });
 
     it('logs a warning and forwards SERVICE_UNAVAILABLE when Azure cannot be reached', async () => {
-      vi.spyOn(global, 'fetch').mockRejectedValueOnce(
-        new TypeError('fetch failed', { cause: Object.assign(new Error('getaddrinfo'), { code: 'EAI_AGAIN' }) }),
-      );
+      const fetchError = new TypeError('fetch failed', {
+        cause: Object.assign(new Error('getaddrinfo'), { code: 'EAI_AGAIN' }),
+      });
+      vi.spyOn(global, 'fetch').mockRejectedValueOnce(fetchError);
 
       const { next } = await runHandler();
       const { logger } = await import('../logger');
@@ -79,6 +80,7 @@ describe('azureTokenHandler', () => {
         'Access token for test-scope failed with: fetch failed (EAI_AGAIN)',
       );
       expect(logger.error).not.toHaveBeenCalled();
+      expect(next.mock.calls[0][0].cause).toBe(fetchError);
       expect(next.mock.calls[0][0]).toMatchObject({
         errorCode: 'SERVICE_UNAVAILABLE',
         message: 'Could not get access token.',

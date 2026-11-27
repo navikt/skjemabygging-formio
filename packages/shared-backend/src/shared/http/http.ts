@@ -2,6 +2,7 @@ import { HttpResponseError, ResponseError, getErrorCodeFromStatus } from '@navik
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
+import { getHostname, recordErrorDependency } from './errorDependency';
 
 type MimeType =
   | 'application/json'
@@ -89,12 +90,36 @@ type HttpStreamResponse = {
   body: ReadableStream<Uint8Array>;
 };
 
+const executeRequest = async <T>(
+  url: string,
+  init: RequestInit,
+  options?: HttpOptions,
+  retryOnSocketError = false,
+): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> => {
+  let response: Response;
+  try {
+    response = await fetchWithOptionalSocketRetry(url, init, retryOnSocketError);
+  } catch (error) {
+    recordErrorDependency(error, getHostname(url));
+    throw error;
+  }
+
+  try {
+    return await handleResponse<T>(response, url, options);
+  } catch (error) {
+    if (options?.signal?.aborted) {
+      recordErrorDependency(error, getHostname(url));
+    }
+    throw error;
+  }
+};
+
 function get(url: string, options: HttpOptions & { responseType: 'stream' }): Promise<HttpStreamResponse>;
 function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }): Promise<HttpMetadataResponse<T>>;
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
   if (!options?.suppressTransportLogs) logger.debug(`GET request to ${url}`);
-  const response = await fetchWithOptionalSocketRetry(
+  return executeRequest<T>(
     url,
     {
       method: 'GET',
@@ -102,10 +127,9 @@ async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetad
       redirect: options?.redirect,
       signal: options?.signal,
     },
+    options,
     true,
   );
-
-  return handleResponse<T>(response, url, options);
 }
 
 function post<T>(
@@ -116,15 +140,17 @@ function post<T>(
 function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`POST request to ${url}`);
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: createHeaders(defaultOptions(options)),
-    body: createBody(body, defaultOptions(options)),
-    redirect: options?.redirect,
-    signal: options?.signal,
-  });
-
-  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
+  return (await executeRequest<T>(
+    url,
+    {
+      method: 'POST',
+      headers: createHeaders(defaultOptions(options)),
+      body: createBody(body, defaultOptions(options)),
+      redirect: options?.redirect,
+      signal: options?.signal,
+    },
+    options,
+  )) as T | HttpMetadataResponse<T>;
 }
 
 function put<T>(
@@ -136,7 +162,7 @@ function put<T>(url: string, body?: object, options?: PutHttpOptions): Promise<T
 async function put<T>(url: string, body?: object, options?: PutHttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`PUT request to ${url}`);
   const resolvedOptions = defaultOptions(options);
-  const response = await fetchWithOptionalSocketRetry(
+  return (await executeRequest<T>(
     url,
     {
       method: 'PUT',
@@ -145,10 +171,9 @@ async function put<T>(url: string, body?: object, options?: PutHttpOptions): Pro
       redirect: options?.redirect,
       signal: options?.signal,
     },
+    options,
     options?.retryOnSocketError === true,
-  );
-
-  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
+  )) as T | HttpMetadataResponse<T>;
 }
 
 function httpDelete<T>(
@@ -159,15 +184,17 @@ function httpDelete<T>(
 function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
   if (!options?.suppressTransportLogs) logger.debug(`DELETE request to ${url}`);
-  const response = await fetch(url, {
-    method: 'DELETE',
-    headers: createHeaders(defaultOptions(options)),
-    body: createBody(body, defaultOptions(options)),
-    redirect: options?.redirect,
-    signal: options?.signal,
-  });
-
-  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
+  return (await executeRequest<T>(
+    url,
+    {
+      method: 'DELETE',
+      headers: createHeaders(defaultOptions(options)),
+      body: createBody(body, defaultOptions(options)),
+      redirect: options?.redirect,
+      signal: options?.signal,
+    },
+    options,
+  )) as T | HttpMetadataResponse<T>;
 }
 
 function postMultipart<T>(
@@ -184,15 +211,17 @@ async function postMultipart<T>(
   if (!options?.suppressTransportLogs) logger.debug(`POST multipart request to ${url}`);
   const multipartOptions = defaultOptions(options);
   const { contentType: _contentType, ...optionsWithoutContentType } = multipartOptions;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: createHeaders(optionsWithoutContentType),
-    body,
-    redirect: options?.redirect,
-    signal: options?.signal,
-  });
-
-  return (await handleResponse<T>(response, url, options)) as T | HttpMetadataResponse<T>;
+  return (await executeRequest<T>(
+    url,
+    {
+      method: 'POST',
+      headers: createHeaders(optionsWithoutContentType),
+      body,
+      redirect: options?.redirect,
+      signal: options?.signal,
+    },
+    options,
+  )) as T | HttpMetadataResponse<T>;
 }
 
 const createHeaders = (options?: HttpOptions): HeadersInit => {
@@ -294,6 +323,7 @@ const handleResponse = async <T>(
         response.headers.get('x-correlation-id') ??
         undefined);
   const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
+  recordErrorDependency(error, responseUrl.hostname);
   const upstreamErrorCode = errorBody?.errorCode;
 
   if (!options?.suppressTransportLogs)

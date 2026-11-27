@@ -46,7 +46,9 @@ const azureTokenHandler =
       if (error instanceof TypeError && error.message === 'fetch failed') {
         logger.warn(errorMessage);
         return next(
-          new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', undefined, 'Det oppstod en feil'),
+          new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', undefined, 'Det oppstod en feil', {
+            cause: error,
+          }),
         );
       }
 
