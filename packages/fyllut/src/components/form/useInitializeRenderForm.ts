@@ -85,7 +85,7 @@ const useInitializeRenderForm = ({
       .catch((error: unknown) => {
         if (active) {
           setFailedLoadKey(loadKey);
-          logger?.error?.('Failed to initialize new form renderer', {
+          logger?.warn?.('Failed to initialize new form renderer', {
             formPath,
             errorCode: getResponseErrorData(error)?.errorCode,
           });

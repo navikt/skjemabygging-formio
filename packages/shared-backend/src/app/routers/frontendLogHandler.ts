@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import type { Logger } from '../../shared/logger/types';
 import requestUtil from '../../util/request/requestUtil';
 
-const createFrontendLogHandler = (logger: Pick<Logger, 'info' | 'error'>) => (req: Request, res: Response) => {
+const createFrontendLogHandler = (logger: Pick<Logger, 'info' | 'warn' | 'error'>) => (req: Request, res: Response) => {
   const level = requestUtil.getStringParam(req, 'level');
   const logEntry = {
     ...req.body,
@@ -12,6 +12,9 @@ const createFrontendLogHandler = (logger: Pick<Logger, 'info' | 'error'>) => (re
   switch (level) {
     case 'info':
       logger.info(logEntry);
+      break;
+    case 'warning':
+      logger.warn(logEntry);
       break;
     case 'error':
       logger.error(logEntry);

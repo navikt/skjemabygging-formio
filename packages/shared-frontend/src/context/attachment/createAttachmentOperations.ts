@@ -140,11 +140,13 @@ const createAttachmentOperations = ({
         return { status: 'auth-error' as const };
       }
 
-      const userMessage = hasErrorCode(error, 'SERVICE_UNAVAILABLE')
-        ? TEXTS.statiske.nologin.temporarilyUnavailable
-        : error instanceof ResponseError
-          ? error.userMessage
-          : undefined;
+      const isBackendResponseError = error instanceof ResponseError && !!error.correlationId;
+      const userMessage =
+        !isBackendResponseError && hasErrorCode(error, 'SERVICE_UNAVAILABLE')
+          ? TEXTS.statiske.nologin.temporarilyUnavailable
+          : error instanceof ResponseError
+            ? error.userMessage
+            : undefined;
       uploadProgressActions.addFileInProgress(attachmentId, {
         ...file,
         error: true,

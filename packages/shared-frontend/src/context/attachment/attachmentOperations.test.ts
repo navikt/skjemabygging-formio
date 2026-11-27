@@ -1,5 +1,5 @@
 import { FileObject } from '@navikt/ds-react';
-import { SubmissionAttachment, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it, vi } from 'vitest';
 import { AttachmentApplication, AttachmentService } from '../runtime-services/RuntimeServices';
 import { createAttachmentOperations } from './createAttachmentOperations';
@@ -159,6 +159,30 @@ describe('attachment operations', () => {
     service.uploadFile.mockResolvedValue(undefined as unknown as UploadedFile);
     expect((await actions.handleUploadFile('doc', selectedFile, 'documentation')).status).toBe('unknown');
     expect(Object.values(getProgress().doc)[0].error).toBe(true);
+  });
+
+  it.each([
+    [
+      'shows the backend message for a backend 503',
+      new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', 'corr-1', 'Det oppstod en feil'),
+      'Det oppstod en feil',
+    ],
+    [
+      'shows the backend message when no-login submission is unavailable',
+      new ResponseError('SERVICE_UNAVAILABLE', 'Unavailable', 'corr-1', TEXTS.statiske.nologin.temporarilyUnavailable),
+      TEXTS.statiske.nologin.temporarilyUnavailable,
+    ],
+    [
+      'falls back to the no-login unavailable message for a 503 without a backend correlation id',
+      new ResponseError('SERVICE_UNAVAILABLE', 'Service Unavailable', undefined, 'Beklager, det oppsto en feil'),
+      TEXTS.statiske.nologin.temporarilyUnavailable,
+    ],
+  ])('%s', async (_case, error, expectedReason) => {
+    const { actions, service, getProgress } = setup();
+    service.uploadFile.mockRejectedValue(error);
+
+    expect((await actions.handleUploadFile('doc', selectedFile, 'documentation')).status).toBe('error');
+    expect(Object.values(getProgress().doc)[0]).toMatchObject({ error: true, reasons: [expectedReason] });
   });
 
   it('counts reserved in-flight files before starting concurrent requests', async () => {

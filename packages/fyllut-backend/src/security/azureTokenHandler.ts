@@ -1,3 +1,4 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import qs from 'qs';
 import { config } from '../config/config';
@@ -41,6 +42,14 @@ const azureTokenHandler =
       const errorMessage = error.http_response_body
         ? `Access token for ${scope} failed with: ${JSON.stringify(error.http_response_body)}`
         : `Access token for ${scope} failed with: ${error.message}${error.cause ? ` (${error.cause.code ?? error.cause.message})` : ''}`;
+
+      if (error instanceof TypeError && error.message === 'fetch failed') {
+        logger.warn(errorMessage);
+        return next(
+          new ResponseError('SERVICE_UNAVAILABLE', 'Could not get access token.', undefined, 'Det oppstod en feil'),
+        );
+      }
+
       logger.error(errorMessage);
       next(error);
     }
