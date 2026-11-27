@@ -95,7 +95,9 @@ const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
 
 const sanitizeDraftError = (error: unknown): ResponseError => {
   const normalized = normalizeApplicationError(error);
-  return new ResponseError(normalized.errorCode, 'Draft request failed', normalized.correlationId);
+  return new ResponseError(normalized.errorCode, 'Draft request failed', normalized.correlationId, undefined, {
+    cause: normalized,
+  });
 };
 
 const createApplication = async <T>(props: CreateApplicationProps): Promise<DraftResponse<T>> => {

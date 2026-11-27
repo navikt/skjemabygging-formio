@@ -34,7 +34,9 @@ const createApplicationActivitiesService = ({
       });
     } catch (error) {
       if (error instanceof ResponseError) {
-        throw new ResponseError(error.errorCode, activitiesErrorMessage, error.correlationId, activitiesErrorMessage);
+        throw new ResponseError(error.errorCode, activitiesErrorMessage, error.correlationId, activitiesErrorMessage, {
+          cause: error,
+        });
       }
 
       throw error;

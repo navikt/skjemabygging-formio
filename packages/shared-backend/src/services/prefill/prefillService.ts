@@ -25,7 +25,9 @@ const createPrefillService = ({ baseUrl, client = prefillClient }: CreatePrefill
       return await client.getPrefillData({ accessToken, baseUrl, properties });
     } catch (error) {
       if (error instanceof ResponseError) {
-        throw new ResponseError(error.errorCode, prefillErrorMessage, error.correlationId, prefillErrorMessage);
+        throw new ResponseError(error.errorCode, prefillErrorMessage, error.correlationId, prefillErrorMessage, {
+          cause: error,
+        });
       }
 
       throw error;

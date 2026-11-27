@@ -27,7 +27,7 @@ const toMergeError = (error: unknown): unknown => {
       ? 'PDF merge failed: invalid base64 padding'
       : 'PDF merge request failed';
 
-  return new ResponseError(error.errorCode, message, error.correlationId);
+  return new ResponseError(error.errorCode, message, error.correlationId, undefined, { cause: error });
 };
 
 const mergeFiles = async (props: MergeFilesProps): Promise<any> => {

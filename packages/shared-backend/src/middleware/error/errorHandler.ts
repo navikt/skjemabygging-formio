@@ -2,6 +2,7 @@ import { ErrorCode, ErrorResponse, getStatusFromErrorCode, TEXTS } from '@navikt
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import { logger } from '../../shared/logger/logger';
+import { getDependencyErrorLogFields } from './classifyError';
 
 const createErrorResponse = (error: any): ErrorResponse => {
   return {
@@ -17,14 +18,19 @@ const getHttpStatusFromErrorCode = (errorCode: ErrorCode): number =>
 
 const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunction) => {
   const errorResponse = createErrorResponse(error);
+  const dependencyLogFields = getDependencyErrorLogFields(error);
 
   if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
     logger.error({
       ...errorResponse,
+      ...dependencyLogFields,
       stackTrace: error.stack,
     });
   } else {
-    logger.warn(errorResponse);
+    logger.warn({
+      ...errorResponse,
+      ...dependencyLogFields,
+    });
   }
 
   res.locals = res.locals || {};
