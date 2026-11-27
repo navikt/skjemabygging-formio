@@ -345,6 +345,42 @@ describe('assembleSubmitApplicationRequest', () => {
     expect(request.attachments.map(({ label }) => label)).toEqual(['First upload', 'Second upload']);
   });
 
+  describe('label for other documentation', () => {
+    const otherComponent = { ...attachmentComponent, label: 'Other documentation', attachmentType: 'other' };
+    const otherForm = {
+      ...form,
+      components: [{ key: 'application', label: 'Application', type: 'panel', components: [otherComponent] }],
+    } as Form;
+    const assembleLabel = (attachment: Partial<SubmissionAttachment>) =>
+      assembleSubmitApplicationRequest(
+        'submission-1',
+        otherForm,
+        createSubmission({
+          attachmentId: 'legacy-attachment-id',
+          navId: 'legacy-attachment-id',
+          type: 'other',
+          files: [],
+          ...attachment,
+        }),
+        'nb',
+        [1],
+        (text) => text,
+      ).attachments[0].label;
+
+    it.each([
+      ['an empty title', { value: 'nei', title: '' }],
+      ['an abandoned title', { value: 'nei', title: 'Abandoned title' }],
+      ['an empty title while uploading', { value: 'leggerVedNaa', title: '' }],
+      ['a blank title while uploading', { value: 'leggerVedNaa', title: '  ' }],
+    ])('uses the component label for %s', (_, attachment) => {
+      expect(assembleLabel(attachment)).toBe('Other documentation');
+    });
+
+    it('uses the applicant title while uploading', () => {
+      expect(assembleLabel({ value: 'leggerVedNaa', title: 'Rental contract' })).toBe('Rental contract');
+    });
+  });
+
   it('evaluates submission method conditionals with the given submission method', () => {
     const digitalOnlyForm = {
       ...form,
