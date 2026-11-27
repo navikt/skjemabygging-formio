@@ -32,10 +32,8 @@ const normalizeLegacyError = (error: any) => {
 
   if (error instanceof HttpError) {
     const message = error.functional ? error.message : 'Det oppstod en feil';
-    return cloneAsResponseError(
-      error,
-      new ResponseError('INTERNAL_SERVER_ERROR', message, getCorrelationId(error), message),
-    );
+    const errorCode = error.functional && error.http_status === 400 ? 'BAD_REQUEST' : 'INTERNAL_SERVER_ERROR';
+    return cloneAsResponseError(error, new ResponseError(errorCode, message, getCorrelationId(error), message));
   }
 
   if (error instanceof Error) {
