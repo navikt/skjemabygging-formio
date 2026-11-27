@@ -1,4 +1,4 @@
-import { Party } from '@navikt/skjemadigitalisering-shared-domain';
+import { Party, SenderPerson } from '@navikt/skjemadigitalisering-shared-domain';
 import { mapPartyToApplication } from './applicationPartyMapper';
 
 describe('mapPartyToApplication', () => {
@@ -118,6 +118,26 @@ describe('mapPartyToApplication', () => {
       },
       expected: {
         avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
+      },
+    },
+    {
+      name: 'person sender with empty names',
+      party: {
+        onBehalfOf: 'self',
+        sender: { firstName: '', surname: '', nationalIdentityNumber: '10987654321' },
+      },
+      expected: {
+        avsender: { id: '10987654321', idType: 'FNR' },
+      },
+    },
+    {
+      name: 'person sender with missing names',
+      party: {
+        onBehalfOf: 'self',
+        sender: { nationalIdentityNumber: '10987654321' } as SenderPerson,
+      },
+      expected: {
+        avsender: { id: '10987654321', idType: 'FNR' },
       },
     },
   ] satisfies { name: string; party: Party; expected: ReturnType<typeof mapPartyToApplication> }[])(

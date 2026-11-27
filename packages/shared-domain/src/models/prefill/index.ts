@@ -9,17 +9,14 @@ interface PrefillAddress {
 }
 
 type PrefillKey =
-  | 'sokerFornavn'
-  | 'sokerEtternavn'
-  | 'sokerTelefonnummer'
-  | 'sokerKjonn'
-  | 'sokerIdentifikasjonsnummer';
+  'sokerFornavn' | 'sokerEtternavn' | 'sokerTelefonnummer' | 'sokerKjonn' | 'sokerIdentifikasjonsnummer';
 
 type PrefillData = {
   sokerFornavn?: string;
   sokerEtternavn?: string;
   sokerTelefonnummer?: string;
   sokerKjonn?: string;
+  sokerIdentifikasjonsnummer?: string;
 };
 
 export type { PrefillAddress, PrefillData, PrefillKey };

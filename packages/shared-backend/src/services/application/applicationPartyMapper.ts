@@ -12,6 +12,13 @@ type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'
 
 const getFullName = (firstName: string, surname: string): string => `${firstName} ${surname}`;
 
+// Prefill can fill the sender's national identity number without names, e.g. when name lookup fails.
+const getSenderPersonName = (firstName?: string, surname?: string): string | undefined =>
+  [firstName, surname]
+    .map((name) => name?.trim())
+    .filter(Boolean)
+    .join(' ') || undefined;
+
 const mapOrganization = (organization: SenderOrganization): AvsenderId => ({
   id: formatUtils.removeAllSpaces(organization.number),
   idType: 'ORGNR',
@@ -23,8 +30,10 @@ const mapSender = (sender: PartySender): AvsenderId => {
     return mapOrganization(sender);
   }
 
+  const navn = getSenderPersonName(sender.firstName, sender.surname);
+
   return {
-    navn: getFullName(sender.firstName, sender.surname),
+    ...(navn && { navn }),
     id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
     idType: 'FNR',
   };
