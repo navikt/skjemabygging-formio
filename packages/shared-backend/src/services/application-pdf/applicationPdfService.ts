@@ -5,7 +5,6 @@ import { logger } from '../../shared/logger/logger';
 import { MetricServiceConfig } from '../metrics/metricService';
 import applicationPdfClient from './applicationPdfClient';
 import { createApplicationPdfMetrics } from './applicationPdfMetrics';
-import { sanitizePdfFormData } from './applicationPdfSerializer';
 
 interface CreatePdfProps {
   accessToken: string;
@@ -49,7 +48,6 @@ const createApplicationPdfService = ({
   const createPdf = async (props: CreatePdfProps) => {
     const { accessToken, pdfFormData } = props;
     const validatedPdfFormData = requirePdfFormData(pdfFormData);
-    const sanitizedPdfFormData = sanitizePdfFormData(validatedPdfFormData);
 
     applicationPdfMetrics.requests.increment();
     const timer = applicationPdfMetrics.duration.start();
@@ -58,7 +56,7 @@ const createApplicationPdfService = ({
       const pdf = await client.createPdf({
         baseUrl,
         accessToken,
-        body: sanitizedPdfFormData,
+        body: validatedPdfFormData,
       });
 
       timer.success();
@@ -70,7 +68,7 @@ const createApplicationPdfService = ({
         teamLogger.error('Could not create pdf', {
           skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
           httpResponseStatus: getHttpResponseStatus(error),
-          pdfRequestBody: JSON.stringify(sanitizedPdfFormData),
+          pdfRequestBody: JSON.stringify(validatedPdfFormData),
         });
       }
       logger.warn('Could not create pdf', { error });
