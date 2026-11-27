@@ -8,9 +8,15 @@ interface GetPrefillDataProps {
   accessToken: string;
   baseUrl: string;
   properties?: string;
+  timeoutMs: number;
 }
 
-const getPrefillData = async ({ accessToken, baseUrl, properties }: GetPrefillDataProps): Promise<PrefillData> => {
+const getPrefillData = async ({
+  accessToken,
+  baseUrl,
+  properties,
+  timeoutMs,
+}: GetPrefillDataProps): Promise<PrefillData> => {
   const url = properties
     ? `${baseUrl}${prefillDataPath}?properties=${encodeURIComponent(properties)}`
     : `${baseUrl}${prefillDataPath}`;
@@ -18,6 +24,7 @@ const getPrefillData = async ({ accessToken, baseUrl, properties }: GetPrefillDa
 
   return await http.get<PrefillData>(url, {
     accessToken,
+    signal: AbortSignal.timeout(timeoutMs),
   });
 };
 

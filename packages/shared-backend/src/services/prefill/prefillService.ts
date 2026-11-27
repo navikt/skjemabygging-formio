@@ -19,6 +19,9 @@ interface CreatePrefillServiceProps {
   client?: PrefillClient;
 }
 
+// Stops a hanging request in time to fall back before the user gives up waiting.
+const PREFILL_TIMEOUT_MS = 10 * 1000;
+
 const prefillErrorMessage = 'Feil ved kall til SendInn for preutfylling';
 
 // 'ERROR' covers upstream statuses without their own code: 502 and 504, but also less common 4xx statuses such as 422.
@@ -37,7 +40,7 @@ const createPrefillService = ({ baseUrl, client = prefillClient }: CreatePrefill
     nationalIdentityNumber,
   }: GetPrefillDataProps): Promise<PrefillData> => {
     try {
-      return await client.getPrefillData({ accessToken, baseUrl, properties });
+      return await client.getPrefillData({ accessToken, baseUrl, properties, timeoutMs: PREFILL_TIMEOUT_MS });
     } catch (error) {
       if (error instanceof ResponseError && !serverErrorCodes.includes(error.errorCode)) {
         throw new ResponseError(error.errorCode, prefillErrorMessage, error.correlationId, prefillErrorMessage);
